@@ -45,7 +45,7 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-10 flex-1">
             <motion.a
               whileHover={{ scale: 1.05 }}
-              href="#home"
+              href="/"
               className="text-white hover:text-gold-500 transition-colors text-base"
             >
               Home
