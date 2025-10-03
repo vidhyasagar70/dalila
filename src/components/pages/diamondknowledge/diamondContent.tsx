@@ -1,4 +1,3 @@
-
 'use client';
 import MotionWrapper from '../../ui/MotionWrapper';
 
@@ -20,7 +19,7 @@ export default function DiamondKnowledge() {
           </MotionWrapper>
 
           <MotionWrapper variant="fadeIn" transition={{ duration: 0.8, delay: 0.2 }}>
-            <p className="text-gray-300 text-center max-w-3xl mx-auto leading-relaxed">
+            <p className="text-black text-center max-w-3xl mx-auto leading-relaxed">
               Diamonds are much that you purchase — they are timeless symbols of love, 
               craftsmanship, and natural brilliance. To make sense that the hard-won billions of 
               years in your investment is right one, it's essential to understand the key factors 
@@ -30,7 +29,7 @@ export default function DiamondKnowledge() {
           </MotionWrapper>
 
           <MotionWrapper variant="fadeIn" transition={{ duration: 0.8, delay: 0.4 }}>
-            <p className="text-gray-300 text-center max-w-3xl mx-auto leading-relaxed mt-4">
+            <p className="text-black text-center max-w-3xl mx-auto leading-relaxed mt-4">
               This guide will walk you through the essential elements that determine any diamond are 
               formed by what values teach true essence.
             </p>
@@ -57,13 +56,13 @@ export default function DiamondKnowledge() {
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 The Journey of a Diamond
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-black leading-relaxed">
                 Natural diamonds are created under extreme pressure and temperature conditions, 
                 deep within the Earth's mantle, over billions of years. They are brought to the 
                 surface through volcanic rock, eventually reaching the surface where they are mined and 
                 transformed into beautiful jewels.
               </p>
-              <p className="text-gray-300 leading-relaxed mt-4">
+              <p className="text-black leading-relaxed mt-4">
                 Every diamond carries a unique story — a window into our planet's ancient past, 
                 formed under unimaginable heat and pressure growing to create. in authenticity and value.
               </p>
@@ -78,7 +77,7 @@ export default function DiamondKnowledge() {
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 The 4Cs of Diamonds
               </h2>
-              <p className="text-gray-300 max-w-3xl mx-auto">
+              <p className="text-black max-w-3xl mx-auto">
                 When it comes to evaluating a diamond's quality and beauty, professionals rely on the 4Cs — Cut, Color, Clarity, 
                 and Carat Weight. Understanding these characteristics is key, you choose a diamond that matches your 
                 preferences and budget.
@@ -107,7 +106,7 @@ export default function DiamondKnowledge() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-2">Cut: The Sparkle Factor</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">
+                    <p className="text-black text-sm leading-relaxed">
                       A diamond cut determines how well it reflects light. A well-cut diamond, 
                       regardless of its shape, will have more brilliance (white light), fire 
                       (flashes of color). It is designed how the facets of the diamond interact 
@@ -123,7 +122,7 @@ export default function DiamondKnowledge() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-2">Color: The Shade of Purity</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">
+                    <p className="text-black text-sm leading-relaxed">
                       Diamonds are graded on a color scale from D (colorless) to Z (light yellow or 
                       brown). The closer a diamond is to colorless, the more valuable it typically is. 
                       The less color, a diamond has, the more light it can reflect, resulting in 
@@ -139,7 +138,7 @@ export default function DiamondKnowledge() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-2">Clarity: Nature's Signature</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">
+                    <p className="text-black text-sm leading-relaxed">
                       Every diamond contains tiny imperfections—internal flaws called inclusions and 
                       surface irregularities known as blemishes. These are natural byproducts of the 
                       diamond's formation process. Diamonds are graded for clarity on a scale from 
@@ -156,7 +155,7 @@ export default function DiamondKnowledge() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-2">Carat Weight: The Measure of Size</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">
+                    <p className="text-black text-sm leading-relaxed">
                       Carat weight measures a diamond's size, but it's not just about how large a diamond 
                       looks—it's also about its overall proportions. A 1-carat diamond, when cut well, 
                       will. Whether dimensions of 6 mm across, however, the weight can vary based on 
@@ -180,12 +179,12 @@ export default function DiamondKnowledge() {
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Expert Diamond Examination
               </h2>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-black leading-relaxed">
                 Our certified gemologists use advanced tools and techniques to evaluate every aspect 
                 of your diamond. From precise measurements to detailed clarity analysis, we ensure 
                 accurate assessment of your diamond's true value.
               </p>
-              <p className="text-gray-300 leading-relaxed mt-4">
+              <p className="text-black leading-relaxed mt-4">
                 Understanding the intricacies of diamond grading requires years of expertise and 
                 specialized equipment. We provide comprehensive evaluations that give you complete 
                 transparency about your diamond's characteristics.
