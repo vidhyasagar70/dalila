@@ -1,5 +1,6 @@
 'use client';
 import MotionWrapper from '../../ui/MotionWrapper';
+import Image from 'next/image';
 
 export default function DiamondKnowledge() {
   return (
@@ -22,16 +23,16 @@ export default function DiamondKnowledge() {
             <p className="text-black text-center max-w-3xl mx-auto leading-relaxed">
               Diamonds are much that you purchase — they are timeless symbols of love, 
               craftsmanship, and natural brilliance. To make sense that the hard-won billions of 
-              years in your investment is right one, it's essential to understand the key factors 
-              that chip away from purchasing your collection, understanding the key aspects of a 
+              years in your investment is the right one, it&apos;s essential to understand the key factors 
+              that chip away from purchasing your collection. Understanding the key aspects of a 
               diamond helps you make a fully informed choice.
             </p>
           </MotionWrapper>
 
           <MotionWrapper variant="fadeIn" transition={{ duration: 0.8, delay: 0.4 }}>
             <p className="text-black text-center max-w-3xl mx-auto leading-relaxed mt-4">
-              This guide will walk you through the essential elements that determine any diamond are 
-              formed by what values teach true essence.
+              This guide will walk you through the essential elements that determine how any diamond is 
+              formed and what values teach its true essence.
             </p>
           </MotionWrapper>
         </div>
@@ -40,10 +41,11 @@ export default function DiamondKnowledge() {
         <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
           <MotionWrapper variant="slideLeft" transition={{ duration: 0.8 }}>
             <div className="relative h-[400px] rounded-lg overflow-hidden">
-              <img
+              <Image
                 src="/images/diamondwork.png"
                 alt="Diamond in hands"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
           </MotionWrapper>
@@ -58,13 +60,13 @@ export default function DiamondKnowledge() {
               </h2>
               <p className="text-black leading-relaxed">
                 Natural diamonds are created under extreme pressure and temperature conditions, 
-                deep within the Earth's mantle, over billions of years. They are brought to the 
+                deep within the Earth&apos;s mantle, over billions of years. They are brought to the 
                 surface through volcanic rock, eventually reaching the surface where they are mined and 
                 transformed into beautiful jewels.
               </p>
               <p className="text-black leading-relaxed mt-4">
-                Every diamond carries a unique story — a window into our planet's ancient past, 
-                formed under unimaginable heat and pressure growing to create. in authenticity and value.
+                Every diamond carries a unique story — a window into our planet&apos;s ancient past, 
+                formed under unimaginable heat and pressure. Growing authenticity and value.
               </p>
             </div>
           </MotionWrapper>
@@ -78,8 +80,8 @@ export default function DiamondKnowledge() {
                 The 4Cs of Diamonds
               </h2>
               <p className="text-black max-w-3xl mx-auto">
-                When it comes to evaluating a diamond's quality and beauty, professionals rely on the 4Cs — Cut, Color, Clarity, 
-                and Carat Weight. Understanding these characteristics is key, you choose a diamond that matches your 
+                When it comes to evaluating a diamond&apos;s quality and beauty, professionals rely on the 4Cs — Cut, Color, Clarity, 
+                and Carat Weight. Understanding these characteristics is key to choosing a diamond that matches your 
                 preferences and budget.
               </p>
             </div>
@@ -89,10 +91,11 @@ export default function DiamondKnowledge() {
           <div className="grid md:grid-cols-2 gap-12 items-start">
             <MotionWrapper variant="slideLeft" transition={{ duration: 0.8 }}>
               <div className="relative h-[500px] rounded-lg overflow-hidden">
-                <img
+                <Image
                   src="/images/diamondjourney.png"
                   alt="Diamonds collection"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
             </MotionWrapper>
@@ -108,9 +111,9 @@ export default function DiamondKnowledge() {
                     <h3 className="text-xl font-bold mb-2">Cut: The Sparkle Factor</h3>
                     <p className="text-black text-sm leading-relaxed">
                       A diamond cut determines how well it reflects light. A well-cut diamond, 
-                      regardless of its shape, will have more brilliance (white light), fire 
-                      (flashes of color). It is designed how the facets of the diamond interact 
-                      with light, a poor cut can make even the most expensive diamond look dull.
+                      regardless of its shape, will have more brilliance (white light) and fire 
+                      (flashes of color). It is designed based on how the facets of the diamond interact 
+                      with light. A poor cut can make even the most expensive diamond look dull.
                     </p>
                   </div>
                 </div>
@@ -125,7 +128,7 @@ export default function DiamondKnowledge() {
                     <p className="text-black text-sm leading-relaxed">
                       Diamonds are graded on a color scale from D (colorless) to Z (light yellow or 
                       brown). The closer a diamond is to colorless, the more valuable it typically is. 
-                      The less color, a diamond has, the more light it can reflect, resulting in 
+                      The less color a diamond has, the more light it can reflect, resulting in 
                       unmatched sparkle and brilliance.
                     </p>
                   </div>
@@ -137,11 +140,11 @@ export default function DiamondKnowledge() {
                     3
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold mb-2">Clarity: Nature's Signature</h3>
+                    <h3 className="text-xl font-bold mb-2">Clarity: Nature&apos;s Signature</h3>
                     <p className="text-black text-sm leading-relaxed">
                       Every diamond contains tiny imperfections—internal flaws called inclusions and 
                       surface irregularities known as blemishes. These are natural byproducts of the 
-                      diamond's formation process. Diamonds are graded for clarity on a scale from 
+                      diamond&apos;s formation process. Diamonds are graded for clarity on a scale from 
                       Flawless (FL) to Included (I1, I2, I3), with most diamonds falling somewhere 
                       in this spectrum.
                     </p>
@@ -156,11 +159,11 @@ export default function DiamondKnowledge() {
                   <div>
                     <h3 className="text-xl font-bold mb-2">Carat Weight: The Measure of Size</h3>
                     <p className="text-black text-sm leading-relaxed">
-                      Carat weight measures a diamond's size, but it's not just about how large a diamond 
-                      looks—it's also about its overall proportions. A 1-carat diamond, when cut well, 
-                      will. Whether dimensions of 6 mm across, however, the weight can vary based on 
-                      the depth and cut. A two-carat diamond is not just twice the size of a 1-carat; 
-                      it can look much bigger when it's well-cut.
+                      Carat weight measures a diamond&apos;s size, but it&apos;s not just about how large a diamond 
+                      looks—it&apos;s also about its overall proportions. A 1-carat diamond, when cut well, 
+                      may have dimensions of 6 mm across; however, the weight can vary based on 
+                      depth and cut. A two-carat diamond is not just twice the size of a 1-carat; 
+                      it can look much bigger when it&apos;s well-cut.
                     </p>
                   </div>
                 </div>
@@ -182,22 +185,23 @@ export default function DiamondKnowledge() {
               <p className="text-black leading-relaxed">
                 Our certified gemologists use advanced tools and techniques to evaluate every aspect 
                 of your diamond. From precise measurements to detailed clarity analysis, we ensure 
-                accurate assessment of your diamond's true value.
+                accurate assessment of your diamond&apos;s true value.
               </p>
               <p className="text-black leading-relaxed mt-4">
                 Understanding the intricacies of diamond grading requires years of expertise and 
                 specialized equipment. We provide comprehensive evaluations that give you complete 
-                transparency about your diamond's characteristics.
+                transparency about your diamond&apos;s characteristics.
               </p>
             </div>
           </MotionWrapper>
 
           <MotionWrapper variant="slideRight" transition={{ duration: 0.8 }}>
             <div className="relative h-[400px] rounded-lg overflow-hidden">
-              <img
+              <Image
                 src="/images/diamond.png"
                 alt="Diamond examination"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
           </MotionWrapper>

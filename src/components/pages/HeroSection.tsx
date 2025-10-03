@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import AnimatedButton from '../ui/AnimatedButton';
-
+import Image from 'next/image';
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -46,10 +46,12 @@ export default function HeroSection() {
             transition={{ duration: 0.7, ease: 'easeInOut' }}
             className="absolute inset-0"
           >
-            <img
+            <Image
               src={slides[currentSlide].image}
               alt="Dalila Diamonds"
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              priority
             />
             <div className="absolute inset-0 bg-slate-900/20" />
           </motion.div>

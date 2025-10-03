@@ -1,7 +1,8 @@
 'use client';
 import { useState, ChangeEvent, FormEvent } from 'react';
+import Image from 'next/image';
 
-export default function ContactUsPage() {
+export default function WeBuy() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,10 +31,12 @@ export default function ContactUsPage() {
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src="/images/banner-dalila-contact.png"
             alt="Contact Us Background"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/80 to-slate-900" />
         </div>
@@ -47,8 +50,6 @@ export default function ContactUsPage() {
             <div className="w-24 h-1 bg-amber-400 mx-auto mb-6" />
           </div>
 
-          
-
           <div className="opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_0.3s_forwards] mt-8">
             <div className="flex items-center justify-center gap-2 text-gray-300">
               <a href="#" className="hover:text-amber-400 transition-colors">
@@ -61,7 +62,7 @@ export default function ContactUsPage() {
         </div>
       </section>
 
-   
+     
 
       <style>{`
         @keyframes fadeIn {
@@ -72,17 +73,6 @@ export default function ContactUsPage() {
           to {
             opacity: 1;
             transform: translateY(0);
-          }
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
           }
         }
       `}</style>

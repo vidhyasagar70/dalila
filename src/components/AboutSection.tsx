@@ -157,9 +157,10 @@ export default function AboutSection() {
               variants={itemVariants}
               className="text-gray-700 text-lg leading-relaxed"
             >
-              Whether you're a jeweler, manufacturer, or luxury brand, Dalila is
-              your trusted partner in creating pieces that inspire and endure.
-              With us, you don't just get diamonds — you get a legacy.
+              Whether you&apos;re a jeweler, manufacturer, or luxury brand,
+              Dalila is your trusted partner in creating pieces that inspire and
+              endure. With us, you don&apos;t just get diamonds — you get a
+              legacy.
             </motion.p>
 
             <motion.div variants={itemVariants} className="pt-4">

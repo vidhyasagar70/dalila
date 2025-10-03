@@ -25,25 +25,25 @@ export default function MotionWrapper({
   const { duration = 0.6, delay = 0 } = transition;
 
   useEffect(() => {
+    const currentElement = elementRef.current; // store ref in local variable
+    if (!currentElement) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
+            observer.unobserve(entry.target); // optional: stop observing after visible
           }
         });
       },
       { threshold: 0.1 }
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
+    observer.observe(currentElement);
 
     return () => {
-      if (elementRef.current) {
-        observer.unobserve(elementRef.current);
-      }
+      observer.disconnect(); // safer cleanup
     };
   }, []);
 

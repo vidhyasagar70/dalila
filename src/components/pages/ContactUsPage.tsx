@@ -1,5 +1,6 @@
 'use client';
 import { useState, ChangeEvent, FormEvent } from 'react';
+import Image from 'next/image';
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
@@ -30,10 +31,12 @@ export default function ContactUsPage() {
       <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src="/images/banner-dalila-contact.png"
             alt="Contact Us Background"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/80 to-slate-900" />
         </div>

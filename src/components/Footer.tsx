@@ -1,6 +1,7 @@
 'use client';
 
-import { Facebook, Instagram, Twitter, Youtube, Mail } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Footer() {
   const quickLinks = [
@@ -46,10 +47,13 @@ export default function Footer() {
             {/* Logo Column */}
             <div>
               <div className="mb-6">
-                <img 
-                  src="/images/logo2.png" 
-                  alt="Dalila Diamonds Logo" 
+                <Image
+                  src="/images/logo2.png"
+                  alt="Dalila Diamonds Logo"
+                  width={160}
+                  height={64}
                   className="h-16 w-auto"
+                  priority
                 />
               </div>
               <div className="flex gap-4 mt-6">
