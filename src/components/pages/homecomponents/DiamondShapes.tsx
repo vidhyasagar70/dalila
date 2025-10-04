@@ -21,7 +21,7 @@ function MotionWrapper({
   className = '',
 }: MotionWrapperProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLDivElement | null>(null);
   const { duration = 0.6, delay = 0 } = transition;
 
   useEffect(() => {
@@ -101,11 +101,11 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
       onClick={onClose}
     >
-      <div 
+      <div
         className="relative max-w-4xl w-full mx-4 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden shadow-2xl animate-scaleIn"
         onClick={(e) => e.stopPropagation()}
       >
@@ -139,10 +139,10 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
 }
 
 export default function DiamondShapes() {
-  const [hoveredShape, setHoveredShape] = useState<string | null>(null);
+  // removed unused hoveredShape/setHoveredShape to fix the linter warning
   const [selectedShape, setSelectedShape] = useState<{ name: string; image: string } | null>(null);
 
-  const shapes = [
+  const shapes: { name: string; image: string }[] = [
     { name: 'Round', image: '/images/round-blue.jpg' },
     { name: 'Princess', image: '/images/princess-blue.jpg' },
     { name: 'Cushion', image: '/images/cushion-blue.jpg' },
@@ -181,9 +181,9 @@ export default function DiamondShapes() {
         {/* Diamond Shapes Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-7xl mx-auto">
           {shapes.map((shape, index) => {
-            // Determine if it's left or right half
+            // Determine slide variant based on column position
             const isLeftHalf = index % 5 < 2.5;
-            const variant = isLeftHalf ? 'slideRight' : 'slideLeft';
+            const variant: MotionWrapperProps['variant'] = isLeftHalf ? 'slideRight' : 'slideLeft';
 
             return (
               <MotionWrapper
@@ -208,7 +208,7 @@ export default function DiamondShapes() {
                   </div>
 
                   {/* Label */}
-                  <div 
+                  <div
                     className="py-3 px-4 text-center"
                     style={{
                       backgroundColor: '#c89e3a',
@@ -223,7 +223,6 @@ export default function DiamondShapes() {
             );
           })}
         </div>
-
       </div>
 
       {/* Image Popup Modal */}
