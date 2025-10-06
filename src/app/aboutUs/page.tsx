@@ -5,6 +5,7 @@ import Legacy from "@/components/pages/aboutus/Legacy";
 import Aboutshowcase from "@/components/pages/aboutus/Showcase";
 import CertifiedBy from "@/components/pages/homecomponents/Certified";
 import DiamondExperience from "@/components/pages/homecomponents/experience";
+import AboutMilestone from "@/components/pages/aboutus/MileStone";
 export default function AboutPage() {
   return (
     <>
@@ -14,6 +15,7 @@ export default function AboutPage() {
         <AboutHero/>
         <DiamondExperience/>
         <Legacy/>
+        <AboutMilestone/>
         <Aboutshowcase/>
         <CertifiedBy/>
         

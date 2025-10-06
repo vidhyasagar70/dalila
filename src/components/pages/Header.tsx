@@ -2,9 +2,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,84 +17,188 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu when resizing to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-[#050c3a] shadow-lg py-4' 
-          : 'bg-transparent py-6'
+          ? 'bg-[#050c3a] shadow-lg py-3 md:py-4' 
+          : 'bg-transparent py-4 md:py-6'
       }`}
     >
-      <div className="container mx-auto px-6">
-        {/* Top Tagline */}
-        <div className="flex justify-center mb-3">
-          <p className="text-sm tracking-wide text-gray-300">
+      <div className="container mx-auto px-4 sm:px-6">
+        {/* Top Tagline - Hidden on mobile */}
+        <div className="hidden sm:flex justify-center mb-2 md:mb-3">
+          <p className="text-xs md:text-sm tracking-wide text-gray-300">
             Where Trust Shines, And Quality Sparkles
           </p>
         </div>
-
-        {/* Divider Line */}
-        <div className="w-full h-[1px] bg-white/30 mb-6"></div>
-
+        
+        {/* Divider Line - Hidden on mobile */}
+        <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-4 md:mb-6"></div>
+        
         {/* Main Navigation Bar */}
         <div className="flex items-center justify-between">
-          {/* Left Navigation */}
-          <nav className="hidden md:flex items-center gap-10 flex-1">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {/* Left Navigation - Desktop/Tablet */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-10 flex-1">
             <Link
               href="/aboutUs"
-              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
             >
               About us
             </Link>
             <Link
               href="/weBuy"
-              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
             >
               We Buy
             </Link>
             <Link
               href="/diamondKnowledge"
-              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
             >
               Diamond Knowledge
             </Link>
             <Link
               href="/contact"
-              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
             >
               Contact Us
             </Link>
           </nav>
 
           {/* Center Logo */}
-          <div className="flex-shrink-0 relative h-16 w-[150px]">
-            <Link
-              href="/"
-              className="text-white hover:text-[#c89e3a] transition-colors text-base"
-            >
-            <Image
-              src="/images/Dalila Logo.png"
-              alt="Dalila Diamonds"
-              fill
-              style={{ objectFit: 'contain' }}
-              priority
-            /></Link>
+          <div className="flex-shrink-0 relative h-12 w-[120px] sm:h-14 sm:w-[140px] md:h-16 md:w-[150px]">
+            <Link href="/" className="block w-full h-full">
+              <Image
+                src="/images/Dalila Logo.png"
+                alt="Dalila Diamonds"
+                fill
+                style={{ objectFit: 'contain' }}
+                priority
+              />
+            </Link>
           </div>
 
-          {/* Right Auth Buttons */}
-          <div className="flex items-center justify-end gap-3 flex-1">
-            <button className="py-1 px-6 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+          {/* Right Auth Buttons - Desktop/Tablet */}
+          <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
+            <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
               INVENTORY
             </button>
-            <button className="py-1 px-6 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+            <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
               LOGIN
             </button>
-            <button className="py-1 px-6 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+            <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
               REGISTER
+            </button>
+          </div>
+
+          {/* Tablet Only - Compact Buttons */}
+          <div className="hidden md:flex lg:hidden items-center gap-2">
+            <button className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              INV
+            </button>
+            <button className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              LOGIN
+            </button>
+          </div>
+
+          {/* Mobile - Login Button Only */}
+          <div className="flex md:hidden">
+            <button className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              LOGIN
             </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 top-[72px] bg-[#050c3a] z-40">
+          <div className="container mx-auto px-4 py-6">
+            {/* Mobile Tagline */}
+            <div className="flex justify-center mb-4 pb-4 border-b border-white/30">
+              <p className="text-xs tracking-wide text-gray-300">
+                Where Trust Shines, And Quality Sparkles
+              </p>
+            </div>
+
+            {/* Mobile Navigation */}
+            <nav className="flex flex-col gap-4 mb-8">
+              <Link
+                href="/aboutUs"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+              >
+                About us
+              </Link>
+              <Link
+                href="/weBuy"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+              >
+                We Buy
+              </Link>
+              <Link
+                href="/diamondKnowledge"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+              >
+                Diamond Knowledge
+              </Link>
+              <Link
+                href="/contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+              >
+                Contact Us
+              </Link>
+            </nav>
+
+            {/* Mobile Auth Buttons */}
+            <div className="flex flex-col gap-3">
+              <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+                INVENTORY
+              </button>
+              <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+                LOGIN
+              </button>
+              <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+                REGISTER
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
