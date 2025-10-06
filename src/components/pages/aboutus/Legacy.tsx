@@ -36,7 +36,7 @@ export default function Legacy() {
             </h1>
             
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
-             Since 2007, Mr. Shreyas Gandhi has been based in Antwerp, the world's diamond capital, further strengthening our presence in Europe. From this strategic hub, we continue to serve distinguished clients across Germany, the Netherlands, Italy, Belgium, the United States, Hong Kong, China, and beyond.
+             Since 2007, Mr. Shreyas Gandhi has been based in Antwerp, the world&apos;s diamond capital, further strengthening our presence in Europe. From this strategic hub, we continue to serve distinguished clients across Germany, the Netherlands, Italy, Belgium, the United States, Hong Kong, China, and beyond.
             </p>
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
              Our guiding principles remain constant—unwavering dedication to quality, integrity in every transaction, and a passion for building lasting relationships across the global diamond community.</p>

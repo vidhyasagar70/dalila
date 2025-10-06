@@ -1,12 +1,14 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import DiamondKnowledge from './diamondknowledge/diamondContent';
-import {Playfair_Display} from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
+
 export default function DiamondKnowledgePage() {
   return (
     <div className="relative min-h-screen bg-slate-900">
@@ -23,21 +25,23 @@ export default function DiamondKnowledgePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/80 to-slate-900" />
         </div>
-        
+
         {/* Content */}
         <div className="container mx-auto px-6 relative z-10 text-center py-20">
           <div className="opacity-100">
-             <h1 className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-23 ${playFair.className}`}>
+            <h1
+              className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-23 ${playFair.className}`}
+            >
               Diamond Knowledge
             </h1>
             <div className="w-32 h-0.5 bg-amber-400 mx-auto mb-6" />
           </div>
-          
+
           <div className="opacity-100 mt-8">
             <div className="flex items-center justify-center gap-2 text-gray-300">
-              <a href="/" className="hover:text-amber-400 transition-colors">
+              <Link href="/" className="hover:text-amber-400 transition-colors">
                 Home
-              </a>
+              </Link>
               <span>›</span>
               <span>Diamond Knowledge</span>
             </div>

@@ -1,18 +1,13 @@
 'use client';
 import { useRef, useEffect} from 'react';
-import { Playfair_Display, Jost } from "next/font/google";
+import { Playfair_Display} from "next/font/google";
 
 const playFair = Playfair_Display({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
 });
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
+
 
 export default function BookComponent() {
   const videoRef = useRef<HTMLVideoElement>(null);

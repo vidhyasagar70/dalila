@@ -1,8 +1,3 @@
-
-
-import Footer from '@/components/Footer';
-import { ScrollProgressBar } from '@/components/ScrollAnimation';
-import AnimatedHeader from '@/components/pages/Header';
 import HeroSection from '@/components/pages/HeroSection';
 import DiamondShapes from '@/components/pages/homecomponents/DiamondShapes';
 import AboutDalila from '@/components/pages/homecomponents/AboutDalila';
@@ -15,7 +10,6 @@ import Experience from '@/components/pages/homecomponents/experience';
 export default function Home() {
   return (
     <>
-      <ScrollProgressBar />
       <main className="relative">
         <HeroSection/>
         <AboutDalila/>

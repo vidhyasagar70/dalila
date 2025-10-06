@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -38,9 +39,9 @@ export default function AboutBanner() {
 
           <div className="opacity-100 mt-6">
             <div className="flex items-center justify-center gap-2 text-gray-300 text-sm md:text-base">
-              <a href="/" className="hover:text-amber-400 transition-colors">
+              <Link href="/" className="hover:text-amber-400 transition-colors">
                 Home
-              </a>
+              </Link>
               <span>›</span>
               <span>About Us</span>
             </div>

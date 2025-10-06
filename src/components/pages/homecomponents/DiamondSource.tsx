@@ -45,11 +45,11 @@ export default function DiamondSource() {
 
               <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                 At Dalila, we have the ability to source diamonds of any shape, size, or quality,
-                tailored exactly to your preferences. Whether you're looking for a specific cut,
+                tailored exactly to your preferences. Whether you&apos;re looking for a specific cut,
                 color, or carat weight, we can help you find the perfect diamond from anywhere in the
                 world. Our global network of trusted suppliers & experts ensures that we can secure
                 diamonds that meet the highest standards of craftsmanship & value. With Dalila,
-                you don't just get a diamond - you get a personalized, seamless experience,
+                you don&apos;t just get a diamond - you get a personalized, seamless experience,
                 bringing you the finest options available on the market.
               </p>
             </div>
