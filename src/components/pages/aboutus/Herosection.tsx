@@ -1,5 +1,5 @@
 'use client';
-import { Playfair_Display, Jost } from "next/font/google";
+import { Playfair_Display} from "next/font/google";
 
 const playFair = Playfair_Display({
     subsets: ["latin"],
@@ -9,7 +9,7 @@ const playFair = Playfair_Display({
 
 
 /** AboutDalila Section **/
-export default function AboutDalila() {
+export default function AboutHero() {
   return (
     <div className="bg-white py-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -18,7 +18,7 @@ export default function AboutDalila() {
           <div className="relative pb-12">
             <div className="relative w-full h-96 bg-black rounded-lg overflow-hidden shadow-2xl">
               <img
-                src="/images/section_about.jpg"
+                src="/images/about_us_1.jpg"
                 alt="Diamond shapes collection"
                 className="w-full h-full object-cover"
               />
@@ -52,15 +52,9 @@ export default function AboutDalila() {
               crafted to inspire confidence and redefine brilliance.
             </p>
 
-            {/* Explore More Button */}
-            <div className="pt-6">
-              <button
-                className="px-10 py-4 text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95"
-                style={{ backgroundColor: '#c89e3a' }}
-              >
-                Explore More
-              </button>
-            </div>
+          <p className="text-gray-500 text-sm md:text-base leading-relaxed">
+              With a legacy spanning over five decades, our family has been dedicated to the art and integrity of the diamond trade. What began as a modest endeavor in Gujarat has evolved into a respected international enterprise, recognized for its commitment to excellence, trust, and ethics.
+            </p>
           </div>
         </div>
       </div>

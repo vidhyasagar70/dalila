@@ -1,7 +1,12 @@
 'use client';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import Image from 'next/image';
+import {Playfair_Display} from "next/font/google";
 
+const playFair = Playfair_Display({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+});
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -44,7 +49,7 @@ export default function ContactUsPage() {
         {/* Content */}
         <div className="container mx-auto px-6 relative z-10 text-center py-20">
           <div className="opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 mt-23">
+           <h1 className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-8 mt-23 ${playFair.className}`}>
               CONTACT US
             </h1>
             <div className="w-24 h-1 bg-amber-400 mx-auto mb-6" />

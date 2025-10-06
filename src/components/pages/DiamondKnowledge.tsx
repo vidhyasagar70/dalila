@@ -1,7 +1,12 @@
 'use client';
 import Image from 'next/image';
 import DiamondKnowledge from './diamondknowledge/diamondContent';
+import {Playfair_Display} from "next/font/google";
 
+const playFair = Playfair_Display({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+});
 export default function DiamondKnowledgePage() {
   return (
     <div className="relative min-h-screen bg-slate-900">
@@ -18,23 +23,23 @@ export default function DiamondKnowledgePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/80 to-slate-900" />
         </div>
-
+        
         {/* Content */}
         <div className="container mx-auto px-6 relative z-10 text-center py-20">
-          <div className="opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_forwards]">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 mt-23">
+          <div className="opacity-100">
+             <h1 className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-23 ${playFair.className}`}>
               Diamond Knowledge
             </h1>
-            <div className="w-24 h-1 bg-amber-400 mx-auto mb-6" />
+            <div className="w-32 h-0.5 bg-amber-400 mx-auto mb-6" />
           </div>
-
-          <div className="opacity-0 translate-y-5 animate-[fadeIn_0.6s_ease-out_0.3s_forwards] mt-8">
+          
+          <div className="opacity-100 mt-8">
             <div className="flex items-center justify-center gap-2 text-gray-300">
-              <a href="#" className="hover:text-amber-400 transition-colors">
+              <a href="/" className="hover:text-amber-400 transition-colors">
                 Home
               </a>
               <span>›</span>
-              <span className="text-amber-400">Diamond Knowledge</span>
+              <span>Diamond Knowledge</span>
             </div>
           </div>
         </div>
@@ -42,30 +47,6 @@ export default function DiamondKnowledgePage() {
 
       {/* Diamond Knowledge Content Component */}
       <DiamondKnowledge />
-
-      <style>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

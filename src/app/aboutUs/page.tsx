@@ -1,16 +1,20 @@
-import AnimatedHeader from "@/components/pages/AnimatedHeader";
-import Footer from "@/components/Footer";
-import AboutSection from "@/components/AboutSection";
-import { ScrollProgressBar } from "@/components/ScrollAnimation";
 
+import AboutBanner from "@/components/pages/aboutus/Bannersection";
+import AboutHero from "@/components/pages/aboutus/Herosection";
+import Legacy from "@/components/pages/aboutus/Legacy";
+import Aboutshowcase from "@/components/pages/aboutus/Showcase";
+import CertifiedBy from "@/components/pages/homecomponents/Certified";
 export default function AboutPage() {
   return (
     <>
-      <ScrollProgressBar />
+     
       <main className="relative">
-        <AnimatedHeader />
-        <AboutSection />
-        <Footer />
+        <AboutBanner/>
+        <AboutHero/>
+        <Legacy/>
+        <Aboutshowcase/>
+        <CertifiedBy/>
+        
       </main>
     </>
   );

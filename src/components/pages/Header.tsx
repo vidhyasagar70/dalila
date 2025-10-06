@@ -39,10 +39,10 @@ export default function Header() {
           {/* Left Navigation */}
           <nav className="hidden md:flex items-center gap-10 flex-1">
             <Link
-              href="/"
+              href="/aboutUs"
               className="text-white hover:text-[#c89e3a] transition-colors text-base"
             >
-              Home
+              About us
             </Link>
             <Link
               href="/weBuy"
@@ -66,13 +66,17 @@ export default function Header() {
 
           {/* Center Logo */}
           <div className="flex-shrink-0 relative h-16 w-[150px]">
+            <Link
+              href="/"
+              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+            >
             <Image
               src="/images/Dalila Logo.png"
               alt="Dalila Diamonds"
               fill
               style={{ objectFit: 'contain' }}
               priority
-            />
+            /></Link>
           </div>
 
           {/* Right Auth Buttons */}
