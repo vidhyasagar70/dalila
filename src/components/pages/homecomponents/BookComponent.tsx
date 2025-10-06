@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect} from 'react';
 import { Playfair_Display, Jost } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -7,7 +7,12 @@ const playFair = Playfair_Display({
     weight: ["400", "500", "600", "700"],
 });
 
-
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export default function BookComponent() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,7 +32,7 @@ export default function BookComponent() {
           {/* Left Content Section */}
          
              <div 
-            className="rounded-lg p-8 md:p-12 shadow-2xl flex flex-col justify-center h-[450px] md:h-[500px]"
+            className="p-8 md:p-12 shadow-2xl flex flex-col justify-center h-[400px] md:h-[450px]"
             style={{
               background: "linear-gradient(to right, #050c3a 0%, #050c3a 100%)"
             }}
@@ -43,14 +48,14 @@ export default function BookComponent() {
                 imagination with us.
               </p>
 
-              <button className="bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded hover:bg-white hover:text-slate-900 transition-all duration-300 text-sm tracking-wider">
-                BOOK NOW
-              </button>
+              <button className="py-1 px-3 xl:px-4 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit">
+              BOOK NOW
+            </button>
             </div>
           
 
          
-            <div className="relative rounded-lg overflow-hidden shadow-2xl h-[400px] md:h-[450px]">
+            <div className="relative overflow-hidden shadow-2xl h-[400px] md:h-[450px]">
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"

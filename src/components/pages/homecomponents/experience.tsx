@@ -1,6 +1,18 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import { Playfair_Display, Jost } from "next/font/google";
 
+const playFair = Playfair_Display({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
 export default function DiamondExperience() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   
@@ -13,64 +25,65 @@ export default function DiamondExperience() {
   }, []);
   
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-6 md:px-12 lg:px-24 py-12">
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-7xl mx-auto">
         
-        {/* Left Side - Masked Video in "50" */}
-        <div className="flex justify-center lg:justify-end relative">
-          <div className="relative w-full max-w-lg aspect-square">
-            {/* SVG with mask and video */}
-            <svg
-              viewBox="0 0 500 500"
-              className="w-full h-full"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <mask id="text-mask">
-                  <rect width="100%" height="100%" fill="black" />
-                  <text
-                    x="50%"
-                    y="50%"
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontSize="280"
-                    fontWeight="bold"
-                    fill="white"
-                    fontFamily="Arial, sans-serif"
-                  >
-                    50
-                  </text>
-                </mask>
-              </defs>
-              
-              <foreignObject
-                width="100%"
-                height="100%"
-                mask="url(#text-mask)"
+        <div className="grid grid-cols-2 gap-8 items-center">
+          {/* Left half - Large "50" with diamond video mask */}
+          <div className="flex items-center justify-center">
+            <div className="relative text-gray-600" style={{ width: '600px', height: '600px' }}>
+              <svg
+                viewBox="0 0 600 600"
+                className="w-full h-full"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                  src="/images/FALLING_diam.mp4"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </foreignObject>
-            </svg>
+                <defs>
+                  <mask id="text-mask">
+                    <rect width="100%" height="100%" fill="black" />
+                    <text
+                      x="50%"
+                      y="50%"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      fontSize="450"
+                      fontWeight="bold"
+                      fill="white"
+                      fontFamily="Arial, sans-serif"
+                    >
+                      50
+                    </text>
+                  </mask>
+                </defs>
+                
+                <foreignObject
+                  width="100%"
+                  height="100%"
+                  mask="url(#text-mask)"
+                >
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                    src="/images/FALLING_diam.mp4"
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                </foreignObject>
+              </svg>
+            </div>
           </div>
-        </div>
-        
-        {/* Right Side - Text Content */}
-        <div className="flex flex-col justify-center space-y-2 lg:items-start">
-          <h6 className="text-2xl md:text-3xl lg:text-4xl font-light leading-tight text-blue-600">
-            50+ years of family expertise
-          </h6>
-          <p className="text-xl md:text-2xl lg:text-3xl text-gray-800 font-light">
-            in the diamond business.
-          </p>
+
+          {/* Right half - Text content */}
+          <div className="flex flex-col gap-1 mt-65">
+            <h6 className={`text-3xl md:text-4xl font-light leading-tight text-blue-600 ${playFair.className}`}>
+              50+ years of family expertise 
+            </h6>
+            <p className={`text-2xl md:text-3xl text-gray-800 font-light ${playFair.className}`}>
+              in the diamond business.
+            </p>
+          </div>
         </div>
       </div>
     </div>

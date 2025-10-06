@@ -17,7 +17,6 @@ export default function Home() {
     <>
       <ScrollProgressBar />
       <main className="relative">
-        <AnimatedHeader/>
         <HeroSection/>
         <AboutDalila/>
         <DiamondShapes/>
@@ -27,8 +26,6 @@ export default function Home() {
         <VideoContent/>
         <DiamondSource/>
         <Experience/>
-       
-        <Footer />
       </main>
     </>
   );

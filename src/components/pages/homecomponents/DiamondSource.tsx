@@ -1,13 +1,6 @@
 'use client';
 import { useRef, useEffect } from 'react';
 
-import { Playfair_Display, Jost } from "next/font/google";
-
-const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
-});
-
 export default function DiamondSource() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -22,10 +15,10 @@ export default function DiamondSource() {
   return (
     <div className="bg-gradient-to-b from-gray-50 to-white py-20">
       <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-8 items-center max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-7xl mx-auto">
           {/* Left Content Section */}
           <div>
-            <div className="relative rounded-lg overflow-hidden shadow-2xl h-[400px] md:h-[450px]">
+            <div className="relative overflow-hidden shadow-2xl h-[400px] md:h-[500px]">
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"
@@ -45,18 +38,18 @@ export default function DiamondSource() {
 
           {/* Right Content Section */}
           <div>
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-lg p-8 md:p-12 shadow-2xl h-[400px] md:h-[450px] flex flex-col justify-center">
-              <h1 className={`text-3xl md:text-4xl lg:text-5xl text-white mb-4 leading-tight${playFair.className}`}>
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-8 md:p-12 shadow-2xl h-[400px] md:h-[500px] flex flex-col justify-center">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-4 leading-tight font-serif">
                 Diamond Sourcing
               </h1>
 
-              <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+              <p className="text-gray-300 text-sm md:text-base leading-relaxed">
                 At Dalila, we have the ability to source diamonds of any shape, size, or quality,
-                tailored exactly to your preferences. Whether you&apos;re looking for a specific cut,
+                tailored exactly to your preferences. Whether you're looking for a specific cut,
                 color, or carat weight, we can help you find the perfect diamond from anywhere in the
-                world. Our global network of trusted suppliers &amp; experts ensures that we can secure
-                diamonds that meet the highest standards of craftsmanship &amp; value. With Dalila,
-                you don&apos;t just get a diamond - you get a personalized, seamless experience,
+                world. Our global network of trusted suppliers & experts ensures that we can secure
+                diamonds that meet the highest standards of craftsmanship & value. With Dalila,
+                you don't just get a diamond - you get a personalized, seamless experience,
                 bringing you the finest options available on the market.
               </p>
             </div>

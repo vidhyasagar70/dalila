@@ -26,7 +26,7 @@ export default function Legacy() {
           
           {/* Left Section */}
           <div 
-            className="rounded-lg p-8 md:p-12 shadow-2xl flex flex-col justify-center h-[450px] md:h-[500px]"
+            className="p-8 md:p-12 shadow-2xl flex flex-col justify-center h-[400px] md:h-[450px]"
             style={{
               background: "linear-gradient(to right, #050c3a 0%, #050c3a 100%)"
             }}
@@ -36,19 +36,19 @@ export default function Legacy() {
             </h1>
             
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
-             Since 2007, Mr. Shreyas Gandhi has been based in Antwerp, the world’s diamond capital, further strengthening our presence in Europe. From this strategic hub, we continue to serve distinguished clients across Germany, the Netherlands, Italy, Belgium, the United States, Hong Kong, China, and beyond.
+             Since 2007, Mr. Shreyas Gandhi has been based in Antwerp, the world's diamond capital, further strengthening our presence in Europe. From this strategic hub, we continue to serve distinguished clients across Germany, the Netherlands, Italy, Belgium, the United States, Hong Kong, China, and beyond.
             </p>
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
              Our guiding principles remain constant—unwavering dedication to quality, integrity in every transaction, and a passion for building lasting relationships across the global diamond community.</p>
-           <button className="bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded hover:bg-white hover:text-slate-900 transition-all duration-300 text-sm tracking-wider">
+           <button className="py-1 px-3 xl:px-4 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit">
               CONTACT
             </button>
           </div>
 
           {/* Right Section */}
-          <div className="relative rounded-lg overflow-hidden shadow-2xl h-[450px] md:h-[500px]">
+          <div className="relative overflow-hidden shadow-2xl h-[400px] md:h-[450px]">
             <Image
-              src="/images/princess-blue.jpg"
+              src="/images/asscher-blue.jpg"
               alt="About Us Background"
               fill
               className="object-cover"

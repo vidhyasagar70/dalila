@@ -42,12 +42,12 @@ export default function AboutMilestone() {
               <div className="flex gap-4">
                 <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
                 <div className="flex-1">
-                  <p className={`text-gray-800 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
                     <span className="font-semibold">50+ years of family expertise in the diamond business</span>
                   </p>
                 </div>
                 <div className="flex-1 pl-8">
-                  <p className={`text-gray-800 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
                     <span className="font-semibold">Expansion from Surat and Mumbai to a global presence.</span>
                   </p>
                 </div>
@@ -57,7 +57,7 @@ export default function AboutMilestone() {
               <div className="flex gap-4">
                 <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
                 <div className="flex-1">
-                  <p className={`text-gray-800 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
                     <span className="font-semibold">Strategic establishment in Antwerp (since 2007) to serve European clientele.</span>
                   </p>
                 </div>
@@ -72,7 +72,7 @@ export default function AboutMilestone() {
               <div className="flex gap-4">
                 <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
                 <div className="flex-1">
-                  <p className={`text-gray-800 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
                     <span className="font-semibold">A reputation built on quality, transparency, and long-standing relationships.</span>
                   </p>
                 </div>
