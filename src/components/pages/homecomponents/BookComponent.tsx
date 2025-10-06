@@ -26,7 +26,12 @@ export default function BookComponent() {
         <div className="grid md:grid-cols-2 gap-8 items-center max-w-7xl mx-auto">
           {/* Left Content Section */}
          
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 rounded-lg p-8 md:p-12 shadow-2xl h-[440px] md:h-[500px] flex flex-col justify-center">
+             <div 
+            className="rounded-lg p-8 md:p-12 shadow-2xl flex flex-col justify-center h-[450px] md:h-[500px]"
+            style={{
+              background: "linear-gradient(to right, #050c3a 0%, #050c3a 100%)"
+            }}
+          >
               <h1 className={`text-3xl md:text-4xl lg:text-5xl text-white mb-4 leading-tight ${playFair.className}`}>
                 From Classic Cuts to Rare Shapes — We Have It All
               </h1>

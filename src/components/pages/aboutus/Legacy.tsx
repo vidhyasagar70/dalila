@@ -41,7 +41,7 @@ export default function Legacy() {
             <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
              Our guiding principles remain constant—unwavering dedication to quality, integrity in every transaction, and a passion for building lasting relationships across the global diamond community.</p>
            <button className="bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded hover:bg-white hover:text-slate-900 transition-all duration-300 text-sm tracking-wider">
-              BOOK NOW
+              CONTACT
             </button>
           </div>
 
