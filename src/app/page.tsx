@@ -1,6 +1,5 @@
 
 
-import FeaturesSection from '@/components/FeaturesSection';
 import Footer from '@/components/Footer';
 import { ScrollProgressBar } from '@/components/ScrollAnimation';
 import AnimatedHeader from '@/components/pages/Header';
@@ -28,7 +27,7 @@ export default function Home() {
         <VideoContent/>
         <DiamondSource/>
         <Experience/>
-        <FeaturesSection />
+       
         <Footer />
       </main>
     </>

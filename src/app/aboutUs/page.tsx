@@ -4,6 +4,7 @@ import AboutHero from "@/components/pages/aboutus/Herosection";
 import Legacy from "@/components/pages/aboutus/Legacy";
 import Aboutshowcase from "@/components/pages/aboutus/Showcase";
 import CertifiedBy from "@/components/pages/homecomponents/Certified";
+import DiamondExperience from "@/components/pages/homecomponents/experience";
 export default function AboutPage() {
   return (
     <>
@@ -11,6 +12,7 @@ export default function AboutPage() {
       <main className="relative">
         <AboutBanner/>
         <AboutHero/>
+        <DiamondExperience/>
         <Legacy/>
         <Aboutshowcase/>
         <CertifiedBy/>
