@@ -12,6 +12,7 @@ import HomeContent from '@/components/pages/homecomponents/homeContent';
 import BookComponent from '@/components/pages/homecomponents/BookComponent';
 import DiamondSource from '@/components/pages/homecomponents/DiamondSource';
 import VideoContent from '@/components/pages/homecomponents/VideoContent';
+import Experience from '@/components/pages/homecomponents/experience';
 export default function Home() {
   return (
     <>
@@ -26,6 +27,7 @@ export default function Home() {
         <BookComponent/>
         <VideoContent/>
         <DiamondSource/>
+        <Experience/>
         <FeaturesSection />
         <Footer />
       </main>

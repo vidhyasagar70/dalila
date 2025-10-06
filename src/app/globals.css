@@ -6,10 +6,13 @@
 }
 
 @theme inline {
+  /* Light & dark mode theme colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Font variables (linked from layout.tsx) */
+  --font-jost: "Jost", system-ui, sans-serif;
+  --font-playfair: "Playfair Display", serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +22,20 @@
   }
 }
 
+/* Global defaults */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-jost);
+  margin: 0;
+  padding: 0;
+}
+
+/* Font utility classes */
+.font-jost {
+  font-family: var(--font-jost);
+}
+
+.font-playfair {
+  font-family: var(--font-playfair);
 }

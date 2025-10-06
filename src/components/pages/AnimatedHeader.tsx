@@ -1,88 +1,94 @@
-
 'use client';
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import MotionWrapper from '../ui/MotionWrapper';
-import AnimatedButton from '../ui/AnimatedButton';
 
-export default function AnimatedHeader() {
+export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <MotionWrapper
-      variant="fadeDown"
-      transition={{ duration: 0.6 }}
-      style={isScrolled ? { background: 'linear-gradient(to right, #050c3a 0%, #050c3a 100%)' } : {}}
+    <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'shadow-lg py-4' : 'bg-transparent py-6'
+        isScrolled 
+          ? 'bg-[#050c3a] shadow-lg py-4' 
+          : 'bg-transparent py-6'
       }`}
     >
       <div className="container mx-auto px-6">
+        {/* Top Tagline */}
         <div className="flex justify-center mb-3">
           <p className="text-sm tracking-wide text-gray-300">
             Where Trust Shines, And Quality Sparkles
           </p>
         </div>
+
+        {/* Divider Line */}
         <div className="w-full h-[1px] bg-white/30 mb-6"></div>
+
+        {/* Main Navigation Bar */}
         <div className="flex items-center justify-between">
-          {/* Left Nav */}
+          {/* Left Navigation */}
           <nav className="hidden md:flex items-center gap-10 flex-1">
-            <MotionWrapper variant="grow">
-              <Link href="/" className="text-white hover:text-gold-500 transition-colors text-base">
-                Home
-              </Link>
-            </MotionWrapper>
-            <MotionWrapper variant="grow">
-              <Link href="/weBuy" className="text-white hover:text-gold-500 transition-colors text-base">
-                We Buy
-              </Link>
-            </MotionWrapper>
-            <MotionWrapper variant="grow">
-              <Link
-                href="/diamondKnowledge"
-                className="text-white hover:text-gold-500 transition-colors text-base"
-              >
-                Diamond Knowledge
-              </Link>
-            </MotionWrapper>
-            <MotionWrapper variant="grow">
-              <Link href="/contact" className="text-white hover:text-gold-500 transition-colors text-base">
-                Contact Us
-              </Link>
-            </MotionWrapper>
+            <Link
+              href="/"
+              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+            >
+              Home
+            </Link>
+            <Link
+              href="/weBuy"
+              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+            >
+              We Buy
+            </Link>
+            <Link
+              href="/diamondKnowledge"
+              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+            >
+              Diamond Knowledge
+            </Link>
+            <Link
+              href="/contact"
+              className="text-white hover:text-[#c89e3a] transition-colors text-base"
+            >
+              Contact Us
+            </Link>
           </nav>
 
-          {/* Logo */}
-          <MotionWrapper variant="grow">
-            <div className="flex-shrink-0 mx-8 relative h-14 w-[120px]">
-              <Image
-                src="/images/Dalila Logo.png"
-                alt="Dalila Diamonds"
-                fill
-                style={{ objectFit: 'contain' }}
-                priority
-              />
-            </div>
-          </MotionWrapper>
+          {/* Center Logo */}
+          <div className="flex-shrink-0 relative h-16 w-[150px]">
+            <Image
+              src="/images/Dalila Logo.png"
+              alt="Dalila Diamonds"
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
+            />
+          </div>
 
-          <div className="flex items-center justify-end gap-3 flex-1"></div>
-
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-3">
-            <AnimatedButton className="py-1.5 px-4 text-sm border-opacity-30">INVENTORY</AnimatedButton>
-            <AnimatedButton className="py-1.5 px-4 text-sm border-opacity-30">LOGIN</AnimatedButton>
-            <AnimatedButton className="py-1.5 px-4 text-sm border-opacity-30">REGISTER</AnimatedButton>
+          {/* Right Auth Buttons */}
+          <div className="flex items-center justify-end gap-3 flex-1">
+            <button className="py-1 px-6 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              INVENTORY
+            </button>
+            <button className="py-1 px-6 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              LOGIN
+            </button>
+            <button className="py-1 px-6 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              REGISTER
+            </button>
           </div>
         </div>
       </div>
-    </MotionWrapper>
+    </header>
   );
 }
