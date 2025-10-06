@@ -23,7 +23,7 @@ export default function VideoContent() {
         muted
         playsInline
       >
-        <source src="/images/video3.mp4" type="video/mp4" />
+        <source src="/images/Video3.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
