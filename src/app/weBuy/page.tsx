@@ -1,14 +1,15 @@
 
-import WeBuy from '@/components/pages/WeBuy';
-
-
-
-export default function Contact() {
+import WebuyBanner from '@/components/pages/Webuy/Bannersection';
+import Webuyhero from '@/components/pages/Webuy/Herosection';
+import SellDiamondsProcess from '@/components/pages/Webuy/SellDiamond';
+export default function Webuy() {
   return (
     <>
 
       <main className="relative">
-        <WeBuy />
+        <WebuyBanner/>
+        <Webuyhero/>
+        <SellDiamondsProcess/>
       </main>
     </>
   );
