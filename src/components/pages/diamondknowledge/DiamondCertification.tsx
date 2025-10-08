@@ -41,7 +41,7 @@ export default function DiamondCertification() {
           <h1 className={`text-3xl md:text-4xl lg:text-[2.75rem] font-normal text-gray-900 mb-4 tracking-tight leading-tight ${playFair.className}`}>
             Diamond Certification
           </h1>
-          <p className={`text-gray-400 leading-relaxed text-sm md:text-[15px] max-w-3xl font-light mx-auto ${jost.className}`}>
+          <p className={`text-gray-800 leading-relaxed text-base md:text-lg max-w-5xl mx-auto font-light mb-3 ${jost.className}`}>
             Every genuine diamond should come with a grading certificate from a recognized authority such as GIA, IGI, or HRD. These certificates detail the diamond&apos;s 4Cs and confirm its authenticity, ensuring transparency and trust. When purchasing a diamond, always request its certificate — it&apos;s your guarantee of quality.
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function DiamondCertification() {
           <h2 className={`text-3xl md:text-4xl lg:text-[2.75rem] font-normal text-gray-900 mb-4 tracking-tight leading-tight ${playFair.className}`}>
             How to Choose the Right Diamond
           </h2>
-          <p className={`text-gray-400 leading-relaxed text-sm md:text-[15px] max-w-3xl font-light mx-auto ${jost.className}`}>
+          <p className={`text-gray-800 leading-relaxed text-base md:text-lg max-w-5xl mx-auto font-light mb-3 ${jost.className}`}>
             Choosing the perfect diamond is about balancing beauty, quality, and value. Here&apos;s how to start:
           </p>
         </div>
@@ -65,7 +65,7 @@ export default function DiamondCertification() {
                   {step.number}
                 </span>
               </div>
-              <p className={`text-gray-500 text-[13px] md:text-[14px] leading-relaxed font-normal ${jost.className}`}>
+              <p className={`text-gray-800 leading-relaxed text-base md:text-lg max-w-5xl mx-auto font-light mb-3 ${jost.className}`}>
                 {step.title}
               </p>
             </div>

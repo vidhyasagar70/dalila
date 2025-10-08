@@ -1,18 +1,13 @@
 'use client';
 import Image from 'next/image';
-import { Playfair_Display ,Jost } from "next/font/google";
+import { Playfair_Display  } from "next/font/google";
 
 const playFair = Playfair_Display({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
 });
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
+
 export default function HomeContent() {
   return (
     <div className="bg-white py-24">
@@ -38,13 +33,13 @@ export default function HomeContent() {
                 Safely and<br />
                 Seamlessly at Dalila
               </h2>
-              <p className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}>
+              <p className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${playFair.className}`}>
                 Selling your diamond or fine jewelry should be a seamless, secure, and rewarding 
                 experience. At Dalila, we offer a transparent and hassle-free process, trusted by 
                 customers. Whether you&apos;re parting with an engagement ring, heirloom or a loose 
                 diamond, we value every piece. Here&apos;s how the process works
               </p>
-              <button className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg">
+              <button className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}>
                 Sell Now
               </button>
             </div>
@@ -59,7 +54,7 @@ export default function HomeContent() {
                 The Language of<br />
                 Diamonds
               </h2>
-              <p className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}>
+              <p className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${playFair.className}`}>
                 Diamonds are more than just gemstones — they are timeless symbols of love, 
                 craftsmanship, and nature&apos;s brilliance. Formed deep within the Earth over billions of 
                 years, every natural diamond carries a story of purity and perfection. Whether 
@@ -68,7 +63,8 @@ export default function HomeContent() {
                 designed to help you explore every detail — from how diamonds are formed to 
                 what makes each one unique.
               </p>
-              <button className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 mt-6 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg">
+              <button className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 mt-6 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className
+                }`}>
                 Explore More
               </button>
             </div>

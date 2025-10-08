@@ -37,24 +37,49 @@ export default function DiamondShapeCuts() {
         </div>
       
         {/* Diamond Cuts Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {diamondCuts.map((cut, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-8 flex flex-col items-center justify-center"
-            >
-              <div className="w-24 h-24 md:w-28 md:h-28 mb-6 flex items-center justify-center">
-                <img
-                  src={cut.image}
-                  alt={cut.name}
-                  className="w-full h-full object-contain"
-                />
+      {/* Diamond Cuts Grid */}
+        <div className="max-w-6xl mx-auto">
+          {/* First 8 items in 4 columns */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
+            {diamondCuts.slice(0, 8).map((cut, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 p-10 flex flex-col items-center justify-center min-h-[220px]"
+              >
+                <div className="w-20 h-20 mb-5 flex items-center justify-center">
+                  <img
+                    src={cut.image}
+                    alt={cut.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className={`text-xl font-normal text-gray-900 text-center ${jost.className}`}>
+                  {cut.name}
+                </h3>
               </div>
-              <h3 className={`text-lg md:text-xl font-serif text-gray-900 font-normal text-center ${jost.className}`}>
-                {cut.name}
-              </h3>
-            </div>
-          ))}
+            ))}
+          </div>
+          
+          {/* Last 2 items centered */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            {diamondCuts.slice(8).map((cut, index) => (
+              <div
+                key={index + 8}
+                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 p-10 flex flex-col items-center justify-center min-h-[220px]"
+              >
+                <div className="w-20 h-20 mb-5 flex items-center justify-center">
+                  <img
+                    src={cut.image}
+                    alt={cut.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h3 className={`text-xl font-normal text-gray-900 text-center ${jost.className}`}>
+                  {cut.name}
+                </h3>
+              </div>
+            ))}
+          </div>
         </div>
         
       </div>

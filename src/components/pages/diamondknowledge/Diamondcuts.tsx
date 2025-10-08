@@ -21,7 +21,7 @@ export default function Diamondcuts() {
           <h1 className={`text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-6 font-normal tracking-tight ${playFair.className}`}>
             The 4Cs of Diamonds
           </h1>
-          <p className={`text-gray-500 leading-relaxed text-[15px] md:text-base max-w-4xl mx-auto font-light ${jost.className}`}>
+          <p className={`text-gray-800 leading-relaxed text-[18px] md:text-base max-w-4xl mx-auto font-light ${jost.className}`}>
             When it comes to evaluating a diamond&apos;s quality and beauty, professionals rely on the 4Cs — Cut, Color, Clarity, and Carat Weight. Understanding these characteristics will help you choose a diamond that matches your preferences and budget.
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function Diamondcuts() {
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-start mt-16">
           {/* Left side - Diamond Image */}
           <div className="flex justify-center items-center">
-            <div className="relative w-full max-w-[500px] aspect-[4/3] bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-[500px] aspect-[3/4] bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden shadow-2xl">
               <div className="absolute inset-0 flex items-center justify-center">
                 <img
                   src="/images/diamond.png"
@@ -51,7 +51,7 @@ export default function Diamondcuts() {
                   Cut: The Sparkle Factor
                 </h3>
               </div>
-              <p className={`text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-light ${jost.className}`}>
+              <p className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${jost.className}`}>
                 A diamond&apos;s cut determines how well it reflects light — and that&apos;s what gives it brilliance. Even if a diamond has perfect color or clarity, a poor cut can make it look dull. The ideal cut brings out the stone&apos;s natural fire and radiance.
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function Diamondcuts() {
                   Color: The Shade of Purity
                 </h3>
               </div>
-              <p className={`text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-light ${jost.className}`}>
+              <p className={`text-gray-800 text-[36px] md:text-[18px] leading-relaxed font-light ${jost.className}`}>
                 Diamond color grades range from D (colorless) to Z (light yellow or brown). The less color a diamond has, the rarer and more valuable it is. Colorless diamonds reflect more light, resulting in unmatched sparkle and purity.
               </p>
             </div>
@@ -77,7 +77,7 @@ export default function Diamondcuts() {
                   Clarity: Nature&apos;s Signature
                 </h3>
               </div>
-              <p className={`text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-light ${jost.className}`}>
+              <p className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${jost.className}`}>
                 Every natural diamond has tiny inclusions or blemishes formed during its creation. These are nature&apos;s fingerprints, making each diamond unique. Clarity is graded from Flawless (F) to Included (I), and most inclusions are microscopic, not visible to the naked eye.
               </p>
             </div>
@@ -90,7 +90,7 @@ export default function Diamondcuts() {
                   Carat Weight: The Measure of Size
                 </h3>
               </div>
-              <p className={`text-gray-600 text-[13px] md:text-[14px] leading-relaxed font-light ${jost.className}`}>
+              <p className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${jost.className}`}>
                 Carat refers to a diamond&apos;s weight, not its size. Larger diamonds are rarer, but two diamonds of the same carat can appear different depending on their cut. It&apos;s always best to balance carat with the other Cs for true value.
               </p>
             </div>

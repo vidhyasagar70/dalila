@@ -2,20 +2,13 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { X } from 'lucide-react';
-import { Playfair_Display, Jost } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
-// Image Popup Modal Component
 interface ImagePopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,12 +18,7 @@ interface ImagePopupProps {
 
 function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -40,35 +28,31 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm ${playFair.className}`}
       onClick={onClose}
     >
       <div
-        className="relative max-w-4xl w-full mx-4 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl overflow-hidden shadow-2xl"
+        className="relative max-w-4xl w-full mx-4 bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-300 group"
+          className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 transition-all duration-300 group"
           aria-label="Close popup"
         >
           <X className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300" />
         </button>
 
-        {/* Image Container */}
         <div className="relative w-full h-[70vh] p-12">
           <Image
             src={imageSrc}
             alt={`${shapeName} cut diamond`}
             fill
             style={{ objectFit: 'contain' }}
-            className="drop-shadow-2xl"
           />
         </div>
 
-        {/* Shape Name */}
-        <div className="py-6 text-center" style={{ backgroundColor: '#c89e3a' }}>
+        <div className="py-6 text-center bg-[#c89e3a]">
           <h2 className="text-3xl font-bold text-white">{shapeName}</h2>
         </div>
       </div>
@@ -79,7 +63,7 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
 export default function DiamondShapes() {
   const [selectedShape, setSelectedShape] = useState<{ name: string; image: string } | null>(null);
 
-  const shapes: { name: string; image: string }[] = [
+  const shapes = [
     { name: 'Round', image: '/images/round-blue.jpg' },
     { name: 'Princess', image: '/images/princess-blue.jpg' },
     { name: 'Cushion', image: '/images/cushion-blue.jpg' },
@@ -92,61 +76,138 @@ export default function DiamondShapes() {
     { name: 'Emerald', image: '/images/emerald-blue.jpg' },
   ];
 
-  const handleShapeClick = (shape: { name: string; image: string }) => {
-    setSelectedShape(shape);
-  };
-
-  const closePopup = () => {
-    setSelectedShape(null);
-  };
+  const handleShapeClick = (shape: { name: string; image: string }) => setSelectedShape(shape);
+  const closePopup = () => setSelectedShape(null);
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 py-20">
-      <div className="container mx-auto px-6">
-        {/* Section Header */}
+    <div className={`bg-gradient-to-b from-white to-gray-50 py-20 ${playFair.className}`}>
+      <div className="max-w-[1400px] mx-auto px-4">
+        {/* Section Title */}
         <div className="text-center mb-16">
-          <h2 className={`text-4xl md:text-5xl font-normal text-slate-600 mb-4 ${playFair.className}`}>
+          <h2 className="text-4xl md:text-5xl font-normal text-slate-800 mb-4">
             Diamond Cuts
           </h2>
         </div>
 
-        {/* Diamond Shapes Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-7xl mx-auto">
-          {shapes.map((shape) => (
+        {/* Diamond grid layout - First row (6 items) */}
+        <div className="grid grid-cols-6 gap-2 mb-2">
+          {shapes.slice(0, 6).map((shape) => (
             <div
               key={shape.name}
-              className="relative overflow-hidden rounded-lg cursor-pointer shadow-lg"
+              className="cursor-pointer overflow-hidden shadow-lg"
               onClick={() => handleShapeClick(shape)}
             >
-              {/* Image Container */}
-              <div className="relative aspect-square bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden">
-                <div className="relative w-full h-full p-8">
-                  <Image
-                    src={shape.image}
-                    alt={`${shape.name} cut diamond`}
-                    fill
-                    style={{ objectFit: 'contain' }}
-                  />
-                </div>
+              {/* Image */}
+              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                <Image
+                  src={shape.image}
+                  alt={`${shape.name} cut diamond`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="transition-transform duration-300 hover:scale-110"
+                />
               </div>
 
               {/* Label */}
-              <div
-                className="py-3 px-4 text-center"
-                style={{
-                  backgroundColor: '#c89e3a',
-                }}
-              >
-                <h3 className={`font-semibold text-white text-base ${jost.className}`}>
+              <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-lg">
                   {shape.name}
                 </h3>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Second row (4 items centered) */}
+        <div className="grid grid-cols-6 gap-2">
+          <div className="col-start-2 col-span-1">
+            <div
+              className="cursor-pointer overflow-hidden shadow-lg"
+              onClick={() => handleShapeClick(shapes[6])}
+            >
+              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                <Image
+                  src={shapes[6].image}
+                  alt={`${shapes[6].name} cut diamond`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="transition-transform duration-300 hover:scale-110"
+                />
+              </div>
+              <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-lg">
+                  {shapes[6].name}
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-1">
+            <div
+              className="cursor-pointer overflow-hidden shadow-lg"
+              onClick={() => handleShapeClick(shapes[7])}
+            >
+              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                <Image
+                  src={shapes[7].image}
+                  alt={`${shapes[7].name} cut diamond`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="transition-transform duration-300 hover:scale-110"
+                />
+              </div>
+              <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-lg">
+                  {shapes[7].name}
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-1">
+            <div
+              className="cursor-pointer overflow-hidden shadow-lg"
+              onClick={() => handleShapeClick(shapes[8])}
+            >
+              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                <Image
+                  src={shapes[8].image}
+                  alt={`${shapes[8].name} cut diamond`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="transition-transform duration-300 hover:scale-110"
+                />
+              </div>
+              <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-lg">
+                  {shapes[8].name}
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-1">
+            <div
+              className="cursor-pointer overflow-hidden shadow-lg"
+              onClick={() => handleShapeClick(shapes[9])}
+            >
+              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                <Image
+                  src={shapes[9].image}
+                  alt={`${shapes[9].name} cut diamond`}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="transition-transform duration-300 hover:scale-110"
+                />
+              </div>
+              <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-lg">
+                  {shapes[9].name}
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Image Popup Modal */}
+      {/* Popup */}
       <ImagePopup
         isOpen={selectedShape !== null}
         onClose={closePopup}

@@ -1,6 +1,11 @@
 'use client';
 import { useRef, useEffect } from 'react';
+import { Playfair_Display} from "next/font/google";
 
+const playFair = Playfair_Display({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+});
 export default function VideoContent() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -33,10 +38,10 @@ export default function VideoContent() {
       {/* Centered Text Content */}
       <div className="relative z-10 h-full flex items-center justify-center px-6">
           <div className="text-center max-w-4xl">
-            <h5 className="text-white/90 text-sm md:text-base tracking-widest mb-6 font-light">
+            <h5 className={`text-white/90 text-sm md:text-base tracking-widest mb-6 font-light ${playFair.className}`}>
               A LEGACY OF REFINEMENT, SHAPED TO PERFECTION
             </h5>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-wide font-light">
+            <h1 className={`text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-wide font-light ${playFair.className}`}>
               Every diamond, delicately refined through skill & crafted by the hands of true perfectionists.
             </h1>
           </div>

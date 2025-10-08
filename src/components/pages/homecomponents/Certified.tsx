@@ -1,6 +1,11 @@
 'use client';
 import Image from 'next/image';
+import { Playfair_Display} from "next/font/google";
 
+const playFair = Playfair_Display({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+});
 export default function CertifiedBy() {
   const certifications = [
     { name: 'IGI', image: '/images/client_1.png' },
@@ -17,7 +22,7 @@ export default function CertifiedBy() {
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+          <h2 className={`text-4xl md:text-5xl font-bold text-slate-900 mb-2 ${playFair.className}`}>
             Certified By
           </h2>
         </div>

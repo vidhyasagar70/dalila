@@ -36,14 +36,14 @@ export default function BookComponent() {
                 From Classic Cuts to Rare Shapes — We Have It All
               </h1>
               
-              <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+              <p className={`text-gray-300 text-sm md:text-base leading-relaxed mb-6 ${playFair.className}`}>
                 At Dalila, every diamond tells a story of unmatched brilliance. From timeless classics to 
                 unique heart-shaped treasures, our collection reflects elegance and perfection. Each piece is 
                 crafted with care, ensuring beauty, rarity, and everlasting value. Experience luxury beyond 
                 imagination with us.
               </p>
 
-              <button className="py-1 px-3 xl:px-4 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit">
+              <button className={`py-1 px-3 xl:px-4 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit ${playFair.className}`}>
               BOOK NOW
             </button>
             </div>

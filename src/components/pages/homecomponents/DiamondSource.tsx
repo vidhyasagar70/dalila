@@ -1,6 +1,11 @@
 'use client';
 import { useRef, useEffect } from 'react';
+import { Playfair_Display} from "next/font/google";
 
+const playFair = Playfair_Display({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+});
 export default function DiamondSource() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -39,11 +44,11 @@ export default function DiamondSource() {
           {/* Right Content Section */}
           <div>
             <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-8 md:p-12 shadow-2xl h-[400px] md:h-[500px] flex flex-col justify-center">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl text-white mb-4 leading-tight font-serif">
+              <h1 className={`text-3xl md:text-4xl lg:text-5xl text-white mb-4 leading-tight font-serif ${playFair.className}`}>
                 Diamond Sourcing
               </h1>
 
-              <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+              <p className={`text-gray-300 text-sm md:text-base leading-relaxed ${playFair.className}`}>
                 At Dalila, we have the ability to source diamonds of any shape, size, or quality,
                 tailored exactly to your preferences. Whether you&apos;re looking for a specific cut,
                 color, or carat weight, we can help you find the perfect diamond from anywhere in the
