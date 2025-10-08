@@ -39,3 +39,31 @@ body {
 .font-playfair {
   font-family: var(--font-playfair);
 }
+
+/* ===== Custom Scrollbar Styling ===== */
+
+/* For Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 12px; /* Slightly increased width */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c89e3a; /* Gold color */
+  border-radius: 10px;
+  border: 3px solid #f1f1f1; /* Adds clean contrast */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b98d2e; /* Darker gold on hover */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c89e3a #f1f1f1;
+}

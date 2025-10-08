@@ -1,11 +1,17 @@
 'use client';
 import { Mail, Phone } from 'lucide-react';
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default function ContactHeroSection() {
   const goldColor = '#B58900';
-
+  
   return (
-    <div className="bg-white">
+    <div className={`bg-white ${playFair.className}`}>
       <div className="container mx-auto max-w-7xl px-4 pt-16 pb-0">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Column - Content */}

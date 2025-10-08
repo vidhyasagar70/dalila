@@ -35,12 +35,12 @@ export default function Legacy() {
               Our Legacy
             </h1>
             
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+            <p className={`text-gray-300 text-sm md:text-base leading-relaxed mb-6 ${playFair.className}`}>
              Since 2007, Mr. Shreyas Gandhi has been based in Antwerp, the world&apos;s diamond capital, further strengthening our presence in Europe. From this strategic hub, we continue to serve distinguished clients across Germany, the Netherlands, Italy, Belgium, the United States, Hong Kong, China, and beyond.
             </p>
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+            <p className={`text-gray-300 text-sm md:text-base leading-relaxed mb-6 ${playFair.className}`}>
              Our guiding principles remain constant—unwavering dedication to quality, integrity in every transaction, and a passion for building lasting relationships across the global diamond community.</p>
-           <button className="py-1 px-3 xl:px-4 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit">
+           <button className={`py-1 px-3 xl:px-4 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit ${playFair.className}`}>
               CONTACT
             </button>
           </div>

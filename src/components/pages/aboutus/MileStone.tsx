@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { Playfair_Display, Jost } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 import { Gem } from 'lucide-react';
 
 const playFair = Playfair_Display({
@@ -8,12 +8,7 @@ const playFair = Playfair_Display({
     weight: ["400", "500", "600", "700"],
 });
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
+
 
 export default function AboutMilestone() {
   return (
@@ -42,12 +37,12 @@ export default function AboutMilestone() {
               <div className="flex gap-4">
                 <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
                 <div className="flex-1">
-                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${playFair.className}`}>
                     <span className="font-semibold">50+ years of family expertise in the diamond business</span>
                   </p>
                 </div>
                 <div className="flex-1 pl-8">
-                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${playFair.className}`}>
                     <span className="font-semibold">Expansion from Surat and Mumbai to a global presence.</span>
                   </p>
                 </div>
@@ -57,12 +52,12 @@ export default function AboutMilestone() {
               <div className="flex gap-4">
                 <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
                 <div className="flex-1">
-                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${playFair.className}`}>
                     <span className="font-semibold">Strategic establishment in Antwerp (since 2007) to serve European clientele.</span>
                   </p>
                 </div>
                 <div className="flex-1 pl-8">
-                  <p className={`text-gray-800 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-800 text-base md:text-lg leading-relaxed ${playFair.className}`}>
                     <span className="font-semibold">Strong international network across the United States, Europe, Hong Kong, China, and beyond.</span>
                   </p>
                 </div>
@@ -72,7 +67,7 @@ export default function AboutMilestone() {
               <div className="flex gap-4">
                 <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
                 <div className="flex-1">
-                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className}`}>
+                  <p className={`text-gray-600 text-base md:text-lg leading-relaxed ${playFair.className}`}>
                     <span className="font-semibold">A reputation built on quality, transparency, and long-standing relationships.</span>
                   </p>
                 </div>

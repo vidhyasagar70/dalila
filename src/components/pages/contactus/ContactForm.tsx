@@ -1,6 +1,12 @@
 'use client';
 import { useState, ChangeEvent } from 'react';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
@@ -26,7 +32,7 @@ export default function ContactUsPage() {
   };
 
   return (
-    <div className="bg-gray-50">
+    <div className={`bg-gray-50 ${playFair.className}`}>
       {/* Contact Form Section */}
       <section className="pt-16 pb-16 px-4">
         <div className="container mx-auto max-w-7xl">

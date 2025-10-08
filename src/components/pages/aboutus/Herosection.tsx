@@ -30,7 +30,7 @@ export default function AboutHero() {
               className="absolute bottom-0 right-0 px-10 py-5 shadow-xl"
               style={{ backgroundColor: '#c89e3a' }}
             >
-              <h3 className="text-sm md:text-3xl font-semibold text-white whitespace-nowrap tracking-wide">
+              <h3 className={`text-sm md:text-3xl font-semibold text-white whitespace-nowrap tracking-wide ${playFair.className}`}>
                 ABOUT DALILA
               </h3>
             </div>
@@ -44,7 +44,7 @@ export default function AboutHero() {
             </h3>
 
             {/* Description */}
-            <p className="text-gray-500 text-sm md:text-base leading-relaxed">
+            <p className={`text-gray-500 text-sm md:text-base leading-relaxed ${playFair.className}`}>
               At DALILA, we believe diamonds are more than gems — they are a symbol of trust,
               innovation, and enduring luxury. As a leading name in the natural diamond industry,
               we partner with businesses and connoisseurs to deliver diamonds that embody
@@ -52,7 +52,7 @@ export default function AboutHero() {
               every DALILA diamond is crafted to inspire confidence and redefine brilliance.
             </p>
 
-            <p className="text-gray-500 text-sm md:text-base leading-relaxed">
+            <p className={`text-gray-500 text-sm md:text-base leading-relaxed ${playFair.className}`}>
               With a legacy spanning over five decades, our family has been dedicated to the art
               and integrity of the diamond trade. What began as a modest endeavor in Gujarat has
               evolved into a respected international enterprise, recognized for its commitment to

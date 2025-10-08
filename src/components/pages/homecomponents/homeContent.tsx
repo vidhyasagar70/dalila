@@ -16,7 +16,7 @@ export default function HomeContent() {
         {/* Sell Diamonds Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-32">
           <div>
-            <div className="relative h-[450px] md:h-[520px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
               <Image
                 src="/images/sell_page.jpg"
                 alt="Professional diamond dealer"
@@ -71,7 +71,7 @@ export default function HomeContent() {
           </div>
           
           <div>
-            <div className="relative h-[450px] md:h-[520px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
               <Image
                 src="/images/diamondwork.png"
                 alt="Diamond examination with tweezers"
