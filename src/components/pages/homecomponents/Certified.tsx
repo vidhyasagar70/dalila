@@ -8,9 +8,9 @@ const playFair = Playfair_Display({
 });
 export default function CertifiedBy() {
   const certifications = [
-    { name: 'IGI', image: '/images/client_1.png' },
-    { name: 'GIA', image: '/images/client_2.png' },
-    { name: 'HRD', image: '/images/client_3.png' },
+    { name: 'IGI', image: '/dalila_img/client/client_1.png' },
+    { name: 'GIA', image: '/dalila_img/client/client_2.png' },
+    { name: 'HRD', image: '/dalila_img/client/client_3.png' },
   ];
 
   const slideStyle = {
@@ -46,7 +46,7 @@ export default function CertifiedBy() {
                     src={cert.image}
                     alt={`${cert.name} certification`}
                     fill
-                    className="object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                    className="object-contain transition-all duration-300"
                   />
                 </div>
               </div>
@@ -63,7 +63,7 @@ export default function CertifiedBy() {
                     src={cert.image}
                     alt={`${cert.name} certification`}
                     fill
-                    className="object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                    className="object-contain transition-all duration-300"
                   />
                 </div>
               </div>
@@ -80,7 +80,7 @@ export default function CertifiedBy() {
                     src={cert.image}
                     alt={`${cert.name} certification`}
                     fill
-                    className="object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                    className="object-contain transition-all duration-300"
                   />
                 </div>
               </div>

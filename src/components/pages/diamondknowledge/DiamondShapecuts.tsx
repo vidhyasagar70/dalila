@@ -1,17 +1,11 @@
 'use client';
-import { Playfair_Display, Jost } from "next/font/google";
+import { Playfair_Display} from "next/font/google";
 
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
 export default function DiamondShapeCuts() {
   const diamondCuts = [
     { name: 'Round Brilliant', image: '/images/cut-shaps/round-diamond.png' },
@@ -44,16 +38,16 @@ export default function DiamondShapeCuts() {
             {diamondCuts.slice(0, 8).map((cut, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 p-10 flex flex-col items-center justify-center min-h-[220px]"
+                className="bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center justify-center min-h-[180px]"
               >
-                <div className="w-20 h-20 mb-5 flex items-center justify-center">
+                <div className="w-16 h-16 mb-4 flex items-center justify-center">
                   <img
                     src={cut.image}
                     alt={cut.name}
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h3 className={`text-xl font-normal text-gray-900 text-center ${jost.className}`}>
+                <h3 className={`text-xl font-normal text-gray-900 text-center ${playFair.className}`}>
                   {cut.name}
                 </h3>
               </div>
@@ -65,16 +59,16 @@ export default function DiamondShapeCuts() {
             {diamondCuts.slice(8).map((cut, index) => (
               <div
                 key={index + 8}
-                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 p-10 flex flex-col items-center justify-center min-h-[220px]"
+                className="bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center justify-center min-h-[180px]"
               >
-                <div className="w-20 h-20 mb-5 flex items-center justify-center">
+                <div className="w-16 h-16 mb-4 flex items-center justify-center">
                   <img
                     src={cut.image}
                     alt={cut.name}
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h3 className={`text-xl font-normal text-gray-900 text-center ${jost.className}`}>
+                <h3 className={`text-xl font-normal text-gray-900 text-center ${playFair.className}`}>
                   {cut.name}
                 </h3>
               </div>

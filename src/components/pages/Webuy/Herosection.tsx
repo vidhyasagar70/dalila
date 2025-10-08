@@ -1,18 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { Playfair_Display,Jost } from "next/font/google";
+import { Playfair_Display} from "next/font/google";
 
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
+
 /** AboutDalila Section **/
 export default function Webuyhero() {
   return (
@@ -23,7 +18,7 @@ export default function Webuyhero() {
             <h3 className={`text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight ${playFair.className}`}>
             Sell Your Diamonds With Dalila
             </h3>
-            <h6 className={`text-3xl md:text-4xl lg:text-5xl leading-tight ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent`}>In 5 easy steps</h6>
+            <h6 className={`text-3xl md:text-4xl lg:text-5xl leading-tight ${playFair.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent`}>In 5 easy steps</h6>
 
 
             <p className="text-gray-500 text-sm md:text-base leading-relaxed">

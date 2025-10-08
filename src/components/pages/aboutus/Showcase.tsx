@@ -16,7 +16,7 @@ export default function Aboutshowcase() {
         {/* Sell Diamonds Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-32">
           <div>
-            <div className="relative h-[450px] md:h-[520px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
               <Image
                 src="/images/Heritage.png"
                 alt="Professional diamond dealer"
@@ -35,7 +35,7 @@ export default function Aboutshowcase() {
                 The origins of our company date back more than 50 years, when three visionary brothers left their village in Gujarat at the age of 18, determined to build a future in the diamond industry. Through perseverance, hard work, and adherence to ethical business practices, they established a strong foundation in Surat and Mumbai.
 As the second generation joined the business, the vision expanded to international markets, creating enduring partnerships worldwide. This forward-looking approach, combined with our deeply rooted values, has positioned us as a trusted name in the global diamond trade.
               </p>
-              <button className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg">
+              <button className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}>
                 EXPLORE MORE
               </button>
             </div>
@@ -65,7 +65,7 @@ As the second generation joined the business, the vision expanded to internation
           </div>
           
           <div>
-            <div className="relative h-[450px] md:h-[520px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+           <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
               <Image
                 src="/images/diamondwork.png"
                 alt="Diamond examination with tweezers"
@@ -78,7 +78,7 @@ As the second generation joined the business, the vision expanded to internation
         {/* Sell Diamonds Section */}
                 <div className="grid md:grid-cols-2 gap-16 items-center mb-25 mt-25">
                   <div>
-                    <div className="relative h-[450px] md:h-[520px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+                    <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
                       <Image
                         src="/images/sell_page.jpg"
                         alt="Professional diamond dealer"
@@ -101,7 +101,7 @@ As the second generation joined the business, the vision expanded to internation
                         customers. Whether you&apos;re parting with an engagement ring, heirloom or a loose 
                         diamond, we value every piece. Here&apos;s how the process works
                       </p>
-                      <button className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg">
+                      <button  className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}>
                         Sell Now
                       </button>
                     </div>

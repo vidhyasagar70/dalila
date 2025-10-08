@@ -21,7 +21,7 @@ export default function AboutMilestone() {
         {/* Milestones Section */}
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <div className="relative h-[380px] md:h-[420px] w-full max-w-[540px] mx-auto overflow-hidden">
+            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
               <Image
                 src="/images/about_us_3.png"
                 alt="Diamond on display"

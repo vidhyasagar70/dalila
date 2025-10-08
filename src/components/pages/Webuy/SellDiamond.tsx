@@ -1,18 +1,13 @@
 'use client';
 
-import { Playfair_Display, Jost } from "next/font/google";
+import { Playfair_Display} from "next/font/google";
 
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
+
 
 export default function SellDiamondsProcess() {
   const steps = [
@@ -44,7 +39,7 @@ export default function SellDiamondsProcess() {
       number: '4',
       title: 'Receive the Best Offer',
       heading: 'Fair & Transparent Offers.',
-      description: 'Once we’ve evaluated your diamonds, we’ll present you with the most competitive offers, reflecting the true value based on the global diamond and gold market.',
+      description:'Once we ve evaluated your diamonds, we present you with the most competitive offers, reflecting the true value based on the global diamond and gold market.',
       image: '/images/step_4.png', 
       imagePosition: 'right'
     },
@@ -52,7 +47,7 @@ export default function SellDiamondsProcess() {
       number: '5',
       title: 'Fast and Secure Payment',
       heading: 'Receive Your Payment in 24 Hours.',
-      description: 'Once you accept our offer, we’ll process your payment within 24 hours via secure bank transfer.',
+      description: 'Once you accept our offer, we  process your payment within 24 hours via secure bank transfer.',
       image: '/images/step_5.png', 
       imagePosition: 'left'
     },
@@ -70,7 +65,7 @@ return (
               className="relative w-full"
             >
               {/* Image Section */}
-              <div className={`relative w-full lg:w-3/5 ${
+              <div className={`relative w-full lg:w-1/2 ${
                 step.imagePosition === 'right' ? 'ml-auto' : 'mr-auto'
               }`}>
                 <img
@@ -88,14 +83,14 @@ return (
               } w-full lg:w-3/5 mt-8 lg:mt-0`}>
                 <div className="bg-white border border-gray-200 p-10 md:p-12 lg:p-16 shadow-lg mx-4 lg:mx-0">
                   <div className="mb-6">
-                    <p className={`text-sm md:text-base text-gray-600 mb-3 ${jost.className}`}>
+                    <p className={`text-sm md:text-base text-gray-600 mb-3 ${playFair.className}`}>
                       {step.number}. {step.title}
                     </p>
                     <h2 className={`text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-6 font-normal leading-tight ${playFair.className}`}>
                       {step.heading}
                     </h2>
                   </div>
-                  <p className={`text-base md:text-lg text-gray-600 leading-relaxed ${jost.className}`}>
+                  <p className={`text-base md:text-lg text-gray-600 leading-relaxed ${playFair.className}`}>
                     {step.description}
                   </p>
                 </div>
