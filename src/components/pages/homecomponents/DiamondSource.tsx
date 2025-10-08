@@ -1,11 +1,12 @@
 'use client';
 import { useRef, useEffect } from 'react';
-import { Playfair_Display} from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
+
 export default function DiamondSource() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -18,12 +19,12 @@ export default function DiamondSource() {
   }, []);
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white py-20">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-7xl mx-auto">
-          {/* Left Content Section */}
+    <div className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 lg:py-20">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 items-stretch max-w-7xl mx-auto">
+          {/* Left Content Section - Video */}
           <div>
-            <div className="relative overflow-hidden shadow-2xl h-[400px] md:h-[500px]">
+            <div className="relative overflow-hidden shadow-2xl h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px]">
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"
@@ -41,14 +42,14 @@ export default function DiamondSource() {
             </div>
           </div>
 
-          {/* Right Content Section */}
+          {/* Right Content Section - Text */}
           <div>
-            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-8 md:p-12 shadow-2xl h-[400px] md:h-[500px] flex flex-col justify-center">
-              <h1 className={`text-3xl md:text-4xl lg:text-5xl text-white mb-4 leading-tight font-serif ${playFair.className}`}>
+            <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px] flex flex-col justify-center">
+              <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-3 md:mb-4 leading-tight font-serif ${playFair.className}`}>
                 Diamond Sourcing
               </h1>
 
-              <p className={`text-gray-300 text-sm md:text-base leading-relaxed ${playFair.className}`}>
+              <p className={`text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed ${playFair.className}`}>
                 At Dalila, we have the ability to source diamonds of any shape, size, or quality,
                 tailored exactly to your preferences. Whether you&apos;re looking for a specific cut,
                 color, or carat weight, we can help you find the perfect diamond from anywhere in the

@@ -37,13 +37,13 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 transition-all duration-300 group"
+          className="absolute top-2 right-2 md:top-4 md:right-4 z-10 p-2 bg-white/10 hover:bg-white/20 transition-all duration-300 group"
           aria-label="Close popup"
         >
-          <X className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300" />
+          <X className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:rotate-90 transition-transform duration-300" />
         </button>
 
-        <div className="relative w-full h-[70vh] p-12">
+        <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] p-6 md:p-12">
           <Image
             src={imageSrc}
             alt={`${shapeName} cut diamond`}
@@ -52,8 +52,8 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
           />
         </div>
 
-        <div className="py-6 text-center bg-[#c89e3a]">
-          <h2 className="text-3xl font-bold text-white">{shapeName}</h2>
+        <div className="py-4 md:py-6 text-center bg-[#c89e3a]">
+          <h2 className="text-2xl md:text-3xl font-bold text-white">{shapeName}</h2>
         </div>
       </div>
     </div>
@@ -80,24 +80,23 @@ export default function DiamondShapes() {
   const closePopup = () => setSelectedShape(null);
 
   return (
-    <div className={`bg-gradient-to-b from-white to-gray-50 py-20 ${playFair.className}`}>
+    <div className={`bg-gradient-to-b from-white to-gray-50 py-12 md:py-16 lg:py-20 ${playFair.className}`}>
       <div className="max-w-[1400px] mx-auto px-4">
         {/* Section Title */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-normal text-slate-800 mb-4">
+        <div className="text-center mb-8 md:mb-12 lg:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-slate-800 mb-4">
             Diamond Cuts
           </h2>
         </div>
 
-        {/* Diamond grid layout - First row (6 items) */}
-        <div className="grid grid-cols-6 gap-2 mb-2">
-          {shapes.slice(0, 6).map((shape) => (
+        {/* Mobile Layout (2 columns) */}
+        <div className="grid grid-cols-2 gap-2 md:hidden">
+          {shapes.map((shape) => (
             <div
               key={shape.name}
               className="cursor-pointer overflow-hidden shadow-lg"
               onClick={() => handleShapeClick(shape)}
             >
-              {/* Image */}
               <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
                 <Image
                   src={shape.image}
@@ -107,10 +106,8 @@ export default function DiamondShapes() {
                   className="transition-transform duration-300 hover:scale-110"
                 />
               </div>
-
-              {/* Label */}
-              <div className="py-3 px-4 text-center bg-[#c89e3a]">
-                <h3 className="font-semibold text-white text-lg">
+              <div className="py-2 px-2 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-sm">
                   {shape.name}
                 </h3>
               </div>
@@ -118,89 +115,144 @@ export default function DiamondShapes() {
           ))}
         </div>
 
-        {/* Second row (4 items centered) */}
-        <div className="grid grid-cols-6 gap-2">
-          <div className="col-start-2 col-span-1">
+        {/* Tablet Layout (3 columns) */}
+        <div className="hidden md:grid lg:hidden grid-cols-3 gap-3">
+          {shapes.map((shape) => (
             <div
+              key={shape.name}
               className="cursor-pointer overflow-hidden shadow-lg"
-              onClick={() => handleShapeClick(shapes[6])}
+              onClick={() => handleShapeClick(shape)}
             >
               <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
                 <Image
-                  src={shapes[6].image}
-                  alt={`${shapes[6].name} cut diamond`}
+                  src={shape.image}
+                  alt={`${shape.name} cut diamond`}
                   fill
                   style={{ objectFit: 'cover' }}
                   className="transition-transform duration-300 hover:scale-110"
                 />
               </div>
-              <div className="py-3 px-4 text-center bg-[#c89e3a]">
-                <h3 className="font-semibold text-white text-lg">
-                  {shapes[6].name}
+              <div className="py-3 px-3 text-center bg-[#c89e3a]">
+                <h3 className="font-semibold text-white text-base">
+                  {shape.name}
                 </h3>
               </div>
             </div>
-          </div>
-          <div className="col-span-1">
-            <div
-              className="cursor-pointer overflow-hidden shadow-lg"
-              onClick={() => handleShapeClick(shapes[7])}
-            >
-              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
-                <Image
-                  src={shapes[7].image}
-                  alt={`${shapes[7].name} cut diamond`}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="transition-transform duration-300 hover:scale-110"
-                />
+          ))}
+        </div>
+
+        {/* Desktop Layout (6 + 4 centered) */}
+        <div className="hidden lg:block">
+          {/* First row (6 items) */}
+          <div className="grid grid-cols-6 gap-2 mb-2">
+            {shapes.slice(0, 6).map((shape) => (
+              <div
+                key={shape.name}
+                className="cursor-pointer overflow-hidden shadow-lg"
+                onClick={() => handleShapeClick(shape)}
+              >
+                <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                  <Image
+                    src={shape.image}
+                    alt={`${shape.name} cut diamond`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="transition-transform duration-300 hover:scale-110"
+                  />
+                </div>
+                <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                  <h3 className="font-semibold text-white text-lg">
+                    {shape.name}
+                  </h3>
+                </div>
               </div>
-              <div className="py-3 px-4 text-center bg-[#c89e3a]">
-                <h3 className="font-semibold text-white text-lg">
-                  {shapes[7].name}
-                </h3>
+            ))}
+          </div>
+
+          {/* Second row (4 items centered) */}
+          <div className="grid grid-cols-6 gap-2">
+            <div className="col-start-2 col-span-1">
+              <div
+                className="cursor-pointer overflow-hidden shadow-lg"
+                onClick={() => handleShapeClick(shapes[6])}
+              >
+                <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                  <Image
+                    src={shapes[6].image}
+                    alt={`${shapes[6].name} cut diamond`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="transition-transform duration-300 hover:scale-110"
+                  />
+                </div>
+                <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                  <h3 className="font-semibold text-white text-lg">
+                    {shapes[6].name}
+                  </h3>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-span-1">
-            <div
-              className="cursor-pointer overflow-hidden shadow-lg"
-              onClick={() => handleShapeClick(shapes[8])}
-            >
-              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
-                <Image
-                  src={shapes[8].image}
-                  alt={`${shapes[8].name} cut diamond`}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="transition-transform duration-300 hover:scale-110"
-                />
-              </div>
-              <div className="py-3 px-4 text-center bg-[#c89e3a]">
-                <h3 className="font-semibold text-white text-lg">
-                  {shapes[8].name}
-                </h3>
+            <div className="col-span-1">
+              <div
+                className="cursor-pointer overflow-hidden shadow-lg"
+                onClick={() => handleShapeClick(shapes[7])}
+              >
+                <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                  <Image
+                    src={shapes[7].image}
+                    alt={`${shapes[7].name} cut diamond`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="transition-transform duration-300 hover:scale-110"
+                  />
+                </div>
+                <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                  <h3 className="font-semibold text-white text-lg">
+                    {shapes[7].name}
+                  </h3>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-span-1">
-            <div
-              className="cursor-pointer overflow-hidden shadow-lg"
-              onClick={() => handleShapeClick(shapes[9])}
-            >
-              <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
-                <Image
-                  src={shapes[9].image}
-                  alt={`${shapes[9].name} cut diamond`}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="transition-transform duration-300 hover:scale-110"
-                />
+            <div className="col-span-1">
+              <div
+                className="cursor-pointer overflow-hidden shadow-lg"
+                onClick={() => handleShapeClick(shapes[8])}
+              >
+                <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                  <Image
+                    src={shapes[8].image}
+                    alt={`${shapes[8].name} cut diamond`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="transition-transform duration-300 hover:scale-110"
+                  />
+                </div>
+                <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                  <h3 className="font-semibold text-white text-lg">
+                    {shapes[8].name}
+                  </h3>
+                </div>
               </div>
-              <div className="py-3 px-4 text-center bg-[#c89e3a]">
-                <h3 className="font-semibold text-white text-lg">
-                  {shapes[9].name}
-                </h3>
+            </div>
+            <div className="col-span-1">
+              <div
+                className="cursor-pointer overflow-hidden shadow-lg"
+                onClick={() => handleShapeClick(shapes[9])}
+              >
+                <div className="relative aspect-[4/3] bg-slate-900 overflow-hidden">
+                  <Image
+                    src={shapes[9].image}
+                    alt={`${shapes[9].name} cut diamond`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="transition-transform duration-300 hover:scale-110"
+                  />
+                </div>
+                <div className="py-3 px-4 text-center bg-[#c89e3a]">
+                  <h3 className="font-semibold text-white text-lg">
+                    {shapes[9].name}
+                  </h3>
+                </div>
               </div>
             </div>
           </div>
