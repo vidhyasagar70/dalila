@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Jost } from "next/font/google";
 import "./globals.css";
-import AnimatedHeader from '@/components/pages/Header';
+import Header from '@/components/pages/Header';
 import Footer from '@/components/Footer';
-import { ScrollProgressBar } from '@/components/ScrollAnimation';
+
 
 // Load fonts using next/font/google
 const playfair = Playfair_Display({
@@ -35,8 +35,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-jost">
-        <ScrollProgressBar />
-        <AnimatedHeader />
+
+        <Header />
         <main className="relative">
           {children}
         </main>
