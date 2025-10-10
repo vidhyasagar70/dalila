@@ -76,7 +76,7 @@ export default function LoginPage() {
             }}
           >
             <div>
-              <div className="flex items-center justify-center gap-3 mb-2">
+              <div className="flex items-center justify-center gap-3 mb-1">
                 <div className="relative w-[250px] md:w-[300px] h-[80px] md:h-[100px]">
                   <img
                     src="/dalila_img/Dalila_Logo.png"
@@ -86,7 +86,7 @@ export default function LoginPage() {
                 </div>
               </div>
               
-              <h1 className="text-3xl md:text-5xl font-light mt-2 mb-5 text-[#d4a018] text-center">
+              <h1 className="text-3xl md:text-6xl font-light mt-2 mb-4 text-[#d4a018] text-center">
                 Welcome to Dalila
               </h1>
               
@@ -188,7 +188,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#d4a018] hover:bg-yellow-600 text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] hover:bg-[#d4a018]"
+                className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] hover:bg-[#d4a018]"
               >
                 {isLoading ? (
                   <>
@@ -200,7 +200,7 @@ export default function LoginPage() {
                 )}
               </button>
 
-              <div className="mt-6 text-center text-xs text-white">
+              <div className="mt-6 text-center text-xs text-[#474745]">
                 Don't have an account?{" "}
                 <a
                   href="#"

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
-
+import GoldButton from "@/components/ui/button";
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -45,11 +45,12 @@ export default function HomeContent() {
                 a loose diamond, we value every piece. Here&apos;s how the
                 process works
               </p>
-              <button
+              {/* <button
                 className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
               >
                 Sell Now
-              </button>
+              </button> */}
+              <GoldButton text="Sell Now" />
             </div>
           </div>
         </div>
@@ -78,11 +79,12 @@ export default function HomeContent() {
                 explore every detail — from how diamonds are formed to what
                 makes each one unique.
               </p>
-              <button
+              {/* <button
                 className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 mt-4 md:mt-6 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
               >
                 Explore More
-              </button>
+              </button> */}
+              <GoldButton text="Explore More" />
             </div>
           </div>
 

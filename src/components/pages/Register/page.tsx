@@ -165,12 +165,12 @@ export default function RegisterPage() {
 
               <button
                 type="submit"
-                className="w-full bg-[#d4a018] hover:bg-yellow-600 text-white font-semibold py-3 rounded transition-colors shadow-lg"
+                className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded transition-colors shadow-lg"
               >
                 REGISTER
               </button>
 
-              <div className="mt-6 text-center text-xs text-white">
+              <div className="mt-6 text-center text-xs text-[#474745]">
                 Already  have an account?{" "}
                 <a
                   href="/login"

@@ -25,17 +25,14 @@ export default function AboutHero() {
               />
             </div>
 
-            {/* Gold Banner - Aligned to right */}
-            <div
-              className="absolute bottom-0 right-0 px-10 py-5 shadow-xl"
-              style={{ backgroundColor: "#c89e3a" }}
-            >
-              <h3
-                className={`text-sm md:text-3xl font-semibold text-white whitespace-nowrap tracking-wide ${playFair.className}`}
-              >
-                ABOUT DALILA
-              </h3>
-            </div>
+             <div
+  className="absolute bottom-0 -right-4 sm:-right-6 md:-right-8 lg:-right-12 px-8 py-4 sm:px-10 sm:py-5 md:px-12 md:py-6 shadow-xl"
+  style={{ backgroundColor: "#c89e3a" }}
+>
+  <h3 className="text-sm sm:text-lg md:text-2xl lg:text-3xl font-semibold text-white whitespace-nowrap tracking-wide">
+    ABOUT DALILA
+  </h3>
+</div>
           </div>
 
           {/* Right Half - Content */}

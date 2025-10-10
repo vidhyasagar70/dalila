@@ -50,14 +50,14 @@ export default function Header() {
     >
       <div className="container mx-auto px-4 sm:px-6">
         {/* Top Tagline - Hidden on mobile */}
-        <div className="hidden sm:flex justify-center mb-2 md:mb-3">
+        <div className="hidden sm:flex justify-center mb-1 md:mb-1.5">
           <p className="text-xs md:text-sm tracking-wide text-gray-300">
             Where Trust Shines, And Quality Sparkles
           </p>
         </div>
 
         {/* Divider Line - Hidden on mobile */}
-        <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-4 md:mb-6"></div>
+        <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-1.5 md:mb-2"></div>
 
         {/* Main Navigation Bar */}
         <div className="flex items-center justify-between">
@@ -99,10 +99,10 @@ export default function Header() {
           </nav>
 
           {/* Center Logo */}
-          <div className="flex-shrink-0 relative h-12 w-[120px] sm:h-14 sm:w-[140px] md:h-16 md:w-[150px]">
+          <div className="flex-shrink-0 relative h-24 w-[220px] sm:h-28 sm:w-[260px] md:h-32 md:w-[300px]">
             <Link href="/" className="block w-full h-full">
               <Image
-                src="/images/Dalila Logo.png"
+                src="/dalila_img/Dalila_Logo.png"
                 alt="Dalila Diamonds"
                 fill
                 style={{ objectFit: "contain" }}
@@ -122,7 +122,10 @@ export default function Header() {
             >
               LOGIN
             </button>
-            <button onClick={() => router.push("/register")} className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
+            <button
+              onClick={() => router.push("/register")}
+              className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+            >
               REGISTER
             </button>
           </div>
@@ -142,7 +145,10 @@ export default function Header() {
 
           {/* Mobile - Login Button Only */}
           <div className="flex md:hidden">
-            <button  onClick={() => router.push("/login")} className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+            <button
+              onClick={() => router.push("/login")}
+              className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+            >
               LOGIN
             </button>
           </div>
@@ -198,12 +204,21 @@ export default function Header() {
                 INVENTORY
               </button>
               <button
-                onClick={() => router.push("/login")}
-                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  router.push("/login");
+                }}
+                className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
               >
                 LOGIN
               </button>
-              <button onClick={() => router.push("/resgiter")} className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  router.push("/register");
+                }}
+                className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              >
                 REGISTER
               </button>
             </div>
