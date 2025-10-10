@@ -122,7 +122,7 @@ export default function Header() {
             >
               LOGIN
             </button>
-            <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
+            <button onClick={() => router.push("/register")} className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
               REGISTER
             </button>
           </div>
@@ -142,7 +142,7 @@ export default function Header() {
 
           {/* Mobile - Login Button Only */}
           <div className="flex md:hidden">
-            <button className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+            <button  onClick={() => router.push("/login")} className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
               LOGIN
             </button>
           </div>
@@ -203,7 +203,7 @@ export default function Header() {
               >
                 LOGIN
               </button>
-              <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              <button onClick={() => router.push("/resgiter")} className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
                 REGISTER
               </button>
             </div>

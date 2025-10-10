@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Phone, Mail, MapPin, Home } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
-
+import { useRouter } from "next/navigation";
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -13,6 +13,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmpass, setConfirmpass] = useState<string>("");
+  const router = useRouter();
 
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,8 +47,8 @@ export default function RegisterPage() {
             }}
           >
             <div>
-              {/* Logo */}
-              <div className="flex items-center justify-center gap-3 mb-2">
+              <div className="flex flex-col items-center text-center">
+              <div className="flex items-center justify-center gap-3 mb-2 mt-5">
                 <div className="relative w-[300px] h-[100px]">
                   <img
                     src="/dalila_img/Dalila_Logo.png"
@@ -55,19 +56,21 @@ export default function RegisterPage() {
                     className="w-full h-full object-contain"
                   />
                 </div>
+                </div>
               </div>
-              <h1 className={`text-5xl mb-10 font-light text-[#d4a018] ${playFair.className
+              <h2 className={`text-6xl mb-7 font-light text-[#d4a018] ${playFair.className
               }`}>
-                Join the Dalila Family
-              </h1>
-              <p className={`text-md mt-2 mb-8 font-normal opacity-90 ${playFair.className
-              }`}>
-                Experience timeless diamond jewelry crafted with passion, precision, and trust. Begin your journey with Dalila today.
+                <div className="text-center">Join the Dalila</div>
+                <div className="text-center">Family</div>
+              </h2>
+              <p className={`text-md mt-2 mb-8 font-normal opacity-90 `}>
+               <div className="text-center">Experience timeless diamond jewelry crafted with passion,</div>
+                 <div className="text-center"> precision,and trust.Begin your journey with Dalila today.</div>
               </p>
             </div>
 
             {/* Contact Info */}
-           <div className={`mt-2 mb-15 space-y-2 text-sm opacity-90`}>
+           <div className={`mt-2 mb-20 space-y-2 text-sm opacity-90`}>
               <div className="flex items-center justify-center gap-2">
                 <Phone className="text-[#FFD166] w-4 h-4" />
                 <span>+1 234 567 890</span>
@@ -87,11 +90,12 @@ export default function RegisterPage() {
           <div className="relative flex-1 flex flex-col justify-center items-center bg-black/20">
             {/* Home Button */}
             <button
-              className="absolute top-6 right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-10 hover:bg-[#101638] transition"
+              className="absolute top-4 md:top-6 right-4 md:right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-10 hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
               title="Home"
-              onClick={() => console.log("Home clicked")}
+              onClick={() => router.push("/")}
+              type="button"
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-5 h-5 text-white" />
             </button>
 
             {/* Login Form */}
