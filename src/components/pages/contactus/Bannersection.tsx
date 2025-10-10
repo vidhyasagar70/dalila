@@ -1,6 +1,6 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
+"use client";
+import Image from "next/image";
+import Link from "next/link";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({

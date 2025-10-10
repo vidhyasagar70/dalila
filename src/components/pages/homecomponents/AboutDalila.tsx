@@ -1,5 +1,5 @@
-'use client';
-import Image from 'next/image';
+"use client";
+import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -25,7 +25,7 @@ export default function AboutDalila() {
             </div>
             <div
               className="absolute bottom-0 right-0 px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-5 shadow-xl"
-              style={{ backgroundColor: '#c89e3a' }}
+              style={{ backgroundColor: "#c89e3a" }}
             >
               <h3 className="text-sm sm:text-lg md:text-2xl lg:text-3xl font-semibold text-white whitespace-nowrap tracking-wide">
                 ABOUT DALILA
@@ -37,17 +37,18 @@ export default function AboutDalila() {
               We Shape Brilliance into Timeless Value.
             </h3>
             <p className="text-gray-500 text-xs sm:text-sm md:text-base leading-relaxed font-medium">
-              At DALILA, we believe diamonds are more than gems — they are a symbol
-              of trust, innovation, and enduring luxury. As a leading name in the
-              natural diamond industry, we partner with businesses and connoisseurs
-              to deliver diamonds that embody precision, sustainability, and prestige.
-              From wholesale supply to bespoke creations, every DALILA diamond is
-              crafted to inspire confidence and redefine brilliance.
+              At DALILA, we believe diamonds are more than gems — they are a
+              symbol of trust, innovation, and enduring luxury. As a leading
+              name in the natural diamond industry, we partner with businesses
+              and connoisseurs to deliver diamonds that embody precision,
+              sustainability, and prestige. From wholesale supply to bespoke
+              creations, every DALILA diamond is crafted to inspire confidence
+              and redefine brilliance.
             </p>
             <div className="pt-4 md:pt-6">
               <button
                 className="px-6 py-3 sm:px-8 sm:py-3.5 md:px-10 md:py-4 text-white font-bold text-xs sm:text-sm uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95"
-                style={{ backgroundColor: '#c89e3a' }}
+                style={{ backgroundColor: "#c89e3a" }}
               >
                 Explore More
               </button>

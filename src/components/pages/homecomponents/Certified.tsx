@@ -1,20 +1,20 @@
-'use client';
-import Image from 'next/image';
-import { Playfair_Display} from "next/font/google";
+"use client";
+import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 export default function CertifiedBy() {
   const certifications = [
-    { name: 'IGI', image: '/dalila_img/client/client_1.png' },
-    { name: 'GIA', image: '/dalila_img/client/client_2.png' },
-    { name: 'HRD', image: '/dalila_img/client/client_3.png' },
+    { name: "IGI", image: "/dalila_img/client/client_1.png" },
+    { name: "GIA", image: "/dalila_img/client/client_2.png" },
+    { name: "HRD", image: "/dalila_img/client/client_3.png" },
   ];
 
   const slideStyle = {
-    animation: 'slide 15s linear infinite',
+    animation: "slide 15s linear infinite",
   };
 
   return (
@@ -22,7 +22,9 @@ export default function CertifiedBy() {
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className={`text-4xl md:text-5xl font-bold text-slate-900 mb-2 ${playFair.className}`}>
+          <h2
+            className={`text-4xl md:text-5xl font-bold text-slate-900 mb-2 ${playFair.className}`}
+          >
             Certified By
           </h2>
         </div>
@@ -34,7 +36,10 @@ export default function CertifiedBy() {
           <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
 
           {/* Sliding Track */}
-          <div className="flex hover:[animation-play-state:paused]" style={slideStyle}>
+          <div
+            className="flex hover:[animation-play-state:paused]"
+            style={slideStyle}
+          >
             {/* First set of logos */}
             {certifications.map((cert, index) => (
               <div

@@ -1,4 +1,3 @@
-
 import AboutBanner from "@/components/pages/aboutus/Bannersection";
 import AboutHero from "@/components/pages/aboutus/Herosection";
 import Legacy from "@/components/pages/aboutus/Legacy";
@@ -9,16 +8,14 @@ import AboutMilestone from "@/components/pages/aboutus/MileStone";
 export default function AboutPage() {
   return (
     <>
-     
       <main className="relative">
-        <AboutBanner/>
-        <AboutHero/>
-        <DiamondExperience/>
-        <Legacy/>
-        <AboutMilestone/>
-        <Aboutshowcase/>
-        <CertifiedBy/>
-        
+        <AboutBanner />
+        <AboutHero />
+        <DiamondExperience />
+        <Legacy />
+        <AboutMilestone />
+        <Aboutshowcase />
+        <CertifiedBy />
       </main>
     </>
   );

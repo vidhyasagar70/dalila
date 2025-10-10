@@ -1,10 +1,10 @@
-'use client';
-import { useRef, useEffect, useState } from 'react';
+"use client";
+import { useRef, useEffect, useState } from "react";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export default function VideoContent() {
@@ -20,9 +20,9 @@ export default function VideoContent() {
     const playVideo = async () => {
       try {
         await video.play();
-        console.log('Video playing successfully');
+        console.log("Video playing successfully");
       } catch (error) {
-        console.error('Video autoplay prevented:', error);
+        console.error("Video autoplay prevented:", error);
         setVideoError(true);
       }
     };
@@ -46,7 +46,7 @@ export default function VideoContent() {
         playsInline
         preload="auto"
         onError={(e) => {
-          console.error('Video failed to load:', e);
+          console.error("Video failed to load:", e);
           setVideoError(true);
         }}
       >
@@ -66,11 +66,16 @@ export default function VideoContent() {
       {/* Centered Text Content */}
       <div className="relative z-10 h-full flex items-center justify-center px-6">
         <div className="text-center max-w-4xl">
-          <h5 className={`text-white/90 text-sm md:text-base tracking-widest mb-6 font-light ${playFair.className}`}>
+          <h5
+            className={`text-white/90 text-sm md:text-base tracking-widest mb-6 font-light ${playFair.className}`}
+          >
             A LEGACY OF REFINEMENT, SHAPED TO PERFECTION
           </h5>
-          <h1 className={`text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-wide font-light ${playFair.className}`}>
-            Every diamond, delicately refined through skill & crafted by the hands of true perfectionists.
+          <h1
+            className={`text-4xl md:text-5xl lg:text-6xl text-white leading-tight tracking-wide font-light ${playFair.className}`}
+          >
+            Every diamond, delicately refined through skill & crafted by the
+            hands of true perfectionists.
           </h1>
         </div>
       </div>

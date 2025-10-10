@@ -1,5 +1,5 @@
-'use client';
-import { useRef, useEffect } from 'react';
+"use client";
+import { useRef, useEffect } from "react";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -13,7 +13,7 @@ export default function DiamondSource() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch((error) => {
-        console.log('Video autoplay prevented:', error);
+        console.log("Video autoplay prevented:", error);
       });
     }
   }, []);
@@ -45,18 +45,24 @@ export default function DiamondSource() {
           {/* Right Content Section - Text */}
           <div>
             <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px] flex flex-col justify-center">
-              <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-3 md:mb-4 leading-tight font-serif ${playFair.className}`}>
+              <h1
+                className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white mb-3 md:mb-4 leading-tight font-serif ${playFair.className}`}
+              >
                 Diamond Sourcing
               </h1>
 
-              <p className={`text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed ${playFair.className}`}>
-                At Dalila, we have the ability to source diamonds of any shape, size, or quality,
-                tailored exactly to your preferences. Whether you&apos;re looking for a specific cut,
-                color, or carat weight, we can help you find the perfect diamond from anywhere in the
-                world. Our global network of trusted suppliers & experts ensures that we can secure
-                diamonds that meet the highest standards of craftsmanship & value. With Dalila,
-                you don&apos;t just get a diamond - you get a personalized, seamless experience,
-                bringing you the finest options available on the market.
+              <p
+                className={`text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed ${playFair.className}`}
+              >
+                At Dalila, we have the ability to source diamonds of any shape,
+                size, or quality, tailored exactly to your preferences. Whether
+                you&apos;re looking for a specific cut, color, or carat weight,
+                we can help you find the perfect diamond from anywhere in the
+                world. Our global network of trusted suppliers & experts ensures
+                that we can secure diamonds that meet the highest standards of
+                craftsmanship & value. With Dalila, you don&apos;t just get a
+                diamond - you get a personalized, seamless experience, bringing
+                you the finest options available on the market.
               </p>
             </div>
           </div>

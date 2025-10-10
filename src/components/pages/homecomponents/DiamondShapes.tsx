@@ -1,7 +1,7 @@
-'use client';
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { X } from 'lucide-react';
+"use client";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { X } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -18,9 +18,9 @@ interface ImagePopupProps {
 
 function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+    document.body.style.overflow = isOpen ? "hidden" : "unset";
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -48,12 +48,14 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
             src={imageSrc}
             alt={`${shapeName} cut diamond`}
             fill
-            style={{ objectFit: 'contain' }}
+            style={{ objectFit: "contain" }}
           />
         </div>
 
         <div className="py-4 md:py-6 text-center bg-[#c89e3a]">
-          <h2 className="text-2xl md:text-3xl font-bold text-white">{shapeName}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white">
+            {shapeName}
+          </h2>
         </div>
       </div>
     </div>
@@ -61,26 +63,32 @@ function ImagePopup({ isOpen, onClose, imageSrc, shapeName }: ImagePopupProps) {
 }
 
 export default function DiamondShapes() {
-  const [selectedShape, setSelectedShape] = useState<{ name: string; image: string } | null>(null);
+  const [selectedShape, setSelectedShape] = useState<{
+    name: string;
+    image: string;
+  } | null>(null);
 
   const shapes = [
-    { name: 'Round', image: '/images/round-blue.jpg' },
-    { name: 'Princess', image: '/images/princess-blue.jpg' },
-    { name: 'Cushion', image: '/images/cushion-blue.jpg' },
-    { name: 'Radiant', image: '/images/radiant-blue.jpg' },
-    { name: 'Asscher', image: '/images/asscher-blue.jpg' },
-    { name: 'Heart', image: '/images/heart-blue.jpg' },
-    { name: 'Pear', image: '/images/pear-blue.jpg' },
-    { name: 'Marquise', image: '/images/marquise-blue.jpg' },
-    { name: 'Oval', image: '/images/oval-blue.jpg' },
-    { name: 'Emerald', image: '/images/emerald-blue.jpg' },
+    { name: "Round", image: "/images/round-blue.jpg" },
+    { name: "Princess", image: "/images/princess-blue.jpg" },
+    { name: "Cushion", image: "/images/cushion-blue.jpg" },
+    { name: "Radiant", image: "/images/radiant-blue.jpg" },
+    { name: "Asscher", image: "/images/asscher-blue.jpg" },
+    { name: "Heart", image: "/images/heart-blue.jpg" },
+    { name: "Pear", image: "/images/pear-blue.jpg" },
+    { name: "Marquise", image: "/images/marquise-blue.jpg" },
+    { name: "Oval", image: "/images/oval-blue.jpg" },
+    { name: "Emerald", image: "/images/emerald-blue.jpg" },
   ];
 
-  const handleShapeClick = (shape: { name: string; image: string }) => setSelectedShape(shape);
+  const handleShapeClick = (shape: { name: string; image: string }) =>
+    setSelectedShape(shape);
   const closePopup = () => setSelectedShape(null);
 
   return (
-    <div className={`bg-gradient-to-b from-white to-gray-50 py-12 md:py-16 lg:py-20 ${playFair.className}`}>
+    <div
+      className={`bg-gradient-to-b from-white to-gray-50 py-12 md:py-16 lg:py-20 ${playFair.className}`}
+    >
       <div className="max-w-[1400px] mx-auto px-4">
         {/* Section Title */}
         <div className="text-center mb-8 md:mb-12 lg:mb-16">
@@ -102,7 +110,7 @@ export default function DiamondShapes() {
                   src={shape.image}
                   alt={`${shape.name} cut diamond`}
                   fill
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: "cover" }}
                   className="transition-transform duration-300 hover:scale-110"
                 />
               </div>
@@ -128,7 +136,7 @@ export default function DiamondShapes() {
                   src={shape.image}
                   alt={`${shape.name} cut diamond`}
                   fill
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: "cover" }}
                   className="transition-transform duration-300 hover:scale-110"
                 />
               </div>
@@ -156,7 +164,7 @@ export default function DiamondShapes() {
                     src={shape.image}
                     alt={`${shape.name} cut diamond`}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                     className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
@@ -181,7 +189,7 @@ export default function DiamondShapes() {
                     src={shapes[6].image}
                     alt={`${shapes[6].name} cut diamond`}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                     className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
@@ -202,7 +210,7 @@ export default function DiamondShapes() {
                     src={shapes[7].image}
                     alt={`${shapes[7].name} cut diamond`}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                     className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
@@ -223,7 +231,7 @@ export default function DiamondShapes() {
                     src={shapes[8].image}
                     alt={`${shapes[8].name} cut diamond`}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                     className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
@@ -244,7 +252,7 @@ export default function DiamondShapes() {
                     src={shapes[9].image}
                     alt={`${shapes[9].name} cut diamond`}
                     fill
-                    style={{ objectFit: 'cover' }}
+                    style={{ objectFit: "cover" }}
                     className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
@@ -263,8 +271,8 @@ export default function DiamondShapes() {
       <ImagePopup
         isOpen={selectedShape !== null}
         onClose={closePopup}
-        imageSrc={selectedShape?.image || ''}
-        shapeName={selectedShape?.name || ''}
+        imageSrc={selectedShape?.image || ""}
+        shapeName={selectedShape?.name || ""}
       />
     </div>
   );

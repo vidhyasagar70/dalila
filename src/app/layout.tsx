@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Jost } from "next/font/google";
 import "./globals.css";
-import Header from '@/components/pages/Header';
-import Footer from '@/components/Footer';
+import HeaderFooterWrapper from "@/components/HeaderFooterWrapper"; 
 
-
-// Load fonts using next/font/google
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
@@ -35,12 +32,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-jost">
-
-        <Header />
-        <main className="relative">
-          {children}
-        </main>
-        <Footer />
+        <HeaderFooterWrapper>{children}</HeaderFooterWrapper>
       </body>
     </html>
   );

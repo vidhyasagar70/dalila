@@ -1,6 +1,6 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
+"use client";
+import Image from "next/image";
+import Link from "next/link";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -13,7 +13,6 @@ export default function AboutBanner() {
     <div className="relative bg-slate-900">
       {/* Banner Section */}
       <section className="relative h-[60vh] md:h-[55vh] lg:h-[50vh] flex items-center justify-center overflow-hidden">
-        
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image

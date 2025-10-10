@@ -1,5 +1,5 @@
-'use client';
-import Image from 'next/image';
+"use client";
+import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -11,7 +11,6 @@ export default function HomeContent() {
   return (
     <div className="bg-white py-12 md:py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 xl:px-12">
-      
         {/* Sell Diamonds Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center mb-16 md:mb-24 lg:mb-32">
           <div>
@@ -24,50 +23,69 @@ export default function HomeContent() {
               />
             </div>
           </div>
-          
+
           <div>
             <div className="max-w-xl">
-              <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-light mb-4 md:mb-6 lg:mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className}`}>
-                Sell Your Diamonds<br />
-                Safely and<br />
+              <h2
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-light mb-4 md:mb-6 lg:mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className}`}
+              >
+                Sell Your Diamonds
+                <br />
+                Safely and
+                <br />
                 Seamlessly at Dalila
               </h2>
-              <p className={`text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs sm:text-sm md:text-[15px] lg:text-base font-normal ${playFair.className}`}>
-                Selling your diamond or fine jewelry should be a seamless, secure, and rewarding 
-                experience. At Dalila, we offer a transparent and hassle-free process, trusted by 
-                customers. Whether you&apos;re parting with an engagement ring, heirloom or a loose 
-                diamond, we value every piece. Here&apos;s how the process works
+              <p
+                className={`text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs sm:text-sm md:text-[15px] lg:text-base font-normal ${playFair.className}`}
+              >
+                Selling your diamond or fine jewelry should be a seamless,
+                secure, and rewarding experience. At Dalila, we offer a
+                transparent and hassle-free process, trusted by customers.
+                Whether you&apos;re parting with an engagement ring, heirloom or
+                a loose diamond, we value every piece. Here&apos;s how the
+                process works
               </p>
-              <button className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}>
+              <button
+                className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
+              >
                 Sell Now
               </button>
             </div>
           </div>
         </div>
-        
+
         {/* Language of Diamonds Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <div className="order-2 md:order-1">
             <div className="max-w-xl">
-              <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-light mb-4 md:mb-6 lg:mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className}`}>
-                The Language of<br />
+              <h2
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-light mb-4 md:mb-6 lg:mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className}`}
+              >
+                The Language of
+                <br />
                 Diamonds
               </h2>
-              <p className={`text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs sm:text-sm md:text-[15px] lg:text-base font-normal ${playFair.className}`}>
-                Diamonds are more than just gemstones — they are timeless symbols of love, 
-                craftsmanship, and nature&apos;s brilliance. Formed deep within the Earth over billions of 
-                years, every natural diamond carries a story of purity and perfection. Whether 
-                you&apos;re buying your first diamond or expanding your collection, understanding the 
-                key aspects of a diamond helps you make a truly informed choice. This guide is 
-                designed to help you explore every detail — from how diamonds are formed to 
-                what makes each one unique.
+              <p
+                className={`text-gray-600 leading-relaxed mb-6 md:mb-8 text-xs sm:text-sm md:text-[15px] lg:text-base font-normal ${playFair.className}`}
+              >
+                Diamonds are more than just gemstones — they are timeless
+                symbols of love, craftsmanship, and nature&apos;s brilliance.
+                Formed deep within the Earth over billions of years, every
+                natural diamond carries a story of purity and perfection.
+                Whether you&apos;re buying your first diamond or expanding your
+                collection, understanding the key aspects of a diamond helps you
+                make a truly informed choice. This guide is designed to help you
+                explore every detail — from how diamonds are formed to what
+                makes each one unique.
               </p>
-              <button className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 mt-4 md:mt-6 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}>
+              <button
+                className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 mt-4 md:mt-6 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
+              >
                 Explore More
               </button>
             </div>
           </div>
-          
+
           <div className="order-1 md:order-2">
             <div className="relative h-[280px] sm:h-[320px] md:h-[350px] lg:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
               <Image

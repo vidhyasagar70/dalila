@@ -1,6 +1,6 @@
-'use client';
-import { useState, ChangeEvent } from 'react';
-import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+"use client";
+import { useState, ChangeEvent } from "react";
+import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -10,25 +10,27 @@ const playFair = Playfair_Display({
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
   });
 
-  const goldColor = '#B58900';
-  const goldGradient = 'linear-gradient(to right, #B58900 0%, #B58900 100%)';
+  const goldColor = "#B58900";
+  const goldGradient = "linear-gradient(to right, #B58900 0%, #B58900 100%)";
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    alert('Message sent successfully!');
+    console.log("Form submitted:", formData);
+    alert("Message sent successfully!");
   };
 
   return (
@@ -41,7 +43,10 @@ export default function ContactUsPage() {
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
                 Get in Touch
               </h2>
-              <div className="w-20 h-1 mb-8" style={{ background: goldGradient }}></div>
+              <div
+                className="w-20 h-1 mb-8"
+                style={{ background: goldGradient }}
+              ></div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Left Column - Form Fields */}
@@ -54,8 +59,8 @@ export default function ContactUsPage() {
                       value={formData.name}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
-                      onFocus={(e) => e.target.style.borderColor = goldColor}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      onFocus={(e) => (e.target.style.borderColor = goldColor)}
+                      onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                     />
                   </div>
 
@@ -67,8 +72,8 @@ export default function ContactUsPage() {
                       value={formData.email}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
-                      onFocus={(e) => e.target.style.borderColor = goldColor}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      onFocus={(e) => (e.target.style.borderColor = goldColor)}
+                      onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                     />
                   </div>
 
@@ -80,8 +85,8 @@ export default function ContactUsPage() {
                       value={formData.phone}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
-                      onFocus={(e) => e.target.style.borderColor = goldColor}
-                      onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                      onFocus={(e) => (e.target.style.borderColor = goldColor)}
+                      onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                     />
                   </div>
 
@@ -89,17 +94,20 @@ export default function ContactUsPage() {
                     <button
                       onClick={handleSubmit}
                       className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded uppercase tracking-wide text-sm"
-                      style={{ 
+                      style={{
                         background: goldGradient,
-                        boxShadow: '0 2px 4px rgba(181, 137, 0, 0.2)'
+                        boxShadow: "0 2px 4px rgba(181, 137, 0, 0.2)",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'linear-gradient(to right, #9d7400 0%, #9d7400 100%)';
-                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(181, 137, 0, 0.3)';
+                        e.currentTarget.style.background =
+                          "linear-gradient(to right, #9d7400 0%, #9d7400 100%)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 8px rgba(181, 137, 0, 0.3)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = goldGradient;
-                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(181, 137, 0, 0.2)';
+                        e.currentTarget.style.boxShadow =
+                          "0 2px 4px rgba(181, 137, 0, 0.2)";
                       }}
                     >
                       Send Message
@@ -116,8 +124,8 @@ export default function ContactUsPage() {
                     onChange={handleChange}
                     rows={10}
                     className="w-full h-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors resize-none text-gray-700 placeholder:text-gray-400"
-                    onFocus={(e) => e.target.style.borderColor = goldColor}
-                    onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                    onFocus={(e) => (e.target.style.borderColor = goldColor)}
+                    onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                   />
                 </div>
               </div>
@@ -131,7 +139,7 @@ export default function ContactUsPage() {
 
               <div className="space-y-8">
                 <div className="flex items-start gap-4">
-                  <div 
+                  <div
                     className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: goldGradient }}
                   >
@@ -145,21 +153,19 @@ export default function ContactUsPage() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div 
+                  <div
                     className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: goldGradient }}
                   >
                     <Phone className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-gray-600 text-base">
-                      +1 234 567 890
-                    </p>
+                    <p className="text-gray-600 text-base">+1 234 567 890</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div 
+                  <div
                     className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: goldGradient }}
                   >
@@ -173,7 +179,7 @@ export default function ContactUsPage() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div 
+                  <div
                     className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: goldGradient }}
                   >

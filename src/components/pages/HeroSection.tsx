@@ -1,15 +1,14 @@
-'use client';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+"use client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  
+
   const slides = [
-    { image: '/dalila_img/banners/new/Banner-01.jpg' },
-    { image: '/dalila_img/banners/new/Banner-02.jpg' },
-    { image: '/dalila_img/banners/new/Banner-03.jpg' },
-   
+    { image: "/dalila_img/banners/new/Banner-01.jpg" },
+    { image: "/dalila_img/banners/new/Banner-02.jpg" },
+    { image: "/dalila_img/banners/new/Banner-03.jpg" },
   ];
 
   useEffect(() => {
@@ -31,12 +30,15 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center overflow-hidden bg-slate-900">
       {/* Background Carousel */}
       <div className="absolute inset-0">
-        <div 
+        <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {slides.map((slide, index) => (
-            <div key={index} className="relative min-w-full h-full flex-shrink-0">
+            <div
+              key={index}
+              className="relative min-w-full h-full flex-shrink-0"
+            >
               <img
                 src={slide.image}
                 alt={`Dalila Diamonds Banner ${index + 1}`}

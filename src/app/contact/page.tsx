@@ -1,17 +1,13 @@
-import ContactBanner from '@/components/pages/contactus/Bannersection';
-import ContactForm from '@/components/pages/contactus/ContactForm';
-import ContactHeroSection from '@/components/pages/contactus/Herosection';
+import ContactBanner from "@/components/pages/contactus/Bannersection";
+import ContactForm from "@/components/pages/contactus/ContactForm";
+import ContactHeroSection from "@/components/pages/contactus/Herosection";
 export default function Contact() {
   return (
     <>
       <main className="relative">
-
-          <ContactBanner/>
-          <ContactHeroSection/>
-          <ContactForm/>
-
-
-
+        <ContactBanner />
+        <ContactHeroSection />
+        <ContactForm />
       </main>
     </>
   );

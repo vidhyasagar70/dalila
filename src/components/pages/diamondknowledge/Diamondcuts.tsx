@@ -1,11 +1,10 @@
-'use client';
-import { Gem } from 'lucide-react';
-import { Playfair_Display} from "next/font/google";
+"use client";
+import { Gem } from "lucide-react";
+import { Playfair_Display } from "next/font/google";
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-
 
 export default function Diamondcuts() {
   return (
@@ -13,14 +12,21 @@ export default function Diamondcuts() {
       <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16">
-          <h1 className={`text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-6 font-normal tracking-tight ${playFair.className}`}>
+          <h1
+            className={`text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-6 font-normal tracking-tight ${playFair.className}`}
+          >
             The 4Cs of Diamonds
           </h1>
-          <p className={`text-gray-800 leading-relaxed text-[18px] md:text-base max-w-4xl mx-auto font-light ${playFair.className}`}>
-            When it comes to evaluating a diamond&apos;s quality and beauty, professionals rely on the 4Cs — Cut, Color, Clarity, and Carat Weight. Understanding these characteristics will help you choose a diamond that matches your preferences and budget.
+          <p
+            className={`text-gray-800 leading-relaxed text-[18px] md:text-base max-w-4xl mx-auto font-light ${playFair.className}`}
+          >
+            When it comes to evaluating a diamond&apos;s quality and beauty,
+            professionals rely on the 4Cs — Cut, Color, Clarity, and Carat
+            Weight. Understanding these characteristics will help you choose a
+            diamond that matches your preferences and budget.
           </p>
         </div>
-      
+
         {/* 4Cs Section */}
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-start mt-16">
           {/* Left side - Diamond Image */}
@@ -35,63 +41,103 @@ export default function Diamondcuts() {
               </div>
             </div>
           </div>
-          
+
           {/* Right side - 4Cs Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-x-10 md:gap-y-10">
             {/* Cut */}
             <div className="space-y-3">
               <div className="flex items-start gap-3 mb-2">
-                <Gem className="text-amber-500 flex-shrink-0 mt-0.5" size={18} />
-                <h3 className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}>
+                <Gem
+                  className="text-amber-500 flex-shrink-0 mt-0.5"
+                  size={18}
+                />
+                <h3
+                  className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}
+                >
                   Cut: The Sparkle Factor
                 </h3>
               </div>
-              <p className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}>
-                A diamond&apos;s cut determines how well it reflects light — and that&apos;s what gives it brilliance. Even if a diamond has perfect color or clarity, a poor cut can make it look dull. The ideal cut brings out the stone&apos;s natural fire and radiance.
+              <p
+                className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}
+              >
+                A diamond&apos;s cut determines how well it reflects light — and
+                that&apos;s what gives it brilliance. Even if a diamond has
+                perfect color or clarity, a poor cut can make it look dull. The
+                ideal cut brings out the stone&apos;s natural fire and radiance.
               </p>
             </div>
 
             {/* Color */}
             <div className="space-y-3">
               <div className="flex items-start gap-3 mb-2">
-                <Gem className="text-amber-500 flex-shrink-0 mt-0.5" size={18} />
-                <h3 className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}>
+                <Gem
+                  className="text-amber-500 flex-shrink-0 mt-0.5"
+                  size={18}
+                />
+                <h3
+                  className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}
+                >
                   Color: The Shade of Purity
                 </h3>
               </div>
-              <p className={`text-gray-800 text-[36px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}>
-                Diamond color grades range from D (colorless) to Z (light yellow or brown). The less color a diamond has, the rarer and more valuable it is. Colorless diamonds reflect more light, resulting in unmatched sparkle and purity.
+              <p
+                className={`text-gray-800 text-[36px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}
+              >
+                Diamond color grades range from D (colorless) to Z (light yellow
+                or brown). The less color a diamond has, the rarer and more
+                valuable it is. Colorless diamonds reflect more light, resulting
+                in unmatched sparkle and purity.
               </p>
             </div>
 
             {/* Clarity */}
             <div className="space-y-3">
               <div className="flex items-start gap-3 mb-2">
-                <Gem className="text-amber-500 flex-shrink-0 mt-0.5" size={18} />
-                <h3 className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}>
+                <Gem
+                  className="text-amber-500 flex-shrink-0 mt-0.5"
+                  size={18}
+                />
+                <h3
+                  className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}
+                >
                   Clarity: Nature&apos;s Signature
                 </h3>
               </div>
-              <p className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}>
-                Every natural diamond has tiny inclusions or blemishes formed during its creation. These are nature&apos;s fingerprints, making each diamond unique. Clarity is graded from Flawless (F) to Included (I), and most inclusions are microscopic, not visible to the naked eye.
+              <p
+                className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}
+              >
+                Every natural diamond has tiny inclusions or blemishes formed
+                during its creation. These are nature&apos;s fingerprints,
+                making each diamond unique. Clarity is graded from Flawless (F)
+                to Included (I), and most inclusions are microscopic, not
+                visible to the naked eye.
               </p>
             </div>
 
             {/* Carat Weight */}
             <div className="space-y-3">
               <div className="flex items-start gap-3 mb-2">
-                <Gem className="text-amber-500 flex-shrink-0 mt-0.5" size={18} />
-                <h3 className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}>
+                <Gem
+                  className="text-amber-500 flex-shrink-0 mt-0.5"
+                  size={18}
+                />
+                <h3
+                  className={`text-lg md:text-xl font-medium text-gray-900 leading-tight ${playFair.className}`}
+                >
                   Carat Weight: The Measure of Size
                 </h3>
               </div>
-              <p className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}>
-                Carat refers to a diamond&apos;s weight, not its size. Larger diamonds are rarer, but two diamonds of the same carat can appear different depending on their cut. It&apos;s always best to balance carat with the other Cs for true value.
+              <p
+                className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}
+              >
+                Carat refers to a diamond&apos;s weight, not its size. Larger
+                diamonds are rarer, but two diamonds of the same carat can
+                appear different depending on their cut. It&apos;s always best
+                to balance carat with the other Cs for true value.
               </p>
             </div>
           </div>
         </div>
-        
       </div>
     </div>
   );

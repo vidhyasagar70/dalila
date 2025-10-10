@@ -1,20 +1,22 @@
-'use client';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Menu, X } from 'lucide-react';
+"use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Close mobile menu when resizing to desktop
@@ -24,26 +26,26 @@ export default function Header() {
         setIsMobileMenuOpen(false);
       }
     };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [isMobileMenuOpen]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
   }, [isMobileMenuOpen]);
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-[#050c3a] shadow-lg py-3 md:py-4' 
-          : 'bg-transparent py-4 md:py-6'
+        isScrolled
+          ? "bg-[#050c3a] shadow-lg py-3 md:py-4"
+          : "bg-transparent py-4 md:py-6"
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6">
@@ -53,10 +55,10 @@ export default function Header() {
             Where Trust Shines, And Quality Sparkles
           </p>
         </div>
-        
+
         {/* Divider Line - Hidden on mobile */}
         <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-4 md:mb-6"></div>
-        
+
         {/* Main Navigation Bar */}
         <div className="flex items-center justify-between">
           {/* Mobile Menu Button */}
@@ -103,7 +105,7 @@ export default function Header() {
                 src="/images/Dalila Logo.png"
                 alt="Dalila Diamonds"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
                 priority
               />
             </Link>
@@ -114,7 +116,10 @@ export default function Header() {
             <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
               INVENTORY
             </button>
-            <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
+            <button
+              onClick={() => router.push("/login")}
+              className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+            >
               LOGIN
             </button>
             <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
@@ -127,7 +132,10 @@ export default function Header() {
             <button className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
               INV
             </button>
-            <button className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+            <button
+              onClick={() => router.push("/login")}
+              className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+            >
               LOGIN
             </button>
           </div>
@@ -189,7 +197,10 @@ export default function Header() {
               <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
                 INVENTORY
               </button>
-              <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
+              <button
+                onClick={() => router.push("/login")}
+                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              >
                 LOGIN
               </button>
               <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">

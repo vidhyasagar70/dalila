@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
-import Image from 'next/image';
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   const quickLinks = [
-    { name: 'Home', href: '#' },
-    { name: 'About', href: '#about' },
-    { name: 'Diamond Knowledge', href: '#knowledge' },
-    { name: 'Sell', href: '#sell' },
-    { name: 'Contact', href: '#contact' },
+    { name: "Home", href: "#" },
+    { name: "About", href: "#about" },
+    { name: "Diamond Knowledge", href: "#knowledge" },
+    { name: "Sell", href: "#sell" },
+    { name: "Contact", href: "#contact" },
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Youtube, href: '#', label: 'YouTube' },
+    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
   return (
@@ -25,7 +25,9 @@ export default function Footer() {
       <div className="border-b border-white/10">
         <div className="container mx-auto px-6 py-12">
           <div className="max-w-2xl mx-auto text-center">
-            <h3 className="text-2xl font-serif mb-6">Subscribe to our Newsletter</h3>
+            <h3 className="text-2xl font-serif mb-6">
+              Subscribe to our Newsletter
+            </h3>
             <div className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
               <input
                 type="email"
@@ -119,7 +121,7 @@ export default function Footer() {
 
       {/* Scroll to Top Button */}
       <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className="fixed bottom-8 right-8 w-12 h-12 bg-yellow-600 hover:bg-yellow-700 rounded flex items-center justify-center shadow-lg transition-colors group"
         aria-label="Scroll to top"
       >
