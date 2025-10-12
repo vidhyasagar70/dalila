@@ -1,6 +1,8 @@
 "use client";
+import Image from "next/image";
 import { Gem } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
+
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -33,10 +35,12 @@ export default function Diamondcuts() {
           <div className="flex justify-center items-center">
             <div className="relative w-full max-w-[500px] aspect-[3/4] bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden shadow-2xl">
               <div className="absolute inset-0 flex items-center justify-center">
-                <img
+                <Image
                   src="/images/diamond.png"
                   alt="Brilliant cut diamonds"
-                  className="w-full h-full object-cover"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  priority
                 />
               </div>
             </div>
@@ -81,7 +85,7 @@ export default function Diamondcuts() {
                 </h3>
               </div>
               <p
-                className={`text-gray-800 text-[36px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}
+                className={`text-gray-800 text-[13px] md:text-[18px] leading-relaxed font-light ${playFair.className}`}
               >
                 Diamond color grades range from D (colorless) to Z (light yellow
                 or brown). The less color a diamond has, the rarer and more

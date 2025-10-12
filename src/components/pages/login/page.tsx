@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Phone, Mail, MapPin, Home, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { authService } from "@/services/authService";
 
 export default function LoginPage() {
@@ -26,7 +27,11 @@ export default function LoginPage() {
 
       console.log("Login Response:", response);
 
-      if (response.Token || response.Status === "Success" || response.Message === "Login Successful") {
+      if (
+        response.Token ||
+        response.Status === "Success" ||
+        response.Message === "Login Successful"
+      ) {
         if (rememberMe) {
           localStorage.setItem("dalilaRememberedEmail", email);
         } else {
@@ -34,20 +39,24 @@ export default function LoginPage() {
         }
 
         console.log("Login successful! Redirecting...");
-        
+
         setTimeout(() => {
           router.push("/dashboard");
         }, 500);
       } else {
-        setError(response.Message || "Login failed. Please check your credentials and try again.");
+        setError(
+          response.Message || "Login failed. Please check your credentials and try again."
+        );
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
-      
-      if (err.message) {
+
+      if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Unable to connect to server. Please check your internet connection and try again.");
+        setError(
+          "Unable to connect to server. Please check your internet connection and try again."
+        );
       }
     } finally {
       setIsLoading(false);
@@ -72,24 +81,26 @@ export default function LoginPage() {
           <div
             className="flex flex-col justify-between text-white px-10 py-10 w-full md:w-[50%] md:min-w-[350px]"
             style={{
-              background: "linear-gradient(to right, rgba(4, 8, 37, 0.9) 0%, rgba(4, 8, 37, 0.9) 100%)",
+              background:
+                "linear-gradient(to right, rgba(4, 8, 37, 0.9) 0%, rgba(4, 8, 37, 0.9) 100%)",
             }}
           >
             <div>
               <div className="flex items-center justify-center gap-3 mb-1">
                 <div className="relative w-[250px] md:w-[300px] h-[80px] md:h-[100px]">
-                  <img
+                  <Image
                     src="/dalila_img/Dalila_Logo.png"
                     alt="Dalila Diamonds"
-                    className="w-full h-full object-contain"
+                    fill
+                    className="object-contain"
                   />
                 </div>
               </div>
-              
+
               <h1 className="text-3xl md:text-6xl font-light mt-2 mb-4 text-[#d4a018] text-center">
                 Welcome to Dalila
               </h1>
-              
+
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
                 Where Trust Shines and Quality Sparkles. We bring you timeless
                 diamond jewelry crafted with love and precision.
@@ -113,7 +124,7 @@ export default function LoginPage() {
           </div>
 
           <div className="relative flex-1 flex flex-col justify-center items-center bg-black/20 px-4 py-8 md:py-0">
-           <button
+            <button
               className="absolute top-4 md:top-6 right-4 md:right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-10 hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
               title="Home"
               onClick={() => router.push("/")}
@@ -188,7 +199,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-[90%] ml-5 bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] hover:bg-[#d4a018]"
+                className="w-[90%] ml-5 bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isLoading ? (
                   <>
@@ -201,7 +212,7 @@ export default function LoginPage() {
               </button>
 
               <div className="mt-6 text-center text-xs text-[#474745]">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <a
                   href="#"
                   onClick={(e) => {

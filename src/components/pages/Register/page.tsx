@@ -4,10 +4,13 @@ import { useState } from "react";
 import { Phone, Mail, MapPin, Home } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
+
 export default function RegisterPage() {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -15,10 +18,10 @@ export default function RegisterPage() {
   const [confirmpass, setConfirmpass] = useState<string>("");
   const router = useRouter();
 
-
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
+    console.log("Name:", name, "Email:", email, "Password:", password);
+    // Add your registration logic here
   };
 
   return (
@@ -48,29 +51,37 @@ export default function RegisterPage() {
           >
             <div>
               <div className="flex flex-col items-center text-center">
-              <div className="flex items-center justify-center gap-3 mb-2 mt-5">
-                <div className="relative w-[300px] h-[100px]">
-                  <img
-                    src="/dalila_img/Dalila_Logo.png"
-                    alt="Dalila Diamonds"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <div className="flex items-center justify-center gap-3 mb-2 mt-5">
+                  <div className="relative w-[300px] h-[100px]">
+                    <Image
+                      src="/dalila_img/Dalila_Logo.png"
+                      alt="Dalila Diamonds"
+                      fill
+                      style={{ objectFit: "contain" }}
+                    />
+                  </div>
                 </div>
               </div>
-              <h2 className={`text-6xl mb-7 font-light text-[#d4a018] ${playFair.className
-              }`}>
+
+              <h2
+                className={`text-6xl mb-7 font-light text-[#d4a018] ${playFair.className}`}
+              >
                 <div className="text-center">Join the Dalila</div>
                 <div className="text-center">Family</div>
               </h2>
-              <p className={`text-md mt-2 mb-8 font-normal opacity-90 `}>
-               <div className="text-center">Experience timeless diamond jewelry crafted with passion,</div>
-                 <div className="text-center"> precision,and trust.Begin your journey with Dalila today.</div>
+
+              <p className="text-md mt-2 mb-8 font-normal opacity-90">
+                <div className="text-center">
+                  Experience timeless diamond jewelry crafted with passion,
+                </div>
+                <div className="text-center">
+                  precision, and trust. Begin your journey with Dalila today.
+                </div>
               </p>
             </div>
 
             {/* Contact Info */}
-           <div className={`mt-2 mb-20 space-y-2 text-sm opacity-90`}>
+            <div className="mt-2 mb-20 space-y-2 text-sm opacity-90">
               <div className="flex items-center justify-center gap-2">
                 <Phone className="text-[#FFD166] w-4 h-4" />
                 <span>+1 234 567 890</span>
@@ -98,15 +109,17 @@ export default function RegisterPage() {
               <Home className="w-5 h-5 text-white" />
             </button>
 
-            {/* Login Form */}
+            {/* Registration Form */}
             <form
-              onSubmit={handleLogin}
+              onSubmit={handleRegister}
               className="relative z-10 w-full max-w-[550px] px-8"
             >
-              <h2 className={`text-2xl font-semibold text-white mb-6 text-center ${playFair.className
-              }`}>
+              <h2
+                className={`text-2xl font-semibold text-white mb-6 text-center ${playFair.className}`}
+              >
                 Create an Account
               </h2>
+
               <div className="mb-5">
                 <input
                   type="text"
@@ -139,6 +152,7 @@ export default function RegisterPage() {
                   className="w-full px-5 py-3 rounded bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166]"
                 />
               </div>
+
               <div className="mb-5">
                 <input
                   type="password"
@@ -150,10 +164,10 @@ export default function RegisterPage() {
                 />
               </div>
 
-              <div className="flex  items-center mb-6">
+              <div className="flex items-center mb-6 gap-2">
                 <label className="flex items-center text-xs text-white gap-1 cursor-pointer">
                   <input type="checkbox" className="accent-[#FFD166]" />
-                  I agree to the 
+                  I agree to the
                 </label>
                 <a
                   href="#"
@@ -171,7 +185,7 @@ export default function RegisterPage() {
               </button>
 
               <div className="mt-6 text-center text-xs text-[#474745]">
-                Already  have an account?{" "}
+                Already have an account?{" "}
                 <a
                   href="/login"
                   className="text-[#FFD166] font-semibold hover:underline"

@@ -1,4 +1,5 @@
 import api from "./api";
+import { AxiosError } from "axios";
 
 // Interfaces for Dalila authentication
 interface LoginRequest {
@@ -13,8 +14,10 @@ interface LoginResponse {
     message?: string;  // lowercase variant
     Status?: string;
     status?: string;  // lowercase variant
-    UserData?: any;
-    [key: string]: any;  // Allow any other fields
+    UserData?: Record<string, unknown>;
+    Data?: { Token?: string };
+    data?: { token?: string };
+    [key: string]: unknown;  // Allow any other fields
 }
 
 interface ApiErrorResponse {
@@ -25,7 +28,6 @@ interface ApiErrorResponse {
 class AuthService {
     /**
      * Login user with email and password
-     * Calls the HRC Diamonds API login endpoint
      */
     async login(credentials: LoginRequest): Promise<LoginResponse> {
         try {
@@ -39,10 +41,11 @@ class AuthService {
             console.log("Full API Response:", response.data);
 
             // Check for token in various possible formats
-            const token = response.data.Token || 
-                         response.data.token || 
-                         response.data.Data?.Token ||
-                         response.data.data?.token;
+            const token =
+                response.data.Token ||
+                response.data.token ||
+                response.data.Data?.Token ||
+                response.data.data?.token;
 
             // Store token if found
             if (token) {
@@ -53,17 +56,18 @@ class AuthService {
             }
 
             return response.data;
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Login API Error:", error);
-            
-            if (error.response) {
+
+            if (error instanceof AxiosError && error.response) {
                 const errorData = error.response.data as ApiErrorResponse;
                 throw new Error(
                     errorData.Message ||
-                    errorData.Error ||
-                    "Login failed. Please check your credentials."
+                        errorData.Error ||
+                        "Login failed. Please check your credentials."
                 );
             }
+
             throw new Error("An unexpected error occurred during login. Please try again.");
         }
     }

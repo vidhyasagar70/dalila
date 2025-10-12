@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
@@ -50,7 +51,7 @@ export default function SellDiamondsProcess() {
       title: "Fast and Secure Payment",
       heading: "Receive Your Payment in 24 Hours.",
       description:
-        "Once you accept our offer, we  process your payment within 24 hours via secure bank transfer.",
+        "Once you accept our offer, we process your payment within 24 hours via secure bank transfer.",
       image: "/images/step_5.png",
       imagePosition: "left",
     },
@@ -69,10 +70,13 @@ export default function SellDiamondsProcess() {
                   step.imagePosition === "right" ? "ml-auto" : "mr-auto"
                 }`}
               >
-                <img
+                <Image
                   src={step.image}
                   alt={step.title}
+                  width={800}
+                  height={600}
                   className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
+                  priority={index === 0} // Optional: prioritize the first image for LCP
                 />
               </div>
 

@@ -1,5 +1,6 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function HeroSection() {
@@ -16,7 +17,7 @@ export default function HeroSection() {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [slides.length, currentSlide]);
+  }, [slides.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -39,10 +40,12 @@ export default function HeroSection() {
               key={index}
               className="relative min-w-full h-full flex-shrink-0"
             >
-              <img
+              <Image
                 src={slide.image}
                 alt={`Dalila Diamonds Banner ${index + 1}`}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                priority={index === 0} // prioritize first image for LCP
               />
               <div className="absolute inset-0 bg-slate-900/20" />
             </div>

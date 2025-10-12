@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Mail, Phone } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 
@@ -72,19 +73,23 @@ export default function ContactHeroSection() {
             <div className="grid grid-cols-2 gap-4">
               {/* Customer Service Representative Image */}
               <div className="relative bg-gray-100 rounded-lg overflow-hidden h-96">
-                <img
+                <Image
                   src="/dalila_img/contact-1.webp"
                   alt="Customer service representative"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  priority
                 />
               </div>
 
               {/* Diamond Image */}
               <div className="relative bg-black rounded-lg overflow-hidden h-96">
-                <img
+                <Image
                   src="/dalila_img/contact-3.png"
                   alt="Luxury diamond"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  priority
                 />
               </div>
             </div>
