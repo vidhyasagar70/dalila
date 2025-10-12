@@ -144,7 +144,7 @@ export default function LoginPage() {
                   required
                   disabled={isLoading}
                   placeholder="Email Address"
-                  className="w-full px-5 py-3 rounded-lg bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-[90%] ml-5 px-5 py-3 rounded bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   autoComplete="email"
                 />
               </div>
@@ -157,13 +157,13 @@ export default function LoginPage() {
                   required
                   disabled={isLoading}
                   placeholder="Password"
-                  className="w-full px-5 py-3 rounded-lg bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-[90%] ml-5 px-5 py-3 rounded-lg bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   autoComplete="current-password"
                 />
               </div>
 
               <div className="flex justify-between items-center mb-6">
-                <label className="flex items-center text-xs text-white gap-2 cursor-pointer hover:text-[#FFD166] transition-colors">
+                <label className="flex ml-5 items-center text-xs text-white gap-2 cursor-pointer hover:text-[#FFD166] transition-colors">
                   <input
                     type="checkbox"
                     checked={rememberMe}
@@ -179,7 +179,7 @@ export default function LoginPage() {
                     e.preventDefault();
                     alert("Forgot password functionality coming soon!");
                   }}
-                  className="text-xs text-[#FFD166] hover:text-yellow-400 hover:underline transition-colors"
+                  className="text-xs text-[#FFD166] hover:text-yellow-400 hover:underline transition-colors mr-6"
                 >
                   Forgot Password?
                 </a>
@@ -188,7 +188,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] hover:bg-[#d4a018]"
+                className="w-[90%] ml-5 bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] hover:bg-[#d4a018]"
               >
                 {isLoading ? (
                   <>
