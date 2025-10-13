@@ -44,20 +44,20 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#050c3a] shadow-lg py-3 md:py-4"
-          : "bg-transparent py-4 md:py-6"
+          ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
+          : "bg-transparent py-2.5 md:py-3"
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6">
         {/* Top Tagline - Hidden on mobile */}
-        <div className="hidden sm:flex justify-center mb-1 md:mb-1.5">
+        <div className="hidden sm:flex justify-center mb-0.5 md:mb-1">
           <p className="text-xs md:text-sm tracking-wide text-gray-300">
             Where Trust Shines, And Quality Sparkles
           </p>
         </div>
 
         {/* Divider Line - Hidden on mobile */}
-        <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-1.5 md:mb-2"></div>
+        <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-0"></div>
 
         {/* Main Navigation Bar */}
         <div className="flex items-center justify-between">
@@ -71,7 +71,7 @@ export default function Header() {
           </button>
 
           {/* Left Navigation - Desktop/Tablet */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-10 flex-1">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
             <Link
               href="/aboutUs"
               className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
@@ -99,7 +99,7 @@ export default function Header() {
           </nav>
 
           {/* Center Logo */}
-          <div className="flex-shrink-0 relative h-24 w-[220px] sm:h-28 sm:w-[260px] md:h-32 md:w-[300px]">
+          <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
             <Link href="/" className="block w-full h-full">
               <Image
                 src="/dalila_img/Dalila_Logo.png"
@@ -113,18 +113,18 @@ export default function Header() {
 
           {/* Right Auth Buttons - Desktop/Tablet */}
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
-            <button className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
+            <button className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
               INVENTORY
             </button>
             <button
               onClick={() => router.push("/login")}
-              className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+              className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
             >
               LOGIN
             </button>
             <button
               onClick={() => router.push("/register")}
-              className="py-1 px-4 xl:px-6 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+              className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
             >
               REGISTER
             </button>
