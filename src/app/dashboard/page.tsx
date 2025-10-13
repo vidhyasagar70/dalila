@@ -14,10 +14,10 @@ export default function DashboardPage() {
     // Check authentication on component mount
     const checkAuth = () => {
       if (!authService.isAuthenticated()) {
-        console.log("❌ User not authenticated, redirecting to login...");
+        console.log("User not authenticated, redirecting to login...");
         router.replace("/login");
       } else {
-        console.log("✅ User authenticated");
+        console.log("User authenticated");
         setIsChecking(false);
         
         // Get user email from localStorage if available

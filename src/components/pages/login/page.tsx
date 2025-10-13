@@ -1,7 +1,8 @@
+// components/login/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { Phone, Mail, MapPin, Home, Loader2 } from "lucide-react";
+import { Phone, Mail, MapPin, Home, Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { authService } from "@/services/authService";
@@ -9,15 +10,25 @@ import { authService } from "@/services/authService";
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Check if already authenticated
+  useEffect(() => {
+    if (authService.isAuthenticated()) {
+      console.log("User already authenticated, redirecting...");
+      const redirect = searchParams.get('redirect') || '/dashboard';
+      router.push(redirect);
+    }
+  }, [router, searchParams]);
+
   // Load remembered email on mount
   useEffect(() => {
-    const rememberedEmail = localStorage.getItem("dalilaRememberedEmail");
+    const rememberedEmail = authService.getRememberedEmail();
     if (rememberedEmail) {
       setEmail(rememberedEmail);
       setRememberMe(true);
@@ -29,50 +40,56 @@ export default function LoginPage() {
     setError("");
     setIsLoading(true);
 
+    // Basic validation
+    if (!email.trim()) {
+      setError("Email is required");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      setIsLoading(false);
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      console.log("Initiating login...");
+      
       const response = await authService.login({
-        UserName: email,
+        UserName: email.trim(),
         Password: password,
       });
 
-      console.log("Login Response:", response);
+      console.log("Login successful!");
 
-      // Check for success in loginResult structure
-      const message = response.loginResult?.MESSAGE || response.Message || "";
-      const status = response.loginResult?.STATUS || response.Status || "";
-      const token = response.loginResult?.TOKEN || response.Token || response.token;
-
-      // Check if login was successful
-      const isSuccess = 
-        message.includes("Token generated successfully") ||
-        message.includes("Login Successful") ||
-        status === "Success" ||
-        !!token;
-
-      if (isSuccess) {
-        // Handle remember me
-        if (rememberMe) {
-          localStorage.setItem("dalilaRememberedEmail", email);
-        } else {
-          localStorage.removeItem("dalilaRememberedEmail");
-        }
-
-        console.log("Login successful! Redirecting...");
-
-        // Get redirect URL from query params or default to dashboard
-        const redirect = searchParams.get('redirect') || '/dashboard';
-
-        // Redirect to intended page or dashboard
-        setTimeout(() => {
-          router.push(redirect);
-        }, 500);
+      // Handle remember me
+      if (rememberMe) {
+        authService.setRememberedEmail(email);
       } else {
-        // Login failed
-        setError(
-          message || "Login failed. Please check your credentials and try again."
-        );
-        console.error("Login failed:", response);
+        authService.clearRememberedEmail();
       }
+
+      // Get redirect URL from query params or default to dashboard
+      const redirect = searchParams.get('redirect') || '/dashboard';
+
+      // Show success message briefly before redirect
+      setError(""); // Clear any errors
+      
+      // Small delay for better UX
+      setTimeout(() => {
+        console.log(`Redirecting to: ${redirect}`);
+        router.push(redirect);
+      }, 500);
+
     } catch (err: unknown) {
       console.error(" Login error:", err);
 
@@ -88,8 +105,13 @@ export default function LoginPage() {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
         src="/New-Videos/auth-bg.mp4"
@@ -99,10 +121,14 @@ export default function LoginPage() {
         playsInline
       />
 
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/50 pointer-events-none" />
 
+      {/* Content */}
       <div className="relative z-10 flex items-center justify-center w-full h-full p-4">
         <div className="flex w-full max-w-[1100px] h-auto md:h-[480px] rounded-xl shadow-2xl border border-gray-800 overflow-hidden flex-col md:flex-row">
+          
+          {/* Left Panel - Brand Info */}
           <div
             className="flex flex-col justify-between text-white px-10 py-10 w-full md:w-[50%] md:min-w-[350px]"
             style={{
@@ -148,7 +174,10 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Right Panel - Login Form */}
           <div className="relative flex-1 flex flex-col justify-center items-center bg-black/20 px-4 py-8 md:py-0">
+            
+            {/* Home Button */}
             <button
               className="absolute top-4 md:top-6 right-4 md:right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-10 hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
               title="Home"
@@ -158,6 +187,7 @@ export default function LoginPage() {
               <Home className="w-5 h-5 text-white" />
             </button>
 
+            {/* Login Form */}
             <form
               onSubmit={handleLogin}
               className="relative z-10 w-full max-w-[400px] md:max-w-[550px]"
@@ -166,12 +196,14 @@ export default function LoginPage() {
                 Login to Your Account
               </h2>
 
+              {/* Error Message */}
               {error && (
-                <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500 text-red-200 text-sm text-center">
+                <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500 text-red-200 text-sm text-center animate-shake">
                   {error}
                 </div>
               )}
 
+              {/* Email Input */}
               <div className="mb-5">
                 <input
                   type="email"
@@ -180,14 +212,15 @@ export default function LoginPage() {
                   required
                   disabled={isLoading}
                   placeholder="Email Address"
-                  className="w-[90%] ml-5 px-5 py-3 rounded bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-[90%] ml-5 px-5 py-3 rounded-lg bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   autoComplete="email"
                 />
               </div>
 
-              <div className="mb-5">
+              {/* Password Input */}
+              <div className="mb-5 relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -196,15 +229,29 @@ export default function LoginPage() {
                   className="w-[90%] ml-5 px-5 py-3 rounded-lg bg-white border border-gray-300 focus:border-[#FFD166] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   autoComplete="current-password"
                 />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-[60px] top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                  disabled={isLoading}
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
               </div>
 
+              {/* Remember Me & Forgot Password */}
               <div className="flex justify-between items-center mb-6">
                 <label className="flex ml-5 items-center text-xs text-white gap-2 cursor-pointer hover:text-[#FFD166] transition-colors">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="accent-[#FFD166] w-4 h-4"
+                    className="accent-[#FFD166] w-4 h-4 cursor-pointer"
                     disabled={isLoading}
                   />
                   <span>Remember me</span>
@@ -221,6 +268,7 @@ export default function LoginPage() {
                 </a>
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
@@ -236,6 +284,7 @@ export default function LoginPage() {
                 )}
               </button>
 
+              {/* Register Link */}
               <div className="mt-6 text-center text-xs text-[#474745]">
                 Don&apos;t have an account?{" "}
                 <a
