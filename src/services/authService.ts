@@ -2,7 +2,7 @@
 import api from "./api";
 import { AxiosError } from "axios";
 
-// Interfaces
+
 interface LoginRequest {
   UserName: string;
   Password: string;

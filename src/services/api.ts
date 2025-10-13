@@ -1,7 +1,7 @@
 // services/api.ts
 import axios, { type AxiosInstance, type AxiosResponse } from "axios";
 
-// Create custom axios instance for Dalila application
+// Create custom axios instance 
 const api: AxiosInstance = axios.create({
     baseURL: "/api/hrc", 
     timeout: 15000, 
@@ -37,7 +37,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response: AxiosResponse) => {
         // Log successful response (remove in production)
-        console.log(`✅ API Response: ${response.config.url} - Status: ${response.status}`);
+        console.log(`API Response: ${response.config.url} - Status: ${response.status}`);
         return response;
     },
     (error) => {

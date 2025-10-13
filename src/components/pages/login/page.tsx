@@ -64,7 +64,7 @@ export default function LoginPage() {
     try {
       console.log("Initiating login...");
       
-      const response = await authService.login({
+      await authService.login({
         UserName: email.trim(),
         Password: password,
       });
@@ -82,9 +82,9 @@ export default function LoginPage() {
       const redirect = searchParams.get('redirect') || '/dashboard';
 
       // Show success message briefly before redirect
-      setError(""); // Clear any errors
+      setError(""); 
       
-      // Small delay for better UX
+
       setTimeout(() => {
         console.log(`Redirecting to: ${redirect}`);
         router.push(redirect);
