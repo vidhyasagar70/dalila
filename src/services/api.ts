@@ -1,9 +1,8 @@
 import axios, { type AxiosInstance, type AxiosResponse } from "axios";
 
 // Create custom axios instance for Dalila application
-// Now pointing to our Next.js API proxy to avoid CORS issues
 const api: AxiosInstance = axios.create({
-    baseURL: "/api/hrc", // Using Next.js API route as proxy
+    baseURL: "/api/hrc", 
     timeout: 10000,
     headers: {
         "Content-Type": "application/json",
@@ -13,10 +12,11 @@ const api: AxiosInstance = axios.create({
 // Request interceptor
 api.interceptors.request.use(
     (config) => {
-        // Add auth token if available
-        const token = localStorage.getItem("dalilaAuthToken");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem("dalilaAuthToken");
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
         }
         return config;
     },
@@ -33,10 +33,12 @@ api.interceptors.response.use(
     (error) => {
         // Handle common errors
         if (error.response?.status === 401) {
-            // Handle unauthorized access
-            localStorage.removeItem("dalilaAuthToken");
-            if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-                window.location.href = "/login";
+            // Handle unauthorized access (only in browser)
+            if (typeof window !== "undefined") {
+                localStorage.removeItem("dalilaAuthToken");
+                if (window.location.pathname !== "/login") {
+                    window.location.href = "/login";
+                }
             }
         }
         if (error.response?.status === 500) {

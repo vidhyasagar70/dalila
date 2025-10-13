@@ -7,6 +7,7 @@ import BookComponent from "@/components/pages/homecomponents/BookComponent";
 import DiamondSource from "@/components/pages/homecomponents/DiamondSource";
 import VideoContent from "@/components/pages/homecomponents/VideoContent";
 import Experience from "@/components/pages/homecomponents/experience";
+
 export default function Home() {
   return (
     <>

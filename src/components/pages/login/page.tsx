@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Phone, Mail, MapPin, Home, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { authService } from "@/services/authService";
 
@@ -13,6 +13,16 @@ export default function LoginPage() {
   const [error, setError] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Load remembered email on mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("dalilaRememberedEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,11 +37,20 @@ export default function LoginPage() {
 
       console.log("Login Response:", response);
 
-      if (
-        response.Token ||
-        response.Status === "Success" ||
-        response.Message === "Login Successful"
-      ) {
+      // Check for success in loginResult structure
+      const message = response.loginResult?.MESSAGE || response.Message || "";
+      const status = response.loginResult?.STATUS || response.Status || "";
+      const token = response.loginResult?.TOKEN || response.Token || response.token;
+
+      // Check if login was successful
+      const isSuccess = 
+        message.includes("Token generated successfully") ||
+        message.includes("Login Successful") ||
+        status === "Success" ||
+        !!token;
+
+      if (isSuccess) {
+        // Handle remember me
         if (rememberMe) {
           localStorage.setItem("dalilaRememberedEmail", email);
         } else {
@@ -40,16 +59,22 @@ export default function LoginPage() {
 
         console.log("Login successful! Redirecting...");
 
+        // Get redirect URL from query params or default to dashboard
+        const redirect = searchParams.get('redirect') || '/dashboard';
+
+        // Redirect to intended page or dashboard
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push(redirect);
         }, 500);
       } else {
+        // Login failed
         setError(
-          response.Message || "Login failed. Please check your credentials and try again."
+          message || "Login failed. Please check your credentials and try again."
         );
+        console.error("Login failed:", response);
       }
     } catch (err: unknown) {
-      console.error("Login error:", err);
+      console.error(" Login error:", err);
 
       if (err instanceof Error) {
         setError(err.message);
