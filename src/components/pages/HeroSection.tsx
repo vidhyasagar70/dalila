@@ -7,8 +7,8 @@ export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
-    { image: "/dalila_img/banners/new/Banner-01.jpg" },
-    { image: "/dalila_img/banners/new/Banner-02.jpg" },
+    { image: "/dalila_img/banners/new/Banner_01.jpg" },
+    { image: "/dalila_img/banners/new/Banner_02.jpg" },
     { image: "/dalila_img/banners/new/Banner-03.jpg" },
   ];
 

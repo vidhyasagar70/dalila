@@ -29,11 +29,11 @@ export default function WebuyBanner() {
         <div className="container mx-auto px-6 relative z-10 text-center py-14">
           <div className="opacity-100">
             <h1
-              className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-12 ${playFair.className}`}
+              className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-30 ${playFair.className}`}
             >
-              Sell Your DIAMONDS
+              Sell Your <br/> DIAMONDS
             </h1>
-            <div className="w-28 h-0.5 bg-amber-400 mx-auto mb-6" />
+            <div className="w-[35%] h-px bg-amber-400 mx-auto mb-6" />
           </div>
 
           <div className="opacity-100 mt-6">
