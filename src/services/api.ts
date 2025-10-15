@@ -17,13 +17,19 @@ api.interceptors.request.use(
         // Check if we're in browser environment
         if (typeof window !== "undefined") {
             const token = localStorage.getItem("dalilaAuthToken");
-            if (token) {
+            
+            // For GetStock endpoint, token should be in body, not header
+            // So we skip adding the Authorization header for this endpoint
+            if (token && !config.url?.includes("GetStock")) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
         }
         
         // Log request for debugging (remove in production)
         console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
+        if (config.data) {
+            console.log('Request data:', config.data);
+        }
         
         return config;
     },
@@ -38,6 +44,23 @@ api.interceptors.response.use(
     (response: AxiosResponse) => {
         // Log successful response (remove in production)
         console.log(`API Response: ${response.config.url} - Status: ${response.status}`);
+        
+        // Check for token expiration in response
+        const data = response.data;
+        if (data?.GetStockResult?.MESSAGE || data?.Message) {
+            const message = (data.GetStockResult?.MESSAGE || data.Message).toLowerCase();
+            if (message.includes('token') && (message.includes('invalid') || message.includes('expired'))) {
+                console.warn("Token expired or invalid in response");
+                
+                if (typeof window !== "undefined") {
+                    // Clear auth data
+                    localStorage.removeItem("dalilaAuthToken");
+                    localStorage.removeItem("dalilaUser");
+                    document.cookie = "dalilaAuthToken=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+                }
+            }
+        }
+        
         return response;
     },
     (error) => {

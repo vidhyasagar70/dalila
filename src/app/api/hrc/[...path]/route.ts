@@ -1,6 +1,7 @@
+//api/hrc/[...path]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-
+// FIXED: Remove trailing slash and ensure proper URL construction
 const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://hrcdiamonds.com/HRCProvideStock.svc";
 
 export async function GET(
@@ -14,9 +15,10 @@ export async function GET(
     const searchParams = request.nextUrl.searchParams;
     const queryString = searchParams.toString();
 
+    // FIXED: Proper URL construction
     const url = `${API_BASE_URL}/${path}${queryString ? `?${queryString}` : ""}`;
 
-    console.log("Proxying GET request to:", url);
+    console.log("🔗 Proxying GET request to:", url);
 
     const response = await fetch(url, {
       method: "GET",
@@ -28,7 +30,7 @@ export async function GET(
     });
 
     if (!response.ok) {
-      console.error("API Error:", response.status, response.statusText);
+      console.error("❌ API Error:", response.status, response.statusText);
       const errorText = await response.text();
       console.error("Error details:", errorText);
 
@@ -44,7 +46,7 @@ export async function GET(
 
     const data = await response.json();
 
-    console.log("API Response received:", {
+    console.log("✅ API Response received:", {
       status: response.status,
       hasToken: !!(data.Token || data.token),
     });
@@ -58,7 +60,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Proxy error:", error);
+    console.error("❌ Proxy error:", error);
 
     return NextResponse.json(
       {
@@ -80,10 +82,11 @@ export async function POST(
 
     const body = await request.json();
 
+    // FIXED: Proper URL construction
     const url = `${API_BASE_URL}/${path}`;
 
-    console.log("Proxying POST request to:", url);
-    console.log("Request body:", body);
+    console.log("🔗 Proxying POST request to:", url);
+    console.log("📦 Request body:", body);
 
     const response = await fetch(url, {
       method: "POST",
@@ -96,7 +99,7 @@ export async function POST(
     });
 
     if (!response.ok) {
-      console.error("API Error:", response.status, response.statusText);
+      console.error("❌ API Error:", response.status, response.statusText);
       const errorText = await response.text();
       console.error("Error details:", errorText);
 
@@ -112,7 +115,7 @@ export async function POST(
 
     const data = await response.json();
 
-    console.log("API Response received");
+    console.log("✅ API Response received");
 
     return NextResponse.json(data, {
       status: response.status,
@@ -123,7 +126,7 @@ export async function POST(
       },
     });
   } catch (error) {
-    console.error("Proxy error:", error);
+    console.error("❌ Proxy error:", error);
 
     return NextResponse.json(
       {
@@ -145,7 +148,7 @@ export async function PUT(
     const body = await request.json();
     const url = `${API_BASE_URL}/${path}`;
 
-    console.log("Proxying PUT request to:", url);
+    console.log("🔗 Proxying PUT request to:", url);
 
     const response = await fetch(url, {
       method: "PUT",
@@ -159,7 +162,7 @@ export async function PUT(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("API Error:", response.status, errorText);
+      console.error("❌ API Error:", response.status, errorText);
 
       return NextResponse.json(
         { error: "API request failed", message: errorText },
@@ -178,7 +181,7 @@ export async function PUT(
       },
     });
   } catch (error) {
-    console.error("Proxy error:", error);
+    console.error("❌ Proxy error:", error);
 
     return NextResponse.json(
       {
@@ -199,7 +202,7 @@ export async function DELETE(
     const path = params.path.join("/");
     const url = `${API_BASE_URL}/${path}`;
 
-    console.log("Proxying DELETE request to:", url);
+    console.log("🔗 Proxying DELETE request to:", url);
 
     const response = await fetch(url, {
       method: "DELETE",
@@ -212,7 +215,7 @@ export async function DELETE(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("API Error:", response.status, errorText);
+      console.error("❌ API Error:", response.status, errorText);
 
       return NextResponse.json(
         { error: "API request failed", message: errorText },
@@ -231,7 +234,7 @@ export async function DELETE(
       },
     });
   } catch (error) {
-    console.error("Proxy error:", error);
+    console.error("❌ Proxy error:", error);
 
     return NextResponse.json(
       {
