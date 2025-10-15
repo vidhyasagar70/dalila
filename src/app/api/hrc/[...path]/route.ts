@@ -1,8 +1,7 @@
-//api/hrc/[...path]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-// FIXED: Remove trailing slash and ensure proper URL construction
-const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://hrcdiamonds.com/HRCProvideStock.svc";
+// FIXED: Removed duplicate /HRCProvideStock.svc and trailing slash
+const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://hrcdiamonds.com";
 
 export async function GET(
   request: NextRequest,
@@ -15,8 +14,8 @@ export async function GET(
     const searchParams = request.nextUrl.searchParams;
     const queryString = searchParams.toString();
 
-    // FIXED: Proper URL construction
-    const url = `${API_BASE_URL}/${path}${queryString ? `?${queryString}` : ""}`;
+    // FIXED: Correct URL construction - removed duplicate /HRCProvideStock.svc
+    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}${queryString ? `?${queryString}` : ""}`;
 
     console.log("🔗 Proxying GET request to:", url);
 
@@ -82,11 +81,11 @@ export async function POST(
 
     const body = await request.json();
 
-    // FIXED: Proper URL construction
-    const url = `${API_BASE_URL}/${path}`;
+    // FIXED: Added /HRCProvideStock.svc/api prefix for consistency
+    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}`;
 
     console.log("🔗 Proxying POST request to:", url);
-    console.log("📦 Request body:", body);
+    console.log("📦 Request body:", JSON.stringify(body, null, 2));
 
     const response = await fetch(url, {
       method: "POST",
@@ -146,7 +145,9 @@ export async function PUT(
     const params = await context.params;
     const path = params.path.join("/");
     const body = await request.json();
-    const url = `${API_BASE_URL}/${path}`;
+    
+    // FIXED: Added /HRCProvideStock.svc/api prefix for consistency
+    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}`;
 
     console.log("🔗 Proxying PUT request to:", url);
 
@@ -200,7 +201,9 @@ export async function DELETE(
   try {
     const params = await context.params;
     const path = params.path.join("/");
-    const url = `${API_BASE_URL}/${path}`;
+    
+    // FIXED: Added /HRCProvideStock.svc/api prefix for consistency
+    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}`;
 
     console.log("🔗 Proxying DELETE request to:", url);
 
