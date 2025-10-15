@@ -1,250 +1,78 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
-// FIXED: Removed duplicate /HRCProvideStock.svc and trailing slash
-const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://hrcdiamonds.com";
+const BASE_URL = process.env.BASE_URL || 'http://hrcdiamonds.com/HRCProvideStock.svc';
 
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ path: string[] }> }
-) {
+export async function GET(req: NextRequest, { params }: { params: { path: string[] } }) {
+  return handleRequest(req, params, 'GET');
+}
+
+export async function POST(req: NextRequest, { params }: { params: { path: string[] } }) {
+  return handleRequest(req, params, 'POST');
+}
+
+export async function PUT(req: NextRequest, { params }: { params: { path: string[] } }) {
+  return handleRequest(req, params, 'PUT');
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: { path: string[] } }) {
+  return handleRequest(req, params, 'DELETE');
+}
+
+async function handleRequest(req: NextRequest, params: { path: string[] }, method: string) {
+  const { searchParams } = req.nextUrl;
+  const path = params.path.join('/');
+
   try {
-    const params = await context.params;
-    const path = params.path.join("/");
+    // ✅ Corrected: Removed extra `/api/` from the target URL
+    const targetUrl =
+      method === 'GET'
+        ? `${BASE_URL}/${path}?${searchParams.toString()}`
+        : `${BASE_URL}/${path}`;
 
-    const searchParams = request.nextUrl.searchParams;
-    const queryString = searchParams.toString();
+    console.log(`🔗 Proxying ${method} request to: ${targetUrl}`);
 
-    // FIXED: Correct URL construction - removed duplicate /HRCProvideStock.svc
-    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}${queryString ? `?${queryString}` : ""}`;
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
 
-    console.log("🔗 Proxying GET request to:", url);
+    const options: RequestInit = {
+      method,
+      headers,
+    };
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      cache: "no-store",
-    });
+    if (method !== 'GET') {
+      options.body = await req.text();
+    }
+
+    const response = await fetch(targetUrl, options);
+    const contentType = response.headers.get('content-type') || '';
 
     if (!response.ok) {
-      console.error("❌ API Error:", response.status, response.statusText);
       const errorText = await response.text();
-      console.error("Error details:", errorText);
-
+      console.error(`❌ API Error: ${response.status} ${response.statusText}`);
+      console.error(`Error details: ${errorText}`);
       return NextResponse.json(
         {
-          error: "API request failed",
+          error: 'API Error',
           status: response.status,
-          message: errorText,
+          message: response.statusText,
         },
         { status: response.status }
       );
     }
 
-    const data = await response.json();
-
-    console.log("✅ API Response received:", {
-      status: response.status,
-      hasToken: !!(data.Token || data.token),
-    });
-
-    return NextResponse.json(data, {
-      status: response.status,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
-  } catch (error) {
-    console.error("❌ Proxy error:", error);
-
-    return NextResponse.json(
-      {
-        error: "Failed to fetch data from API",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(
-  request: NextRequest,
-  context: { params: Promise<{ path: string[] }> }
-) {
-  try {
-    const params = await context.params;
-    const path = params.path.join("/");
-
-    const body = await request.json();
-
-    // FIXED: Added /HRCProvideStock.svc/api prefix for consistency
-    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}`;
-
-    console.log("🔗 Proxying POST request to:", url);
-    console.log("📦 Request body:", JSON.stringify(body, null, 2));
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.error("❌ API Error:", response.status, response.statusText);
-      const errorText = await response.text();
-      console.error("Error details:", errorText);
-
-      return NextResponse.json(
-        {
-          error: "API request failed",
-          status: response.status,
-          message: errorText,
-        },
-        { status: response.status }
-      );
+    // 🧠 Handle JSON or XML responses
+    if (contentType.includes('application/json')) {
+      const data = await response.json();
+      return NextResponse.json(data);
+    } else {
+      const text = await response.text();
+      return new NextResponse(text, {
+        headers: { 'Content-Type': contentType },
+      });
     }
-
-    const data = await response.json();
-
-    console.log("✅ API Response received");
-
-    return NextResponse.json(data, {
-      status: response.status,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
-  } catch (error) {
-    console.error("❌ Proxy error:", error);
-
-    return NextResponse.json(
-      {
-        error: "Failed to fetch data from API",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(
-  request: NextRequest,
-  context: { params: Promise<{ path: string[] }> }
-) {
-  try {
-    const params = await context.params;
-    const path = params.path.join("/");
-    const body = await request.json();
-    
-    // FIXED: Added /HRCProvideStock.svc/api prefix for consistency
-    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}`;
-
-    console.log("🔗 Proxying PUT request to:", url);
-
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ API Error:", response.status, errorText);
-
-      return NextResponse.json(
-        { error: "API request failed", message: errorText },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-
-    return NextResponse.json(data, {
-      status: response.status,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
-  } catch (error) {
-    console.error("❌ Proxy error:", error);
-
-    return NextResponse.json(
-      {
-        error: "Failed to fetch data from API",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ path: string[] }> }
-) {
-  try {
-    const params = await context.params;
-    const path = params.path.join("/");
-    
-    // FIXED: Added /HRCProvideStock.svc/api prefix for consistency
-    const url = `${API_BASE_URL}/HRCProvideStock.svc/api/${path}`;
-
-    console.log("🔗 Proxying DELETE request to:", url);
-
-    const response = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ API Error:", response.status, errorText);
-
-      return NextResponse.json(
-        { error: "API request failed", message: errorText },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
-
-    return NextResponse.json(data, {
-      status: response.status,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    });
-  } catch (error) {
-    console.error("❌ Proxy error:", error);
-
-    return NextResponse.json(
-      {
-        error: "Failed to fetch data from API",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    console.error('🔥 Proxy Error:', err);
+    return NextResponse.json({ error: 'Internal Server Error', message: err.message }, { status: 500 });
   }
 }
