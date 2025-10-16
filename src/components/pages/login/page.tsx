@@ -1,11 +1,10 @@
-// components/login/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { Phone, Mail, MapPin, Home, Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { authService } from "@/services/authService";
+import { userApi, getAuthToken, UNAUTHORIZED_EVENT } from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
@@ -17,23 +16,29 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Check if already authenticated
-  useEffect(() => {
-    if (authService.isAuthenticated()) {
-      console.log("User already authenticated, redirecting...");
-      const redirect = searchParams.get('redirect') || '/dashboard';
-      router.push(redirect);
-    }
-  }, [router, searchParams]);
-
   // Load remembered email on mount
   useEffect(() => {
-    const rememberedEmail = authService.getRememberedEmail();
-    if (rememberedEmail) {
-      setEmail(rememberedEmail);
-      setRememberMe(true);
+    if (typeof window !== 'undefined') {
+      const rememberedEmail = localStorage.getItem('rememberedEmail');
+      if (rememberedEmail) {
+        setEmail(rememberedEmail);
+        setRememberMe(true);
+      }
     }
   }, []);
+
+  // Listen for unauthorized events
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      console.log("Unauthorized event detected, redirecting to login...");
+      router.push('/login');
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+      return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,37 +69,61 @@ export default function LoginPage() {
     try {
       console.log("Initiating login...");
       
-      await authService.login({
-        UserName: email.trim(),
-        Password: password,
+      // Call the login API
+      const response = await userApi.login({
+        email: email.trim(),
+        password: password,
       });
 
-      console.log("Login successful!");
+      if (response && response.success) {
+        console.log("Login successful!", response);
 
-      // Handle remember me
-      if (rememberMe) {
-        authService.setRememberedEmail(email);
+        // Handle remember me
+        if (typeof window !== 'undefined') {
+          if (rememberMe) {
+            localStorage.setItem('rememberedEmail', email);
+          } else {
+            localStorage.removeItem('rememberedEmail');
+          }
+        }
+
+        // Get redirect URL from query params or default to dashboard
+        const redirect = searchParams.get('redirect') || '/dashboard';
+
+        // Show success message briefly before redirect
+        setError("");
+
+        setTimeout(() => {
+          console.log(`Redirecting to: ${redirect}`);
+          router.push(redirect);
+        }, 500);
       } else {
-        authService.clearRememberedEmail();
+        // Handle unsuccessful login
+        setError(response?.message || "Login failed. Please try again.");
       }
 
-      // Get redirect URL from query params or default to dashboard
-      const redirect = searchParams.get('redirect') || '/dashboard';
-
-      // Show success message briefly before redirect
-      setError(""); 
-      
-
-      setTimeout(() => {
-        console.log(`Redirecting to: ${redirect}`);
-        router.push(redirect);
-      }, 500);
-
     } catch (err: unknown) {
-      console.error(" Login error:", err);
+      console.error("Login error:", err);
 
       if (err instanceof Error) {
-        setError(err.message);
+        // Check for specific error messages from the API
+        const errorMessage = err.message;
+        
+        if (errorMessage.includes("Invalid credentials") || 
+            errorMessage.includes("incorrect password") ||
+            errorMessage.includes("not found")) {
+          setError("Invalid email or password. Please try again.");
+        } else if (errorMessage.includes("not verified")) {
+          setError("Please verify your email address before logging in.");
+        } else if (errorMessage.includes("account is locked") || 
+                   errorMessage.includes("suspended")) {
+          setError("Your account has been suspended. Please contact support.");
+        } else if (errorMessage.includes("network") || 
+                   errorMessage.includes("fetch")) {
+          setError("Unable to connect to server. Please check your internet connection.");
+        } else {
+          setError(errorMessage || "Login failed. Please try again.");
+        }
       } else {
         setError(
           "Unable to connect to server. Please check your internet connection and try again."
@@ -107,6 +136,12 @@ export default function LoginPage() {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Navigate to forgot password page
+    router.push('/forgot-password');
   };
 
   return (
@@ -258,10 +293,7 @@ export default function LoginPage() {
                 </label>
                 <a
                   href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert("Forgot password functionality coming soon!");
-                  }}
+                  onClick={handleForgotPassword}
                   className="text-xs text-[#FFD166] hover:text-yellow-400 hover:underline transition-colors mr-6"
                 >
                   Forgot Password?

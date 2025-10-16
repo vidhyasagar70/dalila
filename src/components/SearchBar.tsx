@@ -20,8 +20,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   return (
     <div className="mb-4">
-      <div className="flex items-center border-2 border-gray-300 rounded overflow-hidden bg-white shadow" style={{ width: 'fit-content' }}>
-        <div className="flex items-center px-3 py-2.5 border-r-2 border-gray-300">
+      <div className="flex items-center border border-gray-200 rounded overflow-hidden bg-white shadow-sm w-fit">
+        <div className="flex items-center px-3 py-2.5 border-r border-gray-200">
           <Search className="w-5 h-5 text-gray-600" />
         </div>
         <input
@@ -30,13 +30,11 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Search by Stone ID"
-          className="px-4 py-2.5 outline-none text-base"
-          style={{ minWidth: '300px', color: '#000' }}
+          className="px-4 py-2.5 outline-none text-base text-black min-w-[300px]"
         />
         <button
           onClick={handleSearch}
-          className="px-6 py-2.5 text-white font-medium"
-          style={{ backgroundColor: '#000033' }}
+          className="px-6 py-2.5 bg-[#000033] text-white font-medium hover:bg-[#000044] transition-colors"
         >
           Search
         </button>

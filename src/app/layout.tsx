@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Jost } from "next/font/google";
 import "./globals.css";
 import HeaderFooterWrapper from "@/components/HeaderFooterWrapper";
-import { AuthProvider } from "@/context/AuthContext";
+
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -34,9 +34,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-jost">
-        <AuthProvider>
+
           <HeaderFooterWrapper>{children}</HeaderFooterWrapper>
-        </AuthProvider>
+     
       </body>
     </html>
   );

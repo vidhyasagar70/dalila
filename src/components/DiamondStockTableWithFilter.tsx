@@ -1,87 +1,189 @@
-import React, { useState, useEffect } from "react";
-import { stockService } from "../services/stockService";
-import type { DiamondData } from "../services/stockService";
-import DiamondStockTable from "./DiamondStockTable";
+// components/DiamondStockTableWithFilter.tsx
+
+"use client";
+import React, { useState } from "react";
+
 import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
 import ShapeFilter from "./ShapeFilter";
-function getColorsForFilter(selected: string): string[] {
-  if (selected === "ALL") return [];
-  if (selected === "N-Z") return ["N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
-  if (selected === "FANCY") return ["FANCY"];
-  return [selected];
-}
+import CaratFilter from "./CaratFilter";
+import ClarityFilter from "./ClarityFilter";
+import FluorFilter from "./FluorescenceFilter";
+import InclusionFilter, { type InclusionFilters } from './InclusionFilter';
+import MeasurementFilter from "./MeasurementFilter";
+import KeySymbolFilter, { type KeySymbolFilters } from './KeyToSymbolFilter';
+import ShadesFilter, { type ShadesFilters } from './ShadesFilter';
+import PriceLocationFilter, { type PriceLocationFilters } from './Priceandloction';
+import AdvancedFilters from "./AdvancedFilters";
 
 export default function DiamondStockTableWithFilter() {
-  const [stockData, setStockData] = useState<DiamondData[]>([]);
-  const [loading, setLoading] = useState(false);
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
-  const [error, setError] = useState("");
-  const [selectedShape, setSelectedShape] = useState("ROUND");
+  const [selectedShape, setSelectedShape] = useState("ALL");
+  const [selectedCaratRange, setSelectedCaratRange] = useState("");
+  const [selectedClarity, setSelectedClarity] = useState<string[]>([]);
+  const [selectedCut, setSelectedCut] = useState("");
+  const [selectedPolish, setSelectedPolish] = useState("");
+  const [selectedSymmetry, setSelectedSymmetry] = useState("");
+  const [selectedFluor, setSelectedFluor] = useState<string[]>([]);
+  const [measurements, setMeasurements] = useState({
+    length: { from: "0.50", to: "0.50" },
+    width: { from: "0.50", to: "0.50" },
+    depth: { from: "0.50", to: "0.50" },
+    table: { from: "0.50", to: "0.50" },
+    depthPercent: { from: "0.50", to: "0.50" },
+    ratio: { from: "0.50", to: "0.50" },
+    crAngle: { from: "0.50", to: "0.50" },
+    pavAngle: { from: "0.50", to: "0.50" },
+    gridle: { from: "0.50", to: "0.50" },
+    crHeight: { from: "0.50", to: "0.50" },
+    pavHeight: { from: "0.50", to: "0.50" },
+  });
+  const [inclusions, setInclusions] = useState<InclusionFilters>({
+    centerBlack: [],
+    centerWhite: [],
+    sideBlack: [],
+    sideWhite: [],
+  });
+  const [shadesFilters, setShadesFilters] = useState<ShadesFilters>({
+    shades: [],
+    milky: [],
+    type2Ct: [],
+    brl: [],
+  });
+  const [keySymbolFilters, setKeySymbolFilters] = useState<KeySymbolFilters>({
+    keyToSymbol: [],
+    eyCln: [],
+    hAndA: [],
+  });
+  const [priceLocationFilters, setPriceLocationFilters] = useState<PriceLocationFilters>({
+    pricePerCarat: { from: "0.50", to: "0.50" },
+    discount: { from: "0.50", to: "0.50" },
+    totalPrice: { from: "0.50", to: "0.50" },
+    locations: [],
+    labs: [],
+  });
+  const [showFilters, setShowFilters] = useState(true);
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color);
+    setSearchTerm("");
+  };
+
+  const handleShapeChange = (shape: string) => {
+    setSelectedShape(shape);
+    setSearchTerm("");
+  };
+
+  const handleFluorChange = (fluor: string[]) => {
+    setSelectedFluor(fluor);
+    setSearchTerm("");
   };
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      setError("");
-      try {
-        const filters: any = {};
-        
-        const colorsForFilter = getColorsForFilter(selectedColor);
-        if (colorsForFilter.length > 0) {
-          filters.COLOR = colorsForFilter;
-        }
-        
-        if (searchTerm.trim()) {
-          filters.searchTerm = searchTerm.trim();
-        }
+  const handleCaratRangeChange = (range: string) => {
+    setSelectedCaratRange(range);
+    setSearchTerm("");
+  };
 
-        console.log("📤 Sending filters:", filters);
-        
-        const data = await stockService.getStock(filters);
-        setStockData(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch diamond stock data.");
-        setStockData([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [selectedColor, searchTerm]);
+  const handleClarityChange = (clarity: string[]) => {
+    setSelectedClarity(clarity);
+    setSearchTerm("");
+  };
+
+  const handleCutChange = (cut: string) => {
+    setSelectedCut(cut);
+    setSearchTerm("");
+  };
+
+  const handlePolishChange = (polish: string) => {
+    setSelectedPolish(polish);
+    setSearchTerm("");
+  };
+
+  const handleSymmetryChange = (symmetry: string) => {
+    setSelectedSymmetry(symmetry);
+    setSearchTerm("");
+  };
+
+  const handleResetFilters = () => {
+    setSelectedColor("ALL");
+    setSelectedShape("ALL");
+    setSelectedCaratRange("");
+    setSelectedClarity([]);
+    setSelectedCut("");
+    setSelectedPolish("");
+    setSelectedSymmetry("");
+    setSelectedFluor([]);
+  };
 
   return (
-   <div className="w-full max-w-7xl mx-auto p-4">
-      <div className="flex gap-4 mb-4">
+    <div className="w-full px-4 py-4 bg-gray-50 mt-35">
+      {/* TOP ROW: Shapes, Carat, Clarity, Color - 4 columns equal width */}
+      <div className="grid grid-cols-4 gap-4 mb-4">
+        <ShapeFilter
+          selectedShape={selectedShape}
+          onShapeChange={handleShapeChange}
+        />
+        <CaratFilter 
+          selectedRange={selectedCaratRange}
+          onRangeChange={handleCaratRangeChange}
+        />
+        <ClarityFilter
+          selectedClarity={selectedClarity}
+          selectedCut={selectedCut}
+          selectedPolish={selectedPolish}
+          selectedSymmetry={selectedSymmetry}
+          onClarityChange={handleClarityChange}
+          onCutChange={handleCutChange}
+          onPolishChange={handlePolishChange}
+          onSymmetryChange={handleSymmetryChange}
+        />
         <ColorFilter
           selectedColor={selectedColor}
           onColorChange={handleColorChange}
         />
-        <ShapeFilter
-          selectedShape={selectedShape}
-          onShapeChange={setSelectedShape}
-        />
       </div>
-     
-      
-      
-      <SearchBar onSearch={handleSearch} />
 
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
-          {error}
+      {/* MIDDLE ROW: Search Bar and Advanced Filters */}
+      <div className="mb-4">
+        <SearchBar onSearch={handleSearch} />
+        <div className="mt-2">
+          <AdvancedFilters
+            onShowFilters={() => setShowFilters(!showFilters)}
+            onResetFilters={handleResetFilters}
+          />
+        </div>
+      </div>
+
+      {/* BOTTOM ROW: 5 columns - Inclusion, Shades, Key To Symbol, Price, Measurement */}
+      {showFilters && (
+        <div className="grid grid-cols-5 gap-4">
+          <InclusionFilter
+            inclusions={inclusions}
+            onInclusionChange={setInclusions}
+          />
+          <ShadesFilter
+            filters={shadesFilters}
+            onFiltersChange={setShadesFilters}
+          />
+          <KeySymbolFilter
+            filters={keySymbolFilters}
+            onFiltersChange={setKeySymbolFilters}
+          />
+          <PriceLocationFilter
+            filters={priceLocationFilters}
+            onFiltersChange={setPriceLocationFilters}
+          />
+          <MeasurementFilter
+            measurements={measurements}
+            onMeasurementChange={setMeasurements}
+          />
         </div>
       )}
-      
-      <DiamondStockTable data={stockData} loading={loading} pageSize={20} />
     </div>
   );
 }
