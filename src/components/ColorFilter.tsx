@@ -1,21 +1,5 @@
-import React from "react";
-
-const COLOROPTIONS = [
-  { label: "All", value: "ALL" },
-  { label: "D", value: "D" },
-  { label: "E", value: "E" },
-  { label: "F", value: "F" },
-  { label: "G", value: "G" },
-  { label: "H", value: "H" },
-  { label: "I", value: "I" },
-  { label: "J", value: "J" },
-  { label: "K", value: "K" },
-  { label: "L", value: "L" },
-  { label: "M", value: "M" },
-  { label: "N", value: "N" },
-  { label: "N-Z", value: "N-Z" },
-  { label: "Fancy", value: "FANCY" },
-];
+import React, { useEffect, useState } from "react";
+import { diamondApi } from "@/lib/api";
 
 interface ColorFilterProps {
   selectedColor: string;
@@ -26,13 +10,101 @@ export default function ColorFilter({
   selectedColor,
   onColorChange,
 }: ColorFilterProps) {
+  const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
+      try {
+        setLoading(true);
+        const response = await diamondApi.getFilterOptions();
+        
+        if (response?.success && response.data?.colors) {
+          const colors = response.data.colors;
+          
+          // Filter out empty strings and special characters, then map to options
+          const dynamicColors = colors
+            .filter((color: string) => color && color !== "*" && color !== "")
+            .map((color: string) => ({
+              label: formatColorLabel(color),
+              value: color
+            }));
+          
+          setColorOptions(dynamicColors);
+        }
+      } catch (error) {
+        console.error("Error fetching filter options:", error);
+        // Fallback to default colors if API fails
+        setColorOptions([
+          { label: "D", value: "D" },
+          { label: "E", value: "E" },
+          { label: "F", value: "F" },
+          { label: "G", value: "G" },
+          { label: "H", value: "H" },
+          { label: "I", value: "I" },
+          { label: "J", value: "J" },
+          { label: "K", value: "K" },
+          { label: "L", value: "L" },
+          { label: "M", value: "M" },
+          { label: "N", value: "N" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilterOptions();
+  }, []);
+
+  // Format color labels for better display
+  const formatColorLabel = (color: string): string => {
+    // Handle special cases
+    if (color === "FANCY") return "Fancy";
+    if (color === "FANCY INTENSE YELLOW") return "Fancy Int. Yellow";
+    if (color === "O-P") return "O-P";
+    if (color === "U-V") return "U-V";
+    
+    // Handle color codes with "+"
+    if (color.includes("+")) return color;
+    
+    // For other cases, return as is
+    return color;
+  };
+
   const handleColorClick = (color: string) => {
     if (selectedColor === color) {
-      onColorChange("ALL");
+      onColorChange("");
     } else {
       onColorChange(color);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+        <div
+          className="flex items-center gap-2 px-3 py-2"
+          style={{ backgroundColor: "#000033" }}
+        >
+          <img src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
+          <span className="text-base font-semibold text-white">Color</span>
+        </div>
+        <div
+          className="p-3 bg-white text-center"
+          style={{ 
+            border: "0.25px solid #f9e8cd", 
+            borderTop: "none",
+            minHeight: "100px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <span className="text-sm text-gray-500">Loading colors...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
@@ -47,7 +119,7 @@ export default function ColorFilter({
         className="grid grid-cols-5 gap-2 p-3 bg-white"
         style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
       >
-        {COLOROPTIONS.map((option) => (
+        {colorOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => handleColorClick(option.value)}

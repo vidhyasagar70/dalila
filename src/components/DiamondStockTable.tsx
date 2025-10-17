@@ -1,79 +1,74 @@
-// components/DiamondStockTable.tsx
-"use client";
-
-import React, { useState, useMemo } from "react";
-import  type { DiamondData ,TableProps } from "@/types/DiamondData";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
   ChevronDown,
   ChevronUp,
   Eye,
   ExternalLink,
   FileText,
   Play,
+  Loader2,
 } from "lucide-react";
+import { diamondApi } from "@/lib/api";
+// Types
+interface DiamondData {
+  _id: string;
+  STONE_NO: string;
+  SHAPE: string;
+  CARATS: string;
+  COLOR: string;
+  CLARITY: string;
+  CUT?: string;
+  POL?: string;
+  SYM?: string;
+  FLOUR?: string;
+  LAB: string;
+  REPORT_NO: string;
+  RAP_PRICE: string;
+  DISC_PER: string;
+  NET_RATE: string;
+  NET_VALUE: string;
+  MEASUREMENTS?: string;
+  LOCATION: string;
+  STAGE: string;
+  REAL_IMAGE?: string;
+  MP4?: string;
+  CERTI_PDF?: string;
+  DNA?: string;
+  TABLE_PER?: string;
+  DEPTH_PER?: string;
+  CROWN_ANGLE?: string;
+  CROWN_HEIGHT?: string;
+  PAVILLION_ANGLE?: string;
+  PAVILLION_HEIGHT?: string;
+  COMMENTS_1?: string;
+  REPORT_COMMENTS?: string;
+  TINGE?: string;
+  KEY_TO_SYMBOLS?: string;
+}
 
-// Mock data generator
-const generateMockData = (count: number = 20): DiamondData[] => {
-  const shapes = ["Round", "Princess", "Cushion", "Emerald", "Oval", "Radiant", "Pear", "Marquise"];
-  const colors = ["D", "E", "F", "G", "H", "I", "J"];
-  const clarities = ["IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2"];
-  const cuts = ["Excellent", "Very Good", "Good", "Fair"];
-  const polish = ["Excellent", "Very Good", "Good"];
-  const symmetry = ["Excellent", "Very Good", "Good"];
-  const fluorescence = ["None", "Faint", "Medium", "Strong"];
-  const labs = ["GIA", "IGI", "HRD", "AGS"];
-  const locations = ["Mumbai", "New York", "Dubai", "Hong Kong", "Antwerp"];
-
-  return Array.from({ length: count }, (_, i) => ({
-    STONE_NO: `DM${1000 + i}`,
-    SHAPE: shapes[i % shapes.length],
-    CARATS: (Math.random() * 2 + 0.5).toFixed(2),
-    COLOR: colors[i % colors.length],
-    CLARITY: clarities[i % clarities.length],
-    CUT: cuts[i % cuts.length],
-    POL: polish[i % polish.length],
-    SYM: symmetry[i % symmetry.length],
-    FLOUR: fluorescence[i % fluorescence.length],
-    LAB: labs[i % labs.length],
-    REPORT_NO: `${Math.floor(Math.random() * 9000000000) + 1000000000}`,
-    RAP_PRICE: (Math.random() * 10000 + 5000).toFixed(2),
-    DISC_PER: (-(Math.random() * 30 + 10)).toFixed(2),
-    NET_RATE: (Math.random() * 8000 + 3000).toFixed(2),
-    NET_VALUE: (Math.random() * 15000 + 5000).toFixed(2),
-    MEASUREMENTS: `${(Math.random() * 3 + 5).toFixed(2)} x ${(Math.random() * 3 + 5).toFixed(2)} x ${(Math.random() * 2 + 3).toFixed(2)}`,
-    LOCATION: locations[i % locations.length],
-    STAGE: i % 3 === 0 ? "A" : "B",
-    REAL_IMAGE: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=200&h=200&fit=crop",
-    MP4: "https://example.com/diamond-video.mp4",
-    CERTI_PDF: "https://example.com/certificate.pdf",
-    DNA: "https://example.com/dna-report",
-    TABLE_PER: (Math.random() * 10 + 55).toFixed(1),
-    DEPTH_PER: (Math.random() * 5 + 60).toFixed(1),
-    CROWN_ANGLE: (Math.random() * 5 + 32).toFixed(1),
-    CROWN_HEIGHT: (Math.random() * 3 + 13).toFixed(1),
-    PAVILLION_ANGLE: (Math.random() * 2 + 40).toFixed(1),
-    PAVILLION_HEIGHT: (Math.random() * 3 + 42).toFixed(1),
-    COMMENTS_1: "Excellent brilliance and fire",
-    REPORT_COMMENTS: "No eye-visible inclusions",
-  }));
-};
-
+interface TableProps {
+  pageSize?: number;
+  onRowClick?: (row: DiamondData) => void;
+  searchTerm?: string;
+  selectedShape?: string;
+  selectedColor?: string; 
+  selectedMinCarat?: string;
+  selectedMaxCarat?: string;
+}
 const DiamondStockTable: React.FC<TableProps> = ({ 
-  data = [], 
   pageSize = 20,
-  loading = false,
-  onRowClick 
+  onRowClick,
+  searchTerm = "",
+  selectedShape = "",
+  selectedColor = "",
+  selectedMinCarat = "",
+  selectedMaxCarat = ""
 }) => {
-  // Use mock data if no data is provided
-  const displayData = useMemo(() => {
-    return data.length === 0 ? generateMockData(50) : data;
-  }, [data]);
-
+  const [data, setData] = useState<DiamondData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
   const [sortConfig, setSortConfig] = useState<{
@@ -81,7 +76,76 @@ const DiamondStockTable: React.FC<TableProps> = ({
     direction: "asc" | "desc";
   } | null>(null);
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
+useEffect(() => {
+  const fetchDiamonds = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const hasSearchTerm = searchTerm && searchTerm.trim() !== "";
+      const hasShapeFilter = selectedShape && selectedShape.trim() !== "" && selectedShape !== "ALL";
+      const hasColorFilter = selectedColor && selectedColor.trim() !== "" && selectedColor !== "ALL";
+      const hasCaratFilter = selectedMinCarat && selectedMaxCarat;
+      
+      let response;
+      
+      // Always use search endpoint for filters and search
+      if (hasShapeFilter || hasColorFilter || hasSearchTerm || hasCaratFilter) {
+        const filters: any = {
+          page: 1,
+          limit: rowsPerPage
+        };
+        
+        if (hasShapeFilter) {
+          filters.shape = selectedShape.trim();
+        }
+        
+        if (hasColorFilter) {
+          filters.color = selectedColor.trim();
+        }
+        
+        if (hasCaratFilter) {
+          filters.minCarats = parseFloat(selectedMinCarat);
+          filters.maxCarats = parseFloat(selectedMaxCarat);
+        }
+        
+        if (hasSearchTerm) {
+          filters.q = searchTerm.trim();
+        }
+        
+        response = await diamondApi.search(filters);
+      } 
+      // Otherwise, get all diamonds
+      else {
+        response = await diamondApi.getAllNoPagination();
+      }
+      
+      if (response?.success && response.data) {
+        let diamonds: DiamondData[] = [];
+        
+        if (Array.isArray(response.data)) {
+          diamonds = response.data;
+        } else if (response.data.diamonds && Array.isArray(response.data.diamonds)) {
+          diamonds = response.data.diamonds;
+        }
+        
+        setData(diamonds);
+      } else {
+        setData([]);
+      }
+      
+      setCurrentPage(1);
+    } catch (err) {
+      console.error('Error fetching diamonds:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch diamonds');
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  fetchDiamonds();
+}, [searchTerm, selectedShape, selectedColor, rowsPerPage]);
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
@@ -92,9 +156,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
 
   // Sorted data
   const sortedData = useMemo(() => {
-    if (!sortConfig || displayData.length === 0) return displayData;
+    if (!sortConfig || data.length === 0) return data;
 
-    const sorted = [...displayData].sort((a, b) => {
+    const sorted = [...data].sort((a, b) => {
       const aValue = a[sortConfig.key as keyof DiamondData];
       const bValue = b[sortConfig.key as keyof DiamondData];
 
@@ -112,7 +176,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     });
 
     return sorted;
-  }, [displayData, sortConfig]);
+  }, [data, sortConfig]);
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const paginatedData = sortedData.slice(
@@ -138,21 +202,84 @@ const DiamondStockTable: React.FC<TableProps> = ({
     setSelectedDiamond(diamond);
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
+          <p className="text-gray-600">
+            {searchTerm || selectedShape 
+              ? `Searching diamonds...` 
+              : "Loading diamonds..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="text-red-600 mb-2 text-4xl">⚠️</div>
+          <p className="text-red-600 font-medium">Error loading diamonds</p>
+          <p className="text-gray-600 text-sm mt-2">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // No data state
+  if (data.length === 0) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <p className="text-gray-600">
+            {searchTerm || selectedShape
+              ? `No diamonds found matching your filters`
+              : "No diamonds found"}
+          </p>
+          {selectedShape && (
+            <p className="text-sm text-gray-500 mt-2">
+              Shape filter: {selectedShape}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="w-full flex flex-col bg-gray-50 p-4">
+        {/* Active Filters Display */}
+        {(searchTerm || selectedShape) && (
+          <div className="mb-3 flex items-center gap-2 text-sm text-gray-600">
+            <span className="font-medium">Active Filters:</span>
+            {selectedShape && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Shape: {selectedShape}
+              </span>
+            )}
+            {searchTerm && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Search: {searchTerm}
+              </span>
+            )}
+          </div>
+        )}
+        
         <div className="bg-white shadow-sm flex flex-col rounded-lg">
-          {/* Table Container - Full Width */}
+          {/* Table Container */}
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
               {/* Header */}
-      <thead className="bg-[#050c3a] text-white sticky top-0 z-10">
+              <thead className="bg-[#050c3a] text-white sticky top-0 z-10">
                 <tr>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("REAL_IMAGE")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("REAL_IMAGE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Image
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={`text-white ${sortConfig?.key === "REAL_IMAGE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"}`} />
@@ -161,10 +288,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("STONE_NO")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("STONE_NO")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Stock ID
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "STONE_NO" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -173,10 +297,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("SHAPE")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("SHAPE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Shape
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "SHAPE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -185,10 +306,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-16 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("CARATS")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("CARATS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Carat
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "CARATS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -197,10 +315,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-16 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("COLOR")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("COLOR")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Color
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "COLOR" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -209,10 +324,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("CLARITY")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("CLARITY")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Clarity
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "CLARITY" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -221,10 +333,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-16 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("CUT")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("CUT")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Cut
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "CUT" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -233,10 +342,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-16 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("POL")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("POL")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Polish
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "POL" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -245,10 +351,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("SYM")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("SYM")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Symmetry
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "SYM" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -257,10 +360,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("FLOUR")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("FLOUR")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Fluor
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "FLOUR" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -269,10 +369,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-16 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("LAB")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("LAB")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Lab
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "LAB" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -281,10 +378,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("REPORT_NO")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("REPORT_NO")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Report
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "REPORT_NO" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -293,10 +387,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("RAP_PRICE")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("RAP_PRICE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Rap
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "RAP_PRICE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -305,10 +396,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("DISC_PER")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("DISC_PER")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Disc%
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "DISC_PER" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -317,10 +405,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("NET_RATE")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("NET_RATE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Rate
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "NET_RATE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -329,10 +414,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("NET_VALUE")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("NET_VALUE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Value
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "NET_VALUE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -341,10 +423,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-28 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("MEASUREMENTS")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("MEASUREMENTS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Measure
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "MEASUREMENTS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -353,10 +432,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     </button>
                   </th>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                    <button
-                      onClick={() => handleSort("LOCATION")}
-                      className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                    >
+                    <button onClick={() => handleSort("LOCATION")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
                       Location
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "LOCATION" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
@@ -368,16 +444,13 @@ const DiamondStockTable: React.FC<TableProps> = ({
               </thead>
 
               {/* Body */}
-             <tbody>
+              <tbody>
                 {paginatedData.map((row, idx) => (
                   <tr
-                    key={`${row.STONE_NO}-${idx}`}
+                    key={row._id}
                     onClick={() => onRowClick?.(row)}
                     style={{
-                      background:
-                        idx % 2 === 1
-                          ? "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)"
-                          : "white",
+                      background: idx % 2 === 1 ? "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)" : "white",
                     }}
                     className="hover:opacity-80 cursor-pointer transition-opacity"
                   >
@@ -386,90 +459,37 @@ const DiamondStockTable: React.FC<TableProps> = ({
                         <div className="relative w-12 h-12">
                           <div className="w-full h-full bg-gray-100 rounded overflow-hidden">
                             {row.REAL_IMAGE ? (
-                              <img
-                                src={row.REAL_IMAGE}
-                                alt={row.STONE_NO}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = "/placeholder-diamond.png";
-                                }}
-                              />
+                              <img src={row.REAL_IMAGE} alt={row.STONE_NO} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23f3f4f6' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='10'%3ENo Image%3C/text%3E%3C/svg%3E"; }} />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-400 text-[10px]">
-                                No img
-                              </div>
+                              <div className="w-full h-full flex items-center justify-center text-gray-400 text-[10px]">No img</div>
                             )}
                           </div>
                           <div className="absolute -bottom-0.5 -left-0.5">
-                            <div
-                              className={`w-2.5 h-2.5 rounded-full border border-white ${
-                                row.STAGE === "A" ? "bg-green-500" : "bg-red-500"
-                              }`}
-                            ></div>
+                            <div className={`w-2.5 h-2.5 rounded-full border border-white ${row.STAGE === "A" ? "bg-green-500" : "bg-red-500"}`}></div>
                           </div>
                         </div>
-                        <button
-                          onClick={(e) => handleViewDetails(row, e)}
-                          className="mt-1"
-                        >
-                          <Eye
-                            size={12}
-                            className="text-gray-600 hover:text-indigo-600 cursor-pointer"
-                          />
+                        <button onClick={(e) => handleViewDetails(row, e)} className="mt-1">
+                          <Eye size={12} className="text-gray-600 hover:text-indigo-600 cursor-pointer" />
                         </button>
                       </div>
                     </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 font-medium truncate">
-                      {row.STONE_NO}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">
-                      {row.SHAPE}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.CARATS}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.COLOR}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.CLARITY}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.CUT || "N/A"}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.POL || "N/A"}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.SYM || "N/A"}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.FLOUR || "N/A"}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.LAB}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">
-                      {row.REPORT_NO}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {formatCurrency(row.RAP_PRICE)}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] font-semibold text-red-600">
-                      {formatPercentage(row.DISC_PER)}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {formatCurrency(row.NET_RATE)}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 font-medium">
-                      {formatCurrency(row.NET_VALUE)}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">
-                      {row.MEASUREMENTS || "N/A"}
-                    </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {row.LOCATION}
-                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 font-medium truncate">{row.STONE_NO}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.SHAPE}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CARATS}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.COLOR}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CLARITY}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CUT || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.POL || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.SYM || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.FLOUR || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.LAB}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.REPORT_NO}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{formatCurrency(row.RAP_PRICE)}</td>
+                    <td className="px-2 py-1 text-[12px] font-semibold text-red-600">{formatPercentage(row.DISC_PER)}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{formatCurrency(row.NET_RATE)}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 font-medium">{formatCurrency(row.NET_VALUE)}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.MEASUREMENTS || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.LOCATION}</td>
                   </tr>
                 ))}
               </tbody>
@@ -477,29 +497,15 @@ const DiamondStockTable: React.FC<TableProps> = ({
           </div>
 
           {/* Footer */}
-          <div
-            className="px-3 py-2 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
-            style={{
-              background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
-            }}
-          >
+          <div className="px-3 py-2 border-t border-gray-200 flex items-center justify-between flex-shrink-0" style={{ background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)" }}>
             <div className="text-[12px] text-gray-700">
-              Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
-              {Math.min(currentPage * rowsPerPage, sortedData.length)} of{" "}
-              {sortedData.length} diamonds
+              Showing {(currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, sortedData.length)} of {sortedData.length} diamonds
             </div>
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
                 <span className="text-[12px] text-gray-700">Row per page</span>
-                <select
-                  className="border border-gray-300 rounded px-2 py-0.5 text-[12px] text-gray-800 bg-white cursor-pointer"
-                  value={rowsPerPage}
-                  onChange={(e) => {
-                    setRowsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                >
+                <select className="border border-gray-300 rounded px-2 py-0.5 text-[12px] text-gray-800 bg-white cursor-pointer" value={rowsPerPage} onChange={(e) => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}>
                   <option value="10">10</option>
                   <option value="20">20</option>
                   <option value="30">30</option>
@@ -508,30 +514,16 @@ const DiamondStockTable: React.FC<TableProps> = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="p-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 text-[#070b3a]"
-                >
+                <button onClick={() => setCurrentPage(Math.max(1, currentPage - 1))} disabled={currentPage === 1} className="p-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 text-[#070b3a]">
                   <ChevronLeft size={14} className="text-[#070b3a]" />
                 </button>
 
-                <span className="ml-2 text-[12px] text-gray-700">
-                  Page {currentPage} of {totalPages}
-                </span>
+                <span className="ml-2 text-[12px] text-gray-700">Page {currentPage} of {totalPages}</span>
 
                 {[...Array(Math.min(5, totalPages))].map((_, i) => {
                   const page = i + 1;
                   return (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-6 h-6 rounded text-[12px] font-medium ${
-                        currentPage === page
-                          ? "bg-[#070b3a] text-white"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
+                    <button key={page} onClick={() => setCurrentPage(page)} className={`w-6 h-6 rounded text-[12px] font-medium ${currentPage === page ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}>
                       {page}
                     </button>
                   );
@@ -540,26 +532,13 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 {totalPages > 5 && (
                   <>
                     <span className="text-[12px] text-gray-600">...</span>
-                    <button
-                      onClick={() => setCurrentPage(totalPages)}
-                      className={`w-6 h-6 rounded text-[12px] font-medium ${
-                        currentPage === totalPages
-                          ? "bg-[#070b3a] text-white"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
+                    <button onClick={() => setCurrentPage(totalPages)} className={`w-6 h-6 rounded text-[12px] font-medium ${currentPage === totalPages ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}>
                       {totalPages}
                     </button>
                   </>
                 )}
 
-                <button
-                  onClick={() =>
-                    setCurrentPage(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="p-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 text-[#070b3a]"
-                >
+                <button onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} className="p-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 text-[#070b3a]">
                   <ChevronRight size={14} className="text-[#070b3a]" />
                 </button>
               </div>
@@ -570,23 +549,12 @@ const DiamondStockTable: React.FC<TableProps> = ({
 
       {/* Detail Modal */}
       {selectedDiamond && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedDiamond(null)}
-        >
-          <div
-            className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedDiamond(null)}>
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Diamond Details - {selectedDiamond.STONE_NO}
-                </h2>
-                <button
-                  onClick={() => setSelectedDiamond(null)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
+                <h2 className="text-2xl font-bold text-gray-900">Diamond Details - {selectedDiamond.STONE_NO}</h2>
+                <button onClick={() => setSelectedDiamond(null)} className="text-gray-400 hover:text-gray-600">
                   <span className="text-2xl">×</span>
                 </button>
               </div>
@@ -597,23 +565,14 @@ const DiamondStockTable: React.FC<TableProps> = ({
                   {selectedDiamond.REAL_IMAGE && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-700 mb-2">Diamond Image</h3>
-                      <img
-                        src={selectedDiamond.REAL_IMAGE}
-                        alt="Diamond"
-                        className="w-full rounded-lg border"
-                      />
+                      <img src={selectedDiamond.REAL_IMAGE} alt="Diamond" className="w-full rounded-lg border" />
                     </div>
                   )}
                   
                   {selectedDiamond.MP4 && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-700 mb-2">Video</h3>
-                      <a
-                        href={selectedDiamond.MP4}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700"
-                      >
+                      <a href={selectedDiamond.MP4} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700">
                         <Play size={16} />
                         View Video
                       </a>
@@ -623,12 +582,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                   {selectedDiamond.CERTI_PDF && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-700 mb-2">Certificate</h3>
-                      <a
-                        href={selectedDiamond.CERTI_PDF}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700"
-                      >
+                      <a href={selectedDiamond.CERTI_PDF} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700">
                         <FileText size={16} />
                         View Certificate
                       </a>
@@ -638,12 +592,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                   {selectedDiamond.DNA && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-700 mb-2">DNA Report</h3>
-                      <a
-                        href={selectedDiamond.DNA}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700"
-                      >
+                      <a href={selectedDiamond.DNA} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700">
                         <ExternalLink size={16} />
                         View DNA Report
                       </a>

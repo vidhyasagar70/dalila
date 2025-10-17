@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://dalila-inventory-service-dev.caratlogic.com";
 
-
 export const UNAUTHORIZED_EVENT = "unauthorized_access";
 
 // Interfaces
@@ -39,6 +38,30 @@ interface PaginationData<T> {
   };
 }
 
+interface FilterOptions {
+  colors: string[];
+  clarities: string[];
+  cuts: string[];
+  polishGrades: string[];
+  symmetryGrades: string[];
+  fluorescenceTypes: string[];
+  labs: string[];
+  shapes: string[];
+  locations: string[];
+  stages: string[];
+  netRateRange: {
+    min: number;
+    max: number;
+  };
+  rapPriceRange: {
+    min: number;
+    max: number;
+  };
+  caratRange: {
+    min: number;
+    max: number;
+  };
+}
 
 const getAuthToken = (): string => {
   if (typeof window !== 'undefined') {
@@ -47,7 +70,6 @@ const getAuthToken = (): string => {
   }
   return "";
 };
-
 
 const isAuthenticated = (): boolean => {
   const token = getAuthToken();
@@ -110,46 +132,50 @@ apiClient.interceptors.response.use(
 // Generic API methods
 export const api = {
   // GET with query parameters
-  get: async <T>(endpoint: string, params: FetchParams = {}): Promise<ApiResponse<T> | null> => {
-    try {
-      // Skip token check for public endpoints
-      const publicEndpoints = ['/health', '/api/diamonds/filter-options', '/api/diamonds/all', '/api/diamonds/search', '/api/diamonds'];
-      const isPublicEndpoint = publicEndpoints.some(pub => endpoint.includes(pub));
-      
-      if (!isPublicEndpoint) {
-        const token = getAuthToken();
-        if (!token || token.trim() === "") {
-          console.error("Unauthorized. Please log in.");
-          if (typeof window !== 'undefined') {
-            const unauthorizedEvent = new CustomEvent(UNAUTHORIZED_EVENT);
-            window.dispatchEvent(unauthorizedEvent);
-          }
-          return null;
+ get: async <T>(endpoint: string, params: FetchParams = {}): Promise<ApiResponse<T> | null> => {
+  try {
+    // Skip token check for public endpoints
+    const publicEndpoints = ['/health', '/api/diamonds/filter-options', '/api/diamonds/all', '/api/diamonds/search', '/api/diamonds'];
+    const isPublicEndpoint = publicEndpoints.some(pub => endpoint.includes(pub));
+    
+    if (!isPublicEndpoint) {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        console.error("Unauthorized. Please log in.");
+        if (typeof window !== 'undefined') {
+          const unauthorizedEvent = new CustomEvent(UNAUTHORIZED_EVENT);
+          window.dispatchEvent(unauthorizedEvent);
+        }
+        return null;
+      }
+    }
+
+    const queryParams = new URLSearchParams();
+    
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        if (typeof value === 'object') {
+          Object.entries(value).forEach(([filterKey, filterValue]) => {
+            if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
+              queryParams.append(filterKey, String(filterValue));
+            }
+          });
+        } else {
+          queryParams.append(key, String(value));
         }
       }
+    });
 
-      const queryParams = new URLSearchParams();
-      
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (typeof value === 'object') {
-            Object.entries(value).forEach(([filterKey, filterValue]) => {
-              queryParams.append(filterKey, String(filterValue));
-            });
-          } else {
-            queryParams.append(key, String(value));
-          }
-        }
-      });
-
-      const url = queryParams.toString() ? `${endpoint}?${queryParams}` : endpoint;
-      const response = await apiClient.get<ApiResponse<T>>(url);
-      return response.data;
-    } catch (error) {
-      console.error("GET Error:", error);
-      return null;
-    }
-  },
+    const url = queryParams.toString() ? `${endpoint}?${queryParams.toString()}` : endpoint;
+    console.log("API Request URL:", url); // For debugging
+    
+    const response = await apiClient.get<ApiResponse<T>>(url);
+    return response.data;
+  } catch (error) {
+    console.error("GET Error:", error);
+    return null;
+  }
+},
 
   // GET by ID
   getById: async <T>(endpoint: string, id: string | number): Promise<ApiResponse<T> | null> => {
@@ -231,25 +257,37 @@ export const diamondApi = {
   // Get all diamonds without pagination
   getAllNoPagination: () => api.get<{ diamonds: any[] }>("/api/diamonds/all"),
 
-  // Search diamonds with filters
-  search: (filters: {
-    color?: string;
-    clarity?: string;
-    cut?: string;
-    shape?: string;
-    minCarats?: number;
-    maxCarats?: number;
-    minPrice?: number;
-    maxPrice?: number;
-    lab?: string;
-    location?: string;
-    stage?: string;
-    page?: number;
-    limit?: number;
-  }) => api.get<PaginationData<any>>("/api/diamonds/search", filters as FetchParams),
-
-  // Get filter options
-  getFilterOptions: () => api.get<any>("/api/diamonds/filter-options"),
+ search: (filters: {
+  color?: string;
+  clarity?: string;
+  cut?: string;
+  shape?: string;
+  minCarats?: number;
+  maxCarats?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  lab?: string;
+  location?: string;
+  stage?: string;
+  page?: number;
+  limit?: number;
+  q?: string;
+}) => {
+  const cleanFilters = Object.fromEntries(
+    Object.entries(filters).filter(([_, value]) => value !== undefined && value !== null && value !== "")
+  );
+  return api.get<PaginationData<any>>("/api/diamonds/search", cleanFilters as FetchParams);
+},
+  // Get filter options - Updated to return typed response
+  getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<FilterOptions>>("/api/diamonds/filter-options");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching filter options:", error);
+      return null;
+    }
+  },
 
   // Sync diamonds from HRC
   sync: (credentials: { username: string; password: string }) => 
@@ -351,55 +389,53 @@ export const userApi = {
   // OTP
   sendOtp: (email: string) => api.post("/api/users/otp", { email }),
 
-verifyOtp: async (data: { email: string; otp: string }) => {
-  try {
-    console.log("Sending OTP verification request:", data);
-    
-    const response = await apiClient.post<ApiResponse<any>>(
-      "/api/users/verify-otp",
-      {
-        email: data.email.trim(),
-        otp: data.otp.trim() // Ensure it's a string
-      }
-    );
-    
-    console.log("OTP verification response:", response.data);
-    return response.data;
-  } catch (error: any) {
-    console.error("OTP verification error:", error);
-    console.error("Error response:", error.response);
-    console.error("Error response data:", error.response?.data);
-    console.error("Error response status:", error.response?.status);
-    
-    // Handle different error scenarios
-    if (error.response?.data) {
-      const errorData = error.response.data;
+  verifyOtp: async (data: { email: string; otp: string }) => {
+    try {
+      console.log("Sending OTP verification request:", data);
       
-      // Log the full error data for debugging
-      console.error("Full error data:", JSON.stringify(errorData, null, 2));
-      
-      throw new Error(
-        errorData.error || 
-        errorData.message || 
-        "OTP verification failed"
+      const response = await apiClient.post<ApiResponse<any>>(
+        "/api/users/verify-otp",
+        {
+          email: data.email.trim(),
+          otp: data.otp.trim()
+        }
       );
+      
+      console.log("OTP verification response:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("OTP verification error:", error);
+      console.error("Error response:", error.response);
+      console.error("Error response data:", error.response?.data);
+      console.error("Error response status:", error.response?.status);
+      
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        console.error("Full error data:", JSON.stringify(errorData, null, 2));
+        
+        throw new Error(
+          errorData.error || 
+          errorData.message || 
+          "OTP verification failed"
+        );
+      }
+      
+      if (error.response?.status === 500) {
+        throw new Error("Server error occurred. The OTP may be incorrect, expired, or there's a database issue. Please try requesting a new OTP.");
+      }
+      
+      if (error.response?.status === 400) {
+        throw new Error("Invalid request. Please check your email and OTP.");
+      }
+      
+      if (error.response?.status === 404) {
+        throw new Error("User or OTP not found. Please register again or request a new OTP.");
+      }
+      
+      throw new Error("Network error. Please check your connection.");
     }
-    
-    if (error.response?.status === 500) {
-      throw new Error("Server error occurred. The OTP may be incorrect, expired, or there's a database issue. Please try requesting a new OTP.");
-    }
-    
-    if (error.response?.status === 400) {
-      throw new Error("Invalid request. Please check your email and OTP.");
-    }
-    
-    if (error.response?.status === 404) {
-      throw new Error("User or OTP not found. Please register again or request a new OTP.");
-    }
-    
-    throw new Error("Network error. Please check your connection.");
-  }
-},
+  },
+
   // Profile
   getProfile: () => api.get<{ user: any }>("/api/users/profile"),
 
@@ -487,6 +523,9 @@ export const healthCheck = () => api.get<any>("/health");
 
 // Export token management functions
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
+
+// Export FilterOptions type
+export type { FilterOptions };
 
 // Export default
 export default {

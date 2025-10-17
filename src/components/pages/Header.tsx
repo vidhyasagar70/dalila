@@ -15,6 +15,7 @@ export default function Header() {
   const inventoryPage = pathname === "/inventory";
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
+  const dashboardPage = pathname === "/dashboard";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,7 +42,7 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isTestingPage || adminpanelPage || inventoryPage || offerenquiryPage || memberPage
+        isScrolled || isTestingPage || adminpanelPage || inventoryPage || offerenquiryPage || memberPage || dashboardPage
           ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
           : "bg-transparent py-2.5 md:py-3"
       }`}
@@ -70,7 +71,7 @@ export default function Header() {
 
           {/* Left Navigation - Desktop/Tablet */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
-            {isTestingPage || adminpanelPage || inventoryPage ||offerenquiryPage ||memberPage? (
+            {isTestingPage || adminpanelPage || inventoryPage ||offerenquiryPage ||memberPage ||dashboardPage? (
               <>
                 <Link
                   href="/adminpanel"

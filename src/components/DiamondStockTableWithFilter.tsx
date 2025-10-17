@@ -17,6 +17,8 @@ import PriceLocationFilter, { type PriceLocationFilters } from './Priceandloctio
 import AdvancedFilters from "./AdvancedFilters";
 import DiamondStockTable from "./DiamondStockTable";
 export default function DiamondStockTableWithFilter() {
+
+  const [isSearching, setIsSearching] = useState(false);
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShape, setSelectedShape] = useState("ALL");
@@ -26,6 +28,9 @@ export default function DiamondStockTableWithFilter() {
   const [selectedPolish, setSelectedPolish] = useState("");
   const [selectedSymmetry, setSelectedSymmetry] = useState("");
   const [selectedFluor, setSelectedFluor] = useState<string[]>([]);
+  const [selectedMinCarat, setSelectedMinCarat] = useState("");
+const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
+
   const [measurements, setMeasurements] = useState({
     length: { from: "0.50", to: "0.50" },
     width: { from: "0.50", to: "0.50" },
@@ -64,17 +69,27 @@ export default function DiamondStockTableWithFilter() {
     labs: [],
   });
   const [showFilters, setShowFilters] = useState(true);
-  
-
-  const handleColorChange = (color: string) => {
+   const handleColorChange = (color: string) => {
     setSelectedColor(color);
-    setSearchTerm("");
   };
-
   const handleShapeChange = (shape: string) => {
     setSelectedShape(shape);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSelectedShape("");
     setSearchTerm("");
   };
+  const handleCaratChange = (min: string, max: string) => {
+  setSelectedMinCarat(min);
+  setSelectedMaxCarat(max);
+};
+
+
 
   const handleFluorChange = (fluor: string[]) => {
     setSelectedFluor(fluor);
@@ -111,8 +126,8 @@ export default function DiamondStockTableWithFilter() {
   };
 
   const handleResetFilters = () => {
-    setSelectedColor("ALL");
-    setSelectedShape("ALL");
+    setSelectedColor("");
+    setSelectedShape("");
     setSelectedCaratRange("");
     setSelectedClarity([]);
     setSelectedCut("");
@@ -125,14 +140,15 @@ export default function DiamondStockTableWithFilter() {
     <div className="w-full px-4 py-4 bg-gray-50 mt-35">
     {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
 <div className="grid grid-cols-4 gap-0.5">
-  <ShapeFilter
-    selectedShape={selectedShape}
-    onShapeChange={handleShapeChange}
-  />
+ <ShapeFilter
+                selectedShape={selectedShape}
+                onShapeChange={handleShapeChange}
+              />
   <CaratFilter 
-    selectedRange={selectedCaratRange}
-    onRangeChange={handleCaratRangeChange}
-  />
+  selectedMinCarat={selectedMinCarat}
+  selectedMaxCarat={selectedMaxCarat}
+  onCaratChange={handleCaratChange}
+/>
   <ClarityFilter
     selectedClarity={selectedClarity}
     selectedCut={selectedCut}
@@ -149,15 +165,15 @@ export default function DiamondStockTableWithFilter() {
       selectedFluor={selectedFluor}
       onFluorChange={handleFluorChange}
     />
-    <ColorFilter
-      selectedColor={selectedColor}
-      onColorChange={handleColorChange}
-    />
+   <ColorFilter
+                selectedColor={selectedColor}
+                onColorChange={handleColorChange}
+              />
   </div>
 </div>
 
       <div className="grid grid-cols-2 mt-2">
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar onSearch={handleSearch} isSearching={isSearching}/>
         <div className="mt-2">
           <AdvancedFilters
             onShowFilters={() => setShowFilters(!showFilters)}
@@ -194,7 +210,14 @@ export default function DiamondStockTableWithFilter() {
          
         </div>
       )}
-       <DiamondStockTable data={[]} />
+       <DiamondStockTable
+          searchTerm={searchTerm}
+          selectedShape={selectedShape}
+          selectedColor={selectedColor}
+          selectedMinCarat={selectedMinCarat}
+          selectedMaxCarat={selectedMaxCarat}
+          pageSize={20}
+        />
     </div>
   );
 }

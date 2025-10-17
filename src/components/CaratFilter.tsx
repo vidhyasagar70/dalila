@@ -1,33 +1,62 @@
-import React, { useState } from "react";
-
-const CARAT_RANGES = [
-  { label: "0.17 - 0.22", value: "0.17-0.22", min: 0.17, max: 0.22 },
-  { label: "0.23 - 0.29", value: "0.23-0.29", min: 0.23, max: 0.29 },
-  { label: "0.30 - 0.39", value: "0.30-0.39", min: 0.3, max: 0.39 },
-  { label: "0.40 - 0.49", value: "0.40-0.49", min: 0.4, max: 0.49 },
-  { label: "0.50 - 0.69", value: "0.50-0.69", min: 0.5, max: 0.69 },
-  { label: "0.70 - 0.79", value: "0.70-0.79", min: 0.7, max: 0.79 },
-  { label: "0.80 - 0.89", value: "0.80-0.89", min: 0.8, max: 0.89 },
-  { label: "0.90 - 0.99", value: "0.90-0.99", min: 0.9, max: 0.99 },
-  { label: "1.00 - 1.49", value: "1.00-1.49", min: 1.0, max: 1.49 },
-  { label: "1.59 - 1.99", value: "1.59-1.99", min: 1.59, max: 1.99 },
-  { label: "2.00 - 2.99", value: "2.00-2.99", min: 2.0, max: 2.99 },
-  { label: "3.00 - 3.99", value: "3.00-3.99", min: 3.0, max: 3.99 },
-  { label: "4.00 - 4.99", value: "4.00-4.99", min: 4.0, max: 4.99 },
-  { label: "5.00 - 99.99", value: "5.00-99.99", min: 5.0, max: 99.99 },
-];
+import React, { useState, useEffect } from "react";
+import { diamondApi } from "@/lib/api"; 
 
 interface CaratFilterProps {
   selectedRange?: string;
   onRangeChange?: (range: string) => void;
 }
 
+interface CaratRange {
+  label: string;
+  value: string;
+  min: number;
+  max: number;
+}
+
 export default function CaratFilter({
   selectedRange,
   onRangeChange,
 }: CaratFilterProps) {
-  const [fromValue, setFromValue] = useState("0.50");
+  const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
+  const [availableRanges, setAvailableRanges] = useState<CaratRange[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCaratRange = async () => {
+      try {
+        setLoading(true);
+        const response = await diamondApi.getFilterOptions();
+
+        if (response?.success && response.data?.caratRange) {
+          const { min, max } = response.data.caratRange;
+
+          // Build a single range object dynamically from backend data
+          const range = [
+            {
+              label: `${min.toFixed(2)} - ${max.toFixed(2)}`,
+              value: `${min}-${max}`,
+              min,
+              max,
+            },
+          ];
+
+          setAvailableRanges(range);
+          setFromValue(min.toString());
+          setToValue(max.toString());
+        } else {
+          setAvailableRanges([]);
+        }
+      } catch (error) {
+        console.error("Error fetching carat range:", error);
+        setAvailableRanges([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCaratRange();
+  }, []);
 
   const handleRangeClick = (range: string) => {
     onRangeChange?.(selectedRange === range ? "" : range);
@@ -44,60 +73,81 @@ export default function CaratFilter({
         <span className="text-base font-semibold text-white">Carat</span>
       </div>
 
-      {/* Filter Body */}
+      {/* Body */}
       <div
         className="p-3 bg-white"
-        style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
+        style={{
+          border: "0.25px solid #f9e8cd",
+          borderTop: "none",
+          minHeight: "180px", // ✅ keeps UI fixed even if one range
+        }}
       >
-        {/* Input Fields */}
-        <div className="flex gap-3 mb-3">
-          <div className="relative flex-1">
-            <input
-              type="number"
-              step="0.01"
-              value={fromValue}
-              onChange={(e) => setFromValue(e.target.value)}
-              className="w-full px-2 py-1 text-xs rounded"
-              style={{ border: "2px solid #e5e7eb" }}
-              placeholder="From"
-            />
+        {loading ? (
+          <div className="text-center py-4">
+            <span className="text-sm text-gray-500">Loading...</span>
           </div>
-          <div className="relative flex-1">
-            <input
-              type="number"
-              step="0.01"
-              value={toValue}
-              onChange={(e) => setToValue(e.target.value)}
-              className="w-full px-2 py-1 text-xs rounded"
-              style={{ border: "2px solid #e5e7eb" }}
-              placeholder="To"
-            />
+        ) : availableRanges.length === 0 ? (
+          <div className="text-center py-6 text-gray-400 text-sm">
+            No carat data available
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="flex gap-2 mb-3">
+              <div className="relative flex-1">
+                <input
+                  type="number"
+                  step="0.01"
+                  value={fromValue}
+                  onChange={(e) => setFromValue(e.target.value)}
+                  className="w-full px-2 py-1.5 text-xs rounded"
+                  style={{
+                    border: "0.25px solid #f9e8cd",
+                    minHeight: "36px",
+                  }}
+                  placeholder="From"
+                />
+              </div>
+              <div className="relative flex-1">
+                <input
+                  type="number"
+                  step="0.01"
+                  value={toValue}
+                  onChange={(e) => setToValue(e.target.value)}
+                  className="w-full px-2 py-1.5 text-xs rounded"
+                  style={{
+                    border: "0.25px solid #f9e8cd",
+                    minHeight: "36px",
+                  }}
+                  placeholder="To"
+                />
+              </div>
+            </div>
 
-        {/* Range Buttons */}
-        <div className="grid grid-cols-3 gap-2">
-          {CARAT_RANGES.map((range) => (
-            <button
-              key={range.value}
-              onClick={() => handleRangeClick(range.value)}
-              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
-                selectedRange === range.value
-                  ? "text-blue-600 bg-blue-50"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  selectedRange === range.value
-                    ? "0.25px solid #2563eb"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "37px", 
-              }}
-            >
-              {range.label}
-            </button>
-          ))}
-        </div>
+            <div className="grid grid-cols-3 gap-2">
+              {availableRanges.map((range) => (
+                <button
+                  key={range.value}
+                  onClick={() => handleRangeClick(range.value)}
+                  className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                    selectedRange === range.value
+                      ? "text-blue-600 bg-blue-50"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                  style={{
+                    border:
+                      selectedRange === range.value
+                        ? "0.25px solid #2563eb"
+                        : "0.25px solid #f9e8cd",
+                    minHeight: "36px",
+                    minWidth: "90px",
+                  }}
+                >
+                  {range.label}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

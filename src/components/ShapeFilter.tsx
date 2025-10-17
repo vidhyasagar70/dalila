@@ -1,19 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { diamondApi } from "@/lib/api";
 
-const SHAPE_OPTIONS = [
-  { label: "Round", value: "ROUND", image: "/shapefilter/vector (4).png" },
-  { label: "Radiant", value: "RADIANT", image: "/shapefilter/vector (3).png" },
-  { label: "Pear", value: "PEAR", image: "/shapefilter/vector (2).png" },
-  { label: "Square", value: "SQUARE", image: "/shapefilter/vector.png" },
-  { label: "Emerald", value: "EMERALD", image: "/shapefilter/vector (5).png" },
-  { label: "Oval", value: "OVAL", image: "/shapefilter/vector-oval.png" },
-  { label: "Cushion", value: "CUSHION", image: "/shapefilter/vector (6).png" },
-  { label: "Trilliant", value: "TRILLIANT", image: "/shapefilter/vector (7).png" },
-  { label: "Heart", value: "HEART", image: "/shapefilter/Vector-heart.png" },
-  { label: "Princess", value: "PRINCESS", image: "/shapefilter/vector_princess.png" },
-  { label: "Marquise", value: "MARQUISE", image: "/shapefilter/vector_marque.png" },
-  { label: "Other", value: "OTHER", image: "/shapefilter/others.png" },
-];
+// Mapping of shape values to their images and display labels
+const SHAPE_IMAGE_MAP: Record<string, { image: string; label: string }> = {
+  ROUND: { label: "Round", image: "/shapefilter/vector (4).png" },
+  RADIANT: { label: "Radiant", image: "/shapefilter/vector (3).png" },
+  PEAR: { label: "Pear", image: "/shapefilter/vector (2).png" },
+  SQUARE: { label: "Square", image: "/shapefilter/vector.png" },
+  EMERALD: { label: "Emerald", image: "/shapefilter/vector (5).png" },
+  OVAL: { label: "Oval", image: "/shapefilter/vector-oval.png" },
+  CUSHION: { label: "Cushion", image: "/shapefilter/vector (6).png" },
+  "CUSHION BRILLIANT": { label: "Cushion Brilliant", image: "/shapefilter/vector (6).png" },
+  TRILLIANT: { label: "Trilliant", image: "/shapefilter/vector (7).png" },
+  HEART: { label: "Heart", image: "/shapefilter/Vector-heart.png" },
+  PRINCESS: { label: "Princess", image: "/shapefilter/vector_princess.png" },
+  MARQUISE: { label: "Marquise", image: "/shapefilter/vector_marque.png" },
+  OTHER: { label: "Other", image: "/shapefilter/others.png" },
+};
+
+interface ShapeOption {
+  value: string;
+  label: string;
+  image: string;
+}
 
 interface ShapeFilterProps {
   selectedShape: string;
@@ -24,17 +33,74 @@ export default function ShapeFilter({
   selectedShape,
   onShapeChange,
 }: ShapeFilterProps) {
+  const [shapeOptions, setShapeOptions] = useState<ShapeOption[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFilterOptions = async () => {
+      try {
+        const response = await diamondApi.getFilterOptions();
+        if (response?.success && response.data) {
+          // Map API shapes to shape options with images
+          const shapes = response.data.shapes
+            .filter((s) => s.trim() !== "")
+            .map((shape) => {
+              const mappedData = SHAPE_IMAGE_MAP[shape] || {
+                label: shape.charAt(0) + shape.slice(1).toLowerCase(),
+                image: "/shapefilter/others.png",
+              };
+              return {
+                value: shape,
+                label: mappedData.label,
+                image: mappedData.image,
+              };
+            });
+          setShapeOptions(shapes);
+        }
+      } catch (error) {
+        console.error("Error fetching filter options:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilterOptions();
+  }, []);
+
   const handleShapeClick = (shape: string) => {
     if (selectedShape === shape) {
-      onShapeChange(""); // deselect if clicked again
+      onShapeChange("");
     } else {
       onShapeChange(shape);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+        <div
+          className="flex items-center gap-2 px-3 py-2"
+          style={{ backgroundColor: "#000033" }}
+        >
+          <img src="/filtersicon/shape.png" alt="Shape" className="w-5 h-5" />
+          <span className="text-base font-semibold text-white">Shape</span>
+        </div>
+        <div
+          className="p-3 bg-white flex items-center justify-center"
+          style={{
+            border: "0.25px solid #f9e8cd",
+            borderTop: "none",
+            minHeight: "150px",
+          }}
+        >
+          <span className="text-gray-500">Loading shapes...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
-      {/* Header Section */}
       <div
         className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}
@@ -42,13 +108,11 @@ export default function ShapeFilter({
         <img src="/filtersicon/shape.png" alt="Shape" className="w-5 h-5" />
         <span className="text-base font-semibold text-white">Shape</span>
       </div>
-
-      {/* Shape Buttons */}
       <div
         className="grid grid-cols-4 gap-2 p-3 bg-white"
         style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
       >
-        {SHAPE_OPTIONS.map((option) => (
+        {shapeOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => handleShapeClick(option.value)}
@@ -58,8 +122,8 @@ export default function ShapeFilter({
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: 70,
-              minHeight: 80, // slightly taller
+              minWidth: "70px",
+              minHeight: "80px",
               border:
                 selectedShape === option.value
                   ? "0.25px solid #2563eb"
@@ -69,7 +133,7 @@ export default function ShapeFilter({
             <img
               src={option.image}
               alt={option.label}
-              className="w-8 h-8 object-contain" // increased size
+              className="w-8 h-8 object-contain"
             />
             <span className="text-xs font-medium">{option.label}</span>
           </button>
