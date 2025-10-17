@@ -85,15 +85,19 @@ useEffect(() => {
       const hasSearchTerm = searchTerm && searchTerm.trim() !== "";
       const hasShapeFilter = selectedShape && selectedShape.trim() !== "" && selectedShape !== "ALL";
       const hasColorFilter = selectedColor && selectedColor.trim() !== "" && selectedColor !== "ALL";
-      const hasCaratFilter = selectedMinCarat && selectedMaxCarat;
+      const hasCaratFilter = selectedMinCarat && selectedMaxCarat && 
+                            (selectedMinCarat.trim() !== "" || selectedMaxCarat.trim() !== "");
+      
+      // Check if any filter is applied
+      const hasAnyFilter = hasShapeFilter || hasColorFilter || hasSearchTerm || hasCaratFilter;
       
       let response;
       
-      // Always use search endpoint for filters and search
-      if (hasShapeFilter || hasColorFilter || hasSearchTerm || hasCaratFilter) {
+      // Use search endpoint when filters are applied
+      if (hasAnyFilter) {
         const filters: any = {
           page: 1,
-          limit: rowsPerPage
+          limit: 10000 // Get all matching results
         };
         
         if (hasShapeFilter) {
@@ -105,35 +109,45 @@ useEffect(() => {
         }
         
         if (hasCaratFilter) {
-          filters.minCarats = parseFloat(selectedMinCarat);
-          filters.maxCarats = parseFloat(selectedMaxCarat);
+          if (selectedMinCarat && selectedMinCarat.trim() !== "") {
+            filters.minCarats = parseFloat(selectedMinCarat);
+          }
+          if (selectedMaxCarat && selectedMaxCarat.trim() !== "") {
+            filters.maxCarats = parseFloat(selectedMaxCarat);
+          }
         }
         
         if (hasSearchTerm) {
           filters.q = searchTerm.trim();
         }
         
+        console.log('Applying filters:', filters);
         response = await diamondApi.search(filters);
       } 
-      // Otherwise, get all diamonds
+      // Get all diamonds when no filters are applied
       else {
+        console.log('No filters applied, fetching all diamonds');
         response = await diamondApi.getAllNoPagination();
       }
       
       if (response?.success && response.data) {
         let diamonds: DiamondData[] = [];
         
+        // Handle different response structures
         if (Array.isArray(response.data)) {
           diamonds = response.data;
         } else if (response.data.diamonds && Array.isArray(response.data.diamonds)) {
           diamonds = response.data.diamonds;
         }
         
+        console.log(`Loaded ${diamonds.length} diamonds (Filtered: ${hasAnyFilter})`);
         setData(diamonds);
       } else {
+        console.log('No data in response');
         setData([]);
       }
       
+      // Reset to first page when filters change
       setCurrentPage(1);
     } catch (err) {
       console.error('Error fetching diamonds:', err);
@@ -145,7 +159,8 @@ useEffect(() => {
   };
 
   fetchDiamonds();
-}, [searchTerm, selectedShape, selectedColor, rowsPerPage]);
+}, [searchTerm, selectedShape, selectedColor, selectedMinCarat, selectedMaxCarat]);
+
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
