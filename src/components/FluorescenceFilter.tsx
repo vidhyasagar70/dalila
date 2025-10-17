@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { diamondApi } from "@/lib/api";
 
 interface FluorFilterProps {
-  selectedFluor: string[];
-  onFluorChange: (fluor: string[]) => void;
+  selectedFluor: string;
+  onFluorChange: (fluor: string) => void;
 }
 
 export default function FluorFilter({
@@ -35,10 +35,10 @@ export default function FluorFilter({
   }, []);
 
   const handleFluorClick = (value: string) => {
-    if (selectedFluor.includes(value)) {
-      onFluorChange(selectedFluor.filter((f) => f !== value));
+    if (selectedFluor === value) {
+      onFluorChange("");
     } else {
-      onFluorChange([...selectedFluor, value]);
+      onFluorChange(value);
     }
   };
 
@@ -87,13 +87,13 @@ export default function FluorFilter({
             key={option}
             onClick={() => handleFluorClick(option)}
             className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
-              selectedFluor.includes(option)
+              selectedFluor === option
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
               minWidth: 52,
-              border: selectedFluor.includes(option)
+              border: selectedFluor === option
                 ? "0.25px solid #2563eb"
                 : "0.25px solid #f9e8cd",
               minHeight: "32px",

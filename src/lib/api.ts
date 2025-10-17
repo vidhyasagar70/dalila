@@ -272,6 +272,7 @@ export const diamondApi = {
   stage?: string;
   page?: number;
   limit?: number;
+  fluorescence?: string;
  
   searchTerm?: string;// This is the search query parameter
 }) => {
@@ -291,9 +292,10 @@ export const diamondApi = {
   if (filters.location) mappedFilters.LOCATION = filters.location;
   if (filters.stage) mappedFilters.STAGE = filters.stage;
   if (filters.page) mappedFilters.page = filters.page;
+  if (filters.fluorescence) mappedFilters.FLOUR = filters.fluorescence;
   if (filters.limit) mappedFilters.limit = filters.limit;
   
-  // IMPORTANT: Map the search query 'q' parameter
+
   if (filters.searchTerm) mappedFilters.searchTerm= filters.searchTerm;
   
   console.log('Search API called with filters:', mappedFilters);

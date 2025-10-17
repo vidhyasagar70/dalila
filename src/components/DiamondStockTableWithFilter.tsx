@@ -27,7 +27,7 @@ export default function DiamondStockTableWithFilter() {
   const [selectedCut, setSelectedCut] = useState("");
   const [selectedPolish, setSelectedPolish] = useState("");
   const [selectedSymmetry, setSelectedSymmetry] = useState("");
-  const [selectedFluor, setSelectedFluor] = useState<string[]>([]);
+   const [selectedFluor, setSelectedFluor] = useState("");
   const [selectedMinCarat, setSelectedMinCarat] = useState("");
 const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
 
@@ -91,9 +91,8 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
 
 
 
-  const handleFluorChange = (fluor: string[]) => {
+  const handleFluorChange = (fluor: string) => {  
     setSelectedFluor(fluor);
-    setSearchTerm("");
   };
 
   const handleSearch = (term: string) => {
@@ -133,7 +132,7 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
     setSelectedCut("");
     setSelectedPolish("");
     setSelectedSymmetry("");
-    setSelectedFluor([]);
+    setSelectedFluor("");
   };
 
   return (
@@ -216,6 +215,7 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
   selectedColor={selectedColor}
   selectedMinCarat={selectedMinCarat}
   selectedMaxCarat={selectedMaxCarat}
+  selectedFluor={selectedFluor} 
   pageSize={20}
 />
 

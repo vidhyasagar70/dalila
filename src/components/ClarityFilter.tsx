@@ -9,11 +9,11 @@ const SPECIAL_OPTIONS = [
 ];
 
 interface ClarityFilterProps {
-  selectedClarity: string[];
+  selectedClarity: string;
   selectedCut: string;
   selectedPolish: string;
   selectedSymmetry: string;
-  onClarityChange: (clarity: string[]) => void;
+  onClarityChange: (clarity: string) => void;
   onCutChange: (cut: string) => void;
   onPolishChange: (polish: string) => void;
   onSymmetryChange: (symmetry: string) => void;
@@ -65,18 +65,18 @@ export default function ClarityFilter({
   }, []);
 
   const handleClarityClick = (value: string) => {
-    if (selectedClarity.includes(value)) {
-      onClarityChange(selectedClarity.filter((c) => c !== value));
+    if (selectedClarity === value) {
+      onClarityChange("");
     } else {
-      onClarityChange([...selectedClarity, value]);
+      onClarityChange(value);
     }
   };
 
   const handleSpecialClick = (value: string) => {
-    if (selectedClarity.length === 1 && selectedClarity[0] === value) {
-      onClarityChange([]);
+    if (selectedClarity === value) {
+      onClarityChange("");
     } else {
-      onClarityChange([value]);
+      onClarityChange(value);
     }
   };
 
@@ -133,12 +133,12 @@ export default function ClarityFilter({
               key={option}
               onClick={() => handleClarityClick(option)}
               className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
-                selectedClarity.includes(option)
+                selectedClarity === option
                   ? "text-blue-600 bg-blue-50"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
-                border: selectedClarity.includes(option)
+                border: selectedClarity === option
                   ? "0.25px solid #2563eb"
                   : "0.25px solid #f9e8cd",
                 minHeight: "36px",
@@ -157,7 +157,7 @@ export default function ClarityFilter({
               key={option.value}
               onClick={() => handleSpecialClick(option.value)}
               className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors hover:opacity-90 ${
-                selectedClarity.length === 1 && selectedClarity[0] === option.value
+                selectedClarity === option.value
                   ? "bg-blue-600 text-white"
                   : "bg-[#000033] text-white"
               }`}
