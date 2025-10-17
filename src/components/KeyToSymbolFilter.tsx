@@ -66,7 +66,7 @@ export default function KeySymbolFilter({
       >
         <span className="text-base font-semibold text-white">Key To Symbol</span>
       </div>
-      <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
+      <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
         <div className="grid grid-cols-3 gap-2">
           {KEY_TO_SYMBOL_OPTIONS.map((option) => (
             <button
@@ -80,8 +80,8 @@ export default function KeySymbolFilter({
               style={{
                 minHeight: "32px",
                 border: isSelected("keyToSymbol", option)
-                  ? "2px solid #2563eb"
-                  : "2px solid #f9e8cd",
+                  ? "0.25px solid #2563eb"
+                  : "0.25px solid #f9e8cd",
               }}
             >
               {option}
@@ -97,7 +97,7 @@ export default function KeySymbolFilter({
       >
         <span className="text-base font-semibold text-white">Ey.Cln</span>
       </div>
-      <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
+      <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
         <div className="grid grid-cols-4 gap-2">
           {EY_CLN_OPTIONS.map((option) => (
             <button
@@ -111,8 +111,8 @@ export default function KeySymbolFilter({
               style={{
                 minHeight: "32px",
                 border: isSelected("eyCln", option)
-                  ? "2px solid #2563eb"
-                  : "2px solid #f9e8cd",
+                  ? "0.25px solid #2563eb"
+                  : "0.25px solid #f9e8cd",
               }}
             >
               {option}
@@ -128,7 +128,7 @@ export default function KeySymbolFilter({
       >
         <span className="text-base font-semibold text-white">H&A</span>
       </div>
-      <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
+      <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
         <div className="grid grid-cols-4 gap-2">
           {H_AND_A_OPTIONS.map((option) => (
             <button
@@ -142,8 +142,8 @@ export default function KeySymbolFilter({
               style={{
                 minHeight: "32px",
                 border: isSelected("hAndA", option)
-                  ? "2px solid #2563eb"
-                  : "2px solid #f9e8cd",
+                  ? "0.25px solid #2563eb"
+                  : "0.25px solid #f9e8cd",
               }}
             >
               {option}

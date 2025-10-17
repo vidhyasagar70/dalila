@@ -61,7 +61,7 @@ export default function InclusionFilter({
     {/* Inclusion Filters */}
     <div
       className="bg-white p-3"
-      style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+      style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
     >
       <div className="space-y-4">
         {INCLUSION_TYPES.map((type) => (
@@ -93,8 +93,8 @@ export default function InclusionFilter({
                       type.key as keyof InclusionFilters,
                       option
                     )
-                      ? "2px solid #2563eb"
-                      : "2px solid #f9e8cd",
+                      ? "0.25px solid #2563eb"
+                      : "0.25px solid #f9e8cd",
                   }}
                 >
                   {option}

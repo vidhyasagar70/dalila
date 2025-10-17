@@ -58,7 +58,7 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
       <img src="/filtersicon/shades.png" alt="Shades" className="w-5 h-5" />
       <span className="text-base font-semibold text-white">Shades</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
+    <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
       <div className="grid grid-cols-3 gap-2">
         {SHADES_OPTIONS.map((option) => (
           <button
@@ -73,8 +73,8 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
               minWidth: "90px",
               minHeight: "32px",
               border: isSelected("shades", option)
-                ? "2px solid #2563eb"
-                : "2px solid #f9e8cd",
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
             }}
           >
             {option}
@@ -90,7 +90,7 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
     >
       <span className="text-base font-semibold text-white">Milky</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
+    <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
       <div className="grid grid-cols-4 gap-2">
         {MILKY_OPTIONS.map((option) => (
           <button
@@ -105,8 +105,8 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
               minWidth: "90px",
               minHeight: "32px",
               border: isSelected("milky", option)
-                ? "2px solid #2563eb"
-                : "2px solid #f9e8cd",
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
             }}
           >
             {option}
@@ -122,7 +122,7 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
     >
       <span className="text-base font-semibold text-white">Type2 Ct</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
+    <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
       <div className="grid grid-cols-2 gap-2">
         {TYPE2_OPTIONS.map((option) => (
           <button
@@ -137,8 +137,8 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
               minWidth: "90px",
               minHeight: "32px",
               border: isSelected("type2Ct", option)
-                ? "2px solid #2563eb"
-                : "2px solid #f9e8cd",
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
             }}
           >
             {option}
@@ -169,8 +169,8 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
               minWidth: "90px",
               minHeight: "32px",
               border: isSelected("brl", option)
-                ? "2px solid #2563eb"
-                : "2px solid #f9e8cd",
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
             }}
           >
             {option}

@@ -101,7 +101,7 @@ export default function PriceLocationFilter({
     </div>
     <div
       className="bg-white p-3"
-      style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+      style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
     >
       <div className="space-y-2">
         {/* $/ct */}
@@ -115,7 +115,7 @@ export default function PriceLocationFilter({
 
           <div
             className="flex items-center bg-white rounded"
-            style={{ border: "1px solid #e5e7eb" }}
+            style={{ border: "1px solid #f9e8cd" }}
           >
             <input
               type="number"
@@ -152,7 +152,7 @@ export default function PriceLocationFilter({
 
           <div
             className="flex items-center bg-white rounded"
-            style={{ border: "1px solid #e5e7eb" }}
+            style={{ border: "1px solid #f9e8cd" }}
           >
             <input
               type="number"
@@ -166,7 +166,7 @@ export default function PriceLocationFilter({
             />
             <div
               className="flex flex-col border-l"
-              style={{ borderColor: "#e5e7eb" }}
+              style={{ borderColor: "#f9e8cd" }}
             >
               <button
                 onClick={() => incrementValue("pricePerCarat", "to")}
@@ -178,7 +178,7 @@ export default function PriceLocationFilter({
               <button
                 onClick={() => decrementValue("pricePerCarat", "to")}
                 className="px-1 hover:bg-gray-100 transition-colors border-t"
-                style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#e5e7eb" }}
+                style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#f9e8cd" }}
               >
                 ▼
               </button>
@@ -197,7 +197,7 @@ export default function PriceLocationFilter({
 
           <div
             className="flex items-center bg-white rounded"
-            style={{ border: "1px solid #e5e7eb" }}
+            style={{ border: "1px solid #f9e8cd" }}
           >
             <input
               type="number"
@@ -234,7 +234,7 @@ export default function PriceLocationFilter({
 
           <div
             className="flex items-center bg-white rounded"
-            style={{ border: "1px solid #e5e7eb" }}
+            style={{ border: "1px solid #f9e8cd" }}
           >
             <input
               type="number"
@@ -279,7 +279,7 @@ export default function PriceLocationFilter({
 
           <div
             className="flex items-center bg-white rounded"
-            style={{ border: "1px solid #e5e7eb" }}
+            style={{ border: "1px solid #f9e8cd" }}
           >
             <input
               type="number"
@@ -293,7 +293,7 @@ export default function PriceLocationFilter({
             />
             <div
               className="flex flex-col border-l"
-              style={{ borderColor: "#e5e7eb" }}
+              style={{ borderColor: "#f9e8cd" }}
             >
               <button
                 onClick={() => incrementValue("totalPrice", "from")}
@@ -305,7 +305,7 @@ export default function PriceLocationFilter({
               <button
                 onClick={() => decrementValue("totalPrice", "from")}
                 className="px-1 hover:bg-gray-100 transition-colors border-t"
-                style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#e5e7eb" }}
+                style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#f9e8cd" }}
               >
                 ▼
               </button>
@@ -316,7 +316,7 @@ export default function PriceLocationFilter({
 
           <div
             className="flex items-center bg-white rounded"
-            style={{ border: "1px solid #e5e7eb" }}
+            style={{ border: "1px solid #f9e8cd" }}
           >
             <input
               type="number"
@@ -330,7 +330,7 @@ export default function PriceLocationFilter({
             />
             <div
               className="flex flex-col border-l"
-              style={{ borderColor: "#e5e7eb" }}
+              style={{ borderColor: "#f9e8cd" }}
             >
               <button
                 onClick={() => incrementValue("totalPrice", "to")}
@@ -342,7 +342,7 @@ export default function PriceLocationFilter({
               <button
                 onClick={() => decrementValue("totalPrice", "to")}
                 className="px-1 hover:bg-gray-100 transition-colors border-t"
-                style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#e5e7eb" }}
+                style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#f9e8cd" }}
               >
                 ▼
               </button>
@@ -361,7 +361,7 @@ export default function PriceLocationFilter({
     </div>
     <div
       className="bg-white p-3"
-      style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+      style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
     >
       <div className="grid grid-cols-5 gap-2">
         {LOCATION_OPTIONS.map((location) => (
@@ -377,8 +377,8 @@ export default function PriceLocationFilter({
               minWidth: "60px",
               minHeight: "32px",
               border: isLocationSelected(location)
-                ? "2px solid #2563eb"
-                : "2px solid #f9e8cd",
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
             }}
           >
             {location}
@@ -396,7 +396,7 @@ export default function PriceLocationFilter({
     </div>
     <div
       className="bg-white p-3"
-      style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+      style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
     >
       <div className="grid grid-cols-4 gap-2">
         {LAB_OPTIONS.map((lab) => (
@@ -412,8 +412,8 @@ export default function PriceLocationFilter({
               minWidth: "65px",
               minHeight: "32px",
               border: isLabSelected(lab)
-                ? "2px solid #2563eb"
-                : "2px solid #f9e8cd",
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
             }}
           >
             {lab}

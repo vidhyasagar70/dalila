@@ -104,7 +104,7 @@ export default function ClarityFilter({
 
       <div
         className="p-3 bg-white"
-        style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+        style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
       >
         {/* Main Clarity Options */}
         <div className="grid grid-cols-6 gap-2 mb-3">
@@ -119,8 +119,8 @@ export default function ClarityFilter({
               }`}
               style={{
                 border: selectedClarity.includes(option.value)
-                  ? "2px solid #2563eb"
-                  : "2px solid #f9e8cd",
+                  ? "0.25px solid #2563eb"
+                  : "0.25px solid #f9e8cd",
                 minHeight: "32px",
                 minWidth: "48px",
               }}
@@ -169,8 +169,8 @@ export default function ClarityFilter({
                 style={{
                   border:
                     selectedCut === option.value
-                      ? "2px solid #2563eb"
-                      : "2px solid #f9e8cd",
+                      ? "0.25px solid #2563eb"
+                      : "0.25px solid #f9e8cd",
                   minHeight: "32px",
                 }}
               >
@@ -201,8 +201,8 @@ export default function ClarityFilter({
                 style={{
                   border:
                     selectedPolish === option.value
-                      ? "2px solid #2563eb"
-                      : "2px solid #f9e8cd",
+                      ? "0.25px solid #2563eb"
+                      : "0.25px solid #f9e8cd",
                   minHeight: "32px",
                 }}
               >
@@ -233,8 +233,8 @@ export default function ClarityFilter({
                 style={{
                   border:
                     selectedSymmetry === option.value
-                      ? "2px solid #2563eb"
-                      : "2px solid #f9e8cd",
+                      ? "0.25px solid #2563eb"
+                      : "0.25px solid #f9e8cd",
                   minHeight: "32px",
                 }}
               >

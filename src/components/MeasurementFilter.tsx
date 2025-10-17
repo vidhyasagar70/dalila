@@ -66,7 +66,7 @@ export default function MeasurementFilter({
     </div>
     <div
       className="bg-white p-3"
-      style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+      style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
     >
       <div className="space-y-2">
         {MEASUREMENT_FIELDS.map((field) => (
@@ -79,7 +79,7 @@ export default function MeasurementFilter({
             </div>
             
             {/* From Input */}
-            <div className="flex items-center bg-white rounded" style={{ border: "1px solid #e5e7eb" }}>
+            <div className="flex items-center bg-white rounded" style={{ border: "1px solid #f9e8cd" }}>
               <input
                 type="number"
                 step="0.01"
@@ -90,7 +90,7 @@ export default function MeasurementFilter({
                 className="w-16 px-2 py-1 text-center text-sm outline-none"
                 style={{ appearance: "textfield" }}
               />
-              <div className="flex flex-col border-l" style={{ borderColor: "#e5e7eb" }}>
+              <div className="flex flex-col border-l" style={{ borderColor: "#f9e8cd" }}>
                 <button
                   onClick={() => incrementValue(field.key, "from")}
                   className="px-1 hover:bg-gray-100 transition-colors"
@@ -111,7 +111,7 @@ export default function MeasurementFilter({
             <span className="text-gray-500 text-sm font-medium">To</span>
 
             {/* To Input */}
-            <div className="flex items-center bg-white rounded" style={{ border: "1px solid #e5e7eb" }}>
+            <div className="flex items-center bg-white rounded" style={{ border: "1px solid #f9e8cd" }}>
               <input
                 type="number"
                 step="0.01"

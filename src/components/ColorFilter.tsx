@@ -45,7 +45,7 @@ export default function ColorFilter({
       </div>
       <div
         className="grid grid-cols-5 gap-2 p-3 bg-white"
-        style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+        style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
       >
         {COLOROPTIONS.map((option) => (
           <button
@@ -60,8 +60,8 @@ export default function ColorFilter({
               minWidth: 52,
               border:
                 selectedColor === option.value
-                  ? "2px solid #2563eb"
-                  : "2px solid #f9e8cd",
+                  ? "0.25px solid #2563eb"
+                  : "0.25px solid #f9e8cd",
               minHeight: "32px",
             }}
           >
