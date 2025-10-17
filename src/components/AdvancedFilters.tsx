@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Filter, X, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface AdvancedFiltersProps {
   onFiltersChange?: (filters: FilterState) => void;
   onResetFilters?: () => void;
+  onShowFilters?: () => void;
 }
 
 interface FilterState {
@@ -15,7 +16,7 @@ interface FilterState {
   location: string;
 }
 
-export default function AdvancedFilters({ onFiltersChange, onResetFilters }: AdvancedFiltersProps) {
+export default function AdvancedFilters({ onFiltersChange, onResetFilters,onShowFilters, }: AdvancedFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     cut: "ALL",
@@ -66,16 +67,16 @@ export default function AdvancedFilters({ onFiltersChange, onResetFilters }: Adv
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-2 px-6 py-3 bg-[#000033] text-white font-medium rounded shadow-sm hover:bg-[#000044] transition-colors"
         >
-          <Filter className="w-5 h-5" />
+          <img src="/filtersicon/filter-add.png" alt="Filter" className="w-5 h-5" />
           <span>Show Advanced Filters</span>
           <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
         </button>
 
         <button
           onClick={handleResetFilters}
-          className="flex items-center gap-2 px-6 py-3 bg-white text-[#D4A574] font-medium rounded shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-6 py-3 bg-white text-[#D4A574] font-medium rounded shadow-sm border border-[#D4A574] hover:bg-gray-50 transition-colors"
         >
-          <X className="w-5 h-5" />
+          <img src="/filtersicon/filter-remove.png" alt="Reset" className="w-5 h-5" />
           <span>Reset Filters</span>
         </button>
       </div>

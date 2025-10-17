@@ -1,5 +1,4 @@
 import React from "react";
-import { Sparkles } from "lucide-react";
 
 const CLARITY_OPTIONS = [
   { label: "FL", value: "FL" },
@@ -65,7 +64,6 @@ export default function ClarityFilter({
   onPolishChange,
   onSymmetryChange,
 }: ClarityFilterProps) {
-  // Toggle clarity
   const handleClarityClick = (value: string) => {
     if (selectedClarity.includes(value)) {
       onClarityChange(selectedClarity.filter((c) => c !== value));
@@ -74,7 +72,6 @@ export default function ClarityFilter({
     }
   };
 
-  // Toggle special clarity (single selection)
   const handleSpecialClick = (value: string) => {
     if (selectedClarity.length === 1 && selectedClarity[0] === value) {
       onClarityChange([]);
@@ -83,7 +80,6 @@ export default function ClarityFilter({
     }
   };
 
-  // Toggle helpers for Cut, Polish, Symmetry
   const handleCutClick = (value: string) => {
     onCutChange(selectedCut === value ? "" : value);
   };
@@ -97,22 +93,18 @@ export default function ClarityFilter({
   };
 
   return (
-    <div
-      className="mb-3 mt-2"
-      style={{ width: "fit-content", transform: "scale(0.95)", transformOrigin: "top left" }}
-    >
-      {/* Header */}
+    <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
       <div
-        className="flex items-center gap-2 px-3 py-2 rounded-t"
+        className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}
       >
-        <Sparkles className="text-white" size={22} />
+        <img src="/filtersicon/clarity.png" alt="Clarity" className="w-5 h-5" />
         <span className="text-base font-semibold text-white">Clarity</span>
       </div>
 
       <div
-        className="p-3 bg-white rounded-b"
-        style={{ border: "2px solid #f9e8cd" }}
+        className="p-3 bg-white"
+        style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
       >
         {/* Main Clarity Options */}
         <div className="grid grid-cols-6 gap-2 mb-3">
@@ -120,7 +112,7 @@ export default function ClarityFilter({
             <button
               key={option.value}
               onClick={() => handleClarityClick(option.value)}
-              className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
                 selectedClarity.includes(option.value)
                   ? "text-blue-600"
                   : "bg-white text-gray-700 hover:bg-gray-50"
@@ -129,8 +121,8 @@ export default function ClarityFilter({
                 border: selectedClarity.includes(option.value)
                   ? "2px solid #2563eb"
                   : "2px solid #f9e8cd",
-                minHeight: "38px",
-                minWidth: "58px",
+                minHeight: "32px",
+                minWidth: "48px",
               }}
             >
               {option.label}
@@ -144,12 +136,12 @@ export default function ClarityFilter({
             <button
               key={option.value}
               onClick={() => handleSpecialClick(option.value)}
-              className={`px-4 py-2 rounded text-sm font-semibold transition-colors hover:opacity-90 ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors hover:opacity-90 ${
                 selectedClarity.length === 1 && selectedClarity[0] === option.value
                   ? "bg-blue-600 text-white"
                   : "bg-[#000033] text-white"
               }`}
-              style={{ minHeight: "38px" }}
+              style={{ minHeight: "32px" }}
             >
               {option.label}
             </button>
@@ -159,8 +151,8 @@ export default function ClarityFilter({
         {/* Cut */}
         <div className="flex items-center gap-2 mb-3">
           <div
-            className="px-3 py-2 rounded text-sm font-semibold text-white"
-            style={{ backgroundColor: "#000033", minWidth: "70px" }}
+            className="px-2 py-1.5 rounded text-xs font-semibold text-white"
+            style={{ backgroundColor: "#000033", minWidth: "60px" }}
           >
             Cut :
           </div>
@@ -169,7 +161,7 @@ export default function ClarityFilter({
               <button
                 key={option.value}
                 onClick={() => handleCutClick(option.value)}
-                className={`px-3 py-2 rounded text-sm font-medium transition-colors flex-1 ${
+                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors flex-1 ${
                   selectedCut === option.value
                     ? "text-blue-600"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -179,7 +171,7 @@ export default function ClarityFilter({
                     selectedCut === option.value
                       ? "2px solid #2563eb"
                       : "2px solid #f9e8cd",
-                  minHeight: "38px",
+                  minHeight: "32px",
                 }}
               >
                 {option.label}
@@ -191,8 +183,8 @@ export default function ClarityFilter({
         {/* Polish */}
         <div className="flex items-center gap-2 mb-3">
           <div
-            className="px-3 py-2 rounded text-sm font-semibold text-white"
-            style={{ backgroundColor: "#000033", minWidth: "70px" }}
+            className="px-2 py-1.5 rounded text-xs font-semibold text-white"
+            style={{ backgroundColor: "#000033", minWidth: "60px" }}
           >
             Pol :
           </div>
@@ -201,7 +193,7 @@ export default function ClarityFilter({
               <button
                 key={option.value}
                 onClick={() => handlePolishClick(option.value)}
-                className={`px-3 py-2 rounded text-sm font-medium transition-colors flex-1 ${
+                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors flex-1 ${
                   selectedPolish === option.value
                     ? "text-blue-600"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -211,7 +203,7 @@ export default function ClarityFilter({
                     selectedPolish === option.value
                       ? "2px solid #2563eb"
                       : "2px solid #f9e8cd",
-                  minHeight: "38px",
+                  minHeight: "32px",
                 }}
               >
                 {option.label}
@@ -223,8 +215,8 @@ export default function ClarityFilter({
         {/* Symmetry */}
         <div className="flex items-center gap-2">
           <div
-            className="px-3 py-2 rounded text-sm font-semibold text-white"
-            style={{ backgroundColor: "#000033", minWidth: "70px" }}
+            className="px-2 py-1.5 rounded text-xs font-semibold text-white"
+            style={{ backgroundColor: "#000033", minWidth: "60px" }}
           >
             Sym :
           </div>
@@ -233,7 +225,7 @@ export default function ClarityFilter({
               <button
                 key={option.value}
                 onClick={() => handleSymmetryClick(option.value)}
-                className={`px-3 py-2 rounded text-sm font-medium transition-colors flex-1 ${
+                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors flex-1 ${
                   selectedSymmetry === option.value
                     ? "text-blue-600"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -243,7 +235,7 @@ export default function ClarityFilter({
                     selectedSymmetry === option.value
                       ? "2px solid #2563eb"
                       : "2px solid #f9e8cd",
-                  minHeight: "38px",
+                  minHeight: "32px",
                 }}
               >
                 {option.label}

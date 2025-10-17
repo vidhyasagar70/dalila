@@ -1,5 +1,4 @@
 import React from "react";
-import { Diamond } from "lucide-react";
 
 const SHAPE_OPTIONS = [
   { label: "Round", value: "ROUND", image: "/shapefilter/vector (4).png" },
@@ -21,42 +20,58 @@ interface ShapeFilterProps {
   onShapeChange: (shape: string) => void;
 }
 
-export default function ShapeFilter({ selectedShape, onShapeChange }: ShapeFilterProps) {
+export default function ShapeFilter({
+  selectedShape,
+  onShapeChange,
+}: ShapeFilterProps) {
+  const handleShapeClick = (shape: string) => {
+    if (selectedShape === shape) {
+      onShapeChange(""); // deselect if clicked again
+    } else {
+      onShapeChange(shape);
+    }
+  };
+
   return (
     <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+      {/* Header Section */}
       <div
-        className="flex items-center gap-2.5 px-4 py-3"
+        className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}
       >
-        <Diamond className="text-white" size={24} />
-        <span className="text-lg font-semibold text-white">Shapes</span>
+        <img src="/filtersicon/shape.png" alt="Shape" className="w-5 h-5" />
+        <span className="text-base font-semibold text-white">Shape</span>
       </div>
+
+      {/* Shape Buttons */}
       <div
-        className="grid grid-cols-4 gap-3 p-4 bg-white"
+        className="grid grid-cols-4 gap-2 p-3 bg-white"
         style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
       >
         {SHAPE_OPTIONS.map((option) => (
           <button
             key={option.value}
-            onClick={() =>
-              onShapeChange(selectedShape === option.value ? "" : option.value)
-            }
-            className={`flex flex-col items-center justify-center gap-2.5 px-3 py-3 transition-colors ${
+            onClick={() => handleShapeClick(option.value)}
+            className={`flex flex-col items-center justify-center gap-1.5 px-2 py-2 transition-colors ${
               selectedShape === option.value
-                ? "text-blue-600"
+                ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: 95,
-              minHeight: 90,
+              minWidth: 70,
+              minHeight: 80, // slightly taller
               border:
                 selectedShape === option.value
                   ? "2px solid #2563eb"
                   : "2px solid #f9e8cd",
             }}
           >
-            <img src={option.image} alt={option.label} className="w-8 h-8 object-contain" />
-            <span className="text-sm font-medium">{option.label}</span>
+            <img
+              src={option.image}
+              alt={option.label}
+              className="w-8 h-8 object-contain" // increased size
+            />
+            <span className="text-xs font-medium">{option.label}</span>
           </button>
         ))}
       </div>

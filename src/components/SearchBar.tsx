@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Search } from "lucide-react";
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
@@ -22,7 +21,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     <div className="mb-4">
       <div className="flex items-center border border-gray-200 rounded overflow-hidden bg-white shadow-sm w-fit">
         <div className="flex items-center px-3 py-2.5 border-r border-gray-200">
-          <Search className="w-5 h-5 text-gray-600" />
+          <img src="/filtersicon/filtersearch.png" alt="Search" className="w-5 h-5" />
         </div>
         <input
           type="text"

@@ -3,47 +3,45 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const isTestingPage = pathname === "/Testingpages";
+  const adminpanelPage = pathname === "/adminpanel";
+  const inventoryPage = pathname === "/inventory";
+  const offerenquiryPage = pathname === "/offer-enquiry";
+  const memberPage = pathname === "/member";
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu when resizing to desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024 && isMobileMenuOpen) {
         setIsMobileMenuOpen(false);
       }
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [isMobileMenuOpen]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
   }, [isMobileMenuOpen]);
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+        isScrolled || isTestingPage || adminpanelPage || inventoryPage || offerenquiryPage || memberPage
           ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
           : "bg-transparent py-2.5 md:py-3"
       }`}
@@ -72,30 +70,61 @@ export default function Header() {
 
           {/* Left Navigation - Desktop/Tablet */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
-            <Link
-              href="/aboutUs"
-              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-            >
-              About us
-            </Link>
-            <Link
-              href="/weBuy"
-              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-            >
-              We Buy
-            </Link>
-            <Link
-              href="/diamondKnowledge"
-              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-            >
-              Diamond Knowledge
-            </Link>
-            <Link
-              href="/contact"
-              className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-            >
-              Contact Us
-            </Link>
+            {isTestingPage || adminpanelPage || inventoryPage ||offerenquiryPage ||memberPage? (
+              <>
+                <Link
+                  href="/adminpanel"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  Admin Panel
+                </Link>
+                <Link
+                  href="/member"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  Member
+                </Link>
+                <Link
+                  href="/inventory"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  Inventory
+                </Link>
+                <Link
+                  href="/offer-enquiry"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  Offer Enquiry
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/aboutUs"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  About us
+                </Link>
+                <Link
+                  href="/weBuy"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  We Buy
+                </Link>
+                <Link
+                  href="/diamondKnowledge"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  Diamond Knowledge
+                </Link>
+                <Link
+                  href="/contact"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                >
+                  Contact Us
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Center Logo */}
@@ -168,34 +197,69 @@ export default function Header() {
 
             {/* Mobile Navigation */}
             <nav className="flex flex-col gap-4 mb-8">
-              <Link
-                href="/aboutUs"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-              >
-                About us
-              </Link>
-              <Link
-                href="/weBuy"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-              >
-                We Buy
-              </Link>
-              <Link
-                href="/diamondKnowledge"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-              >
-                Diamond Knowledge
-              </Link>
-              <Link
-                href="/contact"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-              >
-                Contact Us
-              </Link>
+              {isTestingPage ? (
+                <>
+                  <Link
+                    href="/adminpanel"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    Admin Panel
+                  </Link>
+                  <Link
+                    href="/member"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    Member
+                  </Link>
+                  <Link
+                    href="/inventory"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    Inventory
+                  </Link>
+                  <Link
+                    href="/offer-enquiry"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    Offer Enquiry
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/aboutUs"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    About us
+                  </Link>
+                  <Link
+                    href="/weBuy"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    We Buy
+                  </Link>
+                  <Link
+                    href="/diamondKnowledge"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    Diamond Knowledge
+                  </Link>
+                  <Link
+                    href="/contact"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  >
+                    Contact Us
+                  </Link>
+                </>
+              )}
             </nav>
 
             {/* Mobile Auth Buttons */}

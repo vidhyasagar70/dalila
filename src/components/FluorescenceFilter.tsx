@@ -28,40 +28,45 @@ export default function FluorFilter({
   };
 
   return (
-    <div className="mb-4 mt-2" style={{ width: 'fit-content' }}>
-      <div className="flex items-center gap-2 px-3 py-2 rounded-t" style={{ backgroundColor: '#000033' }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="8" fill="none" stroke="white" strokeWidth="2" opacity="0.9"/>
-          <path d="M12 8 L14 10 L12 12 L10 10 Z" fill="white" opacity="0.9"/>
-          <circle cx="12" cy="12" r="3" fill="white" opacity="0.5"/>
-          <path d="M8 8 L6 6 M16 8 L18 6 M8 16 L6 18 M16 16 L18 18" stroke="white" strokeWidth="1.5" opacity="0.7"/>
-        </svg>
-        <span className="text-lg font-semibold text-white">
-          Fluor
-        </span>
+    <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+      {/* Header */}
+      <div
+        className="flex items-center gap-2 px-3 py-2"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <img
+          src="/filtersicon/flour.png"
+          alt="Fluor"
+          className="w-5 h-5"
+        />
+        <span className="text-base font-semibold text-white">Fluor</span>
       </div>
-      
-      <div className="p-4 bg-white rounded-b" style={{ border: '2px solid #f9e8cd' }}>
-        <div className="grid grid-cols-4 gap-2">
-          {FLUOR_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => handleFluorClick(option.value)}
-              className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                selectedFluor.includes(option.value)
-                  ? "text-blue-600"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{ 
-                border: selectedFluor.includes(option.value) ? '2px solid #2563eb' : '2px solid #f9e8cd',
-                minHeight: '45px',
-                minWidth: '70px'
-              }}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
+
+      {/* Buttons */}
+      <div
+        className="grid grid-cols-4 gap-2 p-3 bg-white"
+        style={{ border: "2px solid #f9e8cd", borderTop: "none" }}
+      >
+        {FLUOR_OPTIONS.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => handleFluorClick(option.value)}
+            className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+              selectedFluor.includes(option.value)
+                ? "text-blue-600 bg-blue-50"
+                : "bg-white text-gray-700 hover:bg-gray-50"
+            }`}
+            style={{
+              minWidth: 52,
+              border: selectedFluor.includes(option.value)
+                ? "2px solid #2563eb"
+                : "2px solid #f9e8cd",
+              minHeight: "32px",
+            }}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
     </div>
   );

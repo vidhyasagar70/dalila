@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { KeyRound, Eye, Heart } from "lucide-react"; 
 
 const KEY_TO_SYMBOL_OPTIONS = [
   "ALL",
@@ -59,24 +58,31 @@ export default function KeySymbolFilter({
     "px-3 py-1.5 rounded text-[15px] font-medium transition-all duration-200";
 
   return (
-    <div className="mb-4 mt-2 w-fit">
+    <div className="mb-4 mt-2" style={{ width: "fit-content", minWidth: "320px" }}>
       {/* Key To Symbol Section */}
-      <div className={`${sectionHeader} rounded-t`}>
-        <KeyRound size={20}  />
-        <span>Key To Symbol</span>
+      <div
+        className="flex items-center gap-2 px-3 py-2"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-base font-semibold text-white">Key To Symbol</span>
       </div>
-      <div className="bg-white p-3 border-x-2 border-[#f9e8cd]">
+      <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
         <div className="grid grid-cols-3 gap-2">
           {KEY_TO_SYMBOL_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => toggleFilter("keyToSymbol", option)}
-              className={`${buttonBase} ${
+              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors break-words ${
                 isSelected("keyToSymbol", option)
-                  ? "text-blue-600 border-2 border-blue-600"
-                  : "text-gray-700 border-2 border-[#f9e8cd] hover:bg-gray-50"
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
-              style={{ minWidth: "80px" }}
+              style={{
+                minHeight: "32px",
+                border: isSelected("keyToSymbol", option)
+                  ? "2px solid #2563eb"
+                  : "2px solid #f9e8cd",
+              }}
             >
               {option}
             </button>
@@ -85,21 +91,29 @@ export default function KeySymbolFilter({
       </div>
 
       {/* Ey.Cln Section */}
-      <div className={sectionHeader}>
-        <span className="text-white">Ey.Cln</span>
+      <div
+        className="flex items-center gap-2 px-3 py-2"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-base font-semibold text-white">Ey.Cln</span>
       </div>
-      <div className="bg-white p-3 border-x-2 border-[#f9e8cd]">
+      <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
         <div className="grid grid-cols-4 gap-2">
           {EY_CLN_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => toggleFilter("eyCln", option)}
-              className={`${buttonBase} ${
+              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors break-words ${
                 isSelected("eyCln", option)
-                  ? "text-blue-600 border-2 border-blue-600"
-                  : "text-gray-700 border-2 border-[#f9e8cd] hover:bg-gray-50"
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
-              style={{ minWidth: "70px" }}
+              style={{
+                minHeight: "32px",
+                border: isSelected("eyCln", option)
+                  ? "2px solid #2563eb"
+                  : "2px solid #f9e8cd",
+              }}
             >
               {option}
             </button>
@@ -108,21 +122,29 @@ export default function KeySymbolFilter({
       </div>
 
       {/* H&A Section */}
-      <div className={sectionHeader}> 
-        <span className="text-white">H&A</span>
+      <div
+        className="flex items-center gap-2 px-3 py-2"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-base font-semibold text-white">H&A</span>
       </div>
-      <div className="bg-white p-3 rounded-b border-2 border-[#f9e8cd]">
+      <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
         <div className="grid grid-cols-4 gap-2">
           {H_AND_A_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => toggleFilter("hAndA", option)}
-              className={`${buttonBase} ${
+              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors break-words ${
                 isSelected("hAndA", option)
-                  ? "text-blue-600 border-2 border-blue-600"
-                  : "text-gray-700 border-2 border-[#f9e8cd] hover:bg-gray-50"
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
-              style={{ minWidth: "70px" }}
+              style={{
+                minHeight: "32px",
+                border: isSelected("hAndA", option)
+                  ? "2px solid #2563eb"
+                  : "2px solid #f9e8cd",
+              }}
             >
               {option}
             </button>

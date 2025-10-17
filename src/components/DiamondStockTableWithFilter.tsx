@@ -15,7 +15,7 @@ import KeySymbolFilter, { type KeySymbolFilters } from './KeyToSymbolFilter';
 import ShadesFilter, { type ShadesFilters } from './ShadesFilter';
 import PriceLocationFilter, { type PriceLocationFilters } from './Priceandloction';
 import AdvancedFilters from "./AdvancedFilters";
-
+import DiamondStockTable from "./DiamondStockTable";
 export default function DiamondStockTableWithFilter() {
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,6 +64,7 @@ export default function DiamondStockTableWithFilter() {
     labs: [],
   });
   const [showFilters, setShowFilters] = useState(true);
+  
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color);
@@ -122,34 +123,40 @@ export default function DiamondStockTableWithFilter() {
 
   return (
     <div className="w-full px-4 py-4 bg-gray-50 mt-35">
-      {/* TOP ROW: Shapes, Carat, Clarity, Color - 4 columns equal width */}
-      <div className="grid grid-cols-4 gap-4 mb-4">
-        <ShapeFilter
-          selectedShape={selectedShape}
-          onShapeChange={handleShapeChange}
-        />
-        <CaratFilter 
-          selectedRange={selectedCaratRange}
-          onRangeChange={handleCaratRangeChange}
-        />
-        <ClarityFilter
-          selectedClarity={selectedClarity}
-          selectedCut={selectedCut}
-          selectedPolish={selectedPolish}
-          selectedSymmetry={selectedSymmetry}
-          onClarityChange={handleClarityChange}
-          onCutChange={handleCutChange}
-          onPolishChange={handlePolishChange}
-          onSymmetryChange={handleSymmetryChange}
-        />
-        <ColorFilter
-          selectedColor={selectedColor}
-          onColorChange={handleColorChange}
-        />
-      </div>
+    {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
+<div className="grid grid-cols-4 gap-0.5">
+  <ShapeFilter
+    selectedShape={selectedShape}
+    onShapeChange={handleShapeChange}
+  />
+  <CaratFilter 
+    selectedRange={selectedCaratRange}
+    onRangeChange={handleCaratRangeChange}
+  />
+  <ClarityFilter
+    selectedClarity={selectedClarity}
+    selectedCut={selectedCut}
+    selectedPolish={selectedPolish}
+    selectedSymmetry={selectedSymmetry}
+    onClarityChange={handleClarityChange}
+    onCutChange={handleCutChange}
+    onPolishChange={handlePolishChange}
+    onSymmetryChange={handleSymmetryChange}
+  />
 
-      {/* MIDDLE ROW: Search Bar and Advanced Filters */}
-      <div className="mb-4">
+  <div className="flex flex-col gap-0.5">
+    <FluorFilter
+      selectedFluor={selectedFluor}
+      onFluorChange={handleFluorChange}
+    />
+    <ColorFilter
+      selectedColor={selectedColor}
+      onColorChange={handleColorChange}
+    />
+  </div>
+</div>
+
+      <div className="grid grid-cols-2 mt-2">
         <SearchBar onSearch={handleSearch} />
         <div className="mt-2">
           <AdvancedFilters
@@ -159,7 +166,7 @@ export default function DiamondStockTableWithFilter() {
         </div>
       </div>
 
-      {/* BOTTOM ROW: 5 columns - Inclusion, Shades, Key To Symbol, Price, Measurement */}
+
       {showFilters && (
         <div className="grid grid-cols-5 gap-4">
           <InclusionFilter
@@ -181,9 +188,13 @@ export default function DiamondStockTableWithFilter() {
           <MeasurementFilter
             measurements={measurements}
             onMeasurementChange={setMeasurements}
+
           />
+
+         
         </div>
       )}
+       <DiamondStockTable data={[]} />
     </div>
   );
 }
