@@ -14,8 +14,9 @@ interface FetchParams {
   sortOrder?: 'asc' | 'desc';
   status?: string;
   userId?: string;
-  q?: string;
+
   field?: string;
+  searchTerm?: string;
 }
 
 interface ApiResponse<T> {
@@ -258,41 +259,47 @@ export const diamondApi = {
   getAllNoPagination: () => api.get<{ diamonds: any[] }>("/api/diamonds/all"),
 
  search: (filters: {
-    color?: string;
-    clarity?: string;
-    cut?: string;
-    shape?: string;
-    minCarats?: number;
-    maxCarats?: number;
-    minPrice?: number;
-    maxPrice?: number;
-    lab?: string;
-    location?: string;
-    stage?: string;
-    page?: number;
-    limit?: number;
-    q?: string;
-  }) => {
-    // Map lowercase keys to uppercase keys for the API
-    const mappedFilters: Record<string, any> = {};
-    
-    if (filters.shape) mappedFilters.SHAPE = filters.shape;
-    if (filters.color) mappedFilters.COLOR = filters.color;
-    if (filters.clarity) mappedFilters.CLARITY = filters.clarity;
-    if (filters.cut) mappedFilters.CUT = filters.cut;
-    if (filters.minCarats) mappedFilters.MIN_CARATS = filters.minCarats;
-    if (filters.maxCarats) mappedFilters.MAX_CARATS = filters.maxCarats;
-    if (filters.minPrice) mappedFilters.MIN_PRICE = filters.minPrice;
-    if (filters.maxPrice) mappedFilters.MAX_PRICE = filters.maxPrice;
-    if (filters.lab) mappedFilters.LAB = filters.lab;
-    if (filters.location) mappedFilters.LOCATION = filters.location;
-    if (filters.stage) mappedFilters.STAGE = filters.stage;
-    if (filters.page) mappedFilters.page = filters.page;
-    if (filters.limit) mappedFilters.limit = filters.limit;
-    if (filters.q) mappedFilters.q = filters.q;
-    
-    return api.get<PaginationData<any>>("/api/diamonds/search", mappedFilters as FetchParams);
-  },
+  color?: string;
+  clarity?: string;
+  cut?: string;
+  shape?: string;
+  minCarats?: number;
+  maxCarats?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  lab?: string;
+  location?: string;
+  stage?: string;
+  page?: number;
+  limit?: number;
+ 
+  searchTerm?: string;// This is the search query parameter
+}) => {
+  // Map lowercase keys to uppercase keys for the API
+  const mappedFilters: Record<string, any> = {};
+  
+  // Map all the filter parameters
+  if (filters.shape) mappedFilters.SHAPE = filters.shape;
+  if (filters.color) mappedFilters.COLOR = filters.color;
+  if (filters.clarity) mappedFilters.CLARITY = filters.clarity;
+  if (filters.cut) mappedFilters.CUT = filters.cut;
+  if (filters.minCarats) mappedFilters.MIN_CARATS = filters.minCarats;
+  if (filters.maxCarats) mappedFilters.MAX_CARATS = filters.maxCarats;
+  if (filters.minPrice) mappedFilters.MIN_PRICE = filters.minPrice;
+  if (filters.maxPrice) mappedFilters.MAX_PRICE = filters.maxPrice;
+  if (filters.lab) mappedFilters.LAB = filters.lab;
+  if (filters.location) mappedFilters.LOCATION = filters.location;
+  if (filters.stage) mappedFilters.STAGE = filters.stage;
+  if (filters.page) mappedFilters.page = filters.page;
+  if (filters.limit) mappedFilters.limit = filters.limit;
+  
+  // IMPORTANT: Map the search query 'q' parameter
+  if (filters.searchTerm) mappedFilters.searchTerm= filters.searchTerm;
+  
+  console.log('Search API called with filters:', mappedFilters);
+  
+  return api.get<PaginationData<any>>("/api/diamonds/search", mappedFilters as FetchParams);
+},
   // Get filter options - Updated to return typed response
   getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
     try {

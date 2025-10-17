@@ -81,77 +81,49 @@ useEffect(() => {
     try {
       setLoading(true);
       setError(null);
-      
-      const hasSearchTerm = searchTerm && searchTerm.trim() !== "";
-      const hasShapeFilter = selectedShape && selectedShape.trim() !== "" && selectedShape !== "ALL";
-      const hasColorFilter = selectedColor && selectedColor.trim() !== "" && selectedColor !== "ALL";
-      const hasCaratFilter = selectedMinCarat && selectedMaxCarat && 
-                            (selectedMinCarat.trim() !== "" || selectedMaxCarat.trim() !== "");
-      
+
+      const hasSearchTerm = searchTerm && searchTerm.trim();
+      const hasShapeFilter = selectedShape && selectedShape.trim() && selectedShape !== "ALL";
+      const hasColorFilter = selectedColor && selectedColor.trim() && selectedColor !== "ALL";
+      const hasCaratFilter = selectedMinCarat && selectedMaxCarat && selectedMinCarat.trim() && selectedMaxCarat.trim();
+
       // Check if any filter is applied
       const hasAnyFilter = hasShapeFilter || hasColorFilter || hasSearchTerm || hasCaratFilter;
-      
+
       let response;
-      
-      // Use search endpoint when filters are applied
       if (hasAnyFilter) {
-        const filters: any = {
-          page: 1,
-          limit: 10000 // Get all matching results
-        };
-        
-        if (hasShapeFilter) {
-          filters.shape = selectedShape.trim();
-        }
-        
-        if (hasColorFilter) {
-          filters.color = selectedColor.trim();
-        }
-        
+        const filters: any = {};
+
+        if (hasShapeFilter) filters.shape = selectedShape.trim();
+        if (hasColorFilter) filters.color = selectedColor.trim();
         if (hasCaratFilter) {
-          if (selectedMinCarat && selectedMinCarat.trim() !== "") {
-            filters.minCarats = parseFloat(selectedMinCarat);
-          }
-          if (selectedMaxCarat && selectedMaxCarat.trim() !== "") {
-            filters.maxCarats = parseFloat(selectedMaxCarat);
-          }
+          if (selectedMinCarat.trim()) filters.minCarats = parseFloat(selectedMinCarat);
+          if (selectedMaxCarat.trim()) filters.maxCarats = parseFloat(selectedMaxCarat);
         }
-        
-        if (hasSearchTerm) {
-          filters.q = searchTerm.trim();
-        }
-        
-        console.log('Applying filters:', filters);
+        if (hasSearchTerm) filters.searchTerm= searchTerm.trim();
+
         response = await diamondApi.search(filters);
-      } 
-      // Get all diamonds when no filters are applied
-      else {
-        console.log('No filters applied, fetching all diamonds');
+      } else {
         response = await diamondApi.getAllNoPagination();
       }
-      
+
       if (response?.success && response.data) {
-        let diamonds: DiamondData[] = [];
-        
-        // Handle different response structures
+        let diamonds;
         if (Array.isArray(response.data)) {
           diamonds = response.data;
         } else if (response.data.diamonds && Array.isArray(response.data.diamonds)) {
           diamonds = response.data.diamonds;
+        } else {
+          diamonds = [];
         }
-        
-        console.log(`Loaded ${diamonds.length} diamonds (Filtered: ${hasAnyFilter})`);
         setData(diamonds);
+        setCurrentPage(1); // Reset to first page on new filter
       } else {
-        console.log('No data in response');
         setData([]);
       }
-      
-      // Reset to first page when filters change
-      setCurrentPage(1);
     } catch (err) {
-      console.error('Error fetching diamonds:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch diamonds');
+      console.error("Error fetching diamonds", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch diamonds");
       setData([]);
     } finally {
       setLoading(false);
@@ -159,6 +131,7 @@ useEffect(() => {
   };
 
   fetchDiamonds();
+  // Add all dependencies that should trigger data refresh
 }, [searchTerm, selectedShape, selectedColor, selectedMinCarat, selectedMaxCarat]);
 
   const handleSort = (key: string) => {

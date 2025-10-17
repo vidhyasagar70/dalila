@@ -211,13 +211,14 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
         </div>
       )}
        <DiamondStockTable
-          searchTerm={searchTerm}
-          selectedShape={selectedShape}
-          selectedColor={selectedColor}
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
-          pageSize={20}
-        />
+  searchTerm={searchTerm}
+  selectedShape={selectedShape}
+  selectedColor={selectedColor}
+  selectedMinCarat={selectedMinCarat}
+  selectedMaxCarat={selectedMaxCarat}
+  pageSize={20}
+/>
+
     </div>
   );
 }
