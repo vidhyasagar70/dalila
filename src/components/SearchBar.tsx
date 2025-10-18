@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
 interface SearchBarProps {
   onSearch: (searchTerm: string) => void;
@@ -12,7 +13,7 @@ export default function SearchBar({ onSearch, isSearching = false }: SearchBarPr
     onSearch(searchInput.trim());
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
@@ -24,16 +25,23 @@ export default function SearchBar({ onSearch, isSearching = false }: SearchBarPr
   };
 
   return (
-    <div >
+    <div>
       <div className="flex items-center border border-gray-200 rounded overflow-hidden shadow-sm w-fit bg-transparent backdrop-blur-sm">
         <div className="flex items-center px-3 py-1.5 border-r border-gray-200">
-          <img src="/filtersicon/filtersearch.png" alt="Search" className="w-4 h-4" />
+          <Image
+            src="/filtersicon/filtersearch.png"
+            alt="Search"
+            width={16}
+            height={16}
+            className="w-4 h-4"
+            priority
+          />
         </div>
         <input
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           placeholder="Search by Stone ID"
           className="px-3 py-1 outline-none text-sm text-black placeholder-gray-500 bg-transparent min-w-[280px]"
           disabled={isSearching}

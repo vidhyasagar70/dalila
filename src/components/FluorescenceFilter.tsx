@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { diamondApi } from "@/lib/api";
 
 interface FluorFilterProps {
@@ -18,9 +19,8 @@ export default function FluorFilter({
       try {
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
-          // Filter out empty strings from fluorescence types
           const fluorTypes = response.data.fluorescenceTypes.filter(
-            (f) => f.trim() !== ""
+            (f: string) => f.trim() !== ""
           );
           setFluorOptions(fluorTypes);
         }
@@ -35,23 +35,26 @@ export default function FluorFilter({
   }, []);
 
   const handleFluorClick = (value: string) => {
-    if (selectedFluor === value) {
-      onFluorChange("");
-    } else {
-      onFluorChange(value);
-    }
+    onFluorChange(selectedFluor === value ? "" : value);
   };
+
+  const Header = () => (
+    <div className="flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#000033" }}>
+      <Image
+        src="/filtersicon/flour.png"
+        alt="Fluor"
+        width={20}
+        height={20}
+        priority
+      />
+      <span className="text-base font-semibold text-white">Fluor</span>
+    </div>
+  );
 
   if (loading) {
     return (
       <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
-        <div
-          className="flex items-center gap-2 px-3 py-2"
-          style={{ backgroundColor: "#000033" }}
-        >
-          <img src="/filtersicon/flour.png" alt="Fluor" className="w-5 h-5" />
-          <span className="text-base font-semibold text-white">Fluor</span>
-        </div>
+        <Header />
         <div
           className="p-3 bg-white flex items-center justify-center"
           style={{
@@ -68,16 +71,7 @@ export default function FluorFilter({
 
   return (
     <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-2 px-3 py-2"
-        style={{ backgroundColor: "#000033" }}
-      >
-        <img src="/filtersicon/flour.png" alt="Fluor" className="w-5 h-5" />
-        <span className="text-base font-semibold text-white">Fluor</span>
-      </div>
-
-      {/* Buttons */}
+      <Header />
       <div
         className="grid grid-cols-4 gap-2 p-3 bg-white"
         style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
@@ -93,9 +87,10 @@ export default function FluorFilter({
             }`}
             style={{
               minWidth: 52,
-              border: selectedFluor === option
-                ? "0.25px solid #2563eb"
-                : "0.25px solid #f9e8cd",
+              border:
+                selectedFluor === option
+                  ? "0.25px solid #2563eb"
+                  : "0.25px solid #f9e8cd",
               minHeight: "32px",
             }}
           >

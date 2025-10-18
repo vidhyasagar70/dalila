@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Sparkles, Cloud, Gem, Star } from "lucide-react"; 
+
 
 const SHADES_OPTIONS = [
   "HPHT",

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Phone, Mail, MapPin, Home, Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { userApi, getAuthToken, UNAUTHORIZED_EVENT } from "@/lib/api";
+import { userApi, UNAUTHORIZED_EVENT } from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");

@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { diamondApi } from "@/lib/api";
 
 // Mapping of shape values to their images and display labels
@@ -10,7 +13,10 @@ const SHAPE_IMAGE_MAP: Record<string, { image: string; label: string }> = {
   EMERALD: { label: "Emerald", image: "/shapefilter/vector (5).png" },
   OVAL: { label: "Oval", image: "/shapefilter/vector-oval.png" },
   CUSHION: { label: "Cushion", image: "/shapefilter/vector (6).png" },
-  "CUSHION BRILLIANT": { label: "Cushion Brilliant", image: "/shapefilter/vector (6).png" },
+  "CUSHION BRILLIANT": {
+    label: "Cushion Brilliant",
+    image: "/shapefilter/vector (6).png",
+  },
   TRILLIANT: { label: "Trilliant", image: "/shapefilter/vector (7).png" },
   HEART: { label: "Heart", image: "/shapefilter/Vector-heart.png" },
   PRINCESS: { label: "Princess", image: "/shapefilter/vector_princess.png" },
@@ -41,10 +47,9 @@ export default function ShapeFilter({
       try {
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
-          // Map API shapes to shape options with images
           const shapes = response.data.shapes
-            .filter((s) => s.trim() !== "")
-            .map((shape) => {
+            .filter((s: string) => s.trim() !== "")
+            .map((shape: string) => {
               const mappedData = SHAPE_IMAGE_MAP[shape] || {
                 label: shape.charAt(0) + shape.slice(1).toLowerCase(),
                 image: "/shapefilter/others.png",
@@ -82,7 +87,13 @@ export default function ShapeFilter({
           className="flex items-center gap-2 px-3 py-2"
           style={{ backgroundColor: "#000033" }}
         >
-          <img src="/filtersicon/shape.png" alt="Shape" className="w-5 h-5" />
+          <Image
+            src="/filtersicon/shape.png"
+            alt="Shape"
+            width={20}
+            height={20}
+            priority
+          />
           <span className="text-base font-semibold text-white">Shape</span>
         </div>
         <div
@@ -105,7 +116,13 @@ export default function ShapeFilter({
         className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}
       >
-        <img src="/filtersicon/shape.png" alt="Shape" className="w-5 h-5" />
+        <Image
+          src="/filtersicon/shape.png"
+          alt="Shape"
+          width={20}
+          height={20}
+          priority
+        />
         <span className="text-base font-semibold text-white">Shape</span>
       </div>
       <div
@@ -130,10 +147,12 @@ export default function ShapeFilter({
                   : "0.25px solid #f9e8cd",
             }}
           >
-            <img
+            <Image
               src={option.image}
               alt={option.label}
-              className="w-8 h-8 object-contain"
+              width={32}
+              height={32}
+              className="object-contain"
             />
             <span className="text-xs font-medium">{option.label}</span>
           </button>
