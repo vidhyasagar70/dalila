@@ -1,4 +1,6 @@
+
 import React, { useEffect, useState } from "react";
+import { ChevronUp, ChevronDown} from "lucide-react";
 import { diamondApi } from "@/lib/api";
 
 export interface PriceRange {
@@ -32,13 +34,11 @@ export default function PriceLocationFilter({
       try {
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
-          // Filter out empty strings from locations
           const locations = response.data.locations.filter(
             (l) => l.trim() !== ""
           );
           setLocationOptions(locations);
 
-          // Filter out empty strings from labs
           const labs = response.data.labs.filter((l) => l.trim() !== "");
           setLabOptions(labs);
         }
@@ -133,7 +133,10 @@ export default function PriceLocationFilter({
             minHeight: "100px",
           }}
         >
-          <span className="text-gray-500 text-xs">Loading filters...</span>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+            <span className="text-gray-500 text-xs">Loading filters...</span>
+          </div>
         </div>
       </div>
     );
@@ -146,6 +149,7 @@ export default function PriceLocationFilter({
         className="flex items-center gap-1.5 px-2 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
+
         <span className="text-sm font-semibold text-white">Price</span>
       </div>
       <div
@@ -183,20 +187,15 @@ export default function PriceLocationFilter({
                 <button
                   onClick={() => incrementValue("pricePerCarat", "from")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
-                  ▲
+                  <ChevronUp className="w-3 h-3 text-gray-600" />
                 </button>
                 <button
                   onClick={() => decrementValue("pricePerCarat", "from")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{
-                    fontSize: "9px",
-                    lineHeight: "10px",
-                    borderColor: "#e5e7eb",
-                  }}
+                  style={{ borderColor: "#e5e7eb" }}
                 >
-                  ▼
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
               </div>
             </div>
@@ -224,20 +223,15 @@ export default function PriceLocationFilter({
                 <button
                   onClick={() => incrementValue("pricePerCarat", "to")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
-                  ▲
+                  <ChevronUp className="w-3 h-3 text-gray-600" />
                 </button>
                 <button
                   onClick={() => decrementValue("pricePerCarat", "to")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{
-                    fontSize: "9px",
-                    lineHeight: "10px",
-                    borderColor: "#f9e8cd",
-                  }}
+                  style={{ borderColor: "#f9e8cd" }}
                 >
-                  ▼
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
               </div>
             </div>
@@ -273,20 +267,15 @@ export default function PriceLocationFilter({
                 <button
                   onClick={() => incrementValue("discount", "from")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
-                  ▲
+                  <ChevronUp className="w-3 h-3 text-gray-600" />
                 </button>
                 <button
                   onClick={() => decrementValue("discount", "from")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{
-                    fontSize: "9px",
-                    lineHeight: "10px",
-                    borderColor: "#e5e7eb",
-                  }}
+                  style={{ borderColor: "#e5e7eb" }}
                 >
-                  ▼
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
               </div>
             </div>
@@ -314,20 +303,15 @@ export default function PriceLocationFilter({
                 <button
                   onClick={() => incrementValue("discount", "to")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
-                  ▲
+                  <ChevronUp className="w-3 h-3 text-gray-600" />
                 </button>
                 <button
                   onClick={() => decrementValue("discount", "to")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{
-                    fontSize: "9px",
-                    lineHeight: "10px",
-                    borderColor: "#e5e7eb",
-                  }}
+                  style={{ borderColor: "#e5e7eb" }}
                 >
-                  ▼
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
               </div>
             </div>
@@ -363,20 +347,15 @@ export default function PriceLocationFilter({
                 <button
                   onClick={() => incrementValue("totalPrice", "from")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
-                  ▲
+                  <ChevronUp className="w-3 h-3 text-gray-600" />
                 </button>
                 <button
                   onClick={() => decrementValue("totalPrice", "from")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{
-                    fontSize: "9px",
-                    lineHeight: "10px",
-                    borderColor: "#f9e8cd",
-                  }}
+                  style={{ borderColor: "#f9e8cd" }}
                 >
-                  ▼
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
               </div>
             </div>
@@ -404,20 +383,15 @@ export default function PriceLocationFilter({
                 <button
                   onClick={() => incrementValue("totalPrice", "to")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
-                  ▲
+                  <ChevronUp className="w-3 h-3 text-gray-600" />
                 </button>
                 <button
                   onClick={() => decrementValue("totalPrice", "to")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{
-                    fontSize: "9px",
-                    lineHeight: "10px",
-                    borderColor: "#f9e8cd",
-                  }}
+                  style={{ borderColor: "#f9e8cd" }}
                 >
-                  ▼
+                  <ChevronDown className="w-3 h-3 text-gray-600" />
                 </button>
               </div>
             </div>
@@ -427,10 +401,10 @@ export default function PriceLocationFilter({
 
       {/* Location Section */}
       <div
-        className="px-2 py-1.5 font-medium text-white text-sm"
+        className="px-2 py-1.5 font-medium text-white text-sm flex items-center gap-2"
         style={{ backgroundColor: "#000033" }}
       >
-        Location
+        <span>Location</span>
       </div>
       <div
         className="bg-white p-2"
@@ -462,10 +436,10 @@ export default function PriceLocationFilter({
 
       {/* Lab Section */}
       <div
-        className="px-2 py-1.5 font-medium text-white text-sm"
+        className="px-2 py-1.5 font-medium text-white text-sm flex items-center gap-2"
         style={{ backgroundColor: "#000033" }}
       >
-        Lab :
+        <span>Lab :</span>
       </div>
       <div
         className="bg-white p-2"

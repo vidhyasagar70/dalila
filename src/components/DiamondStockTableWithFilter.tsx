@@ -2,7 +2,7 @@
 
 "use client";
 import React, { useState } from "react";
-import { Grid3x3, List } from "lucide-react";
+import { Grid3x3, List, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
 
 import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
@@ -15,7 +15,6 @@ import MeasurementFilter from "./MeasurementFilter";
 import KeySymbolFilter, { type KeySymbolFilters } from './KeyToSymbolFilter';
 import ShadesFilter, { type ShadesFilters } from './ShadesFilter';
 import PriceLocationFilter, { type PriceLocationFilters } from './Priceandloction';
-import AdvancedFilters from "./AdvancedFilters";
 import DiamondStockTable from "./DiamondStockTable";
 
 export default function DiamondStockTableWithFilter() {
@@ -102,30 +101,31 @@ export default function DiamondStockTableWithFilter() {
     setSearchTerm("");
   };
 
- const handleClarityChange = (clarity: string[]) => {
- setSelectedClarity(clarity);
-  setSearchTerm(""); 
-};
+  const handleClarityChange = (clarity: string[]) => {
+    setSelectedClarity(clarity);
+    setSearchTerm(""); 
+  };
 
-const handleCutChange = (cut: string) => {
-  setSelectedCut(cut);
-  setSearchTerm("");
-};
+  const handleCutChange = (cut: string) => {
+    setSelectedCut(cut);
+    setSearchTerm("");
+  };
 
-const handlePolishChange = (polish: string) => {
-  setSelectedPolish(polish);
-  setSearchTerm("");
-};
+  const handlePolishChange = (polish: string) => {
+    setSelectedPolish(polish);
+    setSearchTerm("");
+  };
 
-const handleSymmetryChange = (symmetry: string) => {
-  setSelectedSymmetry(symmetry);
-  setSearchTerm("");
-};
-const handleCaratChange = (min: string, max: string) => {
-  console.log('Carat changed - min:', min, 'max:', max);
-  setSelectedMinCarat(min);
-  setSelectedMaxCarat(max);
-};
+  const handleSymmetryChange = (symmetry: string) => {
+    setSelectedSymmetry(symmetry);
+    setSearchTerm("");
+  };
+
+  const handleCaratChange = (min: string, max: string) => {
+    console.log('Carat changed - min:', min, 'max:', max);
+    setSelectedMinCarat(min);
+    setSelectedMaxCarat(max);
+  };
 
   const handleResetFilters = () => {
     setSelectedColor("");
@@ -136,6 +136,8 @@ const handleCaratChange = (min: string, max: string) => {
     setSelectedPolish("");
     setSelectedSymmetry("");
     setSelectedFluor("");
+    setSelectedMinCarat("");
+    setSelectedMaxCarat("");
   };
 
   return (
@@ -152,15 +154,15 @@ const handleCaratChange = (min: string, max: string) => {
           onCaratChange={handleCaratChange}
         />
         <ClarityFilter
-  selectedClarity={selectedClarity}
-  selectedCut={selectedCut}
-  selectedPolish={selectedPolish}
-  selectedSymmetry={selectedSymmetry}
-  onClarityChange={handleClarityChange}
-  onCutChange={handleCutChange}
-  onPolishChange={handlePolishChange}
-  onSymmetryChange={handleSymmetryChange}
-/>
+          selectedClarity={selectedClarity}
+          selectedCut={selectedCut}
+          selectedPolish={selectedPolish}
+          selectedSymmetry={selectedSymmetry}
+          onClarityChange={handleClarityChange}
+          onCutChange={handleCutChange}
+          onPolishChange={handlePolishChange}
+          onSymmetryChange={handleSymmetryChange}
+        />
         <ColorFilter
           selectedColor={selectedColor}
           onColorChange={handleColorChange}
@@ -168,7 +170,8 @@ const handleCaratChange = (min: string, max: string) => {
       </div>
 
       {/* SEARCH AND NAVIGATION ROW */}
-     <div className="flex items-center gap-3 mt-4 bg-[#faf6eb] px-4 py-2 rounded">
+     {/* SEARCH AND NAVIGATION ROW */}
+<div className="flex items-center gap-3 mt-4 bg-[#faf6eb] px-4 py-2 rounded">
   {/* View Mode Toggle - Left Side */}
   <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
     <button
@@ -199,18 +202,40 @@ const handleCaratChange = (min: string, max: string) => {
   <div className="flex-1"></div>
 
   {/* Search Bar and Advanced Filters - Right Side */}
-  <div className="flex items-center gap-3">
-    <div className="mt-1">
-      <SearchBar onSearch={handleSearch} isSearching={isSearching} />
-    </div>
-    <AdvancedFilters
-      onShowFilters={() => setShowFilters(!showFilters)}
-      onResetFilters={handleResetFilters}
-    />
+  <div className="flex items-center gap-2">
+    <SearchBar onSearch={handleSearch} isSearching={isSearching} />
+    <button
+      onClick={() => setShowFilters(!showFilters)}
+      className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white transition-colors shadow-sm rounded"
+    >
+      <img 
+        src="/filtersicon/filter-add.png" 
+        alt="Filter" 
+        className="w-4 h-4"
+      />
+      <span className="text-sm font-medium">Show Advanced Filters</span>
+      {showFilters ? (
+        <ChevronUp className="w-3.5 h-3.5" />
+      ) : (
+        <ChevronDown className="w-3.5 h-3.5" />
+      )}
+    </button>
+    
+    <button
+      onClick={handleResetFilters}
+      className="flex items-center gap-2 px-4 py-1.5 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
+      title="Reset All Filters"
+    >
+      <img 
+        src="/filtersicon/filter-remove.png" 
+        alt="Reset" 
+        className="w-5 h-5"
+      />
+      <span className="text-sm font-medium">Reset Filters</span>
+    </button>
   </div>
 </div>
-
-    {showFilters && (
+      {showFilters && (
         <div className="grid grid-cols-5 gap-4 mt-4">
           <InclusionFilter
             inclusions={inclusions}
@@ -249,11 +274,10 @@ const handleCaratChange = (min: string, max: string) => {
         selectedMaxCarat={selectedMaxCarat}
         selectedFluor={selectedFluor} 
         selectedClarity={selectedClarity} 
-  selectedCut={selectedCut}          
-  selectedPolish={selectedPolish}   
-  selectedSymmetry={selectedSymmetry} 
+        selectedCut={selectedCut}          
+        selectedPolish={selectedPolish}   
+        selectedSymmetry={selectedSymmetry} 
         pageSize={10}
-        
       />
     </div>
   );
