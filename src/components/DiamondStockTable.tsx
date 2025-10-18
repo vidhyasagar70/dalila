@@ -176,12 +176,12 @@ useEffect(() => {
         response = await diamondApi.getAllNoPagination();
       }
 
-      if (response?.success && response.data) {
-        let diamonds;
+if (response?.success && response.data) {
+        let diamonds: DiamondData[];
         if (Array.isArray(response.data)) {
-          diamonds = response.data;
+          diamonds = response.data as unknown as DiamondData[];
         } else if (response.data.diamonds && Array.isArray(response.data.diamonds)) {
-          diamonds = response.data.diamonds;
+          diamonds = response.data.diamonds as unknown as DiamondData[];
         } else {
           diamonds = [];
         }

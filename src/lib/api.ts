@@ -14,7 +14,6 @@ interface FetchParams {
   sortOrder?: 'asc' | 'desc';
   status?: string;
   userId?: string;
-
   field?: string;
   searchTerm?: string;
 }
@@ -62,6 +61,43 @@ interface FilterOptions {
     min: number;
     max: number;
   };
+}
+
+interface Diamond {
+  stoneNo: string;
+  shape?: string;
+  color?: string;
+  clarity?: string;
+  cut?: string;
+  carats?: number;
+  price?: number;
+  [key: string]: unknown;
+}
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  isVerified: boolean;
+  kycStatus: string;
+  role?: string;
+  [key: string]: unknown;
+}
+
+interface CartItem {
+  stoneNo: string;
+  [key: string]: unknown;
+}
+
+interface Quotation {
+  id: string;
+  stoneNumbers: string[];
+  message: string;
+  urgency?: string;
+  status?: string;
+  [key: string]: unknown;
 }
 
 const getAuthToken = (): string => {
@@ -133,50 +169,50 @@ apiClient.interceptors.response.use(
 // Generic API methods
 export const api = {
   // GET with query parameters
- get: async <T>(endpoint: string, params: FetchParams = {}): Promise<ApiResponse<T> | null> => {
-  try {
-    // Skip token check for public endpoints
-    const publicEndpoints = ['/health', '/api/diamonds/filter-options', '/api/diamonds/all', '/api/diamonds/search', '/api/diamonds'];
-    const isPublicEndpoint = publicEndpoints.some(pub => endpoint.includes(pub));
-    
-    if (!isPublicEndpoint) {
-      const token = getAuthToken();
-      if (!token || token.trim() === "") {
-        console.error("Unauthorized. Please log in.");
-        if (typeof window !== 'undefined') {
-          const unauthorizedEvent = new CustomEvent(UNAUTHORIZED_EVENT);
-          window.dispatchEvent(unauthorizedEvent);
+  get: async <T>(endpoint: string, params: FetchParams = {}): Promise<ApiResponse<T> | null> => {
+    try {
+      // Skip token check for public endpoints
+      const publicEndpoints = ['/health', '/api/diamonds/filter-options', '/api/diamonds/all', '/api/diamonds/search', '/api/diamonds'];
+      const isPublicEndpoint = publicEndpoints.some(pub => endpoint.includes(pub));
+      
+      if (!isPublicEndpoint) {
+        const token = getAuthToken();
+        if (!token || token.trim() === "") {
+          console.error("Unauthorized. Please log in.");
+          if (typeof window !== 'undefined') {
+            const unauthorizedEvent = new CustomEvent(UNAUTHORIZED_EVENT);
+            window.dispatchEvent(unauthorizedEvent);
+          }
+          return null;
         }
-        return null;
       }
+
+      const queryParams = new URLSearchParams();
+      
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          if (typeof value === 'object') {
+            Object.entries(value).forEach(([filterKey, filterValue]) => {
+              if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
+                queryParams.append(filterKey, String(filterValue));
+              }
+            });
+          } else {
+            queryParams.append(key, String(value));
+          }
+        }
+      });
+
+      const url = queryParams.toString() ? `${endpoint}?${queryParams.toString()}` : endpoint;
+      console.log("API Request URL:", url);
+      
+      const response = await apiClient.get<ApiResponse<T>>(url);
+      return response.data;
+    } catch (error) {
+      console.error("GET Error:", error);
+      return null;
     }
-
-    const queryParams = new URLSearchParams();
-    
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        if (typeof value === 'object') {
-          Object.entries(value).forEach(([filterKey, filterValue]) => {
-            if (filterValue !== undefined && filterValue !== null && filterValue !== "") {
-              queryParams.append(filterKey, String(filterValue));
-            }
-          });
-        } else {
-          queryParams.append(key, String(value));
-        }
-      }
-    });
-
-    const url = queryParams.toString() ? `${endpoint}?${queryParams.toString()}` : endpoint;
-    console.log("API Request URL:", url); // For debugging
-    
-    const response = await apiClient.get<ApiResponse<T>>(url);
-    return response.data;
-  } catch (error) {
-    console.error("GET Error:", error);
-    return null;
-  }
-},
+  },
 
   // GET by ID
   getById: async <T>(endpoint: string, id: string | number): Promise<ApiResponse<T> | null> => {
@@ -204,10 +240,13 @@ export const api = {
     try {
       const response = await apiClient.post<ApiResponse<T>>(endpoint, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("POST Error:", error);
-      if (error.response?.data) {
-        throw new Error(error.response.data.error || error.response.data.message || "Request failed");
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string; message?: string } } };
+        if (axiosError.response?.data) {
+          throw new Error(axiosError.response.data.error || axiosError.response.data.message || "Request failed");
+        }
       }
       throw error;
     }
@@ -218,10 +257,13 @@ export const api = {
     try {
       const response = await apiClient.put<ApiResponse<T>>(`${endpoint}/${id}`, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("PUT Error:", error);
-      if (error.response?.data) {
-        throw new Error(error.response.data.error || error.response.data.message || "Request failed");
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string; message?: string } } };
+        if (axiosError.response?.data) {
+          throw new Error(axiosError.response.data.error || axiosError.response.data.message || "Request failed");
+        }
       }
       throw error;
     }
@@ -239,9 +281,9 @@ export const api = {
   },
 
   // DELETE
-  delete: async (endpoint: string, id: string): Promise<ApiResponse<any> | null> => {
+  delete: async <T = unknown>(endpoint: string, id: string): Promise<ApiResponse<T> | null> => {
     try {
-      const response = await apiClient.delete<ApiResponse<any>>(`${endpoint}/${id}`);
+      const response = await apiClient.delete<ApiResponse<T>>(`${endpoint}/${id}`);
       return response.data;
     } catch (error) {
       console.error("DELETE Error:", error);
@@ -253,58 +295,58 @@ export const api = {
 // Diamond API endpoints
 export const diamondApi = {
   // Get all diamonds with pagination
-  getAll: (params?: FetchParams) => api.get<PaginationData<any>>("/api/diamonds", params),
+  getAll: (params?: FetchParams) => api.get<PaginationData<Diamond>>("/api/diamonds", params),
 
   // Get all diamonds without pagination
-  getAllNoPagination: () => api.get<{ diamonds: any[] }>("/api/diamonds/all"),
+  getAllNoPagination: () => api.get<{ diamonds: Diamond[] }>("/api/diamonds/all"),
 
- search: (filters: {
-  color?: string;
-  clarity?: string;
-  cut?: string;
-  shape?: string;
-  polish?: string;      
-  symmetry?: string;
-  minCarats?: number;
-  maxCarats?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  lab?: string;
-  location?: string;
-  stage?: string;
-  page?: number;
-  limit?: number;
-  fluorescence?: string;
-  searchTerm?: string;
-}) => {
-  const mappedFilters: Record<string, any> = {};
-  
-  if (filters.shape) mappedFilters.SHAPE = filters.shape;
-  if (filters.color) mappedFilters.COLOR = filters.color;
-  if (filters.clarity) mappedFilters.CLARITY = filters.clarity;
-  if (filters.cut) mappedFilters.CUT = filters.cut;
-  if (filters.polish) mappedFilters.POL = filters.polish;      
-  if (filters.symmetry) mappedFilters.SYM = filters.symmetry;
-  
-  // FIX: Map to CARATS_MIN and CARATS_MAX as per API
-  if (filters.minCarats !== undefined) mappedFilters.CARATS_MIN = filters.minCarats;
-  if (filters.maxCarats !== undefined) mappedFilters.CARATS_MAX = filters.maxCarats;
-  
-  if (filters.minPrice) mappedFilters.MIN_PRICE = filters.minPrice;
-  if (filters.maxPrice) mappedFilters.MAX_PRICE = filters.maxPrice;
-  if (filters.lab) mappedFilters.LAB = filters.lab;
-  if (filters.location) mappedFilters.LOCATION = filters.location;
-  if (filters.stage) mappedFilters.STAGE = filters.stage;
-  if (filters.page) mappedFilters.page = filters.page;
-  if (filters.fluorescence) mappedFilters.FLOUR = filters.fluorescence;
-  if (filters.limit) mappedFilters.limit = filters.limit;
-  if (filters.searchTerm) mappedFilters.searchTerm = filters.searchTerm;
-  
-  console.log('Search API called with filters:', mappedFilters);
-  
-  return api.get<PaginationData<any>>("/api/diamonds/search", mappedFilters as FetchParams);
-},
-  // Get filter options - Updated to return typed response
+  search: (filters: {
+    color?: string;
+    clarity?: string;
+    cut?: string;
+    shape?: string;
+    polish?: string;
+    symmetry?: string;
+    minCarats?: number;
+    maxCarats?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    lab?: string;
+    location?: string;
+    stage?: string;
+    page?: number;
+    limit?: number;
+    fluorescence?: string;
+    searchTerm?: string;
+  }) => {
+    const mappedFilters: Record<string, string | number | boolean> = {};
+    
+    if (filters.shape) mappedFilters.SHAPE = filters.shape;
+    if (filters.color) mappedFilters.COLOR = filters.color;
+    if (filters.clarity) mappedFilters.CLARITY = filters.clarity;
+    if (filters.cut) mappedFilters.CUT = filters.cut;
+    if (filters.polish) mappedFilters.POL = filters.polish;
+    if (filters.symmetry) mappedFilters.SYM = filters.symmetry;
+    
+    if (filters.minCarats !== undefined) mappedFilters.CARATS_MIN = filters.minCarats;
+    if (filters.maxCarats !== undefined) mappedFilters.CARATS_MAX = filters.maxCarats;
+    
+    if (filters.minPrice) mappedFilters.MIN_PRICE = filters.minPrice;
+    if (filters.maxPrice) mappedFilters.MAX_PRICE = filters.maxPrice;
+    if (filters.lab) mappedFilters.LAB = filters.lab;
+    if (filters.location) mappedFilters.LOCATION = filters.location;
+    if (filters.stage) mappedFilters.STAGE = filters.stage;
+    if (filters.page) mappedFilters.page = filters.page;
+    if (filters.fluorescence) mappedFilters.FLOUR = filters.fluorescence;
+    if (filters.limit) mappedFilters.limit = filters.limit;
+    if (filters.searchTerm) mappedFilters.searchTerm = filters.searchTerm;
+    
+    console.log('Search API called with filters:', mappedFilters);
+    
+    return api.get<PaginationData<Diamond>>("/api/diamonds/search", mappedFilters as FetchParams);
+  },
+
+  // Get filter options
   getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
     try {
       const response = await apiClient.get<ApiResponse<FilterOptions>>("/api/diamonds/filter-options");
@@ -317,32 +359,32 @@ export const diamondApi = {
 
   // Sync diamonds from HRC
   sync: (credentials: { username: string; password: string }) => 
-    api.post("/api/diamonds/sync", credentials),
+    api.post<{ message: string }>("/api/diamonds/sync", credentials),
 
   // Refresh diamonds
-  refresh: () => api.post("/api/diamonds/refresh", {}),
+  refresh: () => api.post<{ message: string }>("/api/diamonds/refresh", {}),
 
   // Email diamonds
   email: (data: { stoneNumbers: string[]; emails: string[] }) => 
-    api.post("/api/diamonds/email", data),
+    api.post<{ message: string }>("/api/diamonds/email", data),
 };
 
 // Cart API endpoints
 export const cartApi = {
   // Add to cart
-  add: (stoneNo: string) => api.post("/api/diamonds/cart/add", { stoneNo }),
+  add: (stoneNo: string) => api.post<{ message: string }>("/api/diamonds/cart/add", { stoneNo }),
 
   // Get cart items
-  get: () => api.get<{ cartItems: any[] }>("/api/diamonds/cart"),
+  get: () => api.get<{ cartItems: CartItem[] }>("/api/diamonds/cart"),
 
   // Get specific cart item
-  getByStoneNo: (stoneNo: string) => api.get<{ cartItem: any }>(`/api/diamonds/cart/${stoneNo}`),
+  getByStoneNo: (stoneNo: string) => api.get<{ cartItem: CartItem }>(`/api/diamonds/cart/${stoneNo}`),
 
   // Remove from cart
-  remove: (stoneNo: string) => api.delete("/api/diamonds/cart", stoneNo),
+  remove: (stoneNo: string) => api.delete<{ message: string }>("/api/diamonds/cart", stoneNo),
 
   // Clear cart
-  clear: () => api.delete("/api/diamonds/cart", ""),
+  clear: () => api.delete<{ message: string }>("/api/diamonds/cart", ""),
 };
 
 // User API endpoints
@@ -357,138 +399,126 @@ export const userApi = {
   }) => {
     try {
       const response = await api.post<{
-        user: {
-          id: string;
-          username: string;
-          email: string;
-          firstName: string;
-          lastName: string;
-          isVerified: boolean;
-          kycStatus: string;
-        };
+        user: User;
       }>("/api/users/register", data);
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Registration error:", error);
       throw error;
     }
   },
 
-login: async (data: { email: string; password: string }) => {
-  try {
-    const response = await api.post<{ user: any; token: string }>("/api/users/login", data);
-    
-    console.log("Login API Response:", response);
-    console.log("Response structure:", JSON.stringify(response, null, 2));
-    
-    if (response.success) {
-      // Extract token and user from response.data
-      let token: string | undefined = undefined;
-      let user: any = undefined;
+  login: async (data: { email: string; password: string }) => {
+    try {
+      const response = await api.post<{ user: User; token: string }>("/api/users/login", data);
       
-      if (response.data) {
-        token = response.data.token;
-        user = response.data.user;
-      }
+      console.log("Login API Response:", response);
+      console.log("Response structure:", JSON.stringify(response, null, 2));
       
-      console.log("Extracted token:", token);
-      console.log("Extracted user:", user);
-      
-      // If token exists, store it
-      if (token) {
-        console.log("✅ Token found, storing...");
-        setAuthToken(token);
+      if (response.success) {
+        let token: string | undefined = undefined;
+        let user: User | undefined = undefined;
         
-        // Verify token was stored
-        const storedToken = getAuthToken();
-        console.log("Verified token in storage:", storedToken ? "EXISTS" : "MISSING");
-      } else {
-        console.warn("⚠️ No token found in response");
-      }
-      
-      // If we have user data, store it
-      if (user) {
-        console.log("✅ User data found:", user);
-        console.log("✅ User role:", user.role);
-        
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('user', JSON.stringify(user));
-          console.log("✅ User stored in localStorage");
-          
-          // Verify storage
-          const storedUser = localStorage.getItem('user');
-          console.log("Verification - Stored user exists:", storedUser ? "YES" : "NO");
-          if (storedUser) {
-            console.log("Verification - Stored user data:", storedUser);
-          }
+        if (response.data) {
+          token = response.data.token;
+          user = response.data.user;
         }
         
-        // Store in cookies
-        if (typeof document !== 'undefined') {
-          const cookieUser = encodeURIComponent(JSON.stringify(user));
-          if (token) {
-            document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
-          }
-          document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
-          console.log("✅ Cookies set");
-          console.log("All cookies:", document.cookie);
+        console.log("Extracted token:", token);
+        console.log("Extracted user:", user);
+        
+        if (token) {
+          console.log("✅ Token found, storing...");
+          setAuthToken(token);
+          
+          const storedToken = getAuthToken();
+          console.log("Verified token in storage:", storedToken ? "EXISTS" : "MISSING");
+        } else {
+          console.warn("⚠️ No token found in response");
         }
-      } else {
-        console.error("❌ No user data in response");
-      }
-      
-      // If we have token, try to fetch profile as well
-      if (token) {
-        console.log("Attempting to fetch user profile...");
-        try {
-          const profileResponse = await apiClient.get<ApiResponse<{ user: any }>>("/api/users/profile", {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
+        
+        if (user) {
+          console.log("✅ User data found:", user);
+          console.log("✅ User role:", user.role);
           
-          console.log("Profile API Response:", profileResponse.data);
-          
-          if (profileResponse.data.success && profileResponse.data.data?.user) {
-            const profileUser = profileResponse.data.data.user;
-            console.log("✅ Profile fetched, updating stored user with complete data");
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('user', JSON.stringify(user));
+            console.log("✅ User stored in localStorage");
             
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('user', JSON.stringify(profileUser));
-            }
-            
-            if (typeof document !== 'undefined') {
-              const cookieUser = encodeURIComponent(JSON.stringify(profileUser));
-              document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+            const storedUser = localStorage.getItem('user');
+            console.log("Verification - Stored user exists:", storedUser ? "YES" : "NO");
+            if (storedUser) {
+              console.log("Verification - Stored user data:", storedUser);
             }
           }
-        } catch (profileError) {
-          console.warn("⚠️ Could not fetch profile (not critical):", profileError);
+          
+          if (typeof document !== 'undefined') {
+            const cookieUser = encodeURIComponent(JSON.stringify(user));
+            if (token) {
+              document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+            }
+            document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+            console.log("✅ Cookies set");
+            console.log("All cookies:", document.cookie);
+          }
+        } else {
+          console.error("❌ No user data in response");
+        }
+        
+        if (token) {
+          console.log("Attempting to fetch user profile...");
+          try {
+            const profileResponse = await apiClient.get<ApiResponse<{ user: User }>>("/api/users/profile", {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+            
+            console.log("Profile API Response:", profileResponse.data);
+            
+            if (profileResponse.data.success && profileResponse.data.data?.user) {
+              const profileUser = profileResponse.data.data.user;
+              console.log("✅ Profile fetched, updating stored user with complete data");
+              
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('user', JSON.stringify(profileUser));
+              }
+              
+              if (typeof document !== 'undefined') {
+                const cookieUser = encodeURIComponent(JSON.stringify(profileUser));
+                document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+              }
+            }
+          } catch (profileError) {
+            console.warn("⚠️ Could not fetch profile (not critical):", profileError);
+          }
+        }
+      } else {
+        console.error("❌ Login response not successful");
+      }
+      
+      return response;
+    } catch (error: unknown) {
+      console.error("❌ Login error:", error);
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        if (axiosError.response?.data?.error) {
+          throw new Error(axiosError.response.data.error);
         }
       }
-    } else {
-      console.error("❌ Login response not successful");
+      throw error;
     }
-    
-    return response;
-  } catch (error: any) {
-    console.error("❌ Login error:", error);
-    if (error.response?.data?.error) {
-      throw new Error(error.response.data.error);
-    }
-    throw error;
-  }
-},
+  },
+
   logout: async () => {
     try {
-      const response = await api.post("/api/users/logout", {});
+      const response = await api.post<{ message: string }>("/api/users/logout", {});
       removeAuthToken();
       if (typeof window !== 'undefined') {
         localStorage.removeItem('user');
       }
       return response;
     } catch (error) {
-      // Clear local data even if API call fails
       removeAuthToken();
       if (typeof window !== 'undefined') {
         localStorage.removeItem('user');
@@ -498,13 +528,13 @@ login: async (data: { email: string; password: string }) => {
   },
 
   // OTP
-  sendOtp: (email: string) => api.post("/api/users/otp", { email }),
+  sendOtp: (email: string) => api.post<{ message: string }>("/api/users/otp", { email }),
 
   verifyOtp: async (data: { email: string; otp: string }) => {
     try {
       console.log("Sending OTP verification request:", data);
       
-      const response = await apiClient.post<ApiResponse<any>>(
+      const response = await apiClient.post<ApiResponse<{ message: string }>>(
         "/api/users/verify-otp",
         {
           email: data.email.trim(),
@@ -514,33 +544,43 @@ login: async (data: { email: string; password: string }) => {
       
       console.log("OTP verification response:", response.data);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("OTP verification error:", error);
-      console.error("Error response:", error.response);
-      console.error("Error response data:", error.response?.data);
-      console.error("Error response status:", error.response?.status);
       
-      if (error.response?.data) {
-        const errorData = error.response.data;
-        console.error("Full error data:", JSON.stringify(errorData, null, 2));
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { 
+          response?: { 
+            data?: { error?: string; message?: string };
+            status?: number;
+          } 
+        };
         
-        throw new Error(
-          errorData.error || 
-          errorData.message || 
-          "OTP verification failed"
-        );
-      }
-      
-      if (error.response?.status === 500) {
-        throw new Error("Server error occurred. The OTP may be incorrect, expired, or there's a database issue. Please try requesting a new OTP.");
-      }
-      
-      if (error.response?.status === 400) {
-        throw new Error("Invalid request. Please check your email and OTP.");
-      }
-      
-      if (error.response?.status === 404) {
-        throw new Error("User or OTP not found. Please register again or request a new OTP.");
+        console.error("Error response:", axiosError.response);
+        console.error("Error response data:", axiosError.response?.data);
+        console.error("Error response status:", axiosError.response?.status);
+        
+        if (axiosError.response?.data) {
+          const errorData = axiosError.response.data;
+          console.error("Full error data:", JSON.stringify(errorData, null, 2));
+          
+          throw new Error(
+            errorData.error || 
+            errorData.message || 
+            "OTP verification failed"
+          );
+        }
+        
+        if (axiosError.response?.status === 500) {
+          throw new Error("Server error occurred. The OTP may be incorrect, expired, or there's a database issue. Please try requesting a new OTP.");
+        }
+        
+        if (axiosError.response?.status === 400) {
+          throw new Error("Invalid request. Please check your email and OTP.");
+        }
+        
+        if (axiosError.response?.status === 404) {
+          throw new Error("User or OTP not found. Please register again or request a new OTP.");
+        }
       }
       
       throw new Error("Network error. Please check your connection.");
@@ -548,12 +588,12 @@ login: async (data: { email: string; password: string }) => {
   },
 
   // Profile
-  getProfile: () => api.get<{ user: any }>("/api/users/profile"),
+  getProfile: () => api.get<{ user: User }>("/api/users/profile"),
 
-  updateEmail: (newEmail: string) => api.put("/api/users", "update-email", { newEmail }),
+  updateEmail: (newEmail: string) => api.put<{ message: string }>("/api/users", "update-email", { newEmail }),
 
   updatePassword: (data: { email: string; newPassword: string }) => 
-    api.put("/api/users", "update-password", data),
+    api.put<{ message: string }>("/api/users", "update-password", data),
 
   // KYC
   submitCustomerData: (data: {
@@ -568,12 +608,12 @@ login: async (data: { email: string; password: string }) => {
     businessName?: string;
     businessType?: string;
     taxId?: string;
-  }) => api.post("/api/users/customer-data", data),
+  }) => api.post<{ message: string }>("/api/users/customer-data", data),
 
   // Admin endpoints
-  getAllUsers: (params?: FetchParams) => api.get<PaginationData<any>>("/api/users", params),
+  getAllUsers: (params?: FetchParams) => api.get<PaginationData<User>>("/api/users", params),
 
-  getUserById: (id: string) => api.getById<{ user: any }>("/api/users", id),
+  getUserById: (id: string) => api.getById<{ user: User }>("/api/users", id),
 
   createUser: (data: {
     email: string;
@@ -581,23 +621,23 @@ login: async (data: { email: string; password: string }) => {
     firstName: string;
     lastName: string;
     role?: string;
-  }) => api.post("/api/users/create", data),
+  }) => api.post<{ user: User }>("/api/users/create", data),
 
-  updateUser: (id: string, data: object) => api.put("/api/users", id, data),
+  updateUser: (id: string, data: object) => api.put<{ user: User }>("/api/users", id, data),
 
-  deleteUser: (id: string) => api.delete("/api/users", id),
+  deleteUser: (id: string) => api.delete<{ message: string }>("/api/users", id),
 
   searchUsers: (params: { q: string; field?: string }) => 
-    api.get<{ users: any[] }>("/api/users/search", params as FetchParams),
+    api.get<{ users: User[] }>("/api/users/search", params as FetchParams),
 
   getPendingCustomerData: () => 
-    api.get<{ pendingUsers: any[] }>("/api/users/customer-data-pending"),
+    api.get<{ pendingUsers: User[] }>("/api/users/customer-data-pending"),
 
   approveCustomerData: (id: string) => 
-    api.post(`/api/users/${id}/approve-customer-data`, {}),
+    api.post<{ message: string }>(`/api/users/${id}/approve-customer-data`, {}),
 
   rejectCustomerData: (id: string, reason: string) => 
-    api.post(`/api/users/${id}/reject-customer-data`, { reason }),
+    api.post<{ message: string }>(`/api/users/${id}/reject-customer-data`, { reason }),
 };
 
 // Quotation API endpoints
@@ -607,39 +647,39 @@ export const quotationApi = {
     stoneNumbers: string[];
     message: string;
     urgency?: string;
-  }) => api.post("/api/quotations", data),
+  }) => api.post<{ quotation: Quotation }>("/api/quotations", data),
 
   // Get all quotations (admin)
   getAll: (params?: { status?: string; userId?: string }) => 
-    api.get<{ quotations: any[] }>("/api/quotations", params as FetchParams),
+    api.get<{ quotations: Quotation[] }>("/api/quotations", params as FetchParams),
 
   // Get quotation by ID (admin)
   getById: (quotationId: string) => 
-    api.getById<{ quotation: any }>("/api/quotations", quotationId),
+    api.getById<{ quotation: Quotation }>("/api/quotations", quotationId),
 
   // Approve quotation (admin)
   approve: (quotationId: string, data: {
     quotedPrice: number;
     validUntil: string;
     notes?: string;
-  }) => api.post(`/api/quotations/${quotationId}/approve`, data),
+  }) => api.post<{ quotation: Quotation }>(`/api/quotations/${quotationId}/approve`, data),
 
   // Reject quotation (admin)
   reject: (quotationId: string, reason: string) => 
-    api.post(`/api/quotations/${quotationId}/reject`, { reason }),
+    api.post<{ quotation: Quotation }>(`/api/quotations/${quotationId}/reject`, { reason }),
 };
 
 // Health check
-export const healthCheck = () => api.get<any>("/health");
+export const healthCheck = () => api.get<{ status: string }>("/health");
 
 // Export token management functions
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 
-// Export FilterOptions type
-export type { FilterOptions };
+// Export types
+export type { FilterOptions, Diamond, User, CartItem, Quotation };
 
-// Export default
-export default {
+// Export API object
+const apiExport = {
   api,
   diamondApi,
   cartApi,
@@ -647,3 +687,5 @@ export default {
   quotationApi,
   healthCheck,
 };
+
+export default apiExport;

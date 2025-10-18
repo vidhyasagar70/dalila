@@ -1,4 +1,6 @@
 // ClarityFilter.tsx
+
+"use client"
 import React, { useEffect, useState } from "react";
 import { diamondApi} from "@/lib/api";
 import Image from "next/image"; 
@@ -120,7 +122,14 @@ const handleSymmetryClick = (value: string) => {
         className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}
       >
-        <Image src="/filtersicon/clarity.png" alt="Clarity" className="w-5 h-5" />
+        <Image
+  src="/filtersicon/clarity.png"
+  alt="Clarity"
+  width={20}
+  height={20}
+  className="w-5 h-5"
+/>
+
         <span className="text-base font-semibold text-white">Clarity</span>
       </div>
 

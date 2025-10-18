@@ -1,7 +1,8 @@
-// ColorFilter.tsx
+"use client";
 import React, { useEffect, useState } from "react";
 import { diamondApi } from "@/lib/api";
-import Image from "next/image"; 
+import Image from "next/image";
+
 interface ColorFilterProps {
   selectedColor: string;
   onColorChange: (color: string) => void;
@@ -19,17 +20,17 @@ export default function ColorFilter({
       try {
         setLoading(true);
         const response = await diamondApi.getFilterOptions();
-        
+
         if (response?.success && response.data?.colors) {
           const colors = response.data.colors;
-          
+
           const dynamicColors = colors
             .filter((color: string) => color && color !== "*" && color !== "")
             .map((color: string) => ({
               label: formatColorLabel(color),
-              value: color
+              value: color,
             }));
-          
+
           setColorOptions(dynamicColors);
         }
       } catch (error) {
@@ -75,22 +76,25 @@ export default function ColorFilter({
   if (loading) {
     return (
       <div className="mb-2 mt-1" style={{ width: "360px" }}>
-        <div
-  className="flex items-center gap-2 px-3 py-2"
-  style={{ backgroundColor: "#000033" }}
->
-  <Image src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
-  <span className="text-base font-semibold text-white">Color</span>
-</div>
+        <div className="flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#000033" }}>
+          <Image
+            src="/filtersicon/color.png"
+            alt="Color"
+            width={20}
+            height={20}
+            className="w-5 h-5"
+          />
+          <span className="text-base font-semibold text-white">Color</span>
+        </div>
         <div
           className="p-2 bg-white text-center"
-          style={{ 
-            border: "0.25px solid #f9e8cd", 
+          style={{
+            border: "0.25px solid #f9e8cd",
             borderTop: "none",
             height: "288px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
           <span className="text-sm text-gray-500">Loading colors...</span>
@@ -101,17 +105,21 @@ export default function ColorFilter({
 
   return (
     <div className="mb-2 mt-1" style={{ width: "340px" }}>
-      <div
-  className="flex items-center gap-2 px-3 py-2"
-  style={{ backgroundColor: "#000033" }}
->
-  <Image src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
-  <span className="text-base font-semibold text-white">Color</span>
-</div>
+      <div className="flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#000033" }}>
+        <Image
+          src="/filtersicon/color.png"
+          alt="Color"
+          width={20}
+          height={20}
+          className="w-5 h-5"
+        />
+        <span className="text-base font-semibold text-white">Color</span>
+      </div>
+
       <div
         className="grid grid-cols-5 gap-1.5 p-2 bg-white"
-        style={{ 
-          border: "0.25px solid #f9e8cd", 
+        style={{
+          border: "0.25px solid #f9e8cd",
           borderTop: "none",
           height: "288px",
         }}
