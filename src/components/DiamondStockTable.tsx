@@ -46,6 +46,17 @@ interface DiamondData {
   REPORT_COMMENTS?: string;
   TINGE?: string;
   KEY_TO_SYMBOLS?: string;
+  REPORT_DATE?:string;
+  SW?:string;
+  SN?:string;
+  CW?:string;
+  CN?:string;
+  BRANCH?:any;
+  HEART_IMAGE?:any;
+  ARROW_IMAGE?:any;
+  HA?:any;
+  CLARITY_CHARACTERISTICS?:any;
+  
 }
 
 interface TableProps {
@@ -385,6 +396,7 @@ if (data.length === 0) {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
               {/* Header */}
+             {/* Header */}
               <thead className="bg-[#050c3a] text-white sticky top-0 z-10">
                 <tr>
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
@@ -488,7 +500,7 @@ if (data.length === 0) {
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
                     <button onClick={() => handleSort("REPORT_NO")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
-                      Report
+                      Report No
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "REPORT_NO" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
                         <ChevronDown size={12} className={sortConfig?.key === "REPORT_NO" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
@@ -496,8 +508,80 @@ if (data.length === 0) {
                     </button>
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("REPORT_DATE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Report Date
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "REPORT_DATE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "REPORT_DATE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-28 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("MEASUREMENTS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Measure
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "MEASUREMENTS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "MEASUREMENTS" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("TABLE_PER")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Table%
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "TABLE_PER" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "TABLE_PER" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("DEPTH_PER")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Depth%
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "DEPTH_PER" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "DEPTH_PER" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("CROWN_ANGLE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Crn Angle
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "CROWN_ANGLE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "CROWN_ANGLE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("CROWN_HEIGHT")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Crn Height
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "CROWN_HEIGHT" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "CROWN_HEIGHT" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("PAVILLION_ANGLE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Pav Angle
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "PAVILLION_ANGLE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "PAVILLION_ANGLE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("PAVILLION_HEIGHT")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Pav Height
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "PAVILLION_HEIGHT" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "PAVILLION_HEIGHT" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
                     <button onClick={() => handleSort("RAP_PRICE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
-                      Rap
+                      Rap Price
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "RAP_PRICE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
                         <ChevronDown size={12} className={sortConfig?.key === "RAP_PRICE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
@@ -515,7 +599,7 @@ if (data.length === 0) {
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
                     <button onClick={() => handleSort("NET_RATE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
-                      Rate
+                      Net Rate
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "NET_RATE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
                         <ChevronDown size={12} className={sortConfig?.key === "NET_RATE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
@@ -524,19 +608,10 @@ if (data.length === 0) {
                   </th>
                   <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
                     <button onClick={() => handleSort("NET_VALUE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
-                      Value
+                      Net Value
                       <div className="flex flex-col -space-y-1">
                         <ChevronUp size={12} className={sortConfig?.key === "NET_VALUE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
                         <ChevronDown size={12} className={sortConfig?.key === "NET_VALUE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
-                      </div>
-                    </button>
-                  </th>
-                  <th className="w-28 px-2 py-3 text-left text-[12px] font-medium">
-                    <button onClick={() => handleSort("MEASUREMENTS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
-                      Measure
-                      <div className="flex flex-col -space-y-1">
-                        <ChevronUp size={12} className={sortConfig?.key === "MEASUREMENTS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
-                        <ChevronDown size={12} className={sortConfig?.key === "MEASUREMENTS" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
                       </div>
                     </button>
                   </th>
@@ -549,10 +624,164 @@ if (data.length === 0) {
                       </div>
                     </button>
                   </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("STAGE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Stage
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "STAGE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "STAGE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("TINGE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Tinge
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "TINGE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "TINGE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("CN")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      CN
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "CN" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "CN" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("CW")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      CW
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "CW" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "CW" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("SN")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      SN
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "SN" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "SN" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("SW")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      SW
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "SW" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "SW" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-32 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("KEY_TO_SYMBOLS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Key Symbols
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "KEY_TO_SYMBOLS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "KEY_TO_SYMBOLS" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-60 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("COMMENTS_1")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Comments
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "COMMENTS_1" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "COMMENTS_1" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-60 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("REPORT_COMMENTS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Report Comments
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "REPORT_COMMENTS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "REPORT_COMMENTS" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("ARROW_IMAGE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Arrow Img
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "ARROW_IMAGE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "ARROW_IMAGE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("HEART_IMAGE")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Heart Img
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "HEART_IMAGE" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "HEART_IMAGE" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("CERTI_PDF")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Certificate
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "CERTI_PDF" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "CERTI_PDF" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("MP4")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Video
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "MP4" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "MP4" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("DNA")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      DNA
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "DNA" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "DNA" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-24 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("BRANCH")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Branch
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "BRANCH" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "BRANCH" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-32 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("CLARITY_CHARACTERISTICS")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      Clarity Char
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "CLARITY_CHARACTERISTICS" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "CLARITY_CHARACTERISTICS" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
+                  <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
+                    <button onClick={() => handleSort("HA")} className="flex items-center gap-1 hover:text-gray-300 transition-colors">
+                      HA
+                      <div className="flex flex-col -space-y-1">
+                        <ChevronUp size={12} className={sortConfig?.key === "HA" && sortConfig.direction === "asc" ? "opacity-100" : "opacity-30"} />
+                        <ChevronDown size={12} className={sortConfig?.key === "HA" && sortConfig.direction === "desc" ? "opacity-100" : "opacity-30"} />
+                      </div>
+                    </button>
+                  </th>
                 </tr>
               </thead>
 
               {/* Body */}
+             {/* Body */}
               <tbody>
                 {paginatedData.map((row, idx) => (
                   <tr
@@ -593,12 +822,70 @@ if (data.length === 0) {
                     <td className="px-2 py-1 text-[12px] text-gray-700">{row.FLOUR || "N/A"}</td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">{row.LAB}</td>
                     <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.REPORT_NO}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.REPORT_DATE ? new Date(row.REPORT_DATE).toLocaleDateString() : "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.MEASUREMENTS || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.TABLE_PER || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.DEPTH_PER || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CROWN_ANGLE || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CROWN_HEIGHT || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.PAVILLION_ANGLE || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.PAVILLION_HEIGHT || "N/A"}</td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">{formatCurrency(row.RAP_PRICE)}</td>
                     <td className="px-2 py-1 text-[12px] font-semibold text-red-600">{formatPercentage(row.DISC_PER)}</td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">{formatCurrency(row.NET_RATE)}</td>
                     <td className="px-2 py-1 text-[12px] text-gray-700 font-medium">{formatCurrency(row.NET_VALUE)}</td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.MEASUREMENTS || "N/A"}</td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">{row.LOCATION}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.STAGE}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.TINGE || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CN || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.CW || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.SN || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.SW || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate">{row.KEY_TO_SYMBOLS || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 max-w-[240px]" title={row.COMMENTS_1}>
+                      <div className="truncate">{row.COMMENTS_1 || "N/A"}</div>
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 max-w-[240px]" title={row.REPORT_COMMENTS}>
+                      <div className="truncate">{row.REPORT_COMMENTS || "N/A"}</div>
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">
+                      {row.ARROW_IMAGE ? (
+                        <a href={row.ARROW_IMAGE} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                          <ExternalLink size={14} className="inline" />
+                        </a>
+                      ) : "N/A"}
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">
+                      {row.HEART_IMAGE ? (
+                        <a href={row.HEART_IMAGE} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                          <ExternalLink size={14} className="inline" />
+                        </a>
+                      ) : "N/A"}
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">
+                      {row.CERTI_PDF ? (
+                        <a href={row.CERTI_PDF} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                          <FileText size={14} className="inline" />
+                        </a>
+                      ) : "N/A"}
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">
+                      {row.MP4 ? (
+                        <a href={row.MP4} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                          <Play size={14} className="inline" />
+                        </a>
+                      ) : "N/A"}
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">
+                      {row.DNA ? (
+                        <a href={row.DNA} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 truncate block">
+                          View
+                        </a>
+                      ) : "N/A"}
+                    </td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.BRANCH || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700 truncate" title={row.CLARITY_CHARACTERISTICS}>{row.CLARITY_CHARACTERISTICS || "N/A"}</td>
+                    <td className="px-2 py-1 text-[12px] text-gray-700">{row.HA || "N/A"}</td>
                   </tr>
                 ))}
               </tbody>
