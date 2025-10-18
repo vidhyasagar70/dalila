@@ -76,7 +76,7 @@ export default function LoginPage() {
       });
 
       if (response && response.success) {
-        console.log("Login successful!", response);
+        console.log("✅ Login successful!", response);
 
         // Handle remember me
         if (typeof window !== 'undefined') {
@@ -85,18 +85,42 @@ export default function LoginPage() {
           } else {
             localStorage.removeItem('rememberedEmail');
           }
+          
+          // Verify data is stored
+          console.log("=== Verifying stored data ===");
+          const storedToken = localStorage.getItem('authToken');
+          const storedUser = localStorage.getItem('user');
+          console.log("Token in localStorage:", storedToken ? "EXISTS" : "MISSING");
+          console.log("User in localStorage:", storedUser);
+          
+          if (storedUser) {
+            try {
+              const parsedUser = JSON.parse(storedUser);
+              console.log("✅ Parsed user role:", parsedUser.role);
+            } catch (e) {
+              console.error("❌ Error parsing stored user:", e);
+            }
+          }
+          
+          // IMPORTANT: Dispatch custom event to notify Header component
+          console.log("Dispatching login event...");
+          const loginEvent = new CustomEvent('user-logged-in');
+          window.dispatchEvent(loginEvent);
+          
+          console.log("✅ Login event dispatched");
         }
 
         // Get redirect URL from query params or default to dashboard
         const redirect = searchParams.get('redirect') || '/dashboard';
 
-        // Show success message briefly before redirect
+        // Show success message
         setError("");
 
+        // Redirect without page reload
         setTimeout(() => {
           console.log(`Redirecting to: ${redirect}`);
           router.push(redirect);
-        }, 500);
+        }, 1000);
       } else {
         // Handle unsuccessful login
         setError(response?.message || "Login failed. Please try again.");

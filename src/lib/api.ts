@@ -374,26 +374,111 @@ export const userApi = {
     }
   },
 
-  login: async (data: { email: string; password: string }) => {
-    try {
-      const response = await api.post<{ user: any; token: string }>("/api/users/login", data);
-      if (response.success && response.data?.token) {
-        setAuthToken(response.data.token);
-        // Store user data if needed
-        if (typeof window !== 'undefined' && response.data.user) {
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+login: async (data: { email: string; password: string }) => {
+  try {
+    const response = await api.post<{ user: any; token: string }>("/api/users/login", data);
+    
+    console.log("Login API Response:", response);
+    console.log("Response structure:", JSON.stringify(response, null, 2));
+    
+    if (response.success) {
+      // Extract token and user from response.data
+      let token: string | undefined = undefined;
+      let user: any = undefined;
+      
+      if (response.data) {
+        token = response.data.token;
+        user = response.data.user;
+      }
+      
+      console.log("Extracted token:", token);
+      console.log("Extracted user:", user);
+      
+      // If token exists, store it
+      if (token) {
+        console.log("✅ Token found, storing...");
+        setAuthToken(token);
+        
+        // Verify token was stored
+        const storedToken = getAuthToken();
+        console.log("Verified token in storage:", storedToken ? "EXISTS" : "MISSING");
+      } else {
+        console.warn("⚠️ No token found in response");
+      }
+      
+      // If we have user data, store it
+      if (user) {
+        console.log("✅ User data found:", user);
+        console.log("✅ User role:", user.role);
+        
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user', JSON.stringify(user));
+          console.log("✅ User stored in localStorage");
+          
+          // Verify storage
+          const storedUser = localStorage.getItem('user');
+          console.log("Verification - Stored user exists:", storedUser ? "YES" : "NO");
+          if (storedUser) {
+            console.log("Verification - Stored user data:", storedUser);
+          }
+        }
+        
+        // Store in cookies
+        if (typeof document !== 'undefined') {
+          const cookieUser = encodeURIComponent(JSON.stringify(user));
+          if (token) {
+            document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+          }
+          document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+          console.log("✅ Cookies set");
+          console.log("All cookies:", document.cookie);
+        }
+      } else {
+        console.error("❌ No user data in response");
+      }
+      
+      // If we have token, try to fetch profile as well
+      if (token) {
+        console.log("Attempting to fetch user profile...");
+        try {
+          const profileResponse = await apiClient.get<ApiResponse<{ user: any }>>("/api/users/profile", {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          
+          console.log("Profile API Response:", profileResponse.data);
+          
+          if (profileResponse.data.success && profileResponse.data.data?.user) {
+            const profileUser = profileResponse.data.data.user;
+            console.log("✅ Profile fetched, updating stored user with complete data");
+            
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('user', JSON.stringify(profileUser));
+            }
+            
+            if (typeof document !== 'undefined') {
+              const cookieUser = encodeURIComponent(JSON.stringify(profileUser));
+              document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+            }
+          }
+        } catch (profileError) {
+          console.warn("⚠️ Could not fetch profile (not critical):", profileError);
         }
       }
-      return response;
-    } catch (error: any) {
-      // Enhanced error handling
-      if (error.response?.data?.error) {
-        throw new Error(error.response.data.error);
-      }
-      throw error;
+    } else {
+      console.error("❌ Login response not successful");
     }
-  },
-
+    
+    return response;
+  } catch (error: any) {
+    console.error("❌ Login error:", error);
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+},
   logout: async () => {
     try {
       const response = await api.post("/api/users/logout", {});

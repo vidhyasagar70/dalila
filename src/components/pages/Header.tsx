@@ -4,10 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import { userApi } from "@/lib/api";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const isTestingPage = pathname === "/Testingpages";
@@ -16,6 +19,93 @@ export default function Header() {
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
   const dashboardPage = pathname === "/dashboard";
+  
+  // Determine if user is admin
+  const isAdmin = isLoggedIn && userRole === "ADMIN";
+
+  // Debug logs
+  console.log('Header Debug:', {
+    isLoggedIn,
+    userRole,
+    isAdmin,
+    pathname,
+  });
+
+  // Check user authentication and role on mount and when pathname changes
+  useEffect(() => {
+    const checkUserAuth = () => {
+      if (typeof window !== 'undefined') {
+        // First, try localStorage
+        let token = localStorage.getItem('authToken');
+        let userStr = localStorage.getItem('user');
+        
+        console.log('=== AUTH CHECK ===');
+        console.log('LocalStorage Token:', token);
+        console.log('LocalStorage User:', userStr);
+        
+        // If not in localStorage, check cookies
+        if (!userStr) {
+          console.log('Checking cookies...');
+          const cookies = document.cookie.split(';');
+          console.log('All cookies:', cookies);
+          
+          const tokenCookie = cookies.find(c => c.trim().startsWith('authToken='));
+          if (tokenCookie) {
+            token = tokenCookie.split('=')[1].trim();
+            console.log('Found token in cookie:', token);
+          }
+          
+          const userCookie = cookies.find(c => c.trim().startsWith('user='));
+          if (userCookie) {
+            try {
+              userStr = decodeURIComponent(userCookie.split('=')[1].trim());
+              console.log('Found user in cookie:', userStr);
+            } catch (e) {
+              console.error('Error decoding user cookie:', e);
+            }
+          }
+        }
+        
+        // We only need user data to authenticate (token is optional)
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            console.log('✅ Parsed user successfully:', user);
+            console.log('✅ User role:', user.role);
+            setUserRole(user.role || null);
+            setIsLoggedIn(true);
+          } catch (error) {
+            console.error('❌ Error parsing user data:', error);
+            setUserRole(null);
+            setIsLoggedIn(false);
+          }
+        } else {
+          console.log('❌ No user data found');
+          setUserRole(null);
+          setIsLoggedIn(false);
+        }
+        console.log('=== END AUTH CHECK ===');
+      }
+    };
+
+    checkUserAuth();
+    
+    // Listen for login events
+    const handleLoginEvent = () => {
+      console.log('Login event received, rechecking auth...');
+      setTimeout(checkUserAuth, 100); // Small delay to ensure localStorage is updated
+    };
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', handleLoginEvent);
+      window.addEventListener('user-logged-in', handleLoginEvent);
+      
+      return () => {
+        window.removeEventListener('storage', handleLoginEvent);
+        window.removeEventListener('user-logged-in', handleLoginEvent);
+      };
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,6 +128,49 @@ export default function Header() {
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
   }, [isMobileMenuOpen]);
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      // Call logout API
+      await userApi.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear local state
+      setIsLoggedIn(false);
+      setUserRole(null);
+      
+      // Redirect to home
+      router.push('/');
+    }
+  };
+
+  // Common menu items for regular users and non-logged in users
+  const commonMenuItems = [
+    { href: "/aboutUs", label: "About us" },
+    { href: "/contact", label: "Contact Us" },
+    { href: "/diamondKnowledge", label: "Diamond Knowledge" },
+  ];
+
+  // Admin-only menu items
+  const adminMenuItems = [
+    { href: "/inventory", label: "Inventory" },
+    { href: "/adminpanel", label: "Admin Panel" },
+    { href: "/member", label: "Member" },
+    { href: "/offer-enquiry", label: "Offer Enquiry" },
+  ];
+
+  // User-only menu items
+  const userMenuItems = [
+    { href: "/inventory", label: "Inventory" },
+  ];
+
+  const navigationItems = isLoggedIn 
+    ? isAdmin 
+      ? adminMenuItems
+      : [...commonMenuItems, ...userMenuItems]
+    : [...commonMenuItems, { href: "/inventory", label: "Inventory" }];
 
   return (
     <header
@@ -71,66 +204,24 @@ export default function Header() {
 
           {/* Left Navigation - Desktop/Tablet */}
           <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
-            {isTestingPage || adminpanelPage || inventoryPage ||offerenquiryPage ||memberPage ||dashboardPage? (
-              <>
-                <Link
-                  href="/adminpanel"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  Admin Panel
-                </Link>
-                <Link
-                  href="/member"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  Member
-                </Link>
-                <Link
-                  href="/inventory"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  Inventory
-                </Link>
-                <Link
-                  href="/offer-enquiry"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  Offer Enquiry
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/aboutUs"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  About us
-                </Link>
-                <Link
-                  href="/weBuy"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  We Buy
-                </Link>
-                <Link
-                  href="/diamondKnowledge"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  Diamond Knowledge
-                </Link>
-                <Link
-                  href="/contact"
-                  className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                >
-                  Contact Us
-                </Link>
-              </>
-            )}
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Center Logo */}
           <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
-            <Link href="/" className="block w-full h-full">
+            <button 
+              onClick={() => router.push("/")}
+              className="block w-full h-full focus:outline-none"
+              aria-label="Go to home page"
+            >
               <Image
                 src="/dalila_img/Dalila_Logo.png"
                 alt="Dalila Diamonds"
@@ -138,49 +229,72 @@ export default function Header() {
                 style={{ objectFit: "contain" }}
                 priority
               />
-            </Link>
+            </button>
           </div>
 
           {/* Right Auth Buttons - Desktop/Tablet */}
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
-            <button className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap">
-              INVENTORY
-            </button>
-            <button
-              onClick={() => router.push("/login")}
-              className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
-            >
-              LOGIN
-            </button>
-            <button
-              onClick={() => router.push("/register")}
-              className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
-            >
-              REGISTER
-            </button>
+            {!isLoggedIn ? (
+              <>
+                <button
+                  onClick={() => router.push("/login")}
+                  className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                >
+                  LOGIN
+                </button>
+                <button
+                  onClick={() => router.push("/register")}
+                  className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                >
+                  REGISTER
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+              >
+                LOGOUT
+              </button>
+            )}
           </div>
 
           {/* Tablet Only - Compact Buttons */}
           <div className="hidden md:flex lg:hidden items-center gap-2">
-            <button className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
-              INV
-            </button>
-            <button
-              onClick={() => router.push("/login")}
-              className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
-            >
-              LOGIN
-            </button>
+            {!isLoggedIn ? (
+              <button
+                onClick={() => router.push("/login")}
+                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              >
+                LOGIN
+              </button>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              >
+                LOGOUT
+              </button>
+            )}
           </div>
 
           {/* Mobile - Login Button Only */}
           <div className="flex md:hidden">
-            <button
-              onClick={() => router.push("/login")}
-              className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
-            >
-              LOGIN
-            </button>
+            {!isLoggedIn ? (
+              <button
+                onClick={() => router.push("/login")}
+                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              >
+                LOGIN
+              </button>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              >
+                LOGOUT
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -198,94 +312,52 @@ export default function Header() {
 
             {/* Mobile Navigation */}
             <nav className="flex flex-col gap-4 mb-8">
-              {isTestingPage ? (
-                <>
-                  <Link
-                    href="/adminpanel"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    Admin Panel
-                  </Link>
-                  <Link
-                    href="/member"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    Member
-                  </Link>
-                  <Link
-                    href="/inventory"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    Inventory
-                  </Link>
-                  <Link
-                    href="/offer-enquiry"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    Offer Enquiry
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/aboutUs"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    About us
-                  </Link>
-                  <Link
-                    href="/weBuy"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    We Buy
-                  </Link>
-                  <Link
-                    href="/diamondKnowledge"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    Diamond Knowledge
-                  </Link>
-                  <Link
-                    href="/contact"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                  >
-                    Contact Us
-                  </Link>
-                </>
-              )}
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
 
             {/* Mobile Auth Buttons */}
             <div className="flex flex-col gap-3">
-              <button className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors">
-                INVENTORY
-              </button>
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  router.push("/login");
-                }}
-                className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
-              >
-                LOGIN
-              </button>
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  router.push("/register");
-                }}
-                className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
-              >
-                REGISTER
-              </button>
+              {!isLoggedIn ? (
+                <>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      router.push("/login");
+                    }}
+                    className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                  >
+                    LOGIN
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      router.push("/register");
+                    }}
+                    className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                  >
+                    REGISTER
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                >
+                  LOGOUT
+                </button>
+              )}
             </div>
           </div>
         </div>
