@@ -48,33 +48,32 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
   const buttonBase =
     "px-3 py-1.5 rounded text-[15px] font-medium transition-all duration-200";
 
-  return (
-  <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+ return (
+  <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
     {/* Shades Section */}
     <div
-      className="flex items-center gap-2 px-3 py-2"
+      className="flex items-center gap-1.5 px-2 py-1.5"
       style={{ backgroundColor: "#000033" }}
     >
-      <img src="/filtersicon/shades.png" alt="Shades" className="w-5 h-5" />
-      <span className="text-base font-semibold text-white">Shades</span>
+      <span className="text-sm font-semibold text-white">Shades</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-3 gap-2">
+    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div className="grid grid-cols-3 gap-1.5">
         {SHADES_OPTIONS.map((option) => (
           <button
             key={option}
             onClick={() => toggleFilter("shades", option)}
-            className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
               isSelected("shades", option)
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: "90px",
-              minHeight: "32px",
+              minWidth: "75px",
+              minHeight: "28px",
               border: isSelected("shades", option)
-                ? "0.25px solid #2563eb"
-                : "0.25px solid #f9e8cd",
+                ? "1px solid #2563eb"
+                : "1px solid #f9e8cd",
             }}
           >
             {option}
@@ -85,28 +84,28 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
 
     {/* Milky Section */}
     <div
-      className="flex items-center gap-2 px-3 py-2"
+      className="flex items-center gap-1.5 px-2 py-1.5"
       style={{ backgroundColor: "#000033" }}
     >
-      <span className="text-base font-semibold text-white">Milky</span>
+      <span className="text-sm font-semibold text-white">Milky</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-4 gap-2">
+    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div className="grid grid-cols-4 gap-1.5">
         {MILKY_OPTIONS.map((option) => (
           <button
             key={option}
             onClick={() => toggleFilter("milky", option)}
-            className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
               isSelected("milky", option)
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: "90px",
-              minHeight: "32px",
+              minWidth: "75px",
+              minHeight: "28px",
               border: isSelected("milky", option)
-                ? "0.25px solid #2563eb"
-                : "0.25px solid #f9e8cd",
+                ? "1px solid #2563eb"
+                : "1px solid #f9e8cd",
             }}
           >
             {option}
@@ -117,28 +116,28 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
 
     {/* Type2 Ct Section */}
     <div
-      className="flex items-center gap-2 px-3 py-2"
+      className="flex items-center gap-1.5 px-2 py-1.5"
       style={{ backgroundColor: "#000033" }}
     >
-      <span className="text-base font-semibold text-white">Type2 Ct</span>
+      <span className="text-sm font-semibold text-white">Type2 Ct</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-2 gap-2">
+    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div className="grid grid-cols-2 gap-1.5">
         {TYPE2_OPTIONS.map((option) => (
           <button
             key={option}
             onClick={() => toggleFilter("type2Ct", option)}
-            className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
               isSelected("type2Ct", option)
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: "90px",
-              minHeight: "32px",
+              minWidth: "75px",
+              minHeight: "28px",
               border: isSelected("type2Ct", option)
-                ? "0.25px solid #2563eb"
-                : "0.25px solid #f9e8cd",
+                ? "1px solid #2563eb"
+                : "1px solid #f9e8cd",
             }}
           >
             {option}
@@ -149,28 +148,28 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
 
     {/* Brl. Section */}
     <div
-      className="flex items-center gap-2 px-3 py-2"
+      className="flex items-center gap-1.5 px-2 py-1.5"
       style={{ backgroundColor: "#000033" }}
     >
-      <span className="text-base font-semibold text-white">Brl.</span>
+      <span className="text-sm font-semibold text-white">Brl.</span>
     </div>
-    <div className="bg-white p-3" style={{ border: "2px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-3 gap-2">
+    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div className="grid grid-cols-3 gap-1.5">
         {BRL_OPTIONS.map((option) => (
           <button
             key={option}
             onClick={() => toggleFilter("brl", option)}
-            className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
               isSelected("brl", option)
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: "90px",
-              minHeight: "32px",
+              minWidth: "75px",
+              minHeight: "28px",
               border: isSelected("brl", option)
-                ? "0.25px solid #2563eb"
-                : "0.25px solid #f9e8cd",
+                ? "1px solid #2563eb"
+                : "1px solid #f9e8cd",
             }}
           >
             {option}

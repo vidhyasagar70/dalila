@@ -16,7 +16,11 @@ interface FilterState {
   location: string;
 }
 
-export default function AdvancedFilters({ onFiltersChange, onResetFilters,onShowFilters, }: AdvancedFiltersProps) {
+export default function AdvancedFilters({
+  onFiltersChange,
+  onResetFilters,
+  onShowFilters,
+}: AdvancedFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     cut: "ALL",
@@ -24,7 +28,7 @@ export default function AdvancedFilters({ onFiltersChange, onResetFilters,onShow
     symmetry: "ALL",
     fluorescence: "ALL",
     lab: "ALL",
-    location: "ALL"
+    location: "ALL",
   });
 
   const cutOptions = ["ALL", "Excellent", "Very Good", "Good", "Fair", "Poor"];
@@ -37,9 +41,7 @@ export default function AdvancedFilters({ onFiltersChange, onResetFilters,onShow
   const handleFilterChange = (filterName: keyof FilterState, value: string) => {
     const newFilters = { ...filters, [filterName]: value };
     setFilters(newFilters);
-    if (onFiltersChange) {
-      onFiltersChange(newFilters);
-    }
+    onFiltersChange?.(newFilters);
   };
 
   const handleResetFilters = () => {
@@ -49,154 +51,65 @@ export default function AdvancedFilters({ onFiltersChange, onResetFilters,onShow
       symmetry: "ALL",
       fluorescence: "ALL",
       lab: "ALL",
-      location: "ALL"
+      location: "ALL",
     };
     setFilters(resetState);
-    if (onResetFilters) {
-      onResetFilters();
-    }
-    if (onFiltersChange) {
-      onFiltersChange(resetState);
-    }
+    onResetFilters?.();
+    onFiltersChange?.(resetState);
   };
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center gap-3 mb-3">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2 px-6 py-3 bg-[#000033] text-white font-medium rounded shadow-sm hover:bg-[#000044] transition-colors"
+          className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white text-sm font-medium rounded shadow-sm hover:bg-[#000044] transition-colors"
         >
-          <img src="/filtersicon/filter-add.png" alt="Filter" className="w-5 h-5" />
+          <img src="/filtersicon/filter-add.png" alt="Filter" className="w-3.5 h-3.5" />
           <span>Show Advanced Filters</span>
-          <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          <ChevronDown
+            className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+          />
         </button>
 
         <button
           onClick={handleResetFilters}
-          className="flex items-center gap-2 px-6 py-3 bg-white text-[#D4A574] font-medium rounded shadow-sm border border-[#D4A574] hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-1.5 bg-white text-[#D4A574] text-sm font-medium rounded shadow-sm border border-[#D4A574] hover:bg-gray-50 transition-colors"
         >
-          <img src="/filtersicon/filter-remove.png" alt="Reset" className="w-5 h-5" />
+          <img src="/filtersicon/filter-remove.png" alt="Reset" className="w-3.5 h-3.5" />
           <span>Reset Filters</span>
         </button>
       </div>
 
       {isExpanded && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-4 border border-gray-200">
-          <div className="grid grid-cols-3 gap-6">
-            {/* Cut Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cut Grade
-              </label>
-              <div className="relative">
-                <select
-                  value={filters.cut}
-                  onChange={(e) => handleFilterChange('cut', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700"
-                >
-                  {cutOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+        <div className="bg-white rounded-lg shadow-md p-5 mb-4 border border-gray-200">
+          <div className="grid grid-cols-3 gap-5">
+            {[
+              ["Cut Grade", "cut", cutOptions],
+              ["Polish", "polish", polishOptions],
+              ["Symmetry", "symmetry", symmetryOptions],
+              ["Fluorescence", "fluorescence", fluorescenceOptions],
+              ["Lab Certification", "lab", labOptions],
+              ["Location", "location", locationOptions],
+            ].map(([label, key, options]) => (
+              <div key={key as string}>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
+                <div className="relative">
+                  <select
+                    value={filters[key as keyof FilterState]}
+                    onChange={(e) => handleFilterChange(key as keyof FilterState, e.target.value)}
+                    className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700 text-sm"
+                  >
+                    {(options as string[]).map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-3.5 h-3.5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                </div>
               </div>
-            </div>
-
-            {/* Polish Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Polish
-              </label>
-              <div className="relative">
-                <select
-                  value={filters.polish}
-                  onChange={(e) => handleFilterChange('polish', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700"
-                >
-                  {polishOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Symmetry Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Symmetry
-              </label>
-              <div className="relative">
-                <select
-                  value={filters.symmetry}
-                  onChange={(e) => handleFilterChange('symmetry', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700"
-                >
-                  {symmetryOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Fluorescence Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Fluorescence
-              </label>
-              <div className="relative">
-                <select
-                  value={filters.fluorescence}
-                  onChange={(e) => handleFilterChange('fluorescence', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700"
-                >
-                  {fluorescenceOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Lab Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lab Certification
-              </label>
-              <div className="relative">
-                <select
-                  value={filters.lab}
-                  onChange={(e) => handleFilterChange('lab', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700"
-                >
-                  {labOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Location Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Location
-              </label>
-              <div className="relative">
-                <select
-                  value={filters.location}
-                  onChange={(e) => handleFilterChange('location', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700"
-                >
-                  {locationOptions.map(option => (
-                    <option key={option} value={option}>{option}</option>
-                  ))}
-                </select>
-                <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}

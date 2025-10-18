@@ -263,6 +263,8 @@ export const diamondApi = {
   clarity?: string;
   cut?: string;
   shape?: string;
+  polish?: string;      
+  symmetry?: string;
   minCarats?: number;
   maxCarats?: number;
   minPrice?: number;
@@ -273,19 +275,21 @@ export const diamondApi = {
   page?: number;
   limit?: number;
   fluorescence?: string;
- 
-  searchTerm?: string;// This is the search query parameter
+  searchTerm?: string;
 }) => {
-  // Map lowercase keys to uppercase keys for the API
   const mappedFilters: Record<string, any> = {};
   
-  // Map all the filter parameters
   if (filters.shape) mappedFilters.SHAPE = filters.shape;
   if (filters.color) mappedFilters.COLOR = filters.color;
   if (filters.clarity) mappedFilters.CLARITY = filters.clarity;
   if (filters.cut) mappedFilters.CUT = filters.cut;
-  if (filters.minCarats) mappedFilters.MIN_CARATS = filters.minCarats;
-  if (filters.maxCarats) mappedFilters.MAX_CARATS = filters.maxCarats;
+  if (filters.polish) mappedFilters.POL = filters.polish;      
+  if (filters.symmetry) mappedFilters.SYM = filters.symmetry;
+  
+  // FIX: Map to CARATS_MIN and CARATS_MAX as per API
+  if (filters.minCarats !== undefined) mappedFilters.CARATS_MIN = filters.minCarats;
+  if (filters.maxCarats !== undefined) mappedFilters.CARATS_MAX = filters.maxCarats;
+  
   if (filters.minPrice) mappedFilters.MIN_PRICE = filters.minPrice;
   if (filters.maxPrice) mappedFilters.MAX_PRICE = filters.maxPrice;
   if (filters.lab) mappedFilters.LAB = filters.lab;
@@ -294,9 +298,7 @@ export const diamondApi = {
   if (filters.page) mappedFilters.page = filters.page;
   if (filters.fluorescence) mappedFilters.FLOUR = filters.fluorescence;
   if (filters.limit) mappedFilters.limit = filters.limit;
-  
-
-  if (filters.searchTerm) mappedFilters.searchTerm= filters.searchTerm;
+  if (filters.searchTerm) mappedFilters.searchTerm = filters.searchTerm;
   
   console.log('Search API called with filters:', mappedFilters);
   

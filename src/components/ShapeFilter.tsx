@@ -100,7 +100,7 @@ export default function ShapeFilter({
   }
 
   return (
-    <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+    <div className="mb-2 mt-1" style={{ width: "360px" }}>
       <div
         className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}

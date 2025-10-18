@@ -56,24 +56,24 @@ export default function MeasurementFilter({
     handleChange(key, field, newValue);
   };
 
-  return (
-  <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+ return (
+  <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
     <div
-      className="flex items-center gap-2 px-3 py-2"
+      className="flex items-center gap-1.5 px-2 py-1.5"
       style={{ backgroundColor: "#000033" }}
     >
-      <span className="text-base font-semibold text-white">Measurement</span>
+      <span className="text-sm font-semibold text-white">Measurement</span>
     </div>
     <div
-      className="bg-white p-3"
-      style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
+      className="bg-white p-2"
+      style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
     >
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {MEASUREMENT_FIELDS.map((field) => (
-          <div key={field.key} className="flex items-center gap-2">
+          <div key={field.key} className="flex items-center gap-1.5">
             <div
-              className="px-3 py-1.5 font-medium text-white rounded text-xs"
-              style={{ backgroundColor: "#000033", minWidth: "100px" }}
+              className="px-2 py-1 font-medium text-white rounded text-xs"
+              style={{ backgroundColor: "#000033", minWidth: "80px" }}
             >
               {field.label}
             </div>
@@ -87,28 +87,28 @@ export default function MeasurementFilter({
                 onChange={(e) =>
                   handleChange(field.key, "from", e.target.value)
                 }
-                className="w-16 px-2 py-1 text-center text-sm outline-none"
+                className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield" }}
               />
               <div className="flex flex-col border-l" style={{ borderColor: "#f9e8cd" }}>
                 <button
                   onClick={() => incrementValue(field.key, "from")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "10px", lineHeight: "12px" }}
+                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
                   ▲
                 </button>
                 <button
                   onClick={() => decrementValue(field.key, "from")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#e5e7eb" }}
+                  style={{ fontSize: "9px", lineHeight: "10px", borderColor: "#e5e7eb" }}
                 >
                   ▼
                 </button>
               </div>
             </div>
 
-            <span className="text-gray-500 text-sm font-medium">To</span>
+            <span className="text-gray-500 text-xs font-medium">To</span>
 
             {/* To Input */}
             <div className="flex items-center bg-white rounded" style={{ border: "1px solid #f9e8cd" }}>
@@ -119,21 +119,21 @@ export default function MeasurementFilter({
                 onChange={(e) =>
                   handleChange(field.key, "to", e.target.value)
                 }
-                className="w-16 px-2 py-1 text-center text-sm outline-none"
+                className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield" }}
               />
               <div className="flex flex-col border-l" style={{ borderColor: "#e5e7eb" }}>
                 <button
                   onClick={() => incrementValue(field.key, "to")}
                   className="px-1 hover:bg-gray-100 transition-colors"
-                  style={{ fontSize: "10px", lineHeight: "12px" }}
+                  style={{ fontSize: "9px", lineHeight: "10px" }}
                 >
                   ▲
                 </button>
                 <button
                   onClick={() => decrementValue(field.key, "to")}
                   className="px-1 hover:bg-gray-100 transition-colors border-t"
-                  style={{ fontSize: "10px", lineHeight: "12px", borderColor: "#e5e7eb" }}
+                  style={{ fontSize: "9px", lineHeight: "10px", borderColor: "#e5e7eb" }}
                 >
                   ▼
                 </button>

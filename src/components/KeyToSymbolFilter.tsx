@@ -52,36 +52,31 @@ export default function KeySymbolFilter({
   const isSelected = (category: keyof KeySymbolFilters, value: string) =>
     filters[category]?.includes(value) || false;
 
-  const sectionHeader =
-    "flex items-center gap-2 px-3 py-2 text-lg font-semibold text-white bg-[#000033]";
-  const buttonBase =
-    "px-3 py-1.5 rounded text-[15px] font-medium transition-all duration-200";
-
   return (
-    <div className="mb-4 mt-2" style={{ width: "fit-content", minWidth: "320px" }}>
+    <div className="mb-2 mt-1" style={{ width: "fit-content", minWidth: "260px" }}>
       {/* Key To Symbol Section */}
       <div
-        className="flex items-center gap-2 px-3 py-2"
+        className="flex items-center gap-1.5 px-2 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-semibold text-white">Key To Symbol</span>
+        <span className="text-sm font-semibold text-white">Key To Symbol</span>
       </div>
-      <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
-        <div className="grid grid-cols-3 gap-2">
+      <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+        <div className="grid grid-cols-2 gap-1.5">
           {KEY_TO_SYMBOL_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => toggleFilter("keyToSymbol", option)}
-              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors break-words ${
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors break-words text-center leading-tight ${
                 isSelected("keyToSymbol", option)
                   ? "text-blue-600 bg-blue-50"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
-                minHeight: "32px",
+                minHeight: "36px",
                 border: isSelected("keyToSymbol", option)
-                  ? "0.25px solid #2563eb"
-                  : "0.25px solid #f9e8cd",
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
               }}
             >
               {option}
@@ -92,27 +87,27 @@ export default function KeySymbolFilter({
 
       {/* Ey.Cln Section */}
       <div
-        className="flex items-center gap-2 px-3 py-2"
+        className="flex items-center gap-1.5 px-2 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-semibold text-white">Ey.Cln</span>
+        <span className="text-sm font-semibold text-white">Ey.Cln</span>
       </div>
-      <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
-        <div className="grid grid-cols-4 gap-2">
+      <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+        <div className="grid grid-cols-4 gap-1.5">
           {EY_CLN_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => toggleFilter("eyCln", option)}
-              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors break-words ${
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors break-words ${
                 isSelected("eyCln", option)
                   ? "text-blue-600 bg-blue-50"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
-                minHeight: "32px",
+                minHeight: "28px",
                 border: isSelected("eyCln", option)
-                  ? "0.25px solid #2563eb"
-                  : "0.25px solid #f9e8cd",
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
               }}
             >
               {option}
@@ -123,27 +118,27 @@ export default function KeySymbolFilter({
 
       {/* H&A Section */}
       <div
-        className="flex items-center gap-2 px-3 py-2"
+        className="flex items-center gap-1.5 px-2 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-semibold text-white">H&A</span>
+        <span className="text-sm font-semibold text-white">H&A</span>
       </div>
-      <div className="bg-white p-3" style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}>
-        <div className="grid grid-cols-4 gap-2">
+      <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+        <div className="grid grid-cols-4 gap-1.5">
           {H_AND_A_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => toggleFilter("hAndA", option)}
-              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors break-words ${
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors break-words ${
                 isSelected("hAndA", option)
                   ? "text-blue-600 bg-blue-50"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
-                minHeight: "32px",
+                minHeight: "28px",
                 border: isSelected("hAndA", option)
-                  ? "0.25px solid #2563eb"
-                  : "0.25px solid #f9e8cd",
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
               }}
             >
               {option}

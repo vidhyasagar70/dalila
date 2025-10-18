@@ -57,7 +57,10 @@ interface TableProps {
   selectedMinCarat?: string;
   selectedMaxCarat?: string;
   selectedFluor?: string;
-  selectedClarity?: string;
+  selectedClarity?: string[];  
+  selectedCut?: string;        
+  selectedPolish?: string;     
+  selectedSymmetry?: string;  
 }
 const DiamondStockTable: React.FC<TableProps> = ({ 
   pageSize = 20,
@@ -68,7 +71,11 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedMinCarat = "",
   selectedMaxCarat = "",
   selectedFluor = "",
-  selectedClarity = ""
+  selectedClarity = [],
+  selectedCut = "",
+  selectedPolish = "",
+  selectedSymmetry = ""
+
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,64 +88,121 @@ const DiamondStockTable: React.FC<TableProps> = ({
   } | null>(null);
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
 useEffect(() => {
-    const fetchDiamonds = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  console.log('=== DiamondStockTable useEffect triggered ===');
+  console.log('searchTerm:', searchTerm);
+  console.log('selectedShape:', selectedShape);
+  console.log('selectedColor:', selectedColor);
+  console.log('selectedClarity:', selectedClarity);
+  console.log('selectedCut:', selectedCut);
+  console.log('selectedPolish:', selectedPolish);
+  console.log('selectedSymmetry:', selectedSymmetry);
+  console.log('selectedFluor:', selectedFluor);
+  console.log('selectedMinCarat:', selectedMinCarat);
+  console.log('selectedMaxCarat:', selectedMaxCarat);
 
-        const hasSearchTerm = searchTerm && searchTerm.trim();
-        const hasShapeFilter = selectedShape && selectedShape.trim() && selectedShape !== "ALL";
-        const hasColorFilter = selectedColor && selectedColor.trim() && selectedColor !== "ALL";
-        const hasCaratFilter = selectedMinCarat && selectedMaxCarat && selectedMinCarat.trim() && selectedMaxCarat.trim();
-        const hasFluorFilter = selectedFluor && selectedFluor.trim() && selectedFluor !== "ALL";
+  const fetchDiamonds = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        // Check if any filter is applied
-        const hasAnyFilter = hasShapeFilter || hasColorFilter || hasSearchTerm || hasCaratFilter || hasFluorFilter;
+      const hasSearchTerm = searchTerm && searchTerm.trim();
+      const hasShapeFilter = selectedShape && selectedShape.trim() && selectedShape !== "ALL";
+      const hasColorFilter = selectedColor && selectedColor.trim() && selectedColor !== "ALL";
+      const hasCaratFilter = (selectedMinCarat && selectedMinCarat.trim()) || (selectedMaxCarat && selectedMaxCarat.trim());
+      const hasFluorFilter = selectedFluor && selectedFluor.trim() && selectedFluor !== "ALL";
+      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
+      const hasCutFilter = selectedCut && selectedCut.trim();
+      const hasPolishFilter = selectedPolish && selectedPolish.trim();
+      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
 
-        let response;
-        if (hasAnyFilter) {
-          const filters: any = {};
+      console.log('Filter checks:', {
+        hasSearchTerm,
+        hasShapeFilter,
+        hasColorFilter,
+        hasCaratFilter,
+        hasFluorFilter,
+        hasClarityFilter,
+        hasCutFilter,
+        hasPolishFilter,
+        hasSymmetryFilter
+      });
 
-          if (hasShapeFilter) filters.shape = selectedShape.trim();
-          if (hasColorFilter) filters.color = selectedColor.trim();
-          if (hasCaratFilter) {
-            if (selectedMinCarat.trim()) filters.minCarats = parseFloat(selectedMinCarat);
-            if (selectedMaxCarat.trim()) filters.maxCarats = parseFloat(selectedMaxCarat);
+      const hasAnyFilter = hasShapeFilter || hasColorFilter || hasSearchTerm || 
+                          hasCaratFilter || hasFluorFilter || hasClarityFilter || 
+                          hasCutFilter || hasPolishFilter || hasSymmetryFilter;
+
+      console.log('hasAnyFilter:', hasAnyFilter);
+
+      let response;
+      if (hasAnyFilter) {
+        const filters: any = {};
+
+        if (hasShapeFilter) filters.shape = selectedShape.trim();
+        if (hasColorFilter) filters.color = selectedColor.trim();
+        
+        // Handle carat filter - only add if values exist
+        if (hasCaratFilter) {
+          if (selectedMinCarat && selectedMinCarat.trim()) {
+            filters.minCarats = parseFloat(selectedMinCarat);
           }
-          if (hasFluorFilter) filters.fluorescence = selectedFluor.trim();
-          if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
-
-          response = await diamondApi.search(filters);
-        } else {
-          response = await diamondApi.getAllNoPagination();
-        }
-
-        if (response?.success && response.data) {
-          let diamonds;
-          if (Array.isArray(response.data)) {
-            diamonds = response.data;
-          } else if (response.data.diamonds && Array.isArray(response.data.diamonds)) {
-            diamonds = response.data.diamonds;
-          } else {
-            diamonds = [];
+          if (selectedMaxCarat && selectedMaxCarat.trim()) {
+            filters.maxCarats = parseFloat(selectedMaxCarat);
           }
-          setData(diamonds);
-          setCurrentPage(1);
-        } else {
-          setData([]);
         }
-      } catch (err) {
-        console.error("Error fetching diamonds", err);
-        setError(err instanceof Error ? err.message : "Failed to fetch diamonds");
-        setData([]);
-      } finally {
-        setLoading(false);
+        
+        if (hasFluorFilter) filters.fluorescence = selectedFluor.trim();
+        if (hasClarityFilter) filters.clarity = selectedClarity.join(',');
+        if (hasCutFilter) filters.cut = selectedCut.trim();
+        if (hasPolishFilter) filters.polish = selectedPolish.trim();
+        if (hasSymmetryFilter) filters.symmetry = selectedSymmetry.trim();
+        if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
+
+        console.log('Calling API with filters:', filters);
+        response = await diamondApi.search(filters);
+        console.log('API response:', response);
+      } else {
+        console.log('Fetching all diamonds (no filters)');
+        response = await diamondApi.getAllNoPagination();
       }
-    };
 
-    fetchDiamonds();
-  }, [searchTerm, selectedShape, selectedColor, selectedMinCarat, selectedMaxCarat, selectedFluor]);
+      if (response?.success && response.data) {
+        let diamonds;
+        if (Array.isArray(response.data)) {
+          diamonds = response.data;
+        } else if (response.data.diamonds && Array.isArray(response.data.diamonds)) {
+          diamonds = response.data.diamonds;
+        } else {
+          diamonds = [];
+        }
+        console.log(`Fetched ${diamonds.length} diamonds`);
+        setData(diamonds);
+        setCurrentPage(1);
+      } else {
+        console.log('No data received from API');
+        setData([]);
+      }
+    } catch (err) {
+      console.error("Error fetching diamonds:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch diamonds");
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  fetchDiamonds();
+}, [
+  searchTerm, 
+  selectedShape, 
+  selectedColor, 
+  selectedMinCarat, 
+  selectedMaxCarat, 
+  selectedFluor, 
+  JSON.stringify(selectedClarity),
+  selectedCut, 
+  selectedPolish, 
+  selectedSymmetry
+]);
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
@@ -226,44 +290,95 @@ useEffect(() => {
   }
 
   // No data state
-  if (data.length === 0) {
-    return (
-      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-gray-600">
-            {searchTerm || selectedShape
-              ? `No diamonds found matching your filters`
-              : "No diamonds found"}
-          </p>
-          {selectedShape && (
-            <p className="text-sm text-gray-500 mt-2">
-              Shape filter: {selectedShape}
-            </p>
-          )}
-        </div>
+// No data state
+if (data.length === 0) {
+  return (
+    <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <p className="text-gray-600 text-lg mb-3">
+          {searchTerm || selectedShape || selectedColor || selectedClarity.length > 0 ||
+           selectedCut || selectedPolish || selectedSymmetry || selectedFluor ||
+           selectedMinCarat || selectedMaxCarat
+            ? `No diamonds found matching your filters`
+            : "No diamonds found"}
+        </p>
+        {(selectedShape || selectedColor || selectedClarity.length > 0 || 
+          selectedCut || selectedPolish || selectedSymmetry || selectedFluor ||
+          selectedMinCarat || selectedMaxCarat) && (
+          <div className="text-sm text-gray-500 mt-2 space-y-1">
+            {selectedShape && selectedShape !== "ALL" && <p>Shape: {selectedShape}</p>}
+            {selectedColor && selectedColor !== "ALL" && <p>Color: {selectedColor}</p>}
+            {selectedClarity.length > 0 && <p>Clarity: {selectedClarity.join(', ')}</p>}
+            {selectedCut && <p>Cut: {selectedCut}</p>}
+            {selectedPolish && <p>Polish: {selectedPolish}</p>}
+            {selectedSymmetry && <p>Symmetry: {selectedSymmetry}</p>}
+            {selectedFluor && selectedFluor !== "ALL" && <p>Fluorescence: {selectedFluor}</p>}
+            {(selectedMinCarat || selectedMaxCarat) && (
+              <p>Carat Range: {selectedMinCarat || '0'} - {selectedMaxCarat || '∞'}</p>
+            )}
+            {searchTerm && <p>Search Term: "{searchTerm}"</p>}
+          </div>
+        )}
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   return (
     <>
       <div className="w-full flex flex-col bg-gray-50 p-4">
-        {/* Active Filters Display */}
-        {(searchTerm || selectedShape) && (
-          <div className="mb-3 flex items-center gap-2 text-sm text-gray-600">
-            <span className="font-medium">Active Filters:</span>
-            {selectedShape && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Shape: {selectedShape}
-              </span>
-            )}
-            {searchTerm && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Search: {searchTerm}
-              </span>
-            )}
-          </div>
-        )}
+{/* Active Filters Display */}
+{(searchTerm || selectedShape || selectedColor || selectedClarity.length > 0 || 
+  selectedCut || selectedPolish || selectedSymmetry || selectedFluor || 
+  selectedMinCarat || selectedMaxCarat) && (
+  <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
+    <span className="font-medium">Active Filters:</span>
+    {selectedShape && selectedShape !== "ALL" && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Shape: {selectedShape}
+      </span>
+    )}
+    {selectedColor && selectedColor !== "ALL" && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Color: {selectedColor}
+      </span>
+    )}
+    {selectedClarity.length > 0 && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Clarity: {selectedClarity.join(', ')}
+      </span>
+    )}
+    {selectedCut && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Cut: {selectedCut}
+      </span>
+    )}
+    {selectedPolish && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Polish: {selectedPolish}
+      </span>
+    )}
+    {selectedSymmetry && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Symmetry: {selectedSymmetry}
+      </span>
+    )}
+    {selectedFluor && selectedFluor !== "ALL" && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Fluorescence: {selectedFluor}
+      </span>
+    )}
+    {(selectedMinCarat || selectedMaxCarat) && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Carat: {selectedMinCarat || '0'} - {selectedMaxCarat || '∞'}
+      </span>
+    )}
+    {searchTerm && (
+      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+        Search: {searchTerm}
+      </span>
+    )}
+  </div>
+)}
         
         <div className="bg-white shadow-sm flex flex-col rounded-lg">
           {/* Table Container */}

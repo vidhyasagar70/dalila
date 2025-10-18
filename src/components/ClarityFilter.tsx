@@ -1,19 +1,13 @@
+// ClarityFilter.tsx
 import React, { useEffect, useState } from "react";
 import { diamondApi, FilterOptions } from "@/lib/api";
 
-const SPECIAL_OPTIONS = [
-  { label: "3EX", value: "3EX" },
-  { label: "EX-", value: "EX-" },
-  { label: "VG+", value: "VG+" },
-  { label: "VG-", value: "VG-" },
-];
-
 interface ClarityFilterProps {
-  selectedClarity: string;
+  selectedClarity: string[];  // Changed from string to string[]
   selectedCut: string;
   selectedPolish: string;
   selectedSymmetry: string;
-  onClarityChange: (clarity: string) => void;
+  onClarityChange: (clarity: string[]) => void;
   onCutChange: (cut: string) => void;
   onPolishChange: (polish: string) => void;
   onSymmetryChange: (symmetry: string) => void;
@@ -40,11 +34,9 @@ export default function ClarityFilter({
       try {
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
-          // Filter out empty strings and sort clarities
           const clarities = response.data.clarities.filter(c => c.trim() !== "");
           setClarityOptions(clarities);
 
-          // Filter out empty strings and "-" for cuts, polish, and symmetry
           const cuts = response.data.cuts.filter(c => c.trim() !== "" && c !== "-");
           setCutOptions(cuts);
 
@@ -64,37 +56,36 @@ export default function ClarityFilter({
     fetchFilterOptions();
   }, []);
 
-  const handleClarityClick = (value: string) => {
-    if (selectedClarity === value) {
-      onClarityChange("");
-    } else {
-      onClarityChange(value);
-    }
-  };
 
-  const handleSpecialClick = (value: string) => {
-    if (selectedClarity === value) {
-      onClarityChange("");
-    } else {
-      onClarityChange(value);
-    }
-  };
 
-  const handleCutClick = (value: string) => {
-    onCutChange(selectedCut === value ? "" : value);
-  };
+ const handleClarityClick = (value: string) => {
+  let newClarity: string[];
+  if (selectedClarity.includes(value)) {
+    newClarity = selectedClarity.filter(c => c !== value);
+  } else {
+    newClarity = [...selectedClarity, value];
+  }
+  onClarityChange(newClarity);
+};
 
-  const handlePolishClick = (value: string) => {
-    onPolishChange(selectedPolish === value ? "" : value);
-  };
+const handleCutClick = (value: string) => {
+  const newCut = selectedCut === value ? "" : value;
+  onCutChange(newCut);
+};
 
-  const handleSymmetryClick = (value: string) => {
-    onSymmetryChange(selectedSymmetry === value ? "" : value);
-  };
+const handlePolishClick = (value: string) => {
+  const newPolish = selectedPolish === value ? "" : value;
+  onPolishChange(newPolish);
+};
+
+const handleSymmetryClick = (value: string) => {
+  const newSymmetry = selectedSymmetry === value ? "" : value;
+  onSymmetryChange(newSymmetry);
+};
 
   if (loading) {
     return (
-      <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+      <div className="mb-2 mt-1" style={{ width: "360px" }}>
         <div
           className="flex items-center gap-2 px-3 py-2"
           style={{ backgroundColor: "#000033" }}
@@ -103,8 +94,12 @@ export default function ClarityFilter({
           <span className="text-base font-semibold text-white">Clarity</span>
         </div>
         <div
-          className="p-3 bg-white flex items-center justify-center"
-          style={{ border: "0.25px solid #f9e8cd", borderTop: "none", minHeight: "200px" }}
+          className="p-2 bg-white flex items-center justify-center"
+          style={{ 
+            border: "0.25px solid #f9e8cd", 
+            borderTop: "none", 
+            height: "288px" 
+          }}
         >
           <span className="text-gray-500">Loading filters...</span>
         </div>
@@ -113,7 +108,7 @@ export default function ClarityFilter({
   }
 
   return (
-    <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+    <div className="mb-2 mt-1" style={{ width: "360px" }}>
       <div
         className="flex items-center gap-2 px-3 py-2"
         style={{ backgroundColor: "#000033" }}
@@ -123,26 +118,30 @@ export default function ClarityFilter({
       </div>
 
       <div
-        className="p-3 bg-white"
-        style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
+        className="p-2 bg-white"
+        style={{ 
+          border: "0.25px solid #f9e8cd", 
+          borderTop: "none",
+          height: "288px",
+        }}
       >
         {/* Clarity Options */}
-        <div className="grid grid-cols-6 gap-2 mb-3">
+        <div className="grid grid-cols-6 gap-1.5 mb-2">
           {clarityOptions.map((option) => (
             <button
               key={option}
               onClick={() => handleClarityClick(option)}
-              className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
-                selectedClarity === option
+              className={`px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedClarity.includes(option)
                   ? "text-blue-600 bg-blue-50"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
-                border: selectedClarity === option
+                border: selectedClarity.includes(option)
                   ? "0.25px solid #2563eb"
                   : "0.25px solid #f9e8cd",
-                minHeight: "36px",
-                minWidth: "54px",
+                minHeight: "28px",
+                minWidth: "48px",
               }}
             >
               {option}
@@ -150,47 +149,26 @@ export default function ClarityFilter({
           ))}
         </div>
 
-        {/* Special Options */}
-        <div className="grid grid-cols-4 gap-2 mb-3">
-          {SPECIAL_OPTIONS.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => handleSpecialClick(option.value)}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors hover:opacity-90 ${
-                selectedClarity === option.value
-                  ? "bg-blue-600 text-white"
-                  : "bg-[#000033] text-white"
-              }`}
-              style={{ 
-                minHeight: "36px",
-                minWidth: "70px",
-              }}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
         {/* Cut Options */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-1.5 mb-2">
           <div
-            className="px-2 py-1.5 rounded text-xs font-semibold text-white"
+            className="px-1.5 py-1 rounded text-xs font-semibold text-white"
             style={{ 
               backgroundColor: "#000033", 
-              minWidth: "60px",
-              minHeight: "36px",
+              minWidth: "35px",
+              minHeight: "26px",
               display: "flex",
               alignItems: "center"
             }}
           >
             Cut :
           </div>
-          <div className="flex gap-2 flex-1">
+          <div className="flex gap-1.5 flex-1">
             {cutOptions.map((option) => (
               <button
                 key={option}
                 onClick={() => handleCutClick(option)}
-                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors flex-1 ${
+                className={`px-1.5 py-1 rounded text-xs font-medium transition-colors flex-1 ${
                   selectedCut === option
                     ? "text-blue-600 bg-blue-50"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -200,7 +178,7 @@ export default function ClarityFilter({
                     selectedCut === option
                       ? "0.25px solid #2563eb"
                       : "0.25px solid #f9e8cd",
-                  minHeight: "36px",
+                  minHeight: "26px",
                 }}
               >
                 {option}
@@ -210,25 +188,25 @@ export default function ClarityFilter({
         </div>
 
         {/* Polish Options */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-1.5 mb-2">
           <div
-            className="px-2 py-1.5 rounded text-xs font-semibold text-white"
+            className="px-1.5 py-1 rounded text-xs font-semibold text-white"
             style={{ 
               backgroundColor: "#000033", 
-              minWidth: "60px",
-              minHeight: "36px",
+              minWidth: "35px",
+              minHeight: "26px",
               display: "flex",
               alignItems: "center"
             }}
           >
             Pol :
           </div>
-          <div className="flex gap-2 flex-1">
+          <div className="flex gap-1.5 flex-1">
             {polishOptions.map((option) => (
               <button
                 key={option}
                 onClick={() => handlePolishClick(option)}
-                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors flex-1 ${
+                className={`px-1.5 py-1 rounded text-xs font-medium transition-colors flex-1 ${
                   selectedPolish === option
                     ? "text-blue-600 bg-blue-50"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -238,7 +216,7 @@ export default function ClarityFilter({
                     selectedPolish === option
                       ? "0.25px solid #2563eb"
                       : "0.25px solid #f9e8cd",
-                  minHeight: "36px",
+                  minHeight: "26px",
                 }}
               >
                 {option}
@@ -248,25 +226,25 @@ export default function ClarityFilter({
         </div>
 
         {/* Symmetry Options */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <div
-            className="px-2 py-1.5 rounded text-xs font-semibold text-white"
+            className="px-1.5 py-1 rounded text-xs font-semibold text-white"
             style={{ 
               backgroundColor: "#000033", 
-              minWidth: "60px",
-              minHeight: "36px",
+              minWidth: "35px",
+              minHeight: "26px",
               display: "flex",
               alignItems: "center"
             }}
           >
             Sym :
           </div>
-          <div className="flex gap-2 flex-1">
+          <div className="flex gap-1.5 flex-1">
             {symmetryOptions.map((option) => (
               <button
                 key={option}
                 onClick={() => handleSymmetryClick(option)}
-                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors flex-1 ${
+                className={`px-1.5 py-1 rounded text-xs font-medium transition-colors flex-1 ${
                   selectedSymmetry === option
                     ? "text-blue-600 bg-blue-50"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -276,7 +254,7 @@ export default function ClarityFilter({
                     selectedSymmetry === option
                       ? "0.25px solid #2563eb"
                       : "0.25px solid #f9e8cd",
-                  minHeight: "36px",
+                  minHeight: "26px",
                 }}
               >
                 {option}

@@ -2,6 +2,7 @@
 
 "use client";
 import React, { useState } from "react";
+import { Grid3x3, List } from "lucide-react";
 
 import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
@@ -16,8 +17,9 @@ import ShadesFilter, { type ShadesFilters } from './ShadesFilter';
 import PriceLocationFilter, { type PriceLocationFilters } from './Priceandloction';
 import AdvancedFilters from "./AdvancedFilters";
 import DiamondStockTable from "./DiamondStockTable";
-export default function DiamondStockTableWithFilter() {
 
+export default function DiamondStockTableWithFilter() {
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [isSearching, setIsSearching] = useState(false);
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,9 +29,9 @@ export default function DiamondStockTableWithFilter() {
   const [selectedCut, setSelectedCut] = useState("");
   const [selectedPolish, setSelectedPolish] = useState("");
   const [selectedSymmetry, setSelectedSymmetry] = useState("");
-   const [selectedFluor, setSelectedFluor] = useState("");
+  const [selectedFluor, setSelectedFluor] = useState("");
   const [selectedMinCarat, setSelectedMinCarat] = useState("");
-const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
+  const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
 
   const [measurements, setMeasurements] = useState({
     length: { from: "0.50", to: "0.50" },
@@ -69,9 +71,11 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
     labs: [],
   });
   const [showFilters, setShowFilters] = useState(true);
-   const handleColorChange = (color: string) => {
+
+  const handleColorChange = (color: string) => {
     setSelectedColor(color);
   };
+
   const handleShapeChange = (shape: string) => {
     setSelectedShape(shape);
   };
@@ -84,14 +88,8 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
     setSelectedShape("");
     setSearchTerm("");
   };
-  const handleCaratChange = (min: string, max: string) => {
-  setSelectedMinCarat(min);
-  setSelectedMaxCarat(max);
-};
 
-
-
-  const handleFluorChange = (fluor: string) => {  
+  const handleFluorChange = (fluor: string) => {
     setSelectedFluor(fluor);
   };
 
@@ -104,25 +102,30 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
     setSearchTerm("");
   };
 
-  const handleClarityChange = (clarity: string[]) => {
-    setSelectedClarity(clarity);
-    setSearchTerm("");
-  };
+ const handleClarityChange = (clarity: string[]) => {
+ setSelectedClarity(clarity);
+  setSearchTerm(""); 
+};
 
-  const handleCutChange = (cut: string) => {
-    setSelectedCut(cut);
-    setSearchTerm("");
-  };
+const handleCutChange = (cut: string) => {
+  setSelectedCut(cut);
+  setSearchTerm("");
+};
 
-  const handlePolishChange = (polish: string) => {
-    setSelectedPolish(polish);
-    setSearchTerm("");
-  };
+const handlePolishChange = (polish: string) => {
+  setSelectedPolish(polish);
+  setSearchTerm("");
+};
 
-  const handleSymmetryChange = (symmetry: string) => {
-    setSelectedSymmetry(symmetry);
-    setSearchTerm("");
-  };
+const handleSymmetryChange = (symmetry: string) => {
+  setSelectedSymmetry(symmetry);
+  setSearchTerm("");
+};
+const handleCaratChange = (min: string, max: string) => {
+  console.log('Carat changed - min:', min, 'max:', max);
+  setSelectedMinCarat(min);
+  setSelectedMaxCarat(max);
+};
 
   const handleResetFilters = () => {
     setSelectedColor("");
@@ -136,54 +139,79 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
   };
 
   return (
-    <div className="w-full px-4 py-4 bg-gray-50 mt-35">
-    {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
-<div className="grid grid-cols-4 gap-0.5">
- <ShapeFilter
-                selectedShape={selectedShape}
-                onShapeChange={handleShapeChange}
-              />
-  <CaratFilter 
-  selectedMinCarat={selectedMinCarat}
-  selectedMaxCarat={selectedMaxCarat}
-  onCaratChange={handleCaratChange}
+    <div className="w-full px-4 py-4 bg-[#F5F7FA] mt-35">
+      {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
+      <div className="grid grid-cols-4 gap-0.5">
+        <ShapeFilter
+          selectedShape={selectedShape}
+          onShapeChange={handleShapeChange}
+        />
+        <CaratFilter 
+          selectedMinCarat={selectedMinCarat}
+          selectedMaxCarat={selectedMaxCarat}
+          onCaratChange={handleCaratChange}
+        />
+        <ClarityFilter
+  selectedClarity={selectedClarity}
+  selectedCut={selectedCut}
+  selectedPolish={selectedPolish}
+  selectedSymmetry={selectedSymmetry}
+  onClarityChange={handleClarityChange}
+  onCutChange={handleCutChange}
+  onPolishChange={handlePolishChange}
+  onSymmetryChange={handleSymmetryChange}
 />
-  <ClarityFilter
-    selectedClarity={selectedClarity}
-    selectedCut={selectedCut}
-    selectedPolish={selectedPolish}
-    selectedSymmetry={selectedSymmetry}
-    onClarityChange={handleClarityChange}
-    onCutChange={handleCutChange}
-    onPolishChange={handlePolishChange}
-    onSymmetryChange={handleSymmetryChange}
-  />
+        <ColorFilter
+          selectedColor={selectedColor}
+          onColorChange={handleColorChange}
+        />
+      </div>
 
-  <div className="flex flex-col gap-0.5">
-    <FluorFilter
-      selectedFluor={selectedFluor}
-      onFluorChange={handleFluorChange}
+      {/* SEARCH AND NAVIGATION ROW */}
+     <div className="flex items-center gap-3 mt-4 bg-[#faf6eb] px-4 py-2 rounded">
+  {/* View Mode Toggle - Left Side */}
+  <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
+    <button
+      onClick={() => setViewMode('list')}
+      className={`p-1.5 transition-colors ${
+        viewMode === 'list'
+          ? 'bg-[#000033] text-white'
+          : 'bg-white text-gray-600 hover:bg-gray-100'
+      }`}
+      title="List View"
+    >
+      <List className="w-4 h-4" />
+    </button>
+    <button
+      onClick={() => setViewMode('grid')}
+      className={`p-1.5 transition-colors ${
+        viewMode === 'grid'
+          ? 'bg-[#000033] text-white'
+          : 'bg-white text-gray-600 hover:bg-gray-100'
+      }`}
+      title="Grid View"
+    >
+      <Grid3x3 className="w-4 h-4" />
+    </button>
+  </div>
+
+  {/* Spacer to push items to the right */}
+  <div className="flex-1"></div>
+
+  {/* Search Bar and Advanced Filters - Right Side */}
+  <div className="flex items-center gap-3">
+    <div className="mt-1">
+      <SearchBar onSearch={handleSearch} isSearching={isSearching} />
+    </div>
+    <AdvancedFilters
+      onShowFilters={() => setShowFilters(!showFilters)}
+      onResetFilters={handleResetFilters}
     />
-   <ColorFilter
-                selectedColor={selectedColor}
-                onColorChange={handleColorChange}
-              />
   </div>
 </div>
 
-      <div className="grid grid-cols-2 mt-2">
-        <SearchBar onSearch={handleSearch} isSearching={isSearching}/>
-        <div className="mt-2">
-          <AdvancedFilters
-            onShowFilters={() => setShowFilters(!showFilters)}
-            onResetFilters={handleResetFilters}
-          />
-        </div>
-      </div>
-
-
-      {showFilters && (
-        <div className="grid grid-cols-5 gap-4">
+    {showFilters && (
+        <div className="grid grid-cols-5 gap-4 mt-4">
           <InclusionFilter
             inclusions={inclusions}
             onInclusionChange={setInclusions}
@@ -196,29 +224,37 @@ const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
             filters={keySymbolFilters}
             onFiltersChange={setKeySymbolFilters}
           />
-          <PriceLocationFilter
-            filters={priceLocationFilters}
-            onFiltersChange={setPriceLocationFilters}
-          />
+          <div className="flex flex-col gap-2">
+            <PriceLocationFilter
+              filters={priceLocationFilters}
+              onFiltersChange={setPriceLocationFilters}
+            />
+            <FluorFilter
+              selectedFluor={selectedFluor}
+              onFluorChange={handleFluorChange}
+            />
+          </div>
           <MeasurementFilter
             measurements={measurements}
             onMeasurementChange={setMeasurements}
-
           />
-
-         
         </div>
       )}
-       <DiamondStockTable
-  searchTerm={searchTerm}
-  selectedShape={selectedShape}
-  selectedColor={selectedColor}
-  selectedMinCarat={selectedMinCarat}
-  selectedMaxCarat={selectedMaxCarat}
-  selectedFluor={selectedFluor} 
-  pageSize={20}
-/>
 
+      <DiamondStockTable
+        searchTerm={searchTerm}
+        selectedShape={selectedShape}
+        selectedColor={selectedColor}
+        selectedMinCarat={selectedMinCarat}
+        selectedMaxCarat={selectedMaxCarat}
+        selectedFluor={selectedFluor} 
+        selectedClarity={selectedClarity} 
+  selectedCut={selectedCut}          
+  selectedPolish={selectedPolish}   
+  selectedSymmetry={selectedSymmetry} 
+        pageSize={10}
+        
+      />
     </div>
   );
 }

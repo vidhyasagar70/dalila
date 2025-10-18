@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { diamondApi } from "@/lib/api"; 
 
 interface CaratFilterProps {
-  selectedRange?: string;
-  onRangeChange?: (range: string) => void;
+  selectedMinCarat: string;
+  selectedMaxCarat: string;
+  onCaratChange: (min: string, max: string) => void;
 }
 
 interface CaratRange {
@@ -14,8 +15,9 @@ interface CaratRange {
 }
 
 export default function CaratFilter({
-  selectedRange,
-  onRangeChange,
+  selectedMinCarat,
+  selectedMaxCarat,
+  onCaratChange,
 }: CaratFilterProps) {
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
@@ -58,12 +60,70 @@ export default function CaratFilter({
     fetchCaratRange();
   }, []);
 
-  const handleRangeClick = (range: string) => {
-    onRangeChange?.(selectedRange === range ? "" : range);
+  // Sync local state with props when they change externally (e.g., reset filters)
+  useEffect(() => {
+    if (!selectedMinCarat && !selectedMaxCarat && availableRanges.length > 0) {
+      // Reset to default range when filters are cleared
+      setFromValue(availableRanges[0].min.toString());
+      setToValue(availableRanges[0].max.toString());
+    }
+  }, [selectedMinCarat, selectedMaxCarat, availableRanges]);
+
+  // Update parent when input values change
+  const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFromValue(value);
+    if (value && toValue) {
+      console.log('Carat from changed to:', value);
+      onCaratChange(value, toValue);
+    } else if (!value && !toValue) {
+      // Both empty - clear filter
+      console.log('Both inputs empty - clearing filter');
+      onCaratChange("", "");
+    }
+  };
+
+  const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setToValue(value);
+    if (fromValue && value) {
+      console.log('Carat to changed to:', value);
+      onCaratChange(fromValue, value);
+    } else if (!fromValue && !value) {
+      // Both empty - clear filter
+      console.log('Both inputs empty - clearing filter');
+      onCaratChange("", "");
+    }
+  };
+
+  const handleRangeClick = (range: CaratRange) => {
+    console.log('Carat range clicked:', range);
+    console.log('Current selectedMinCarat:', selectedMinCarat);
+    console.log('Current selectedMaxCarat:', selectedMaxCarat);
+    
+    // Check if this range is already selected
+    const isSelected = selectedMinCarat === range.min.toString() && 
+                      selectedMaxCarat === range.max.toString();
+    
+    console.log('Is selected:', isSelected);
+    
+    if (isSelected) {
+      // Clicking the same range again - clear the filter
+      console.log('Same range clicked - clearing filter');
+      setFromValue(range.min.toString());
+      setToValue(range.max.toString());
+      onCaratChange("", "");
+    } else {
+      // Select new range
+      console.log('New range selected - applying filter');
+      setFromValue(range.min.toString());
+      setToValue(range.max.toString());
+      onCaratChange(range.min.toString(), range.max.toString());
+    }
   };
 
   return (
-    <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
+    <div className="mb-2 mt-1" style={{ width: "360px" }}>
       {/* Header */}
       <div
         className="flex items-center gap-2 px-3 py-2"
@@ -79,7 +139,7 @@ export default function CaratFilter({
         style={{
           border: "0.25px solid #f9e8cd",
           borderTop: "none",
-          minHeight: "180px", // ✅ keeps UI fixed even if one range
+          minHeight: "288px", 
         }}
       >
         {loading ? (
@@ -92,13 +152,14 @@ export default function CaratFilter({
           </div>
         ) : (
           <>
+            {/* Input Fields */}
             <div className="flex gap-2 mb-3">
               <div className="relative flex-1">
                 <input
                   type="number"
                   step="0.01"
                   value={fromValue}
-                  onChange={(e) => setFromValue(e.target.value)}
+                  onChange={handleFromChange}
                   className="w-full px-2 py-1.5 text-xs rounded"
                   style={{
                     border: "0.25px solid #f9e8cd",
@@ -112,7 +173,7 @@ export default function CaratFilter({
                   type="number"
                   step="0.01"
                   value={toValue}
-                  onChange={(e) => setToValue(e.target.value)}
+                  onChange={handleToChange}
                   className="w-full px-2 py-1.5 text-xs rounded"
                   style={{
                     border: "0.25px solid #f9e8cd",
@@ -123,28 +184,33 @@ export default function CaratFilter({
               </div>
             </div>
 
+            {/* Range Buttons */}
             <div className="grid grid-cols-3 gap-2">
-              {availableRanges.map((range) => (
-                <button
-                  key={range.value}
-                  onClick={() => handleRangeClick(range.value)}
-                  className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
-                    selectedRange === range.value
-                      ? "text-blue-600 bg-blue-50"
-                      : "bg-white text-gray-700 hover:bg-gray-50"
-                  }`}
-                  style={{
-                    border:
-                      selectedRange === range.value
+              {availableRanges.map((range) => {
+                const isSelected = selectedMinCarat === range.min.toString() && 
+                                  selectedMaxCarat === range.max.toString();
+                
+                return (
+                  <button
+                    key={range.value}
+                    onClick={() => handleRangeClick(range)}
+                    className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                      isSelected
+                        ? "text-blue-600 bg-blue-50"
+                        : "bg-white text-gray-700 hover:bg-gray-50"
+                    }`}
+                    style={{
+                      border: isSelected
                         ? "0.25px solid #2563eb"
                         : "0.25px solid #f9e8cd",
-                    minHeight: "36px",
-                    minWidth: "90px",
-                  }}
-                >
-                  {range.label}
-                </button>
-              ))}
+                      minHeight: "36px",
+                      minWidth: "90px",
+                    }}
+                  >
+                    {range.label}
+                  </button>
+                );
+              })}
             </div>
           </>
         )}
