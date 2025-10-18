@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
+import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -51,11 +52,11 @@ interface DiamondData {
   SN?:string;
   CW?:string;
   CN?:string;
-  BRANCH?:any;
-  HEART_IMAGE?:any;
-  ARROW_IMAGE?:any;
-  HA?:any;
-  CLARITY_CHARACTERISTICS?:any;
+ BRANCH?: string;
+HEART_IMAGE?: string;
+ARROW_IMAGE?: string;
+HA?: string;
+CLARITY_CHARACTERISTICS?: string;
   
 }
 
@@ -72,6 +73,18 @@ interface TableProps {
   selectedCut?: string;        
   selectedPolish?: string;     
   selectedSymmetry?: string;  
+}
+interface FilterParams {
+  shape?: string;
+  color?: string;
+  minCarats?: number;
+  maxCarats?: number;
+  fluorescence?: string;
+  clarity?: string;
+  cut?: string;
+  polish?: string;
+  symmetry?: string;
+  searchTerm?: string;
 }
 const DiamondStockTable: React.FC<TableProps> = ({ 
   pageSize = 20,
@@ -98,18 +111,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
     direction: "asc" | "desc";
   } | null>(null);
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
+  const clarityString = useMemo(() => JSON.stringify(selectedClarity), [selectedClarity]);
 useEffect(() => {
-  console.log('=== DiamondStockTable useEffect triggered ===');
-  console.log('searchTerm:', searchTerm);
-  console.log('selectedShape:', selectedShape);
-  console.log('selectedColor:', selectedColor);
-  console.log('selectedClarity:', selectedClarity);
-  console.log('selectedCut:', selectedCut);
-  console.log('selectedPolish:', selectedPolish);
-  console.log('selectedSymmetry:', selectedSymmetry);
-  console.log('selectedFluor:', selectedFluor);
-  console.log('selectedMinCarat:', selectedMinCarat);
-  console.log('selectedMaxCarat:', selectedMaxCarat);
+
 
   const fetchDiamonds = async () => {
     try {
@@ -146,7 +150,7 @@ useEffect(() => {
 
       let response;
       if (hasAnyFilter) {
-        const filters: any = {};
+        const filters: FilterParams = {};
 
         if (hasShapeFilter) filters.shape = selectedShape.trim();
         if (hasColorFilter) filters.color = selectedColor.trim();
@@ -209,7 +213,7 @@ if (response?.success && response.data) {
   selectedMinCarat, 
   selectedMaxCarat, 
   selectedFluor, 
-  JSON.stringify(selectedClarity),
+   clarityString,,
   selectedCut, 
   selectedPolish, 
   selectedSymmetry
@@ -327,7 +331,7 @@ if (data.length === 0) {
             {(selectedMinCarat || selectedMaxCarat) && (
               <p>Carat Range: {selectedMinCarat || '0'} - {selectedMaxCarat || '∞'}</p>
             )}
-            {searchTerm && <p>Search Term: "{searchTerm}"</p>}
+            {searchTerm && <p>Search: &quot;{searchTerm}&quot</p>}
           </div>
         )}
       </div>
@@ -797,7 +801,16 @@ if (data.length === 0) {
                         <div className="relative w-12 h-12">
                           <div className="w-full h-full bg-gray-100 rounded overflow-hidden">
                             {row.REAL_IMAGE ? (
-                              <img src={row.REAL_IMAGE} alt={row.STONE_NO} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23f3f4f6' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='10'%3ENo Image%3C/text%3E%3C/svg%3E"; }} />
+                              <Image 
+  src={row.REAL_IMAGE} 
+  alt={row.STONE_NO} 
+  width={48}
+  height={48}
+  className="w-full h-full object-cover" 
+  onError={(e) => { 
+    e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23f3f4f6' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='10'%3ENo Image%3C/text%3E%3C/svg%3E"; 
+  }} 
+/>
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-gray-400 text-[10px]">No img</div>
                             )}
@@ -961,7 +974,13 @@ if (data.length === 0) {
                   {selectedDiamond.REAL_IMAGE && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-700 mb-2">Diamond Image</h3>
-                      <img src={selectedDiamond.REAL_IMAGE} alt="Diamond" className="w-full rounded-lg border" />
+                      <Image 
+  src={selectedDiamond.REAL_IMAGE} 
+  alt="Diamond" 
+  width={600}
+  height={600}
+  className="w-full rounded-lg border" 
+/>
                     </div>
                   )}
                   
