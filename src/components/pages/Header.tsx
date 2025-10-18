@@ -11,6 +11,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const isTestingPage = pathname === "/Testingpages";
@@ -23,54 +24,49 @@ export default function Header() {
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
 
-  // Debug logs
-  console.log('Header Debug:', {
-    isLoggedIn,
-    userRole,
-    isAdmin,
-    pathname,
-  });
-
   // Check user authentication and role on mount and when pathname changes
   useEffect(() => {
     const checkUserAuth = () => {
       if (typeof window !== 'undefined') {
+        setIsCheckingAuth(true);
+        
         // First, try localStorage
         let token = localStorage.getItem('authToken');
         let userStr = localStorage.getItem('user');
         
-        console.log('=== AUTH CHECK ===');
-        console.log('LocalStorage Token:', token);
-        console.log('LocalStorage User:', userStr);
+        console.log('=== HEADER AUTH CHECK ===');
+        console.log('LocalStorage Token:', token ? 'EXISTS' : 'MISSING');
+        console.log('LocalStorage User:', userStr ? 'EXISTS' : 'MISSING');
         
         // If not in localStorage, check cookies
-        if (!userStr) {
+        if (!userStr || !token) {
           console.log('Checking cookies...');
           const cookies = document.cookie.split(';');
-          console.log('All cookies:', cookies);
           
           const tokenCookie = cookies.find(c => c.trim().startsWith('authToken='));
           if (tokenCookie) {
             token = tokenCookie.split('=')[1].trim();
-            console.log('Found token in cookie:', token);
+            console.log('Found token in cookie');
           }
           
           const userCookie = cookies.find(c => c.trim().startsWith('user='));
           if (userCookie) {
             try {
               userStr = decodeURIComponent(userCookie.split('=')[1].trim());
-              console.log('Found user in cookie:', userStr);
+              console.log('Found user in cookie');
             } catch (e) {
               console.error('Error decoding user cookie:', e);
             }
           }
         }
         
-        // We only need user data to authenticate (token is optional)
-        if (userStr) {
+        // Check if user is authenticated
+        const hasValidAuth = !!(userStr && token);
+        
+        if (hasValidAuth && userStr) {
           try {
             const user = JSON.parse(userStr);
-            console.log('✅ Parsed user successfully:', user);
+            console.log('✅ User authenticated:', user.email);
             console.log('✅ User role:', user.role);
             setUserRole(user.role || null);
             setIsLoggedIn(true);
@@ -80,29 +76,34 @@ export default function Header() {
             setIsLoggedIn(false);
           }
         } else {
-          console.log('❌ No user data found');
+          console.log('❌ No valid authentication found');
           setUserRole(null);
           setIsLoggedIn(false);
         }
-        console.log('=== END AUTH CHECK ===');
+        
+        setIsCheckingAuth(false);
+        console.log('=== END HEADER AUTH CHECK ===');
+        console.log('Final auth state - isLoggedIn:', hasValidAuth);
       }
     };
 
     checkUserAuth();
     
-    // Listen for login events
-    const handleLoginEvent = () => {
-      console.log('Login event received, rechecking auth...');
-      setTimeout(checkUserAuth, 100); // Small delay to ensure localStorage is updated
+    // Listen for auth events
+    const handleAuthEvent = (event: Event) => {
+      console.log('Auth event received:', event.type);
+      setTimeout(checkUserAuth, 100);
     };
     
     if (typeof window !== 'undefined') {
-      window.addEventListener('storage', handleLoginEvent);
-      window.addEventListener('user-logged-in', handleLoginEvent);
+      window.addEventListener('storage', handleAuthEvent);
+      window.addEventListener('user-logged-in', handleAuthEvent);
+      window.addEventListener('user-logged-out', handleAuthEvent);
       
       return () => {
-        window.removeEventListener('storage', handleLoginEvent);
-        window.removeEventListener('user-logged-in', handleLoginEvent);
+        window.removeEventListener('storage', handleAuthEvent);
+        window.removeEventListener('user-logged-in', handleAuthEvent);
+        window.removeEventListener('user-logged-out', handleAuthEvent);
       };
     }
   }, [pathname]);
@@ -132,6 +133,7 @@ export default function Header() {
   // Handle logout
   const handleLogout = async () => {
     try {
+      console.log('Logout initiated...');
       // Call logout API
       await userApi.logout();
     } catch (error) {
@@ -140,6 +142,24 @@ export default function Header() {
       // Clear local state
       setIsLoggedIn(false);
       setUserRole(null);
+      
+      // Clear localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        
+        // Clear cookies
+        document.cookie = 'authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        
+        console.log('✅ Logout complete - storage cleared');
+      }
+      
+      // Dispatch logout event for ProtectedRoute to listen
+      if (typeof window !== 'undefined') {
+        const logoutEvent = new CustomEvent('user-logged-out');
+        window.dispatchEvent(logoutEvent);
+      }
       
       // Redirect to home
       router.push('/');
@@ -155,6 +175,7 @@ export default function Header() {
 
   // Admin-only menu items
   const adminMenuItems = [
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/inventory", label: "Inventory" },
     { href: "/adminpanel", label: "Admin Panel" },
     { href: "/member", label: "Member" },
@@ -163,6 +184,7 @@ export default function Header() {
 
   // User-only menu items
   const userMenuItems = [
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/inventory", label: "Inventory" },
   ];
 
@@ -234,7 +256,9 @@ export default function Header() {
 
           {/* Right Auth Buttons - Desktop/Tablet */}
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
-            {!isLoggedIn ? (
+            {isCheckingAuth ? (
+              <div className="h-8 w-24 bg-white/10 animate-pulse rounded"></div>
+            ) : !isLoggedIn ? (
               <>
                 <button
                   onClick={() => router.push("/login")}
@@ -261,7 +285,9 @@ export default function Header() {
 
           {/* Tablet Only - Compact Buttons */}
           <div className="hidden md:flex lg:hidden items-center gap-2">
-            {!isLoggedIn ? (
+            {isCheckingAuth ? (
+              <div className="h-8 w-16 bg-white/10 animate-pulse rounded"></div>
+            ) : !isLoggedIn ? (
               <button
                 onClick={() => router.push("/login")}
                 className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
@@ -280,7 +306,9 @@ export default function Header() {
 
           {/* Mobile - Login Button Only */}
           <div className="flex md:hidden">
-            {!isLoggedIn ? (
+            {isCheckingAuth ? (
+              <div className="h-8 w-16 bg-white/10 animate-pulse rounded"></div>
+            ) : !isLoggedIn ? (
               <button
                 onClick={() => router.push("/login")}
                 className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
@@ -326,7 +354,9 @@ export default function Header() {
 
             {/* Mobile Auth Buttons */}
             <div className="flex flex-col gap-3">
-              {!isLoggedIn ? (
+              {isCheckingAuth ? (
+                <div className="h-12 w-full bg-white/10 animate-pulse rounded"></div>
+              ) : !isLoggedIn ? (
                 <>
                   <button
                     onClick={() => {
