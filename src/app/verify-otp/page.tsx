@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Mail, Home, Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,11 +12,12 @@ const playFair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
-export default function OTPVerificationPage() {
+// Separate component that uses useSearchParams
+function OTPVerificationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState<string>("");
-  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isResending, setIsResending] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -54,7 +55,7 @@ export default function OTPVerificationPage() {
     setOtp(newOtp);
 
     // Auto-focus next input
-    if (value && index < 3) {
+    if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -69,161 +70,75 @@ export default function OTPVerificationPage() {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
     
-    // Only allow 4-digit numbers
-    if (!/^\d{4}$/.test(pastedData)) return;
+    // Only allow 6-digit numbers
+    if (!/^\d{6}$/.test(pastedData)) return;
 
     const newOtp = pastedData.split("");
     setOtp(newOtp);
     
     // Focus last input
-    inputRefs.current[3]?.focus();
+    inputRefs.current[5]?.focus();
   };
 
-const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  
-  // Validate OTP
-  const otpString = otp.join("");
-  
-  // Enhanced logging for debugging
-  console.log("=== OTP Verification Debug ===");
-  console.log("Email:", email);
-  console.log("Email trimmed:", email.trim());
-  console.log("OTP:", otpString);
-  console.log("OTP Type:", typeof otpString);
-  console.log("OTP Length:", otpString.length);
-  console.log("Request payload:", {
-    email: email.trim(),
-    otp: otpString.trim()
-  });
-  console.log("============================");
-
-  if (otpString.length !== 4) {
-    setError("Please enter the complete 4-digit OTP");
-    return;
-  }
-
-  // Validate that OTP contains only digits
-  if (!/^\d{4}$/.test(otpString)) {
-    setError("OTP must contain only numbers");
-    return;
-  }
-
-  // Validate email
-  if (!email || !email.trim()) {
-    setError("Email is missing. Please go back to registration.");
-    return;
-  }
-
-  setIsLoading(true);
-  setError("");
-  setSuccess("");
-
-  try {
-    console.log("Sending OTP verification request...");
-
-    // API call with both email and OTP as required by the API
-    const response = await userApi.verifyOtp({
-      email: email.trim(),
-      otp: otpString.trim(),
-    });
-
-    console.log("Response received:", response);
-    console.log("Response success:", response?.success);
-    console.log("Response message:", response?.message);
-
-    // Check if response is successful
-    if (response && response.success) {
-      console.log("✅ OTP verified successfully!");
-      
-      setSuccess(
-        response.message || "Email verified successfully! Redirecting to login..."
-      );
-
-      // Clear the OTP inputs
-      setOtp(["", "", "", ""]);
-
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-    } else {
-      // Handle unsuccessful response
-      console.warn("OTP verification failed:", response);
-      
-      const errorMessage = response?.message || 
-                          response?.error || 
-                          "Invalid OTP. Please try again.";
-      
-      setError(errorMessage);
-      
-      // Clear OTP inputs on error for security
-      setOtp(["", "", "", ""]);
-      
-      // Focus first input
-      inputRefs.current[0]?.focus();
+  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // Validate OTP
+    const otpString = otp.join("");
+    if (otpString.length !== 6) {
+      setError("Please enter the complete 6-digit OTP");
+      return;
     }
 
-  } catch (err: unknown) {
-    console.error("OTP verification error:", err);
+    setIsLoading(true);
+    setError("");
+    setSuccess("");
 
-    if (err instanceof Error) {
-      const errorMessage = err.message.toLowerCase();
-      
-      console.log("Error message:", errorMessage);
-      
-      // Specific error handling based on error message
-      if (errorMessage.includes("expired")) {
-        setError("OTP has expired. Please request a new one.");
-      } else if (errorMessage.includes("invalid") || 
-                 errorMessage.includes("incorrect") || 
-                 errorMessage.includes("wrong")) {
-        setError("Invalid OTP. Please check and try again.");
-      } else if (errorMessage.includes("not found") || 
-                 errorMessage.includes("does not exist")) {
-        setError("User not found. Please register again.");
-      } else if (errorMessage.includes("already verified")) {
-        setError("Email already verified. Please login.");
+    try {
+      console.log("Verifying OTP...");
+
+      const response = await userApi.verifyOtp({
+        email: email,
+        otp: otpString,
+      });
+
+      if (response && response.success) {
+        console.log("OTP verified successfully!", response);
+        
+        setSuccess(
+          response.message || "Email verified successfully!"
+        );
+
         // Redirect to login after 2 seconds
         setTimeout(() => {
           router.push("/login");
         }, 2000);
-      } else if (errorMessage.includes("network") || 
-                 errorMessage.includes("fetch") || 
-                 errorMessage.includes("failed to fetch")) {
-        setError("Unable to connect to server. Please check your internet connection.");
-      } else if (errorMessage.includes("server error") || 
-                 errorMessage.includes("database") ||
-                 errorMessage.includes("something went wrong")) {
-        setError("The OTP might be incorrect or expired. Please try requesting a new OTP.");
-      } else if (errorMessage.includes("timeout")) {
-        setError("Request timeout. Please try again.");
       } else {
-        // Generic error message
-        setError(err.message || "Verification failed. Please try again.");
+        setError(response?.message || "Invalid OTP. Please try again.");
       }
-      
-      // Clear OTP inputs on error
-      setOtp(["", "", "", ""]);
-      
-      // Focus first input
-      inputRefs.current[0]?.focus();
-      
-    } else {
-      // Unknown error type
-      console.error("Unknown error type:", err);
-      setError("An unexpected error occurred. Please try again.");
-      
-      // Clear OTP inputs on error
-      setOtp(["", "", "", ""]);
-      
-      // Focus first input
-      inputRefs.current[0]?.focus();
+
+    } catch (err: unknown) {
+      console.error("OTP verification error:", err);
+
+      if (err instanceof Error) {
+        const errorMessage = err.message;
+        
+        if (errorMessage.includes("expired")) {
+          setError("OTP has expired. Please request a new one.");
+        } else if (errorMessage.includes("invalid") || errorMessage.includes("incorrect")) {
+          setError("Invalid OTP. Please check and try again.");
+        } else if (errorMessage.includes("network") || errorMessage.includes("fetch")) {
+          setError("Unable to connect to server. Please check your internet connection.");
+        } else {
+          setError(errorMessage || "Verification failed. Please try again.");
+        }
+      } else {
+        setError("Unable to connect to server. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const handleResendOtp = async () => {
     if (countdown > 0) return;
@@ -233,14 +148,14 @@ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     setSuccess("");
 
     try {
-      console.log("Resending OTP to:", email);
+      console.log("Resending OTP...");
 
       const response = await userApi.sendOtp(email);
 
       if (response && response.success) {
         setSuccess(response.message || "OTP sent successfully to your email!");
         setCountdown(60); // Start 60 second countdown
-        setOtp(["", "", "", ""]); // Clear OTP inputs
+        setOtp(["", "", "", "", "", ""]); // Clear OTP inputs
         inputRefs.current[0]?.focus(); // Focus first input
       } else {
         setError(response?.message || "Failed to resend OTP. Please try again.");
@@ -305,7 +220,7 @@ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
               </h2>
 
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
-                We&apos;ve sent a 4-digit verification code to your email address.
+                We&apos;ve sent a 6-digit verification code to your email address.
                 Please enter it below to complete your registration.
               </p>
             </div>
@@ -370,9 +285,9 @@ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
                 </div>
               )}
 
-              {/* OTP Input - 4 digits */}
+              {/* OTP Input */}
               <div className="mb-8">
-                <div className="flex justify-center gap-3 md:gap-4">
+                <div className="flex justify-center gap-2 md:gap-3">
                   {otp.map((digit, index) => (
                     <input
                       key={index}
@@ -387,7 +302,7 @@ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
                       onKeyDown={(e) => handleKeyDown(index, e)}
                       onPaste={index === 0 ? handlePaste : undefined}
                       disabled={isLoading}
-                      className="w-14 h-16 md:w-16 md:h-18 text-center text-2xl font-bold rounded-lg bg-white border-2 border-gray-300 focus:border-[#FFD166] text-black focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="w-12 h-14 md:w-14 md:h-16 text-center text-2xl font-bold rounded-lg bg-white border-2 border-gray-300 focus:border-[#FFD166] text-black focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                       autoComplete="off"
                     />
                   ))}
@@ -397,7 +312,7 @@ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
               {/* Verify Button */}
               <button
                 type="submit"
-                disabled={isLoading || otp.join("").length !== 4}
+                disabled={isLoading || otp.join("").length !== 6}
                 className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] mb-4"
               >
                 {isLoading ? (
@@ -459,3 +374,19 @@ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     </div>
   );
 }
+
+// Main component with Suspense wrapper
+function OTPVerificationPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center w-full h-screen bg-black">
+        <Loader2 className="w-8 h-8 animate-spin text-[#d4a018]" />
+      </div>
+    }>
+      <OTPVerificationContent />
+    </Suspense>
+  );
+}
+
+// Export the component
+export default OTPVerificationPage;
