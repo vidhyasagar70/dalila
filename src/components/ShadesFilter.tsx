@@ -43,10 +43,7 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
   const isSelected = (category: keyof ShadesFilters, value: string) =>
     filters[category]?.includes(value) || false;
 
-  const sectionClasses =
-    "flex items-center gap-2 px-3 py-2 text-lg font-semibold text-white bg-[#000033]";
-  const buttonBase =
-    "px-3 py-1.5 rounded text-[15px] font-medium transition-all duration-200";
+
 
  return (
   <div className="mb-2 mt-1" style={{ width: "fit-content" }}>

@@ -1,10 +1,12 @@
+"use client";
+
 import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 
 interface AdvancedFiltersProps {
   onFiltersChange?: (filters: FilterState) => void;
   onResetFilters?: () => void;
-  onShowFilters?: () => void;
 }
 
 interface FilterState {
@@ -19,7 +21,6 @@ interface FilterState {
 export default function AdvancedFilters({
   onFiltersChange,
   onResetFilters,
-  onShowFilters,
 }: AdvancedFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
@@ -61,46 +62,61 @@ export default function AdvancedFilters({
   return (
     <div className="w-full">
       <div className="flex items-center gap-3 mb-3">
+        {/* Show Advanced Filters Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white text-sm font-medium rounded shadow-sm hover:bg-[#000044] transition-colors"
         >
-          <img src="/filtersicon/filter-add.png" alt="Filter" className="w-3.5 h-3.5" />
+          <Image
+            src="/filtersicon/filter-add.png"
+            alt="Filter Icon"
+            width={16}
+            height={16}
+            className="w-3.5 h-3.5"
+          />
           <span>Show Advanced Filters</span>
           <ChevronDown
             className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
           />
         </button>
 
+        {/* Reset Filters Button */}
         <button
           onClick={handleResetFilters}
           className="flex items-center gap-2 px-4 py-1.5 bg-white text-[#D4A574] text-sm font-medium rounded shadow-sm border border-[#D4A574] hover:bg-gray-50 transition-colors"
         >
-          <img src="/filtersicon/filter-remove.png" alt="Reset" className="w-3.5 h-3.5" />
+          <Image
+            src="/filtersicon/filter-remove.png"
+            alt="Reset Icon"
+            width={16}
+            height={16}
+            className="w-3.5 h-3.5"
+          />
           <span>Reset Filters</span>
         </button>
       </div>
 
+      {/* Filter Section */}
       {isExpanded && (
         <div className="bg-white rounded-lg shadow-md p-5 mb-4 border border-gray-200">
           <div className="grid grid-cols-3 gap-5">
-            {[
+            {([
               ["Cut Grade", "cut", cutOptions],
               ["Polish", "polish", polishOptions],
               ["Symmetry", "symmetry", symmetryOptions],
               ["Fluorescence", "fluorescence", fluorescenceOptions],
               ["Lab Certification", "lab", labOptions],
               ["Location", "location", locationOptions],
-            ].map(([label, key, options]) => (
-              <div key={key as string}>
+            ] as const).map(([label, key, options]) => (
+              <div key={key}>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
                 <div className="relative">
                   <select
-                    value={filters[key as keyof FilterState]}
-                    onChange={(e) => handleFilterChange(key as keyof FilterState, e.target.value)}
+                    value={filters[key]}
+                    onChange={(e) => handleFilterChange(key, e.target.value)}
                     className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700 text-sm"
                   >
-                    {(options as string[]).map((option) => (
+                    {options.map((option) => (
                       <option key={option} value={option}>
                         {option}
                       </option>

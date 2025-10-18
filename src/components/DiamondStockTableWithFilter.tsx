@@ -2,7 +2,8 @@
 
 "use client";
 import React, { useState } from "react";
-import { Grid3x3, List, ChevronDown, ChevronUp, RotateCcw } from "lucide-react";
+import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
+import Image from "next/image";
 
 import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
@@ -19,11 +20,9 @@ import DiamondStockTable from "./DiamondStockTable";
 
 export default function DiamondStockTableWithFilter() {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
-  const [isSearching, setIsSearching] = useState(false);
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShape, setSelectedShape] = useState("ALL");
-  const [selectedCaratRange, setSelectedCaratRange] = useState("");
   const [selectedClarity, setSelectedClarity] = useState<string[]>([]);
   const [selectedCut, setSelectedCut] = useState("");
   const [selectedPolish, setSelectedPolish] = useState("");
@@ -79,26 +78,12 @@ export default function DiamondStockTableWithFilter() {
     setSelectedShape(shape);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const clearFilters = () => {
-    setSelectedShape("");
-    setSearchTerm("");
-  };
-
   const handleFluorChange = (fluor: string) => {
     setSelectedFluor(fluor);
   };
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-  };
-
-  const handleCaratRangeChange = (range: string) => {
-    setSelectedCaratRange(range);
-    setSearchTerm("");
   };
 
   const handleClarityChange = (clarity: string[]) => {
@@ -130,7 +115,6 @@ export default function DiamondStockTableWithFilter() {
   const handleResetFilters = () => {
     setSelectedColor("");
     setSelectedShape("");
-    setSelectedCaratRange("");
     setSelectedClarity([]);
     setSelectedCut("");
     setSelectedPolish("");
@@ -170,71 +154,75 @@ export default function DiamondStockTableWithFilter() {
       </div>
 
       {/* SEARCH AND NAVIGATION ROW */}
-     {/* SEARCH AND NAVIGATION ROW */}
-<div className="flex items-center gap-3 mt-4 bg-[#faf6eb] px-4 py-2 rounded">
-  {/* View Mode Toggle - Left Side */}
-  <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
-    <button
-      onClick={() => setViewMode('list')}
-      className={`p-1.5 transition-colors ${
-        viewMode === 'list'
-          ? 'bg-[#000033] text-white'
-          : 'bg-white text-gray-600 hover:bg-gray-100'
-      }`}
-      title="List View"
-    >
-      <List className="w-4 h-4" />
-    </button>
-    <button
-      onClick={() => setViewMode('grid')}
-      className={`p-1.5 transition-colors ${
-        viewMode === 'grid'
-          ? 'bg-[#000033] text-white'
-          : 'bg-white text-gray-600 hover:bg-gray-100'
-      }`}
-      title="Grid View"
-    >
-      <Grid3x3 className="w-4 h-4" />
-    </button>
-  </div>
+      <div className="flex items-center gap-3 mt-4 bg-[#faf6eb] px-4 py-2 rounded">
+        {/* View Mode Toggle - Left Side */}
+        <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
+          <button
+            onClick={() => setViewMode('list')}
+            className={`p-1.5 transition-colors ${
+              viewMode === 'list'
+                ? 'bg-[#000033] text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-100'
+            }`}
+            title="List View"
+          >
+            <List className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-1.5 transition-colors ${
+              viewMode === 'grid'
+                ? 'bg-[#000033] text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-100'
+            }`}
+            title="Grid View"
+          >
+            <Grid3x3 className="w-4 h-4" />
+          </button>
+        </div>
 
-  {/* Spacer to push items to the right */}
-  <div className="flex-1"></div>
+        {/* Spacer to push items to the right */}
+        <div className="flex-1"></div>
 
-  {/* Search Bar and Advanced Filters - Right Side */}
-  <div className="flex items-center gap-2">
-    <SearchBar onSearch={handleSearch} isSearching={isSearching} />
-    <button
-      onClick={() => setShowFilters(!showFilters)}
-      className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white transition-colors shadow-sm rounded"
-    >
-      <img 
-        src="/filtersicon/filter-add.png" 
-        alt="Filter" 
-        className="w-4 h-4"
-      />
-      <span className="text-sm font-medium">Show Advanced Filters</span>
-      {showFilters ? (
-        <ChevronUp className="w-3.5 h-3.5" />
-      ) : (
-        <ChevronDown className="w-3.5 h-3.5" />
-      )}
-    </button>
-    
-    <button
-      onClick={handleResetFilters}
-      className="flex items-center gap-2 px-4 py-1.5 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
-      title="Reset All Filters"
-    >
-      <img 
-        src="/filtersicon/filter-remove.png" 
-        alt="Reset" 
-        className="w-5 h-5"
-      />
-      <span className="text-sm font-medium">Reset Filters</span>
-    </button>
-  </div>
-</div>
+        {/* Search Bar and Advanced Filters - Right Side */}
+        <div className="flex items-center gap-2">
+          <SearchBar onSearch={handleSearch} />
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white transition-colors shadow-sm rounded"
+          >
+            <Image 
+              src="/filtersicon/filter-add.png" 
+              alt="Filter" 
+              width={16}
+              height={16}
+              className="w-4 h-4"
+            />
+            <span className="text-sm font-medium">Show Advanced Filters</span>
+            {showFilters ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            )}
+          </button>
+          
+          <button
+            onClick={handleResetFilters}
+            className="flex items-center gap-2 px-4 py-1.5 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
+            title="Reset All Filters"
+          >
+            <Image 
+              src="/filtersicon/filter-remove.png" 
+              alt="Reset" 
+              width={20}
+              height={20}
+              className="w-5 h-5"
+            />
+            <span className="text-sm font-medium">Reset Filters</span>
+          </button>
+        </div>
+      </div>
+
       {showFilters && (
         <div className="grid grid-cols-5 gap-4 mt-4">
           <InclusionFilter

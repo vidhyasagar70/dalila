@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Clock, CheckCircle, Eye, TrendingUp, Diamond, X } from 'lucide-react';
+import { Clock, CheckCircle, Eye, TrendingUp,X } from 'lucide-react';
 
 interface Offer {
   id: number;

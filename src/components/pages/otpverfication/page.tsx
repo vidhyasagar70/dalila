@@ -219,7 +219,7 @@ export default function OTPVerificationPage() {
               </h2>
 
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
-                We've sent a 6-digit verification code to your email address.
+                We&apos;ve sent a 6-digit verification code to your email address.
                 Please enter it below to complete your registration.
               </p>
             </div>
@@ -231,7 +231,7 @@ export default function OTPVerificationPage() {
                 <span className="text-[#FFD166] font-semibold">{email}</span>
               </div>
               <p className="text-xs text-center opacity-75">
-                Didn't receive the code? Check your spam folder
+                Didn&apos;t receive the code? Check your spam folder
               </p>
             </div>
           </div>

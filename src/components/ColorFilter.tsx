@@ -1,7 +1,7 @@
 // ColorFilter.tsx
 import React, { useEffect, useState } from "react";
 import { diamondApi } from "@/lib/api";
-
+import Image from "next/image"; 
 interface ColorFilterProps {
   selectedColor: string;
   onColorChange: (color: string) => void;
@@ -79,7 +79,7 @@ export default function ColorFilter({
   className="flex items-center gap-2 px-3 py-2"
   style={{ backgroundColor: "#000033" }}
 >
-  <img src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
+  <Image src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
   <span className="text-base font-semibold text-white">Color</span>
 </div>
         <div
@@ -105,7 +105,7 @@ export default function ColorFilter({
   className="flex items-center gap-2 px-3 py-2"
   style={{ backgroundColor: "#000033" }}
 >
-  <img src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
+  <Image src="/filtersicon/color.png" alt="Color" className="w-5 h-5" />
   <span className="text-base font-semibold text-white">Color</span>
 </div>
       <div
