@@ -112,7 +112,7 @@ export default function ProtectedRoute({
     const timeoutId = setTimeout(checkAuth, 200);
 
     // Listen for auth changes
-    const handleAuthChange = (event: Event) => {
+    const handleAuthChange = ( ) => {
       setTimeout(checkAuth, 200);
     };
 

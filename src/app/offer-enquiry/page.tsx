@@ -1,348 +1,420 @@
 "use client";
 
-import React, { useState } from "react";
-import { Clock, CheckCircle, Eye, TrendingUp, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, CheckCircle, X, RefreshCw, FileText } from "lucide-react";
 
-interface Offer {
-  id: number;
-  customer: string;
-  email: string;
-  phone: string;
-  diamond: string;
-  carat: string;
-  certNo: string;
-  inquiry: string;
-  status: "pending" | "closed";
-  submitted: string;
+// Define types inline
+interface ExtendedQuotation {
+  id: string;
+  stoneNumbers: string[];
+  quotedPrice: number;
+  status: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  submittedAt?: string;
 }
 
-interface Stat {
-  id: "pending" | "closed";
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  label: string;
-  count: number;
-  subtext: string;
-  bgColor: string;
-  iconColor: string;
-  borderColor: string;
+interface QuotationAPI {
+  getAll?: () => Promise<{ success: boolean; data: { quotations: ExtendedQuotation[] } }>;
+  approve?: (id: string, data: { quotedPrice: number; validUntil: string; notes: string }) => Promise<{ success: boolean }>;
+  reject?: (id: string, reason: string) => Promise<{ success: boolean }>;
 }
 
-type TabType = "pending" | "closed";
+interface WindowWithAPI extends Window {
+  quotationApi?: QuotationAPI;
+}
 
-export default function OfferEnquiry() {
-  const [activeTab, setActiveTab] = useState<TabType>("pending");
+export default function QuotationsManagement() {
+  const [quotations, setQuotations] = useState<ExtendedQuotation[]>([]);
+  const [filteredQuotations, setFilteredQuotations] = useState<ExtendedQuotation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState<string | null>(null);
+  const itemsPerPage = 10;
 
-  const stats: Stat[] = [
-    {
-      id: "pending",
-      icon: Clock,
-      label: "Pending Offers",
-      count: 2,
-      subtext: "Awaiting response",
-      bgColor: "bg-slate-900/40",
-      iconColor: "text-yellow-500",
-      borderColor: "border-yellow-500/30",
-    },
-    {
-      id: "closed",
-      icon: CheckCircle,
-      label: "Closed Offers",
-      count: 2,
-      subtext: "Successfully closed",
-      bgColor: "bg-slate-900/40",
-      iconColor: "text-emerald-400",
-      borderColor: "border-emerald-400/30",
-    },
-  ];
-
-  const mockOffers: Record<TabType, Offer[]> = {
-    pending: [
-      {
-        id: 1,
-        customer: "aklank",
-        email: "bits.users.2023@gmail.com",
-        phone: "499712725",
-        diamond: "0.18 ct",
-        carat: "0.18",
-        certNo: "227848728",
-        inquiry: "0exact price",
-        status: "pending",
-        submitted: "Oct 7, 2025",
-      },
-      {
-        id: 2,
-        customer: "venkat12",
-        email: "hacitp536@fanivr.com",
-        phone: "123123123",
-        diamond: "0.7 ct",
-        carat: "0.7",
-        certNo: "2517222042",
-        inquiry: "i like this diamond, can you give it to me in 10000",
-        status: "pending",
-        submitted: "Oct 15, 2025",
-      },
-      {
-        id: 3,
-        customer: "rajesh_kumar",
-        email: "rajesh.kumar@example.com",
-        phone: "987654321",
-        diamond: "1.25 ct",
-        carat: "1.25",
-        certNo: "335922145",
-        inquiry: "Best price for this stone?",
-        status: "pending",
-        submitted: "Oct 18, 2025",
-      },
-      {
-        id: 4,
-        customer: "priya_designer",
-        email: "priya.d@designer.com",
-        phone: "555123456",
-        diamond: "0.45 ct",
-        carat: "0.45",
-        certNo: "441233567",
-        inquiry: "What is the most competitive price?",
-        status: "pending",
-        submitted: "Oct 19, 2025",
-      },
-    ],
-    closed: [
-      {
-        id: 5,
-        customer: "merchant_pro",
-        email: "merchant.pro@business.com",
-        phone: "666789012",
-        diamond: "2.0 ct",
-        carat: "2.0",
-        certNo: "550234678",
-        inquiry: "Interested in bulk order",
-        status: "closed",
-        submitted: "Oct 5, 2025",
-      },
-      {
-        id: 6,
-        customer: "luxury_boutique",
-        email: "info@luxuryboutique.com",
-        phone: "777456123",
-        diamond: "0.95 ct",
-        carat: "0.95",
-        certNo: "661345789",
-        inquiry: "Need certified stones for store",
-        status: "closed",
-        submitted: "Oct 3, 2025",
-      },
-      {
-        id: 7,
-        customer: "diamond_trader",
-        email: "trader@diamonds.com",
-        phone: "888234567",
-        diamond: "1.5 ct",
-        carat: "1.5",
-        certNo: "772456890",
-        inquiry: "Regular supplier interested",
-        status: "closed",
-        submitted: "Oct 1, 2025",
-      },
-      {
-        id: 8,
-        customer: "jewelry_store",
-        email: "contact@jewelry.com",
-        phone: "999567890",
-        diamond: "0.65 ct",
-        carat: "0.65",
-        certNo: "883567901",
-        inquiry: "Wholesale pricing available?",
-        status: "closed",
-        submitted: "Sep 28, 2025",
-      },
-    ],
+  // Single mock quotation used for all rows
+  const singleMockQuotation: ExtendedQuotation = {
+    id: "Q001",
+    stoneNumbers: ["ST-1001", "ST-1002", "ST-1003"],
+    quotedPrice: 5000,
+    status: "pending",
+    user: { firstName: "John", lastName: "Doe", email: "john@example.com" }
   };
 
-  const currentData = mockOffers[activeTab];
+  // Generate mock data array using the single mock
+  const generateMockData = (): ExtendedQuotation[] => {
+    return Array.from({ length: 15 }, (_, i) => ({
+      ...singleMockQuotation,
+      id: `Q${String(i + 1).padStart(3, '0')}`,
+      status: i % 3 === 0 ? 'approved' : i % 3 === 1 ? 'rejected' : 'pending',
+      quotedPrice: i % 3 === 2 ? 0 : 5000 + (i * 100)
+    }));
+  };
+
+  // Fetch quotations from API
+  useEffect(() => {
+    fetchQuotations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchQuotations = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Try to fetch from API
+      try {
+        const quotationApi = (window as WindowWithAPI).quotationApi;
+        if (quotationApi && quotationApi.getAll) {
+          const response = await quotationApi.getAll();
+          
+          if (response && response.success && response.data && response.data.quotations?.length > 0) {
+            setQuotations(response.data.quotations);
+            setFilteredQuotations(response.data.quotations);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {
+        console.log("API not available, using mock data");
+      }
+      
+      // Use mock data if API fails or returns no data
+      const mockData = generateMockData();
+      setQuotations(mockData);
+      setFilteredQuotations(mockData);
+      
+    } catch (error) {
+      console.error("Error fetching quotations:", error);
+      // Use mock data on error
+      const mockData = generateMockData();
+      setQuotations(mockData);
+      setFilteredQuotations(mockData);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle search
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredQuotations(quotations);
+    } else {
+      const filtered = quotations.filter(q =>
+        (q.user?.firstName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (q.user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (q.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        q.stoneNumbers.some(stone => stone.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        q.id.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredQuotations(filtered);
+    }
+    setCurrentPage(1);
+  }, [searchQuery, quotations]);
+
+  // Approve quotation
+  const handleApprove = async (quotationId: string) => {
+    try {
+      // Try API call
+      try {
+        const quotationApi = (window as WindowWithAPI).quotationApi;
+        if (quotationApi && quotationApi.approve) {
+          const response = await quotationApi.approve(quotationId, {
+            quotedPrice: 0,
+            validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            notes: "Approved"
+          });
+
+          if (response && response.success) {
+            await fetchQuotations();
+            return;
+          }
+        }
+      } catch  {
+        console.log("API not available");
+      }
+
+      // Update locally if API fails
+      setQuotations(prev => prev.map(q => 
+        q.id === quotationId ? { ...q, status: 'approved' } : q
+      ));
+      setFilteredQuotations(prev => prev.map(q => 
+        q.id === quotationId ? { ...q, status: 'approved' } : q
+      ));
+      
+    } catch (error) {
+      console.error("Error approving quotation:", error);
+      setError("Failed to approve quotation");
+    }
+  };
+
+  // Reject quotation
+  const handleReject = async (quotationId: string) => {
+    try {
+      // Try API call
+      try {
+        const quotationApi = (window as WindowWithAPI).quotationApi;
+        if (quotationApi && quotationApi.reject) {
+          const response = await quotationApi.reject(quotationId, "Not available");
+
+          if (response && response.success) {
+            await fetchQuotations();
+            return;
+          }
+        }
+      } catch  {
+        console.log("API not available");
+      }
+
+      // Update locally if API fails
+      setQuotations(prev => prev.map(q => 
+        q.id === quotationId ? { ...q, status: 'rejected' } : q
+      ));
+      setFilteredQuotations(prev => prev.map(q => 
+        q.id === quotationId ? { ...q, status: 'rejected' } : q
+      ));
+      
+    } catch (error) {
+      console.error("Error rejecting quotation:", error);
+      setError("Failed to reject quotation");
+    }
+  };
+
+  // Pagination
+  const totalPages = Math.ceil(filteredQuotations.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentQuotations = filteredQuotations.slice(startIndex, endIndex);
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, "...", totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages);
+      }
+    }
+    return pages;
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Stats Cards */}
-      <div className="px-8 py-12 mt-30">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-2xl">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={stat.id}
-                className={`${stat.bgColor} ${stat.borderColor} rounded-lg p-6 border backdrop-blur-sm hover:border-opacity-100 transition cursor-pointer group`}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <Icon
-                    className={`${stat.iconColor} w-8 h-8 group-hover:scale-110 transition`}
-                  />
-                  <TrendingUp className="text-amber-400 w-5 h-5 opacity-60" />
-                </div>
-                <h3 className="text-slate-300 text-sm font-medium mb-3">
-                  {stat.label}
-                </h3>
-                <p className="text-4xl font-bold text-white mb-1">
-                  {stat.count}
-                </p>
-                <p className="text-slate-400 text-xs">{stat.subtext}</p>
-              </div>
-            );
-          })}
+    <div className="min-h-screen bg-white p-8 mt-35">
+      {/* Header Actions */}
+      <div className="mb-6 flex justify-between items-center" style={{ borderBottom: '1px solid #f9ead4', paddingBottom: '16px' }}>
+        <div className="flex" style={{ border: '1px solid #f9ead4' }}>
+          <button className="px-4 py-2 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition" style={{ borderRight: '1px solid #f9ead4' }}>
+            Generate Enquiry
+          </button>
+          <button className="px-4 py-2 text-white text-sm font-medium hover:opacity-90 transition"
+            style={{ backgroundColor: '#050c3a' }}>
+            View Enquiry
+          </button>
         </div>
+        <button 
+          onClick={fetchQuotations}
+          disabled={loading}
+          className="px-4 py-2 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ border: '1px solid #f9ead4' }}
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
+      </div>
 
-        {/* Tabs Navigation */}
-        <div className="bg-slate-900/60 backdrop-blur-sm rounded-lg p-4 mb-6 border border-slate-700/50 flex gap-3 w-fit">
-          {stats.map((stat) => (
-            <button
-              key={stat.id}
-              onClick={() => setActiveTab(stat.id)}
-              className={`px-5 py-2.5 rounded-lg font-medium text-sm transition whitespace-nowrap ${
-                activeTab === stat.id
-                  ? `bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-300 border border-amber-500/50`
-                  : "bg-slate-800/40 text-slate-300 hover:text-slate-200 border border-slate-700/30"
-              }`}
-            >
-              {stat.label.split(" ")[0]}
-            </button>
-          ))}
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 flex items-center justify-between" style={{ border: '1px solid #f9ead4' }}>
+          <div className="flex items-center gap-2">
+            <X className="w-5 h-5 text-red-500" />
+            <span className="text-red-700">{error}</span>
+          </div>
+          <button 
+            onClick={() => setError(null)}
+            className="text-red-500 hover:text-red-700"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
+      )}
 
-        {/* Table */}
-        <div className="bg-slate-900/60 backdrop-blur-sm rounded-lg border border-slate-700/50 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-700/50 bg-slate-900/80">
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Phone No.
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Diamond
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Cert. No.
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Inquiry
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Submitted
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentData.length > 0 ? (
-                  currentData.map((offer: Offer) => (
-                    <tr
-                      key={offer.id}
-                      className="border-b border-slate-700/30 hover:bg-slate-800/40 transition group"
-                    >
-                      <td className="px-6 py-4 text-sm">
-                        <div>
-                          <p className="font-semibold text-white">
-                            {offer.customer}
-                          </p>
-                          <p className="text-slate-400 text-xs">
-                            {offer.email}
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-300">
-                        {offer.phone}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <span className="text-white font-medium">
-                            {offer.diamond}
-                          </span>
-                          <Eye className="w-4 h-4 text-slate-500 cursor-pointer hover:text-amber-400 transition" />
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <span className="text-slate-300">{offer.certNo}</span>
-                          <Eye className="w-4 h-4 text-slate-500 cursor-pointer hover:text-amber-400 transition" />
-                        </div>
-                      </td>
-                      <td
-                        className="px-6 py-4 text-sm text-slate-300 max-w-xs truncate"
-                        title={offer.inquiry}
-                      >
-                        {offer.inquiry}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        {offer.status === "pending" ? (
-                          <div className="flex items-center gap-2 text-yellow-500">
-                            <Clock className="w-4 h-4" />
-                            <span>Pending</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 text-emerald-400">
-                            <CheckCircle className="w-4 h-4" />
-                            <span>Closed</span>
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-300">
-                        {offer.submitted}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
+      {/* Search */}
+      <div className="mb-6 relative">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <input
+          type="text"
+          placeholder="Search by customer name, email, stone number or ID..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 focus:outline-none focus:ring-0"
+          style={{ border: '1px solid #f9ead4', backgroundColor: '#faf6eb' }}
+        />
+      </div>
+
+      {/* Table */}
+      <div className="bg-white overflow-hidden" style={{ border: '1px solid #f9ead4' }}>
+        <table className="w-full border-collapse">
+          <thead style={{ backgroundColor: '#050c3a' }}>
+            <tr style={{ borderBottom: '1px solid #f9ead4' }}>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-white">
+                Carat Number
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-white">
+                Number of Pieces
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-white">
+                Quote Price
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-white">
+                Status
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-white">
+                Update
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="px-6 py-12 text-center">
+                  <RefreshCw className="w-8 h-8 text-gray-400 mx-auto mb-3 animate-spin" />
+                  <p className="text-gray-500">Loading quotations...</p>
+                </td>
+              </tr>
+            ) : currentQuotations.length > 0 ? (
+              currentQuotations.map((quotation) => (
+                <tr key={quotation.id} className="hover:bg-gray-50" style={{ borderBottom: '1px solid #f9ead4' }}>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    <div className="flex flex-wrap gap-1">
+                      {quotation.stoneNumbers.slice(0, 3).map((stone, idx) => (
+                        <span key={idx} className="inline-block px-2 py-1 bg-gray-100 text-xs">
+                          {stone}
+                        </span>
+                      ))}
+                      {quotation.stoneNumbers.length > 3 && (
+                        <span className="inline-block px-2 py-1 bg-gray-100 text-xs">
+                          +{quotation.stoneNumbers.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                    {quotation.stoneNumbers.length}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                    {quotation.quotedPrice ? `$${quotation.quotedPrice.toLocaleString()}` : "-"}
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {quotation.status === "approved" ? (
+                      <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white font-medium">
+                        <CheckCircle className="w-4 h-4" />
+                        Approved
+                      </span>
+                    ) : quotation.status === "rejected" ? (
+                      <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-100 text-amber-800 font-medium">
+                        <X className="w-4 h-4" />
+                        Denied
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 font-medium">
+                        Pending
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {quotation.status === "pending" ? (
+                      <div className="flex gap-2">
                         <button
-                          className={`px-3 py-1.5 rounded-lg transition font-medium text-sm flex items-center gap-1 ${
-                            offer.status === "pending"
-                              ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
-                              : "bg-slate-700/40 text-slate-400 hover:bg-slate-700/60"
-                          }`}
+                          onClick={() => handleApprove(quotation.id)}
+                          className="text-gray-700 hover:text-slate-900 font-medium transition"
                         >
-                          {offer.status === "pending" ? (
-                            <>
-                              <CheckCircle className="w-4 h-4" />
-                              Close
-                            </>
-                          ) : (
-                            <>
-                              <X className="w-4 h-4" />
-                              Closed
-                            </>
-                          )}
+                          Approve
                         </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center">
-                      <Eye className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                      <p className="text-slate-400 font-medium">
-                        No offers found
-                      </p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                        <span className="text-gray-300">|</span>
+                        <button
+                          onClick={() => handleReject(quotation.id)}
+                          className="text-gray-700 hover:text-slate-900 font-medium transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button className="text-gray-400 cursor-not-allowed font-medium">
+                        Cancel
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-6 py-12 text-center">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-500 font-medium">
+                    {searchQuery ? "No quotations found matching your search" : "No quotations found"}
+                  </p>
+                  <p className="text-gray-400 text-sm mt-1">
+                    {searchQuery ? "Try adjusting your search terms" : "Quotations will appear here once submitted"}
+                  </p>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-          {/* Footer */}
-          <div className="px-6 py-4 border-t border-slate-700/50 bg-slate-900/80 flex justify-between items-center">
-            <p className="text-sm text-slate-400">
-              Showing {currentData.length}{" "}
-              {activeTab === "pending" ? "pending" : "closed"} offers
-            </p>
-            <p className="text-sm text-slate-500">
-              Last updated: {new Date().toLocaleTimeString()}
-            </p>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="px-6 py-4 flex justify-between items-center" style={{ borderTop: '1px solid #f9ead4', backgroundColor: '#faf6eb' }}>
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="p-2 text-gray-600 hover:text-slate-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <div className="flex items-center gap-2">
+              {getPageNumbers().map((page, index) => (
+                <button
+                  key={index}
+                  onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                  disabled={page === "..."}
+                  className={`min-w-[40px] px-3 py-2 font-medium transition ${
+                    page === currentPage
+                      ? 'bg-slate-900 text-white'
+                      : page === "..."
+                      ? 'text-gray-400 cursor-default'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className="p-2 text-gray-600 hover:text-slate-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
