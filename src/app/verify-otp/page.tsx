@@ -23,7 +23,7 @@ function OTPVerificationContent() {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [countdown, setCountdown] = useState<number>(0);
-  
+
   // Refs for OTP inputs
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -60,7 +60,10 @@ function OTPVerificationContent() {
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -69,20 +72,20 @@ function OTPVerificationContent() {
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
-    
+
     // Only allow 6-digit numbers
     if (!/^\d{6}$/.test(pastedData)) return;
 
     const newOtp = pastedData.split("");
     setOtp(newOtp);
-    
+
     // Focus last input
     inputRefs.current[5]?.focus();
   };
 
   const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validate OTP
     const otpString = otp.join("");
     if (otpString.length !== 6) {
@@ -104,10 +107,8 @@ function OTPVerificationContent() {
 
       if (response && response.success) {
         console.log("OTP verified successfully!", response);
-        
-        setSuccess(
-          response.message || "Email verified successfully!"
-        );
+
+        setSuccess(response.message || "Email verified successfully!");
 
         // Redirect to login after 2 seconds
         setTimeout(() => {
@@ -116,19 +117,26 @@ function OTPVerificationContent() {
       } else {
         setError(response?.message || "Invalid OTP. Please try again.");
       }
-
     } catch (err: unknown) {
       console.error("OTP verification error:", err);
 
       if (err instanceof Error) {
         const errorMessage = err.message;
-        
+
         if (errorMessage.includes("expired")) {
           setError("OTP has expired. Please request a new one.");
-        } else if (errorMessage.includes("invalid") || errorMessage.includes("incorrect")) {
+        } else if (
+          errorMessage.includes("invalid") ||
+          errorMessage.includes("incorrect")
+        ) {
           setError("Invalid OTP. Please check and try again.");
-        } else if (errorMessage.includes("network") || errorMessage.includes("fetch")) {
-          setError("Unable to connect to server. Please check your internet connection.");
+        } else if (
+          errorMessage.includes("network") ||
+          errorMessage.includes("fetch")
+        ) {
+          setError(
+            "Unable to connect to server. Please check your internet connection.",
+          );
         } else {
           setError(errorMessage || "Verification failed. Please try again.");
         }
@@ -158,9 +166,10 @@ function OTPVerificationContent() {
         setOtp(["", "", "", "", "", ""]); // Clear OTP inputs
         inputRefs.current[0]?.focus(); // Focus first input
       } else {
-        setError(response?.message || "Failed to resend OTP. Please try again.");
+        setError(
+          response?.message || "Failed to resend OTP. Please try again.",
+        );
       }
-
     } catch (err: unknown) {
       console.error("Resend OTP error:", err);
 
@@ -220,8 +229,8 @@ function OTPVerificationContent() {
               </h2>
 
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
-                We&apos;ve sent a 6-digit verification code to your email address.
-                Please enter it below to complete your registration.
+                We&apos;ve sent a 6-digit verification code to your email
+                address. Please enter it below to complete your registration.
               </p>
             </div>
 
@@ -378,11 +387,13 @@ function OTPVerificationContent() {
 // Main component with Suspense wrapper
 function OTPVerificationPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center w-full h-screen bg-black">
-        <Loader2 className="w-8 h-8 animate-spin text-[#d4a018]" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center w-full h-screen bg-black">
+          <Loader2 className="w-8 h-8 animate-spin text-[#d4a018]" />
+        </div>
+      }
+    >
       <OTPVerificationContent />
     </Suspense>
   );

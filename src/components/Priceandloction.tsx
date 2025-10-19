@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from "react";
-import { ChevronUp, ChevronDown} from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { diamondApi } from "@/lib/api";
 
 export interface PriceRange {
@@ -35,7 +34,7 @@ export default function PriceLocationFilter({
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
           const locations = response.data.locations.filter(
-            (l) => l.trim() !== ""
+            (l) => l.trim() !== "",
           );
           setLocationOptions(locations);
 
@@ -55,7 +54,7 @@ export default function PriceLocationFilter({
   const handlePriceChange = (
     field: "pricePerCarat" | "discount" | "totalPrice",
     type: "from" | "to",
-    value: string
+    value: string,
   ) => {
     onFiltersChange({
       ...filters,
@@ -68,7 +67,7 @@ export default function PriceLocationFilter({
 
   const incrementValue = (
     field: "pricePerCarat" | "discount" | "totalPrice",
-    type: "from" | "to"
+    type: "from" | "to",
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0.50");
     const newValue = (currentValue + 0.01).toFixed(2);
@@ -77,7 +76,7 @@ export default function PriceLocationFilter({
 
   const decrementValue = (
     field: "pricePerCarat" | "discount" | "totalPrice",
-    type: "from" | "to"
+    type: "from" | "to",
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0.50");
     const newValue = Math.max(0, currentValue - 0.01).toFixed(2);
@@ -149,7 +148,6 @@ export default function PriceLocationFilter({
         className="flex items-center gap-1.5 px-2 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-
         <span className="text-sm font-semibold text-white">Price</span>
       </div>
       <div

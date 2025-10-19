@@ -12,7 +12,9 @@ export default function ColorFilter({
   selectedColor,
   onColorChange,
 }: ColorFilterProps) {
-  const [colorOptions, setColorOptions] = useState<{ label: string; value: string }[]>([]);
+  const [colorOptions, setColorOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,7 +78,10 @@ export default function ColorFilter({
   if (loading) {
     return (
       <div className="mb-2 mt-1" style={{ width: "360px" }}>
-        <div className="flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#000033" }}>
+        <div
+          className="flex items-center gap-2 px-3 py-2"
+          style={{ backgroundColor: "#000033" }}
+        >
           <Image
             src="/filtersicon/color.png"
             alt="Color"
@@ -105,7 +110,10 @@ export default function ColorFilter({
 
   return (
     <div className="mb-2 mt-1" style={{ width: "340px" }}>
-      <div className="flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#000033" }}>
+      <div
+        className="flex items-center gap-2 px-3 py-2"
+        style={{ backgroundColor: "#000033" }}
+      >
         <Image
           src="/filtersicon/color.png"
           alt="Color"

@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Phone, Mail, MapPin, Home, Loader2, Eye, EyeOff, CheckCircle } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Home,
+  Loader2,
+  Eye,
+  EyeOff,
+  CheckCircle,
+} from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -20,7 +29,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -50,7 +60,9 @@ export default function RegisterPage() {
     // Username validation (alphanumeric and underscore only)
     const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
     if (!usernameRegex.test(username)) {
-      setError("Username must be 3-20 characters (letters, numbers, underscore only)");
+      setError(
+        "Username must be 3-20 characters (letters, numbers, underscore only)",
+      );
       return false;
     }
 
@@ -99,7 +111,7 @@ export default function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validate form
     if (!validateForm()) {
       return;
@@ -123,9 +135,9 @@ export default function RegisterPage() {
 
       if (response && response.success) {
         console.log("Registration successful!", response);
-        
+
         setSuccess(
-          "Registration successful! Redirecting to verify your email..."
+          "Registration successful! Redirecting to verify your email...",
         );
 
         // Navigate to OTP verification page after 1.5 seconds
@@ -135,28 +147,37 @@ export default function RegisterPage() {
       } else {
         setError(response?.message || "Registration failed. Please try again.");
       }
-
     } catch (err: unknown) {
       console.error("Registration error:", err);
 
       if (err instanceof Error) {
         const errorMessage = err.message;
-        
-        if (errorMessage.includes("already exists") || 
-            errorMessage.includes("already registered")) {
+
+        if (
+          errorMessage.includes("already exists") ||
+          errorMessage.includes("already registered")
+        ) {
           setError("This email is already registered. Please login instead.");
         } else if (errorMessage.includes("invalid email")) {
           setError("Please enter a valid email address.");
         } else if (errorMessage.includes("password")) {
-          setError("Password does not meet requirements. Must be at least 8 characters.");
-        } else if (errorMessage.includes("network") || 
-                   errorMessage.includes("fetch")) {
-          setError("Unable to connect to server. Please check your internet connection.");
+          setError(
+            "Password does not meet requirements. Must be at least 8 characters.",
+          );
+        } else if (
+          errorMessage.includes("network") ||
+          errorMessage.includes("fetch")
+        ) {
+          setError(
+            "Unable to connect to server. Please check your internet connection.",
+          );
         } else {
           setError(errorMessage || "Registration failed. Please try again.");
         }
       } else {
-        setError("Unable to connect to server. Please check your internet connection and try again.");
+        setError(
+          "Unable to connect to server. Please check your internet connection and try again.",
+        );
       }
     } finally {
       setIsLoading(false);
@@ -379,7 +400,9 @@ export default function RegisterPage() {
                   onClick={toggleConfirmPasswordVisibility}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                   disabled={isLoading}
-                  title={showConfirmPassword ? "Hide password" : "Show password"}
+                  title={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />

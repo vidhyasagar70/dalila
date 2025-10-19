@@ -31,7 +31,8 @@ export default function DiamondBanner() {
             <h1
               className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-30 ${playFair.className}`}
             >
-              Diamond<br/> Knowledge
+              Diamond
+              <br /> Knowledge
             </h1>
             <div className="w-[35%] h-px bg-amber-400 mx-auto mb-6" />
           </div>

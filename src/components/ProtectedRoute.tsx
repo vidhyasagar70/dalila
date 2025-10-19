@@ -5,10 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requireAuth?: boolean; 
-  redirectIfAuth?: boolean; 
-  redirectTo?: string; 
-  allowedRoles?: string[]; 
+  requireAuth?: boolean;
+  redirectIfAuth?: boolean;
+  redirectTo?: string;
+  allowedRoles?: string[];
 }
 
 export default function ProtectedRoute({
@@ -35,7 +35,7 @@ export default function ProtectedRoute({
         console.log("Checking cookies as fallback...");
         const cookies = document.cookie.split(";");
         const tokenCookie = cookies.find((c) =>
-          c.trim().startsWith("authToken=")
+          c.trim().startsWith("authToken="),
         );
         const userCookie = cookies.find((c) => c.trim().startsWith("user="));
 
@@ -95,7 +95,6 @@ export default function ProtectedRoute({
       // Case 3: Check role-based access if roles are specified
       if (requireAuth && allowedRoles && allowedRoles.length > 0) {
         if (!userRole || !allowedRoles.includes(userRole)) {
-          
           setIsAuthorized(false);
           setIsChecking(false);
           router.push(redirectTo);

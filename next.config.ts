@@ -3,15 +3,15 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**', // Or specify your exact domain
+        protocol: "https",
+        hostname: "**", // Or specify your exact domain
       },
       {
-        protocol: 'http',
-        hostname: '**', // Or specify your exact domain
+        protocol: "http",
+        hostname: "**", // Or specify your exact domain
       },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

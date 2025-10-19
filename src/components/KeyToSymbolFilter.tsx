@@ -53,7 +53,10 @@ export default function KeySymbolFilter({
     filters[category]?.includes(value) || false;
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content", minWidth: "260px" }}>
+    <div
+      className="mb-2 mt-1"
+      style={{ width: "fit-content", minWidth: "260px" }}
+    >
       {/* Key To Symbol Section */}
       <div
         className="flex items-center gap-1.5 px-2 py-1.5"
@@ -61,7 +64,10 @@ export default function KeySymbolFilter({
       >
         <span className="text-sm font-semibold text-white">Key To Symbol</span>
       </div>
-      <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
         <div className="grid grid-cols-2 gap-1.5">
           {KEY_TO_SYMBOL_OPTIONS.map((option) => (
             <button
@@ -92,7 +98,10 @@ export default function KeySymbolFilter({
       >
         <span className="text-sm font-semibold text-white">Ey.Cln</span>
       </div>
-      <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
         <div className="grid grid-cols-4 gap-1.5">
           {EY_CLN_OPTIONS.map((option) => (
             <button
@@ -123,7 +132,10 @@ export default function KeySymbolFilter({
       >
         <span className="text-sm font-semibold text-white">H&A</span>
       </div>
-      <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
         <div className="grid grid-cols-4 gap-1.5">
           {H_AND_A_OPTIONS.map((option) => (
             <button

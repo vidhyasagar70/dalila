@@ -33,11 +33,40 @@ export default function AdvancedFilters({
   });
 
   const cutOptions = ["ALL", "Excellent", "Very Good", "Good", "Fair", "Poor"];
-  const polishOptions = ["ALL", "Excellent", "Very Good", "Good", "Fair", "Poor"];
-  const symmetryOptions = ["ALL", "Excellent", "Very Good", "Good", "Fair", "Poor"];
-  const fluorescenceOptions = ["ALL", "None", "Faint", "Medium", "Strong", "Very Strong"];
+  const polishOptions = [
+    "ALL",
+    "Excellent",
+    "Very Good",
+    "Good",
+    "Fair",
+    "Poor",
+  ];
+  const symmetryOptions = [
+    "ALL",
+    "Excellent",
+    "Very Good",
+    "Good",
+    "Fair",
+    "Poor",
+  ];
+  const fluorescenceOptions = [
+    "ALL",
+    "None",
+    "Faint",
+    "Medium",
+    "Strong",
+    "Very Strong",
+  ];
   const labOptions = ["ALL", "GIA", "IGI", "HRD", "AGS", "GCAL", "EGL"];
-  const locationOptions = ["ALL", "Mumbai", "New York", "Hong Kong", "Antwerp", "Dubai", "Surat"];
+  const locationOptions = [
+    "ALL",
+    "Mumbai",
+    "New York",
+    "Hong Kong",
+    "Antwerp",
+    "Dubai",
+    "Surat",
+  ];
 
   const handleFilterChange = (filterName: keyof FilterState, value: string) => {
     const newFilters = { ...filters, [filterName]: value };
@@ -100,16 +129,20 @@ export default function AdvancedFilters({
       {isExpanded && (
         <div className="bg-white rounded-lg shadow-md p-5 mb-4 border border-gray-200">
           <div className="grid grid-cols-3 gap-5">
-            {([
-              ["Cut Grade", "cut", cutOptions],
-              ["Polish", "polish", polishOptions],
-              ["Symmetry", "symmetry", symmetryOptions],
-              ["Fluorescence", "fluorescence", fluorescenceOptions],
-              ["Lab Certification", "lab", labOptions],
-              ["Location", "location", locationOptions],
-            ] as const).map(([label, key, options]) => (
+            {(
+              [
+                ["Cut Grade", "cut", cutOptions],
+                ["Polish", "polish", polishOptions],
+                ["Symmetry", "symmetry", symmetryOptions],
+                ["Fluorescence", "fluorescence", fluorescenceOptions],
+                ["Lab Certification", "lab", labOptions],
+                ["Location", "location", locationOptions],
+              ] as const
+            ).map(([label, key, options]) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  {label}
+                </label>
                 <div className="relative">
                   <select
                     value={filters[key]}

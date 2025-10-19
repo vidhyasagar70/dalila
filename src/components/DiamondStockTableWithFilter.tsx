@@ -11,15 +11,17 @@ import ShapeFilter from "./ShapeFilter";
 import CaratFilter from "./CaratFilter";
 import ClarityFilter from "./ClarityFilter";
 import FluorFilter from "./FluorescenceFilter";
-import InclusionFilter, { type InclusionFilters } from './InclusionFilter';
+import InclusionFilter, { type InclusionFilters } from "./InclusionFilter";
 import MeasurementFilter from "./MeasurementFilter";
-import KeySymbolFilter, { type KeySymbolFilters } from './KeyToSymbolFilter';
-import ShadesFilter, { type ShadesFilters } from './ShadesFilter';
-import PriceLocationFilter, { type PriceLocationFilters } from './Priceandloction';
+import KeySymbolFilter, { type KeySymbolFilters } from "./KeyToSymbolFilter";
+import ShadesFilter, { type ShadesFilters } from "./ShadesFilter";
+import PriceLocationFilter, {
+  type PriceLocationFilters,
+} from "./Priceandloction";
 import DiamondStockTable from "./DiamondStockTable";
 
 export default function DiamondStockTableWithFilter() {
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShape, setSelectedShape] = useState("ALL");
@@ -61,13 +63,14 @@ export default function DiamondStockTableWithFilter() {
     eyCln: [],
     hAndA: [],
   });
-  const [priceLocationFilters, setPriceLocationFilters] = useState<PriceLocationFilters>({
-    pricePerCarat: { from: "0.50", to: "0.50" },
-    discount: { from: "0.50", to: "0.50" },
-    totalPrice: { from: "0.50", to: "0.50" },
-    locations: [],
-    labs: [],
-  });
+  const [priceLocationFilters, setPriceLocationFilters] =
+    useState<PriceLocationFilters>({
+      pricePerCarat: { from: "0.50", to: "0.50" },
+      discount: { from: "0.50", to: "0.50" },
+      totalPrice: { from: "0.50", to: "0.50" },
+      locations: [],
+      labs: [],
+    });
   const [showFilters, setShowFilters] = useState(true);
 
   const handleColorChange = (color: string) => {
@@ -88,7 +91,7 @@ export default function DiamondStockTableWithFilter() {
 
   const handleClarityChange = (clarity: string[]) => {
     setSelectedClarity(clarity);
-    setSearchTerm(""); 
+    setSearchTerm("");
   };
 
   const handleCutChange = (cut: string) => {
@@ -107,7 +110,7 @@ export default function DiamondStockTableWithFilter() {
   };
 
   const handleCaratChange = (min: string, max: string) => {
-    console.log('Carat changed - min:', min, 'max:', max);
+    console.log("Carat changed - min:", min, "max:", max);
     setSelectedMinCarat(min);
     setSelectedMaxCarat(max);
   };
@@ -132,7 +135,7 @@ export default function DiamondStockTableWithFilter() {
           selectedShape={selectedShape}
           onShapeChange={handleShapeChange}
         />
-        <CaratFilter 
+        <CaratFilter
           selectedMinCarat={selectedMinCarat}
           selectedMaxCarat={selectedMaxCarat}
           onCaratChange={handleCaratChange}
@@ -158,22 +161,22 @@ export default function DiamondStockTableWithFilter() {
         {/* View Mode Toggle - Left Side */}
         <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
           <button
-            onClick={() => setViewMode('list')}
+            onClick={() => setViewMode("list")}
             className={`p-1.5 transition-colors ${
-              viewMode === 'list'
-                ? 'bg-[#000033] text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
+              viewMode === "list"
+                ? "bg-[#000033] text-white"
+                : "bg-white text-gray-600 hover:bg-gray-100"
             }`}
             title="List View"
           >
             <List className="w-4 h-4" />
           </button>
           <button
-            onClick={() => setViewMode('grid')}
+            onClick={() => setViewMode("grid")}
             className={`p-1.5 transition-colors ${
-              viewMode === 'grid'
-                ? 'bg-[#000033] text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100'
+              viewMode === "grid"
+                ? "bg-[#000033] text-white"
+                : "bg-white text-gray-600 hover:bg-gray-100"
             }`}
             title="Grid View"
           >
@@ -191,9 +194,9 @@ export default function DiamondStockTableWithFilter() {
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white transition-colors shadow-sm rounded"
           >
-            <Image 
-              src="/filtersicon/filter-add.png" 
-              alt="Filter" 
+            <Image
+              src="/filtersicon/filter-add.png"
+              alt="Filter"
               width={16}
               height={16}
               className="w-4 h-4"
@@ -205,15 +208,15 @@ export default function DiamondStockTableWithFilter() {
               <ChevronDown className="w-3.5 h-3.5" />
             )}
           </button>
-          
+
           <button
             onClick={handleResetFilters}
             className="flex items-center gap-2 px-4 py-1.5 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
             title="Reset All Filters"
           >
-            <Image 
-              src="/filtersicon/filter-remove.png" 
-              alt="Reset" 
+            <Image
+              src="/filtersicon/filter-remove.png"
+              alt="Reset"
               width={20}
               height={20}
               className="w-5 h-5"
@@ -260,11 +263,11 @@ export default function DiamondStockTableWithFilter() {
         selectedColor={selectedColor}
         selectedMinCarat={selectedMinCarat}
         selectedMaxCarat={selectedMaxCarat}
-        selectedFluor={selectedFluor} 
-        selectedClarity={selectedClarity} 
-        selectedCut={selectedCut}          
-        selectedPolish={selectedPolish}   
-        selectedSymmetry={selectedSymmetry} 
+        selectedFluor={selectedFluor}
+        selectedClarity={selectedClarity}
+        selectedCut={selectedCut}
+        selectedPolish={selectedPolish}
+        selectedSymmetry={selectedSymmetry}
         pageSize={10}
       />
     </div>

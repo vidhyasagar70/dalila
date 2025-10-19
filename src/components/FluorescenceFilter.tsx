@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { diamondApi } from "@/lib/api";
@@ -21,7 +21,7 @@ export default function FluorFilter({
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
           const fluorTypes = response.data.fluorescenceTypes.filter(
-            (f: string) => f.trim() !== ""
+            (f: string) => f.trim() !== "",
           );
           setFluorOptions(fluorTypes);
         }
@@ -40,7 +40,10 @@ export default function FluorFilter({
   };
 
   const Header = () => (
-    <div className="flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#000033" }}>
+    <div
+      className="flex items-center gap-2 px-3 py-2"
+      style={{ backgroundColor: "#000033" }}
+    >
       <Image
         src="/filtersicon/flour.png"
         alt="Fluor"

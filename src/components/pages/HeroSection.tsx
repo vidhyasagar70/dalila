@@ -45,7 +45,7 @@ export default function HeroSection() {
                 alt={`Dalila Diamonds Banner ${index + 1}`}
                 fill
                 className="object-cover"
-                priority={index === 0} 
+                priority={index === 0}
               />
               <div className="absolute inset-0 bg-slate-900/20" />
             </div>

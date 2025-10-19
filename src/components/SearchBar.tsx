@@ -6,7 +6,10 @@ interface SearchBarProps {
   isSearching?: boolean;
 }
 
-export default function SearchBar({ onSearch, isSearching = false }: SearchBarProps) {
+export default function SearchBar({
+  onSearch,
+  isSearching = false,
+}: SearchBarProps) {
   const [searchInput, setSearchInput] = useState("");
 
   const handleSearch = () => {

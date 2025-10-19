@@ -31,7 +31,7 @@ export default function WebuyBanner() {
             <h1
               className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-30 ${playFair.className}`}
             >
-              Sell Your <br/> DIAMONDS
+              Sell Your <br /> DIAMONDS
             </h1>
             <div className="w-[35%] h-px bg-amber-400 mx-auto mb-6" />
           </div>

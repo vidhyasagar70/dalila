@@ -20,90 +20,92 @@ export default function Header() {
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
   const dashboardPage = pathname === "/dashboard";
-  
+
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
 
   // Check user authentication and role on mount and when pathname changes
   useEffect(() => {
     const checkUserAuth = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         setIsCheckingAuth(true);
-        
+
         // First, try localStorage
-        let token = localStorage.getItem('authToken');
-        let userStr = localStorage.getItem('user');
-        
-        console.log('=== HEADER AUTH CHECK ===');
-        console.log('LocalStorage Token:', token ? 'EXISTS' : 'MISSING');
-        console.log('LocalStorage User:', userStr ? 'EXISTS' : 'MISSING');
-        
+        let token = localStorage.getItem("authToken");
+        let userStr = localStorage.getItem("user");
+
+        console.log("=== HEADER AUTH CHECK ===");
+        console.log("LocalStorage Token:", token ? "EXISTS" : "MISSING");
+        console.log("LocalStorage User:", userStr ? "EXISTS" : "MISSING");
+
         // If not in localStorage, check cookies
         if (!userStr || !token) {
-          console.log('Checking cookies...');
-          const cookies = document.cookie.split(';');
-          
-          const tokenCookie = cookies.find(c => c.trim().startsWith('authToken='));
+          console.log("Checking cookies...");
+          const cookies = document.cookie.split(";");
+
+          const tokenCookie = cookies.find((c) =>
+            c.trim().startsWith("authToken="),
+          );
           if (tokenCookie) {
-            token = tokenCookie.split('=')[1].trim();
-            console.log('Found token in cookie');
+            token = tokenCookie.split("=")[1].trim();
+            console.log("Found token in cookie");
           }
-          
-          const userCookie = cookies.find(c => c.trim().startsWith('user='));
+
+          const userCookie = cookies.find((c) => c.trim().startsWith("user="));
           if (userCookie) {
             try {
-              userStr = decodeURIComponent(userCookie.split('=')[1].trim());
-              console.log('Found user in cookie');
+              userStr = decodeURIComponent(userCookie.split("=")[1].trim());
+              console.log("Found user in cookie");
             } catch (e) {
-              console.error('Error decoding user cookie:', e);
+              console.error("Error decoding user cookie:", e);
             }
           }
         }
-        
+
         // Check if user is authenticated
         const hasValidAuth = !!(userStr && token);
-        
+
         if (hasValidAuth && userStr) {
           try {
             const user = JSON.parse(userStr);
-            console.log('✅ User authenticated:', user.email);
-            console.log('✅ User role:', user.role);
+            console.log("✅ User authenticated:", user.email);
+            console.log("✅ User role:", user.role);
             setUserRole(user.role || null);
             setIsLoggedIn(true);
           } catch (error) {
-            console.error('❌ Error parsing user data:', error);
+            console.error("❌ Error parsing user data:", error);
             setUserRole(null);
             setIsLoggedIn(false);
           }
         } else {
-          console.log('❌ No valid authentication found');
+          console.log("❌ No valid authentication found");
           setUserRole(null);
           setIsLoggedIn(false);
         }
-        
+
         setIsCheckingAuth(false);
-        console.log('=== END HEADER AUTH CHECK ===');
-        console.log('Final auth state - isLoggedIn:', hasValidAuth);
+        console.log("=== END HEADER AUTH CHECK ===");
+        console.log("Final auth state - isLoggedIn:", hasValidAuth);
       }
     };
 
     checkUserAuth();
-    
+
     // Listen for auth events
     const handleAuthEvent = (event: Event) => {
-      console.log('Auth event received:', event.type);
+      console.log("Auth event received:", event.type);
       setTimeout(checkUserAuth, 100);
     };
-    
-    if (typeof window !== 'undefined') {
-      window.addEventListener('storage', handleAuthEvent);
-      window.addEventListener('user-logged-in', handleAuthEvent);
-      window.addEventListener('user-logged-out', handleAuthEvent);
-      
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", handleAuthEvent);
+      window.addEventListener("user-logged-in", handleAuthEvent);
+      window.addEventListener("user-logged-out", handleAuthEvent);
+
       return () => {
-        window.removeEventListener('storage', handleAuthEvent);
-        window.removeEventListener('user-logged-in', handleAuthEvent);
-        window.removeEventListener('user-logged-out', handleAuthEvent);
+        window.removeEventListener("storage", handleAuthEvent);
+        window.removeEventListener("user-logged-in", handleAuthEvent);
+        window.removeEventListener("user-logged-out", handleAuthEvent);
       };
     }
   }, [pathname]);
@@ -133,36 +135,38 @@ export default function Header() {
   // Handle logout
   const handleLogout = async () => {
     try {
-      console.log('Logout initiated...');
+      console.log("Logout initiated...");
       // Call logout API
       await userApi.logout();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       // Clear local state
       setIsLoggedIn(false);
       setUserRole(null);
-      
+
       // Clear localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
-        
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+
         // Clear cookies
-        document.cookie = 'authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        
-        console.log('✅ Logout complete - storage cleared');
+        document.cookie =
+          "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        document.cookie =
+          "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+
+        console.log("✅ Logout complete - storage cleared");
       }
-      
+
       // Dispatch logout event for ProtectedRoute to listen
-      if (typeof window !== 'undefined') {
-        const logoutEvent = new CustomEvent('user-logged-out');
+      if (typeof window !== "undefined") {
+        const logoutEvent = new CustomEvent("user-logged-out");
         window.dispatchEvent(logoutEvent);
       }
-      
+
       // Redirect to home
-      router.push('/');
+      router.push("/");
     }
   };
 
@@ -188,8 +192,8 @@ export default function Header() {
     { href: "/inventory", label: "Inventory" },
   ];
 
-  const navigationItems = isLoggedIn 
-    ? isAdmin 
+  const navigationItems = isLoggedIn
+    ? isAdmin
       ? adminMenuItems
       : [...commonMenuItems, ...userMenuItems]
     : [...commonMenuItems, { href: "/inventory", label: "Inventory" }];
@@ -197,7 +201,13 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isTestingPage || adminpanelPage || inventoryPage || offerenquiryPage || memberPage || dashboardPage
+        isScrolled ||
+        isTestingPage ||
+        adminpanelPage ||
+        inventoryPage ||
+        offerenquiryPage ||
+        memberPage ||
+        dashboardPage
           ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
           : "bg-transparent py-2.5 md:py-3"
       }`}
@@ -239,7 +249,7 @@ export default function Header() {
 
           {/* Center Logo */}
           <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
-            <button 
+            <button
               onClick={() => router.push("/")}
               className="block w-full h-full focus:outline-none"
               aria-label="Go to home page"

@@ -1,12 +1,12 @@
 // ClarityFilter.tsx
 
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
-import { diamondApi} from "@/lib/api";
-import Image from "next/image"; 
+import { diamondApi } from "@/lib/api";
+import Image from "next/image";
 
 interface ClarityFilterProps {
-  selectedClarity: string[];  // Changed from string to string[]
+  selectedClarity: string[]; // Changed from string to string[]
   selectedCut: string;
   selectedPolish: string;
   selectedSymmetry: string;
@@ -37,16 +37,24 @@ export default function ClarityFilter({
       try {
         const response = await diamondApi.getFilterOptions();
         if (response?.success && response.data) {
-          const clarities = response.data.clarities.filter(c => c.trim() !== "");
+          const clarities = response.data.clarities.filter(
+            (c) => c.trim() !== "",
+          );
           setClarityOptions(clarities);
 
-          const cuts = response.data.cuts.filter(c => c.trim() !== "" && c !== "-");
+          const cuts = response.data.cuts.filter(
+            (c) => c.trim() !== "" && c !== "-",
+          );
           setCutOptions(cuts);
 
-          const polish = response.data.polishGrades.filter(p => p.trim() !== "");
+          const polish = response.data.polishGrades.filter(
+            (p) => p.trim() !== "",
+          );
           setPolishOptions(polish);
 
-          const symmetry = response.data.symmetryGrades.filter(s => s.trim() !== "");
+          const symmetry = response.data.symmetryGrades.filter(
+            (s) => s.trim() !== "",
+          );
           setSymmetryOptions(symmetry);
         }
       } catch (error) {
@@ -59,32 +67,30 @@ export default function ClarityFilter({
     fetchFilterOptions();
   }, []);
 
+  const handleClarityClick = (value: string) => {
+    let newClarity: string[];
+    if (selectedClarity.includes(value)) {
+      newClarity = selectedClarity.filter((c) => c !== value);
+    } else {
+      newClarity = [...selectedClarity, value];
+    }
+    onClarityChange(newClarity);
+  };
 
+  const handleCutClick = (value: string) => {
+    const newCut = selectedCut === value ? "" : value;
+    onCutChange(newCut);
+  };
 
- const handleClarityClick = (value: string) => {
-  let newClarity: string[];
-  if (selectedClarity.includes(value)) {
-    newClarity = selectedClarity.filter(c => c !== value);
-  } else {
-    newClarity = [...selectedClarity, value];
-  }
-  onClarityChange(newClarity);
-};
+  const handlePolishClick = (value: string) => {
+    const newPolish = selectedPolish === value ? "" : value;
+    onPolishChange(newPolish);
+  };
 
-const handleCutClick = (value: string) => {
-  const newCut = selectedCut === value ? "" : value;
-  onCutChange(newCut);
-};
-
-const handlePolishClick = (value: string) => {
-  const newPolish = selectedPolish === value ? "" : value;
-  onPolishChange(newPolish);
-};
-
-const handleSymmetryClick = (value: string) => {
-  const newSymmetry = selectedSymmetry === value ? "" : value;
-  onSymmetryChange(newSymmetry);
-};
+  const handleSymmetryClick = (value: string) => {
+    const newSymmetry = selectedSymmetry === value ? "" : value;
+    onSymmetryChange(newSymmetry);
+  };
 
   if (loading) {
     return (
@@ -104,10 +110,10 @@ const handleSymmetryClick = (value: string) => {
         </div>
         <div
           className="p-2 bg-white flex items-center justify-center"
-          style={{ 
-            border: "0.25px solid #f9e8cd", 
-            borderTop: "none", 
-            height: "288px" 
+          style={{
+            border: "0.25px solid #f9e8cd",
+            borderTop: "none",
+            height: "288px",
           }}
         >
           <span className="text-gray-500">Loading filters...</span>
@@ -123,20 +129,20 @@ const handleSymmetryClick = (value: string) => {
         style={{ backgroundColor: "#000033" }}
       >
         <Image
-  src="/filtersicon/clarity.png"
-  alt="Clarity"
-  width={20}
-  height={20}
-  className="w-5 h-5"
-/>
+          src="/filtersicon/clarity.png"
+          alt="Clarity"
+          width={20}
+          height={20}
+          className="w-5 h-5"
+        />
 
         <span className="text-base font-semibold text-white">Clarity</span>
       </div>
 
       <div
         className="p-2 bg-white"
-        style={{ 
-          border: "0.25px solid #f9e8cd", 
+        style={{
+          border: "0.25px solid #f9e8cd",
           borderTop: "none",
           height: "288px",
         }}
@@ -169,12 +175,12 @@ const handleSymmetryClick = (value: string) => {
         <div className="flex items-center gap-1.5 mb-2">
           <div
             className="px-1.5 py-1 rounded text-xs font-semibold text-white"
-            style={{ 
-              backgroundColor: "#000033", 
+            style={{
+              backgroundColor: "#000033",
               minWidth: "35px",
               minHeight: "26px",
               display: "flex",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             Cut :
@@ -207,12 +213,12 @@ const handleSymmetryClick = (value: string) => {
         <div className="flex items-center gap-1.5 mb-2">
           <div
             className="px-1.5 py-1 rounded text-xs font-semibold text-white"
-            style={{ 
-              backgroundColor: "#000033", 
+            style={{
+              backgroundColor: "#000033",
               minWidth: "35px",
               minHeight: "26px",
               display: "flex",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             Pol :
@@ -245,12 +251,12 @@ const handleSymmetryClick = (value: string) => {
         <div className="flex items-center gap-1.5">
           <div
             className="px-1.5 py-1 rounded text-xs font-semibold text-white"
-            style={{ 
-              backgroundColor: "#000033", 
+            style={{
+              backgroundColor: "#000033",
               minWidth: "35px",
               minHeight: "26px",
               display: "flex",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             Sym :

@@ -18,8 +18,8 @@ export default function LoginPage() {
 
   // Load remembered email on mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (typeof window !== "undefined") {
+      const rememberedEmail = localStorage.getItem("rememberedEmail");
       if (rememberedEmail) {
         setEmail(rememberedEmail);
         setRememberMe(true);
@@ -31,141 +31,143 @@ export default function LoginPage() {
   useEffect(() => {
     const handleUnauthorized = () => {
       console.log("Unauthorized event detected, redirecting to login...");
-      router.push('/login');
+      router.push("/login");
     };
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
-      return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+      return () =>
+        window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
     }
   }, [router]);
 
-const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setError("");
-  setIsLoading(true);
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-  // Basic validation
-  if (!email.trim()) {
-    setError("Email is required");
-    setIsLoading(false);
-    return;
-  }
+    // Basic validation
+    if (!email.trim()) {
+      setError("Email is required");
+      setIsLoading(false);
+      return;
+    }
 
-  if (!password.trim()) {
-    setError("Password is required");
-    setIsLoading(false);
-    return;
-  }
+    if (!password.trim()) {
+      setError("Password is required");
+      setIsLoading(false);
+      return;
+    }
 
-  // Email format validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    setError("Please enter a valid email address");
-    setIsLoading(false);
-    return;
-  }
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      setIsLoading(false);
+      return;
+    }
 
-  try {
+    try {
+      // Call the login API
+      const response = await userApi.login({
+        email: email.trim(),
+        password: password,
+      });
 
-    
-    // Call the login API
-    const response = await userApi.login({
-      email: email.trim(),
-      password: password,
-    });
+      if (response && response.success && response.data) {
+        const { token, user } = response.data;
 
-    
+        if (typeof window !== "undefined") {
+          // Handle remember me
+          if (rememberMe) {
+            localStorage.setItem("rememberedEmail", email);
+          } else {
+            localStorage.removeItem("rememberedEmail");
+          }
 
-    if (response && response.success && response.data) {
-      
-      const { token, user } = response.data;
+          if (user) {
+            const userString = JSON.stringify(user);
+            localStorage.setItem("user", userString);
+            const cookieUser = encodeURIComponent(userString);
+            document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+          } else {
+            setError("Login failed. User data not received.");
+            setIsLoading(false);
+            return;
+          }
 
+          // If token was provided in response body, store it
+          if (token) {
+            localStorage.setItem("authToken", token);
+            document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+          } else {
+            localStorage.setItem("authToken", "httpOnly_cookie_auth");
+            document.cookie = `authToken=httpOnly_cookie_auth; path=/; max-age=86400; SameSite=Lax`;
+          }
 
-      if (typeof window !== 'undefined') {
-        // Handle remember me
-        if (rememberMe) {
-          localStorage.setItem('rememberedEmail', email);
-        } else {
-          localStorage.removeItem('rememberedEmail');
+          // Final verification
+          const finalToken = localStorage.getItem("authToken");
+          const finalUser = localStorage.getItem("user");
+
+          if (!finalToken || !finalUser) {
+            setError("Login failed. Please try again.");
+            setIsLoading(false);
+            return;
+          }
         }
 
-        if (user) {
-          const userString = JSON.stringify(user);
-          localStorage.setItem('user', userString);
-          const cookieUser = encodeURIComponent(userString);
-          document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
-        } else {
-          setError("Login failed. User data not received.");
-          setIsLoading(false);
-          return;
-        }
-        
-        // If token was provided in response body, store it
-        if (token) {
-          localStorage.setItem('authToken', token);
-          document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
-        } else {
-          localStorage.setItem('authToken', 'httpOnly_cookie_auth');
-          document.cookie = `authToken=httpOnly_cookie_auth; path=/; max-age=86400; SameSite=Lax`;
-        }
-        
-        // Final verification
-        const finalToken = localStorage.getItem('authToken');
-        const finalUser = localStorage.getItem('user');
-
-            if (!finalToken || !finalUser) {
-          setError("Login failed. Please try again.");
-          setIsLoading(false);
-          return;
-        }
-        
+        // Get redirect URL from query params or default to dashboard
+        const redirect = searchParams.get("redirect") || "/dashboard";
+        setError("");
+        setTimeout(() => {
+          window.location.href = redirect;
+        }, 1000);
+      } else {
+        const errorMsg =
+          response?.message ||
+          response?.error ||
+          "Login failed. Please try again.";
+        setError(errorMsg);
+        setIsLoading(false);
       }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        // Check for specific error messages from the API
+        const errorMessage = err.message;
 
-      // Get redirect URL from query params or default to dashboard
-      const redirect = searchParams.get('redirect') || '/dashboard';
-      setError("");
-      setTimeout(() => {
-        window.location.href = redirect;
-      }, 1000);
-      
-    } else {
-      const errorMsg = response?.message || response?.error || "Login failed. Please try again.";
-      setError(errorMsg);
+        console.log("Error message:", errorMessage);
+
+        if (
+          errorMessage.includes("Invalid credentials") ||
+          errorMessage.includes("incorrect password") ||
+          errorMessage.includes("not found")
+        ) {
+          setError("Invalid email or password. Please try again.");
+        } else if (errorMessage.includes("not verified")) {
+          setError("Please verify your email address before logging in.");
+        } else if (
+          errorMessage.includes("account is locked") ||
+          errorMessage.includes("suspended")
+        ) {
+          setError("Your account has been suspended. Please contact support.");
+        } else if (
+          errorMessage.includes("network") ||
+          errorMessage.includes("fetch")
+        ) {
+          setError(
+            "Unable to connect to server. Please check your internet connection.",
+          );
+        } else {
+          setError(errorMessage || "Login failed. Please try again.");
+        }
+      } else {
+        setError(
+          "Unable to connect to server. Please check your internet connection and try again.",
+        );
+      }
       setIsLoading(false);
     }
-
-  } catch (err: unknown) {
-
-    if (err instanceof Error) {
-      // Check for specific error messages from the API
-      const errorMessage = err.message;
-      
-      console.log("Error message:", errorMessage);
-      
-      if (errorMessage.includes("Invalid credentials") || 
-          errorMessage.includes("incorrect password") ||
-          errorMessage.includes("not found")) {
-        setError("Invalid email or password. Please try again.");
-      } else if (errorMessage.includes("not verified")) {
-        setError("Please verify your email address before logging in.");
-      } else if (errorMessage.includes("account is locked") || 
-                 errorMessage.includes("suspended")) {
-        setError("Your account has been suspended. Please contact support.");
-      } else if (errorMessage.includes("network") || 
-                 errorMessage.includes("fetch")) {
-        setError("Unable to connect to server. Please check your internet connection.");
-      } else {
-        setError(errorMessage || "Login failed. Please try again.");
-      }
-    } else {
-      setError(
-        "Unable to connect to server. Please check your internet connection and try again."
-      );
-    }
-    setIsLoading(false);
-  }
-};
+  };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -173,7 +175,7 @@ const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
   const handleForgotPassword = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     // Navigate to forgot password page
-    router.push('/forgot-password');
+    router.push("/forgot-password");
   };
 
   return (
@@ -194,7 +196,6 @@ const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center w-full h-full p-4">
         <div className="flex w-full max-w-[1100px] h-auto md:h-[480px] rounded-xl shadow-2xl border border-gray-800 overflow-hidden flex-col md:flex-row">
-          
           {/* Left Panel - Brand Info */}
           <div
             className="flex flex-col justify-between text-white px-10 py-10 w-full md:w-[50%] md:min-w-[350px]"
@@ -243,7 +244,6 @@ const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 
           {/* Right Panel - Login Form */}
           <div className="relative flex-1 flex flex-col justify-center items-center bg-black/20 px-4 py-8 md:py-0">
-            
             {/* Home Button */}
             <button
               className="absolute top-4 md:top-6 right-4 md:right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-10 hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"

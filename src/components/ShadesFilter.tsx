@@ -2,7 +2,6 @@
 
 import React from "react";
 
-
 const SHADES_OPTIONS = [
   "HPHT",
   "NONE",
@@ -31,7 +30,10 @@ interface ShadesFilterProps {
   onFiltersChange: (filters: ShadesFilters) => void;
 }
 
-export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterProps) {
+export default function ShadesFilter({
+  filters,
+  onFiltersChange,
+}: ShadesFilterProps) {
   const toggleFilter = (category: keyof ShadesFilters, value: string) => {
     const currentValues = filters[category] || [];
     const newValues = currentValues.includes(value)
@@ -43,137 +45,147 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
   const isSelected = (category: keyof ShadesFilters, value: string) =>
     filters[category]?.includes(value) || false;
 
+  return (
+    <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
+      {/* Shades Section */}
+      <div
+        className="flex items-center gap-1.5 px-2 py-1.5"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-sm font-semibold text-white">Shades</span>
+      </div>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
+        <div className="grid grid-cols-3 gap-1.5">
+          {SHADES_OPTIONS.map((option) => (
+            <button
+              key={option}
+              onClick={() => toggleFilter("shades", option)}
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                isSelected("shades", option)
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                minWidth: "75px",
+                minHeight: "28px",
+                border: isSelected("shades", option)
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
 
+      {/* Milky Section */}
+      <div
+        className="flex items-center gap-1.5 px-2 py-1.5"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-sm font-semibold text-white">Milky</span>
+      </div>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
+        <div className="grid grid-cols-4 gap-1.5">
+          {MILKY_OPTIONS.map((option) => (
+            <button
+              key={option}
+              onClick={() => toggleFilter("milky", option)}
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                isSelected("milky", option)
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                minWidth: "75px",
+                minHeight: "28px",
+                border: isSelected("milky", option)
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
 
- return (
-  <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
-    {/* Shades Section */}
-    <div
-      className="flex items-center gap-1.5 px-2 py-1.5"
-      style={{ backgroundColor: "#000033" }}
-    >
-      <span className="text-sm font-semibold text-white">Shades</span>
-    </div>
-    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-3 gap-1.5">
-        {SHADES_OPTIONS.map((option) => (
-          <button
-            key={option}
-            onClick={() => toggleFilter("shades", option)}
-            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-              isSelected("shades", option)
-                ? "text-blue-600 bg-blue-50"
-                : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-            style={{
-              minWidth: "75px",
-              minHeight: "28px",
-              border: isSelected("shades", option)
-                ? "1px solid #2563eb"
-                : "1px solid #f9e8cd",
-            }}
-          >
-            {option}
-          </button>
-        ))}
+      {/* Type2 Ct Section */}
+      <div
+        className="flex items-center gap-1.5 px-2 py-1.5"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-sm font-semibold text-white">Type2 Ct</span>
+      </div>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
+        <div className="grid grid-cols-2 gap-1.5">
+          {TYPE2_OPTIONS.map((option) => (
+            <button
+              key={option}
+              onClick={() => toggleFilter("type2Ct", option)}
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                isSelected("type2Ct", option)
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                minWidth: "75px",
+                minHeight: "28px",
+                border: isSelected("type2Ct", option)
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Brl. Section */}
+      <div
+        className="flex items-center gap-1.5 px-2 py-1.5"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <span className="text-sm font-semibold text-white">Brl.</span>
+      </div>
+      <div
+        className="bg-white p-2"
+        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+      >
+        <div className="grid grid-cols-3 gap-1.5">
+          {BRL_OPTIONS.map((option) => (
+            <button
+              key={option}
+              onClick={() => toggleFilter("brl", option)}
+              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                isSelected("brl", option)
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                minWidth: "75px",
+                minHeight: "28px",
+                border: isSelected("brl", option)
+                  ? "1px solid #2563eb"
+                  : "1px solid #f9e8cd",
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
-
-    {/* Milky Section */}
-    <div
-      className="flex items-center gap-1.5 px-2 py-1.5"
-      style={{ backgroundColor: "#000033" }}
-    >
-      <span className="text-sm font-semibold text-white">Milky</span>
-    </div>
-    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-4 gap-1.5">
-        {MILKY_OPTIONS.map((option) => (
-          <button
-            key={option}
-            onClick={() => toggleFilter("milky", option)}
-            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-              isSelected("milky", option)
-                ? "text-blue-600 bg-blue-50"
-                : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-            style={{
-              minWidth: "75px",
-              minHeight: "28px",
-              border: isSelected("milky", option)
-                ? "1px solid #2563eb"
-                : "1px solid #f9e8cd",
-            }}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* Type2 Ct Section */}
-    <div
-      className="flex items-center gap-1.5 px-2 py-1.5"
-      style={{ backgroundColor: "#000033" }}
-    >
-      <span className="text-sm font-semibold text-white">Type2 Ct</span>
-    </div>
-    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-2 gap-1.5">
-        {TYPE2_OPTIONS.map((option) => (
-          <button
-            key={option}
-            onClick={() => toggleFilter("type2Ct", option)}
-            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-              isSelected("type2Ct", option)
-                ? "text-blue-600 bg-blue-50"
-                : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-            style={{
-              minWidth: "75px",
-              minHeight: "28px",
-              border: isSelected("type2Ct", option)
-                ? "1px solid #2563eb"
-                : "1px solid #f9e8cd",
-            }}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* Brl. Section */}
-    <div
-      className="flex items-center gap-1.5 px-2 py-1.5"
-      style={{ backgroundColor: "#000033" }}
-    >
-      <span className="text-sm font-semibold text-white">Brl.</span>
-    </div>
-    <div className="bg-white p-2" style={{ border: "1px solid #f9e8cd", borderTop: "none" }}>
-      <div className="grid grid-cols-3 gap-1.5">
-        {BRL_OPTIONS.map((option) => (
-          <button
-            key={option}
-            onClick={() => toggleFilter("brl", option)}
-            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-              isSelected("brl", option)
-                ? "text-blue-600 bg-blue-50"
-                : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-            style={{
-              minWidth: "75px",
-              minHeight: "28px",
-              border: isSelected("brl", option)
-                ? "1px solid #2563eb"
-                : "1px solid #f9e8cd",
-            }}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  </div>
-);
+  );
 }
