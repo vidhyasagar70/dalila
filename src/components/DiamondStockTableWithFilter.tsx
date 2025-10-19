@@ -19,7 +19,7 @@ import PriceLocationFilter, {
   type PriceLocationFilters,
 } from "./Priceandloction";
 import DiamondStockTable from "./DiamondStockTable";
-
+import DiamondGridView from "./DiamondGridView";
 export default function DiamondStockTableWithFilter() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [selectedColor, setSelectedColor] = useState("ALL");
@@ -71,7 +71,7 @@ export default function DiamondStockTableWithFilter() {
       locations: [],
       labs: [],
     });
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color);
@@ -257,19 +257,35 @@ export default function DiamondStockTableWithFilter() {
         </div>
       )}
 
-      <DiamondStockTable
-        searchTerm={searchTerm}
-        selectedShape={selectedShape}
-        selectedColor={selectedColor}
-        selectedMinCarat={selectedMinCarat}
-        selectedMaxCarat={selectedMaxCarat}
-        selectedFluor={selectedFluor}
-        selectedClarity={selectedClarity}
-        selectedCut={selectedCut}
-        selectedPolish={selectedPolish}
-        selectedSymmetry={selectedSymmetry}
-        pageSize={10}
-      />
+     {viewMode === "list" ? (
+  <DiamondStockTable
+    searchTerm={searchTerm}
+    selectedShape={selectedShape}
+    selectedColor={selectedColor}
+    selectedMinCarat={selectedMinCarat}
+    selectedMaxCarat={selectedMaxCarat}
+    selectedFluor={selectedFluor}
+    selectedClarity={selectedClarity}
+    selectedCut={selectedCut}
+    selectedPolish={selectedPolish}
+    selectedSymmetry={selectedSymmetry}
+    pageSize={10}
+  />
+) : (
+  <DiamondGridView
+    searchTerm={searchTerm}
+    selectedShape={selectedShape}
+    selectedColor={selectedColor}
+    selectedMinCarat={selectedMinCarat}
+    selectedMaxCarat={selectedMaxCarat}
+    selectedFluor={selectedFluor}
+    selectedClarity={selectedClarity}
+    selectedCut={selectedCut}
+    selectedPolish={selectedPolish}
+    selectedSymmetry={selectedSymmetry}
+    pageSize={12}
+  />
+)}
     </div>
   );
 }
