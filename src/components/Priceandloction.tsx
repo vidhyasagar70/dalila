@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { diamondApi } from "@/lib/api";
 
 export interface PriceRange {
   from: string;
@@ -20,37 +19,14 @@ interface PriceLocationFilterProps {
   onFiltersChange: (filters: PriceLocationFilters) => void;
 }
 
+// Static location and lab options matching your UI image
+const STATIC_LOCATION_OPTIONS = ["MUM", "BEL", "DUB", "HK", "NYC"];
+const STATIC_LAB_OPTIONS = ["GIA", "IGI", "HRD", "OTHER"];
+
 export default function PriceLocationFilter({
   filters,
   onFiltersChange,
 }: PriceLocationFilterProps) {
-  const [locationOptions, setLocationOptions] = useState<string[]>([]);
-  const [labOptions, setLabOptions] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFilterOptions = async () => {
-      try {
-        const response = await diamondApi.getFilterOptions();
-        if (response?.success && response.data) {
-          const locations = response.data.locations.filter(
-            (l) => l.trim() !== "",
-          );
-          setLocationOptions(locations);
-
-          const labs = response.data.labs.filter((l) => l.trim() !== "");
-          setLabOptions(labs);
-        }
-      } catch (error) {
-        console.error("Error fetching filter options:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFilterOptions();
-  }, []);
-
   const handlePriceChange = (
     field: "pricePerCarat" | "discount" | "totalPrice",
     type: "from" | "to",
@@ -114,32 +90,6 @@ export default function PriceLocationFilter({
   const isLabSelected = (lab: string) => {
     return filters.labs?.includes(lab) || false;
   };
-
-  if (loading) {
-    return (
-      <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
-        <div
-          className="flex items-center gap-1.5 px-2 py-1.5"
-          style={{ backgroundColor: "#000033" }}
-        >
-          <span className="text-sm font-semibold text-white">Price</span>
-        </div>
-        <div
-          className="p-2 bg-white flex items-center justify-center"
-          style={{
-            border: "1px solid #f9e8cd",
-            borderTop: "none",
-            minHeight: "100px",
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-            <span className="text-gray-500 text-xs">Loading filters...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
@@ -409,7 +359,7 @@ export default function PriceLocationFilter({
         style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
       >
         <div className="grid grid-cols-5 gap-1.5">
-          {locationOptions.map((location) => (
+          {STATIC_LOCATION_OPTIONS.map((location) => (
             <button
               key={location}
               onClick={() => toggleLocation(location)}
@@ -444,7 +394,7 @@ export default function PriceLocationFilter({
         style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
       >
         <div className="grid grid-cols-4 gap-1.5">
-          {labOptions.map((lab) => (
+          {STATIC_LAB_OPTIONS.map((lab) => (
             <button
               key={lab}
               onClick={() => toggleLab(lab)}

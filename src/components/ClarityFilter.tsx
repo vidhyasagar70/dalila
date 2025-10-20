@@ -1,12 +1,21 @@
 // ClarityFilter.tsx
 
 "use client";
-import React, { useEffect, useState } from "react";
-import { diamondApi } from "@/lib/api";
+import React from "react";
 import Image from "next/image";
 
+// Static filter options matching your UI image
+const STATIC_CLARITY_OPTIONS = [
+  "FL", "IF", "VVS1", "VVS2", "VS1", "VS2",
+  "SI1", "SI2", "SI3", "I1", "I2", "I3"
+];
+
+const STATIC_CUT_OPTIONS = ["EX", "VG", "GD", "FR"];
+const STATIC_POLISH_OPTIONS = ["EX", "VG", "GD", "FR"];
+const STATIC_SYMMETRY_OPTIONS = ["EX", "VG", "GD", "FR"];
+
 interface ClarityFilterProps {
-  selectedClarity: string[]; // Changed from string to string[]
+  selectedClarity: string[];
   selectedCut: string;
   selectedPolish: string;
   selectedSymmetry: string;
@@ -26,47 +35,6 @@ export default function ClarityFilter({
   onPolishChange,
   onSymmetryChange,
 }: ClarityFilterProps) {
-  const [clarityOptions, setClarityOptions] = useState<string[]>([]);
-  const [cutOptions, setCutOptions] = useState<string[]>([]);
-  const [polishOptions, setPolishOptions] = useState<string[]>([]);
-  const [symmetryOptions, setSymmetryOptions] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFilterOptions = async () => {
-      try {
-        const response = await diamondApi.getFilterOptions();
-        if (response?.success && response.data) {
-          const clarities = response.data.clarities.filter(
-            (c) => c.trim() !== "",
-          );
-          setClarityOptions(clarities);
-
-          const cuts = response.data.cuts.filter(
-            (c) => c.trim() !== "" && c !== "-",
-          );
-          setCutOptions(cuts);
-
-          const polish = response.data.polishGrades.filter(
-            (p) => p.trim() !== "",
-          );
-          setPolishOptions(polish);
-
-          const symmetry = response.data.symmetryGrades.filter(
-            (s) => s.trim() !== "",
-          );
-          setSymmetryOptions(symmetry);
-        }
-      } catch (error) {
-        console.error("Error fetching filter options:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFilterOptions();
-  }, []);
-
   const handleClarityClick = (value: string) => {
     let newClarity: string[];
     if (selectedClarity.includes(value)) {
@@ -92,50 +60,19 @@ export default function ClarityFilter({
     onSymmetryChange(newSymmetry);
   };
 
-  if (loading) {
-    return (
-      <div className="mb-2 mt-1" style={{ width: "360px" }}>
-        <div
-          className="flex items-center gap-2 px-3 py-2"
-          style={{ backgroundColor: "#000033" }}
-        >
-          <Image
-            src="/filtersicon/clarity.png"
-            alt="Clarity"
-            width={20}
-            height={20}
-            className="w-5 h-5"
-          />
-          <span className="text-base font-semibold text-white">Clarity</span>
-        </div>
-        <div
-          className="p-2 bg-white flex items-center justify-center"
-          style={{
-            border: "0.25px solid #f9e8cd",
-            borderTop: "none",
-            height: "288px",
-          }}
-        >
-          <span className="text-gray-500">Loading filters...</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="mb-2 mt-1" style={{ width: "360px" }}>
+    <div className="mb-1.5 mt-0.5" style={{ width: "360px" }}>
       <div
-        className="flex items-center gap-2 px-3 py-2"
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
         <Image
           src="/filtersicon/clarity.png"
           alt="Clarity"
-          width={20}
-          height={20}
+          width={18}
+          height={18}
           className="w-5 h-5"
         />
-
         <span className="text-base font-semibold text-white">Clarity</span>
       </div>
 
@@ -149,7 +86,7 @@ export default function ClarityFilter({
       >
         {/* Clarity Options */}
         <div className="grid grid-cols-6 gap-1.5 mb-2">
-          {clarityOptions.map((option) => (
+          {STATIC_CLARITY_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => handleClarityClick(option)}
@@ -186,7 +123,7 @@ export default function ClarityFilter({
             Cut :
           </div>
           <div className="flex gap-1.5 flex-1">
-            {cutOptions.map((option) => (
+            {STATIC_CUT_OPTIONS.map((option) => (
               <button
                 key={option}
                 onClick={() => handleCutClick(option)}
@@ -224,7 +161,7 @@ export default function ClarityFilter({
             Pol :
           </div>
           <div className="flex gap-1.5 flex-1">
-            {polishOptions.map((option) => (
+            {STATIC_POLISH_OPTIONS.map((option) => (
               <button
                 key={option}
                 onClick={() => handlePolishClick(option)}
@@ -262,7 +199,7 @@ export default function ClarityFilter({
             Sym :
           </div>
           <div className="flex gap-1.5 flex-1">
-            {symmetryOptions.map((option) => (
+            {STATIC_SYMMETRY_OPTIONS.map((option) => (
               <button
                 key={option}
                 onClick={() => handleSymmetryClick(option)}

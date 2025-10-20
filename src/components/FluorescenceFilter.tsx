@@ -1,7 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { diamondApi } from "@/lib/api";
+
+// Static fluorescence options matching your UI image
+const STATIC_FLUOR_OPTIONS = [
+  "NON",
+  "VSL",
+  "FNT",
+  "SL",
+  "MED",
+  "STG",
+  "VST"
+];
 
 interface FluorFilterProps {
   selectedFluor: string;
@@ -12,90 +22,49 @@ export default function FluorFilter({
   selectedFluor,
   onFluorChange,
 }: FluorFilterProps) {
-  const [fluorOptions, setFluorOptions] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFilterOptions = async () => {
-      try {
-        const response = await diamondApi.getFilterOptions();
-        if (response?.success && response.data) {
-          const fluorTypes = response.data.fluorescenceTypes.filter(
-            (f: string) => f.trim() !== "",
-          );
-          setFluorOptions(fluorTypes);
-        }
-      } catch (error) {
-        console.error("Error fetching filter options:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFilterOptions();
-  }, []);
-
   const handleFluorClick = (value: string) => {
     onFluorChange(selectedFluor === value ? "" : value);
   };
 
-  const Header = () => (
-    <div
-      className="flex items-center gap-2 px-3 py-2"
-      style={{ backgroundColor: "#000033" }}
-    >
-      <Image
-        src="/filtersicon/flour.png"
-        alt="Fluor"
-        width={20}
-        height={20}
-        priority
-      />
-      <span className="text-base font-semibold text-white">Fluor</span>
-    </div>
-  );
-
-  if (loading) {
-    return (
-      <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
-        <Header />
-        <div
-          className="p-3 bg-white flex items-center justify-center"
-          style={{
-            border: "0.25px solid #f9e8cd",
-            borderTop: "none",
-            minHeight: "100px",
-          }}
-        >
-          <span className="text-gray-500">Loading filters...</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="mb-4 mt-2" style={{ width: "fit-content" }}>
-      <Header />
+    <div className="mb-1.5 mt-0.5" style={{ width: "360px" }}>
       <div
-        className="grid grid-cols-4 gap-2 p-3 bg-white"
-        style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
+        style={{ backgroundColor: "#000033" }}
       >
-        {fluorOptions.map((option) => (
+        <Image
+          src="/filtersicon/flour.png"
+          alt="Fluor"
+          width={18}
+          height={18}
+          className="w-4.5 h-4.5"
+        />
+        <span className="text-base font-semibold text-white">Fluor</span>
+      </div>
+
+      <div
+        className="grid grid-cols-5 gap-1 p-1.5 bg-white"
+        style={{
+          border: "0.25px solid #f9e8cd",
+          borderTop: "none",
+        }}
+      >
+        {STATIC_FLUOR_OPTIONS.map((option) => (
           <button
             key={option}
             onClick={() => handleFluorClick(option)}
-            className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+            className={`px-1 py-0.5 rounded text-xs font-medium transition-colors ${
               selectedFluor === option
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
-              minWidth: 52,
+              minWidth: 44,
               border:
                 selectedFluor === option
                   ? "0.25px solid #2563eb"
                   : "0.25px solid #f9e8cd",
-              minHeight: "32px",
+              minHeight: "41px",
             }}
           >
             {option}
