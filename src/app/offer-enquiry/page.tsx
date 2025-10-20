@@ -210,27 +210,7 @@ export default function QuotationsManagement() {
 
   return (
     <div className="min-h-screen bg-white p-8 mt-35">
-      {/* Header Actions */}
-      <div className="mb-6 flex justify-between items-center" style={{ borderBottom: '1px solid #f9ead4', paddingBottom: '16px' }}>
-        <div className="flex" style={{ border: '1px solid #f9ead4' }}>
-          <button className="px-4 py-2 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition" style={{ borderRight: '1px solid #f9ead4' }}>
-            Generate Enquiry
-          </button>
-          <button className="px-4 py-2 text-white text-sm font-medium hover:opacity-90 transition"
-            style={{ backgroundColor: '#050c3a' }}>
-            View Enquiry
-          </button>
-        </div>
-        <button 
-          onClick={fetchQuotations}
-          disabled={loading}
-          className="px-4 py-2 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ border: '1px solid #f9ead4' }}
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
-      </div>
+    
 
       {/* Error Message */}
       {error && (
@@ -248,18 +228,7 @@ export default function QuotationsManagement() {
         </div>
       )}
 
-      {/* Search */}
-      <div className="mb-6 relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-        <input
-          type="text"
-          placeholder="Search by customer name, email, stone number or ID..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 focus:outline-none focus:ring-0"
-          style={{ border: '1px solid #f9ead4', backgroundColor: '#faf6eb' }}
-        />
-      </div>
+ 
 
       {/* Table */}
       <div className="bg-white overflow-hidden" style={{ border: '1px solid #f9ead4' }}>

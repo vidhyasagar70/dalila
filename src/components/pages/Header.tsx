@@ -170,33 +170,44 @@ export default function Header() {
     }
   };
 
-  // Common menu items for regular users and non-logged in users
-  const commonMenuItems = [
-    { href: "/aboutUs", label: "About us" },
-    { href: "/contact", label: "Contact Us" },
-    { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-  ];
+  // Handle inventory click for non-logged in users
+  const handleInventoryClick = (e: React.MouseEvent) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      router.push("/login");
+    }
+  };
 
-  // Admin-only menu items
-  const adminMenuItems = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/inventory", label: "Inventory" },
-    { href: "/adminpanel", label: "Admin Panel" },
-    { href: "/member", label: "Member" },
-    { href: "/offer-enquiry", label: "Offer Enquiry" },
-  ];
+  // Menu items based on authentication status and role
+  let navigationItems: { href: string; label: string; requiresAuth?: boolean }[] = [];
 
-  // User-only menu items
-  const userMenuItems = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/inventory", label: "Inventory" },
-  ];
-
-  const navigationItems = isLoggedIn
-    ? isAdmin
-      ? adminMenuItems
-      : [...commonMenuItems, ...userMenuItems]
-    : [...commonMenuItems, { href: "/inventory", label: "Inventory" }];
+  if (!isLoggedIn) {
+    // Before login - show these for everyone
+    navigationItems = [
+      { href: "/aboutUs", label: "About us" },
+      { href: "/contact", label: "Contact Us" },
+      { href: "/blogs", label: "Blogs" },
+      { href: "/diamondKnowledge", label: "Diamond Knowledge" },
+      { href: "/inventory", label: "Inventory", requiresAuth: true }, // Shows but redirects to login
+    ];
+  } else if (isAdmin) {
+    // Admin after login - no Contact Us
+    navigationItems = [
+      { href: "/dashboard", label: "Dashboard" },
+      { href: "/inventory", label: "Inventory" },
+      { href: "/member", label: "Members" },
+      { href: "/offer-enquiry", label: "Offers" },
+    ];
+  } else {
+    // Regular user after login - shows Contact Us
+    navigationItems = [
+      { href: "/aboutUs", label: "About us" },
+      { href: "/contact", label: "Contact Us" },
+      { href: "/blogs", label: "Blogs" },
+      { href: "/diamondKnowledge", label: "Diamond Knowledge" },
+      { href: "/inventory", label: "Inventory" },
+    ];
+  }
 
   return (
     <header
@@ -240,6 +251,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={item.requiresAuth ? handleInventoryClick : undefined}
                 className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 {item.label}
@@ -354,7 +366,12 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    if (item.requiresAuth) {
+                      handleInventoryClick(e);
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
                   className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
                 >
                   {item.label}

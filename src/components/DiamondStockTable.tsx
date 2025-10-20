@@ -17,7 +17,7 @@ import type {
   TableProps,
   FilterParams,
 } from "@/types/Diamondtable";
-
+import DiamondDetailView from "./DiamondDetailView";
 const DiamondStockTable: React.FC<TableProps> = ({
   pageSize = 20,
   onRowClick,
@@ -1584,9 +1584,15 @@ const DiamondStockTable: React.FC<TableProps> = ({
               {/* Body */}
               <tbody>
                 {paginatedData.map((row, idx) => (
-                  <tr
+                 <tr
                     key={row._id}
-                    onClick={() => onRowClick?.(row)}
+                    onClick={() => {
+                      if (onRowClick) {
+                        onRowClick(row);
+                      } else {
+                        setSelectedDiamond(row);
+                      }
+                    }}
                     style={{
                       background:
                         idx % 2 === 1
@@ -1635,7 +1641,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                             ></div>
                           </div>
                         </div>
-                        <button
+                        {/* <button
                           onClick={(e) => handleViewDetails(row, e)}
                           className="mt-1"
                         >
@@ -1643,7 +1649,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                             size={12}
                             className="text-gray-600 hover:text-indigo-600 cursor-pointer"
                           />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                     <td className="px-2 py-1 text-[12px] text-gray-700 font-medium truncate">
@@ -1844,23 +1850,24 @@ const DiamondStockTable: React.FC<TableProps> = ({
           </div>
 
           {/* Footer */}
+          {/* Footer */}
           <div
-            className="px-3 py-2 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
+            className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
             style={{
               background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
             }}
           >
-            <div className="text-[12px] text-gray-700">
+            <div className="text-sm text-gray-700">
               Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
               {Math.min(currentPage * rowsPerPage, sortedData.length)} of{" "}
               {sortedData.length} diamonds
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <span className="text-[12px] text-gray-700">Row per page</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-700">Row per page</span>
                 <select
-                  className="border border-gray-300 rounded px-2 py-0.5 text-[12px] text-gray-800 bg-white cursor-pointer"
+                  className="border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer"
                   value={rowsPerPage}
                   onChange={(e) => {
                     setRowsPerPage(Number(e.target.value));
@@ -1878,12 +1885,12 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="p-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 text-[#070b3a]"
+                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a]"
                 >
-                  <ChevronLeft size={14} className="text-[#070b3a]" />
+                  <ChevronLeft size={16} className="text-[#070b3a]" />
                 </button>
 
-                <span className="ml-2 text-[12px] text-gray-700">
+                <span className="text-sm text-gray-700 px-2">
                   Page {currentPage} of {totalPages}
                 </span>
 
@@ -1893,7 +1900,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`w-6 h-6 rounded text-[12px] font-medium ${currentPage === page ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}
+                      className={`w-7 h-7 rounded text-sm font-medium ${currentPage === page ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}
                     >
                       {page}
                     </button>
@@ -1902,10 +1909,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
 
                 {totalPages > 5 && (
                   <>
-                    <span className="text-[12px] text-gray-600">...</span>
+                    <span className="text-sm text-gray-600">...</span>
                     <button
                       onClick={() => setCurrentPage(totalPages)}
-                      className={`w-6 h-6 rounded text-[12px] font-medium ${currentPage === totalPages ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}
+                      className={`w-7 h-7 rounded text-sm font-medium ${currentPage === totalPages ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}
                     >
                       {totalPages}
                     </button>
@@ -1917,280 +1924,21 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     setCurrentPage(Math.min(totalPages, currentPage + 1))
                   }
                   disabled={currentPage === totalPages}
-                  className="p-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 text-[#070b3a]"
+                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a]"
                 >
-                  <ChevronRight size={14} className="text-[#070b3a]" />
+                  <ChevronRight size={16} className="text-[#070b3a]" />
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Detail Modal */}
+     {/* Detail Modal */}
       {selectedDiamond && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedDiamond(null)}
-        >
-          <div
-            className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Diamond Details - {selectedDiamond.STONE_NO}
-                </h2>
-                <button
-                  onClick={() => setSelectedDiamond(null)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <span className="text-2xl">×</span>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Images */}
-                <div className="space-y-4">
-                  {selectedDiamond.REAL_IMAGE && (
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-700 mb-2">
-                        Diamond Image
-                      </h3>
-                      <Image
-                        src={selectedDiamond.REAL_IMAGE}
-                        alt="Diamond"
-                        width={600}
-                        height={600}
-                        className="w-full rounded-lg border"
-                      />
-                    </div>
-                  )}
-
-                  {selectedDiamond.MP4 && (
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-700 mb-2">
-                        Video
-                      </h3>
-                      <a
-                        href={selectedDiamond.MP4}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700"
-                      >
-                        <Play size={16} />
-                        View Video
-                      </a>
-                    </div>
-                  )}
-
-                  {selectedDiamond.CERTI_PDF && (
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-700 mb-2">
-                        Certificate
-                      </h3>
-                      <a
-                        href={selectedDiamond.CERTI_PDF}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700"
-                      >
-                        <FileText size={16} />
-                        View Certificate
-                      </a>
-                    </div>
-                  )}
-
-                  {selectedDiamond.DNA && (
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-700 mb-2">
-                        DNA Report
-                      </h3>
-                      <a
-                        href={selectedDiamond.DNA}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700"
-                      >
-                        <ExternalLink size={16} />
-                        View DNA Report
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                {/* Details */}
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500">Shape</p>
-                      <p className="font-medium">{selectedDiamond.SHAPE}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Carat</p>
-                      <p className="font-medium">{selectedDiamond.CARATS}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Color</p>
-                      <p className="font-medium">{selectedDiamond.COLOR}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Clarity</p>
-                      <p className="font-medium">{selectedDiamond.CLARITY}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Cut</p>
-                      <p className="font-medium">
-                        {selectedDiamond.CUT || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Polish</p>
-                      <p className="font-medium">
-                        {selectedDiamond.POL || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Symmetry</p>
-                      <p className="font-medium">
-                        {selectedDiamond.SYM || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Fluorescence</p>
-                      <p className="font-medium">
-                        {selectedDiamond.FLOUR || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Lab</p>
-                      <p className="font-medium">{selectedDiamond.LAB}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Report No</p>
-                      <p className="font-medium">{selectedDiamond.REPORT_NO}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Measurements</p>
-                      <p className="font-medium">
-                        {selectedDiamond.MEASUREMENTS || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Location</p>
-                      <p className="font-medium">{selectedDiamond.LOCATION}</p>
-                    </div>
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <h3 className="text-sm font-medium text-gray-700 mb-3">
-                      Pricing
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-gray-500">Rap Price</p>
-                        <p className="font-medium">
-                          {formatCurrency(selectedDiamond.RAP_PRICE)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Discount</p>
-                        <p className="font-medium text-red-600">
-                          {formatPercentage(selectedDiamond.DISC_PER)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Net Rate</p>
-                        <p className="font-medium">
-                          {formatCurrency(selectedDiamond.NET_RATE)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Net Value</p>
-                        <p className="font-medium text-green-600">
-                          {formatCurrency(selectedDiamond.NET_VALUE)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {selectedDiamond.TABLE_PER && (
-                    <div className="border-t pt-4">
-                      <h3 className="text-sm font-medium text-gray-700 mb-3">
-                        Proportions
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-xs text-gray-500">Table %</p>
-                          <p className="font-medium">
-                            {selectedDiamond.TABLE_PER}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Depth %</p>
-                          <p className="font-medium">
-                            {selectedDiamond.DEPTH_PER || "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Crown Angle</p>
-                          <p className="font-medium">
-                            {selectedDiamond.CROWN_ANGLE || "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Crown Height</p>
-                          <p className="font-medium">
-                            {selectedDiamond.CROWN_HEIGHT || "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">
-                            Pavilion Angle
-                          </p>
-                          <p className="font-medium">
-                            {selectedDiamond.PAVILLION_ANGLE || "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">
-                            Pavilion Height
-                          </p>
-                          <p className="font-medium">
-                            {selectedDiamond.PAVILLION_HEIGHT || "N/A"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedDiamond.COMMENTS_1 && (
-                    <div className="border-t pt-4">
-                      <h3 className="text-sm font-medium text-gray-700 mb-2">
-                        Comments
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {selectedDiamond.COMMENTS_1}
-                      </p>
-                    </div>
-                  )}
-
-                  {selectedDiamond.REPORT_COMMENTS && (
-                    <div className="border-t pt-4">
-                      <h3 className="text-sm font-medium text-gray-700 mb-2">
-                        Report Comments
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {selectedDiamond.REPORT_COMMENTS}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DiamondDetailView
+          diamond={selectedDiamond}
+          onClose={() => setSelectedDiamond(null)}
+        />
       )}
     </>
   );

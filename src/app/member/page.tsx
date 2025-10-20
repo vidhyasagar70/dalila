@@ -241,10 +241,7 @@ export default function MembersManagement() {
         >
           Waiting Authorization
         </button>
-        <button className="ml-auto px-6 py-2.5 bg-white rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition flex items-center gap-2" style={{ border: '1px solid #f9ead4' }}>
-          <Search className="w-4 h-4" />
-          View
-        </button>
+       
       </div>
 
       {/* Filters */}
