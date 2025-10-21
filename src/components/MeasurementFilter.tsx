@@ -1,5 +1,11 @@
 "use client";
 import React from "react";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 const MEASUREMENT_FIELDS = [
   { label: "Length", key: "length" },
@@ -46,7 +52,7 @@ export default function MeasurementFilter({
   const handleChange = (
     key: keyof MeasurementFilters,
     field: "from" | "to",
-    value: string,
+    value: string
   ) => {
     const updatedMeasurements = {
       ...measurements,
@@ -58,26 +64,20 @@ export default function MeasurementFilter({
     onMeasurementChange(updatedMeasurements);
   };
 
-  const incrementValue = (
-    key: keyof MeasurementFilters,
-    field: "from" | "to",
-  ) => {
+  const incrementValue = (key: keyof MeasurementFilters, field: "from" | "to") => {
     const currentValue = parseFloat(measurements[key]?.[field] || "0.50");
     const newValue = (currentValue + 0.01).toFixed(2);
     handleChange(key, field, newValue);
   };
 
-  const decrementValue = (
-    key: keyof MeasurementFilters,
-    field: "from" | "to",
-  ) => {
+  const decrementValue = (key: keyof MeasurementFilters, field: "from" | "to") => {
     const currentValue = parseFloat(measurements[key]?.[field] || "0.50");
     const newValue = Math.max(0, currentValue - 0.01).toFixed(2);
     handleChange(key, field, newValue);
   };
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
+    <div className={`${playFair.className} mb-2 mt-1`} style={{ width: "fit-content" }}>
       <div
         className="flex items-center gap-1.5 px-2 py-1.5"
         style={{ backgroundColor: "#000033" }}
@@ -107,18 +107,13 @@ export default function MeasurementFilter({
                   type="number"
                   step="0.01"
                   value={
-                    measurements[field.key as keyof MeasurementFilters]?.from ||
-                    "0.50"
+                    measurements[field.key as keyof MeasurementFilters]?.from || "0.50"
                   }
                   onChange={(e) =>
-                    handleChange(
-                      field.key as keyof MeasurementFilters,
-                      "from",
-                      e.target.value,
-                    )
+                    handleChange(field.key as keyof MeasurementFilters, "from", e.target.value)
                   }
                   className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                  style={{ appearance: "textfield" }}
+                  style={{ appearance: "textfield", fontFamily: "inherit" }}
                 />
                 <div
                   className="flex flex-col border-l"
@@ -126,28 +121,23 @@ export default function MeasurementFilter({
                 >
                   <button
                     onClick={() =>
-                      incrementValue(
-                        field.key as keyof MeasurementFilters,
-                        "from",
-                      )
+                      incrementValue(field.key as keyof MeasurementFilters, "from")
                     }
                     className="px-1 hover:bg-gray-100 transition-colors"
-                    style={{ fontSize: "9px", lineHeight: "10px" }}
+                    style={{ fontSize: "9px", lineHeight: "10px", fontFamily: "inherit" }}
                   >
                     ▲
                   </button>
                   <button
                     onClick={() =>
-                      decrementValue(
-                        field.key as keyof MeasurementFilters,
-                        "from",
-                      )
+                      decrementValue(field.key as keyof MeasurementFilters, "from")
                     }
                     className="px-1 hover:bg-gray-100 transition-colors border-t"
                     style={{
                       fontSize: "9px",
                       lineHeight: "10px",
                       borderColor: "#e5e7eb",
+                      fontFamily: "inherit",
                     }}
                   >
                     ▼
@@ -166,18 +156,13 @@ export default function MeasurementFilter({
                   type="number"
                   step="0.01"
                   value={
-                    measurements[field.key as keyof MeasurementFilters]?.to ||
-                    "0.50"
+                    measurements[field.key as keyof MeasurementFilters]?.to || "0.50"
                   }
                   onChange={(e) =>
-                    handleChange(
-                      field.key as keyof MeasurementFilters,
-                      "to",
-                      e.target.value,
-                    )
+                    handleChange(field.key as keyof MeasurementFilters, "to", e.target.value)
                   }
                   className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                  style={{ appearance: "textfield" }}
+                  style={{ appearance: "textfield", fontFamily: "inherit" }}
                 />
                 <div
                   className="flex flex-col border-l"
@@ -185,28 +170,23 @@ export default function MeasurementFilter({
                 >
                   <button
                     onClick={() =>
-                      incrementValue(
-                        field.key as keyof MeasurementFilters,
-                        "to",
-                      )
+                      incrementValue(field.key as keyof MeasurementFilters, "to")
                     }
                     className="px-1 hover:bg-gray-100 transition-colors"
-                    style={{ fontSize: "9px", lineHeight: "10px" }}
+                    style={{ fontSize: "9px", lineHeight: "10px", fontFamily: "inherit" }}
                   >
                     ▲
                   </button>
                   <button
                     onClick={() =>
-                      decrementValue(
-                        field.key as keyof MeasurementFilters,
-                        "to",
-                      )
+                      decrementValue(field.key as keyof MeasurementFilters, "to")
                     }
                     className="px-1 hover:bg-gray-100 transition-colors border-t"
                     style={{
                       fontSize: "9px",
                       lineHeight: "10px",
                       borderColor: "#e5e7eb",
+                      fontFamily: "inherit",
                     }}
                   >
                     ▼

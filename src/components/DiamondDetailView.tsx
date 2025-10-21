@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { X, ExternalLink, FileText, Play, Download } from "lucide-react";
+import { X, ExternalLink, FileText, Play} from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 
 interface DiamondDetailViewProps {

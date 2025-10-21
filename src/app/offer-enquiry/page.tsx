@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, CheckCircle, X, RefreshCw, FileText } from "lucide-react";
+import {CheckCircle, X, RefreshCw, FileText } from "lucide-react";
 
 // Define types inline
 interface ExtendedQuotation {
@@ -28,10 +28,9 @@ interface WindowWithAPI extends Window {
 }
 
 export default function QuotationsManagement() {
-  const [quotations, setQuotations] = useState<ExtendedQuotation[]>([]);
   const [filteredQuotations, setFilteredQuotations] = useState<ExtendedQuotation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const itemsPerPage = 10;
@@ -73,7 +72,6 @@ export default function QuotationsManagement() {
           const response = await quotationApi.getAll();
           
           if (response && response.success && response.data && response.data.quotations?.length > 0) {
-            setQuotations(response.data.quotations);
             setFilteredQuotations(response.data.quotations);
             setLoading(false);
             return;
@@ -85,36 +83,19 @@ export default function QuotationsManagement() {
       
       // Use mock data if API fails or returns no data
       const mockData = generateMockData();
-      setQuotations(mockData);
       setFilteredQuotations(mockData);
       
     } catch (error) {
       console.error("Error fetching quotations:", error);
       // Use mock data on error
       const mockData = generateMockData();
-      setQuotations(mockData);
       setFilteredQuotations(mockData);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle search
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredQuotations(quotations);
-    } else {
-      const filtered = quotations.filter(q =>
-        (q.user?.firstName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (q.user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (q.user?.email?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        q.stoneNumbers.some(stone => stone.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        q.id.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredQuotations(filtered);
-    }
-    setCurrentPage(1);
-  }, [searchQuery, quotations]);
+ 
 
   // Approve quotation
   const handleApprove = async (quotationId: string) => {
@@ -139,9 +120,6 @@ export default function QuotationsManagement() {
       }
 
       // Update locally if API fails
-      setQuotations(prev => prev.map(q => 
-        q.id === quotationId ? { ...q, status: 'approved' } : q
-      ));
       setFilteredQuotations(prev => prev.map(q => 
         q.id === quotationId ? { ...q, status: 'approved' } : q
       ));
@@ -171,9 +149,6 @@ export default function QuotationsManagement() {
       }
 
       // Update locally if API fails
-      setQuotations(prev => prev.map(q => 
-        q.id === quotationId ? { ...q, status: 'rejected' } : q
-      ));
       setFilteredQuotations(prev => prev.map(q => 
         q.id === quotationId ? { ...q, status: 'rejected' } : q
       ));
@@ -330,10 +305,10 @@ export default function QuotationsManagement() {
                 <td colSpan={5} className="px-6 py-12 text-center">
                   <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                   <p className="text-gray-500 font-medium">
-                    {searchQuery ? "No quotations found matching your search" : "No quotations found"}
+                    No quotations found
                   </p>
                   <p className="text-gray-400 text-sm mt-1">
-                    {searchQuery ? "Try adjusting your search terms" : "Quotations will appear here once submitted"}
+                    Quotations will appear here once submitted
                   </p>
                 </td>
               </tr>

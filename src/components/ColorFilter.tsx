@@ -1,6 +1,12 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 // Static color options matching your UI image
 const STATIC_COLOR_OPTIONS = [
@@ -36,6 +42,7 @@ export default function ColorFilter({
       onColorChange(color);
     }
   };
+
   return (
     <div className="mb-1.5 mt-0.5" style={{ width: "360px" }}>
       <div
@@ -49,8 +56,13 @@ export default function ColorFilter({
           height={18}
           className="w-4.5 h-4.5"
         />
-        <span className="text-base font-semibold text-white">Color</span>
+        <span
+          className={`${playFair.className} text-base font-semibold text-white`}
+        >
+          Color
+        </span>
       </div>
+
       <div
         className="grid grid-cols-5 gap-1 p-1.5 bg-white"
         style={{
@@ -62,7 +74,7 @@ export default function ColorFilter({
           <button
             key={option.value}
             onClick={() => handleColorClick(option.value)}
-            className={`px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+            className={`${playFair.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
               selectedColor === option.value
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"

@@ -1,8 +1,12 @@
-// ClarityFilter.tsx
-
 "use client";
 import React from "react";
 import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 // Static filter options matching your UI image
 const STATIC_CLARITY_OPTIONS = [
@@ -10,16 +14,19 @@ const STATIC_CLARITY_OPTIONS = [
   "SI1", "SI2", "SI3", "I1", "I2", "I3"
 ];
 
+const STATIC_SPECIAL_OPTIONS = ["3EX", "EX-", "VG+", "VG-"];
 const STATIC_CUT_OPTIONS = ["EX", "VG", "GD", "FR"];
 const STATIC_POLISH_OPTIONS = ["EX", "VG", "GD", "FR"];
 const STATIC_SYMMETRY_OPTIONS = ["EX", "VG", "GD", "FR"];
 
 interface ClarityFilterProps {
   selectedClarity: string[];
+  selectedSpecial: string;
   selectedCut: string;
   selectedPolish: string;
   selectedSymmetry: string;
   onClarityChange: (clarity: string[]) => void;
+  onSpecialChange: (special: string) => void;
   onCutChange: (cut: string) => void;
   onPolishChange: (polish: string) => void;
   onSymmetryChange: (symmetry: string) => void;
@@ -27,10 +34,12 @@ interface ClarityFilterProps {
 
 export default function ClarityFilter({
   selectedClarity,
+  selectedSpecial,
   selectedCut,
   selectedPolish,
   selectedSymmetry,
   onClarityChange,
+  onSpecialChange,
   onCutChange,
   onPolishChange,
   onSymmetryChange,
@@ -43,6 +52,11 @@ export default function ClarityFilter({
       newClarity = [...selectedClarity, value];
     }
     onClarityChange(newClarity);
+  };
+
+  const handleSpecialClick = (value: string) => {
+    const newSpecial = selectedSpecial === value ? "" : value;
+    onSpecialChange(newSpecial);
   };
 
   const handleCutClick = (value: string) => {
@@ -61,7 +75,7 @@ export default function ClarityFilter({
   };
 
   return (
-    <div className="mb-1.5 mt-0.5" style={{ width: "360px" }}>
+    <div className={`${playFair.className} mb-1.5 mt-0.5`} style={{ width: "360px" }}>
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
@@ -85,7 +99,7 @@ export default function ClarityFilter({
         }}
       >
         {/* Clarity Options */}
-        <div className="grid grid-cols-6 gap-1.5 mb-2">
+        <div className="grid grid-cols-6 gap-1 mb-4 mt-4">
           {STATIC_CLARITY_OPTIONS.map((option) => (
             <button
               key={option}
@@ -101,6 +115,28 @@ export default function ClarityFilter({
                   : "0.25px solid #f9e8cd",
                 minHeight: "28px",
                 minWidth: "48px",
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+        {/* Special Options (3EX, EX-, VG+, VG-) */}
+        <div className="grid grid-cols-4 gap-1 mb-3 mt-3">
+          {STATIC_SPECIAL_OPTIONS.map((option) => (
+            <button
+              key={option}
+              onClick={() => handleSpecialClick(option)}
+              className={`px-1.5 py-1 rounded text-xs font-semibold transition-colors ${
+                selectedSpecial === option
+                  ? "text-white"
+                  : "text-white hover:opacity-80"
+              }`}
+              style={{
+                backgroundColor: "#000033",
+                border: "none",
+                minHeight: "32px",
               }}
             >
               {option}

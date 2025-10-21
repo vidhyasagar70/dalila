@@ -1,13 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
   Loader2,
-  Eye,
-  ExternalLink,
-  FileText,
-  Play,
 } from "lucide-react";
 import { diamondApi } from "@/lib/api";
 import type {

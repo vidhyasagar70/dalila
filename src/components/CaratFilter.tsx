@@ -1,6 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 interface CaratFilterProps {
   selectedMinCarat: string;
@@ -72,7 +78,7 @@ export default function CaratFilter({
   };
 
   return (
-    <div className="mb-1.5 mt-0.5" style={{ width: "360px" }}>
+    <div className={`${playFair.className} mb-1.5 mt-0.5`} style={{ width: "360px" }}>
       {/* Header */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"

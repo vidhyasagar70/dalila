@@ -5,7 +5,6 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  Eye,
   ExternalLink,
   FileText,
   Play,
@@ -220,10 +219,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
   };
 
-  const handleViewDetails = (diamond: DiamondData, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedDiamond(diamond);
-  };
+  
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {

@@ -1,5 +1,11 @@
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export interface PriceRange {
   from: string;
@@ -19,7 +25,7 @@ interface PriceLocationFilterProps {
   onFiltersChange: (filters: PriceLocationFilters) => void;
 }
 
-// Static location and lab options matching your UI image
+// Static options
 const STATIC_LOCATION_OPTIONS = ["MUM", "BEL", "DUB", "HK", "NYC"];
 const STATIC_LAB_OPTIONS = ["GIA", "IGI", "HRD", "OTHER"];
 
@@ -30,7 +36,7 @@ export default function PriceLocationFilter({
   const handlePriceChange = (
     field: "pricePerCarat" | "discount" | "totalPrice",
     type: "from" | "to",
-    value: string,
+    value: string
   ) => {
     onFiltersChange({
       ...filters,
@@ -43,7 +49,7 @@ export default function PriceLocationFilter({
 
   const incrementValue = (
     field: "pricePerCarat" | "discount" | "totalPrice",
-    type: "from" | "to",
+    type: "from" | "to"
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0.50");
     const newValue = (currentValue + 0.01).toFixed(2);
@@ -52,7 +58,7 @@ export default function PriceLocationFilter({
 
   const decrementValue = (
     field: "pricePerCarat" | "discount" | "totalPrice",
-    type: "from" | "to",
+    type: "from" | "to"
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0.50");
     const newValue = Math.max(0, currentValue - 0.01).toFixed(2);
@@ -92,7 +98,7 @@ export default function PriceLocationFilter({
   };
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
+    <div className={`${playFair.className} mb-2 mt-1`} style={{ width: "fit-content" }}>
       {/* Price Section */}
       <div
         className="flex items-center gap-1.5 px-2 py-1.5"
@@ -126,7 +132,7 @@ export default function PriceLocationFilter({
                   handlePriceChange("pricePerCarat", "from", e.target.value)
                 }
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                style={{ appearance: "textfield" }}
+                style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
               <div
                 className="flex flex-col border-l"
@@ -162,7 +168,7 @@ export default function PriceLocationFilter({
                   handlePriceChange("pricePerCarat", "to", e.target.value)
                 }
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                style={{ appearance: "textfield" }}
+                style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
               <div
                 className="flex flex-col border-l"
@@ -206,7 +212,7 @@ export default function PriceLocationFilter({
                   handlePriceChange("discount", "from", e.target.value)
                 }
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                style={{ appearance: "textfield" }}
+                style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
               <div
                 className="flex flex-col border-l"
@@ -242,7 +248,7 @@ export default function PriceLocationFilter({
                   handlePriceChange("discount", "to", e.target.value)
                 }
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                style={{ appearance: "textfield" }}
+                style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
               <div
                 className="flex flex-col border-l"
@@ -286,7 +292,7 @@ export default function PriceLocationFilter({
                   handlePriceChange("totalPrice", "from", e.target.value)
                 }
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                style={{ appearance: "textfield" }}
+                style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
               <div
                 className="flex flex-col border-l"
@@ -322,7 +328,7 @@ export default function PriceLocationFilter({
                   handlePriceChange("totalPrice", "to", e.target.value)
                 }
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
-                style={{ appearance: "textfield" }}
+                style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
               <div
                 className="flex flex-col border-l"
@@ -371,6 +377,7 @@ export default function PriceLocationFilter({
               style={{
                 minWidth: "50px",
                 minHeight: "28px",
+                fontFamily: "inherit",
                 border: isLocationSelected(location)
                   ? "1px solid #2563eb"
                   : "1px solid #f9e8cd",
@@ -406,6 +413,7 @@ export default function PriceLocationFilter({
               style={{
                 minWidth: "55px",
                 minHeight: "28px",
+                fontFamily: "inherit",
                 border: isLabSelected(lab)
                   ? "1px solid #2563eb"
                   : "1px solid #f9e8cd",

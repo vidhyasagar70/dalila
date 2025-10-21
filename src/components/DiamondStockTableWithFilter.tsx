@@ -20,12 +20,14 @@ import PriceLocationFilter, {
 } from "./Priceandloction";
 import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
+
 export default function DiamondStockTableWithFilter() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [selectedColor, setSelectedColor] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShape, setSelectedShape] = useState("ALL");
   const [selectedClarity, setSelectedClarity] = useState<string[]>([]);
+  const [selectedSpecial, setSelectedSpecial] = useState("");
   const [selectedCut, setSelectedCut] = useState("");
   const [selectedPolish, setSelectedPolish] = useState("");
   const [selectedSymmetry, setSelectedSymmetry] = useState("");
@@ -94,6 +96,11 @@ export default function DiamondStockTableWithFilter() {
     setSearchTerm("");
   };
 
+  const handleSpecialChange = (special: string) => {
+    setSelectedSpecial(special);
+    setSearchTerm("");
+  };
+
   const handleCutChange = (cut: string) => {
     setSelectedCut(cut);
     setSearchTerm("");
@@ -119,6 +126,7 @@ export default function DiamondStockTableWithFilter() {
     setSelectedColor("");
     setSelectedShape("");
     setSelectedClarity([]);
+    setSelectedSpecial("");
     setSelectedCut("");
     setSelectedPolish("");
     setSelectedSymmetry("");
@@ -129,7 +137,6 @@ export default function DiamondStockTableWithFilter() {
 
   return (
     <div className="w-full px-4 py-4 bg-[#F5F7FA] mt-35">
-      {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
       {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
       <div className="grid grid-cols-4 gap-0.5">
         <ShapeFilter
@@ -143,10 +150,12 @@ export default function DiamondStockTableWithFilter() {
         />
         <ClarityFilter
           selectedClarity={selectedClarity}
+          selectedSpecial={selectedSpecial}
           selectedCut={selectedCut}
           selectedPolish={selectedPolish}
           selectedSymmetry={selectedSymmetry}
           onClarityChange={handleClarityChange}
+          onSpecialChange={handleSpecialChange}
           onCutChange={handleCutChange}
           onPolishChange={handlePolishChange}
           onSymmetryChange={handleSymmetryChange}
@@ -164,7 +173,7 @@ export default function DiamondStockTableWithFilter() {
       </div>
 
       {/* SEARCH AND NAVIGATION ROW */}
-      <div className="flex items-center gap-3 mt-4 bg-[#faf6eb] px-4 py-2 rounded">
+      <div className="flex items-center gap-3 mt-0.1 bg-[#faf6eb] px-4 py-2 rounded">
         {/* View Mode Toggle - Left Side */}
         <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
           <button

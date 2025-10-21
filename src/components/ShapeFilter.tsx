@@ -1,9 +1,13 @@
 "use client";
-
 import React from "react";
 import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
 
-// Static shape options matching your UI image
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 const STATIC_SHAPE_OPTIONS = [
   { value: "ROUND", label: "Round", image: "/shapefilter/vector (4).png" },
   { value: "RADIANT", label: "Radiant", image: "/shapefilter/vector (3).png" },
@@ -37,7 +41,7 @@ export default function ShapeFilter({
   };
 
   return (
-     <div className="mb-1.5 mt-0.5" style={{ width: "360px" }}>
+    <div className={`${playFair.className} mb-1.5 mt-0.5`} style={{ width: "360px" }}>
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
@@ -51,38 +55,44 @@ export default function ShapeFilter({
         />
         <span className="text-base font-semibold text-white">Shape</span>
       </div>
+
       <div
-        className="grid grid-cols-4 gap-2 p-3 bg-white"
-        style={{ border: "0.25px solid #f9e8cd", borderTop: "none" }}
+        className="p-2.5 bg-white"
+        style={{
+          border: "0.25px solid #f9e8cd",
+          borderTop: "none",
+          height: "288px",
+        }}
       >
-        {STATIC_SHAPE_OPTIONS.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => handleShapeClick(option.value)}
-            className={`flex flex-col items-center justify-center gap-1.5 px-2 py-2 transition-colors ${
-              selectedShape === option.value
+        <div className="grid grid-cols-4 gap-2">
+          {STATIC_SHAPE_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => handleShapeClick(option.value)}
+              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 transition-colors ${selectedShape === option.value
                 ? "text-blue-600 bg-blue-50"
                 : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-            style={{
-              minWidth: "70px",
-              minHeight: "80px",
-              border:
-                selectedShape === option.value
-                  ? "0.25px solid #2563eb"
-                  : "0.25px solid #f9e8cd",
-            }}
-          >
-            <Image
-              src={option.image}
-              alt={option.label}
-              width={32}
-              height={32}
-              className="object-contain"
-            />
-            <span className="text-xs font-medium">{option.label}</span>
-          </button>
-        ))}
+                }`}
+              style={{
+                minWidth: "72px",
+                minHeight: "82px",
+                border:
+                  selectedShape === option.value
+                    ? "0.25px solid #2563eb"
+                    : "0.25px solid #f9e8cd",
+              }}
+            >
+              <Image
+                src={option.image}
+                alt={option.label}
+                width={28}
+                height={28}
+                className="object-contain"
+              />
+              <span className="text-xs font-medium">{option.label}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

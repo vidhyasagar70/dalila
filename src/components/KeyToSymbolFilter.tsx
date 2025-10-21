@@ -1,6 +1,12 @@
 "use client";
 
 import React from "react";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 
 const KEY_TO_SYMBOL_OPTIONS = [
   "ALL",
@@ -33,6 +39,12 @@ interface KeySymbolFilterProps {
   onFiltersChange: (filters: KeySymbolFilters) => void;
 }
 
+const FILTER_SECTIONS = [
+  { label: "Key To Symbol", key: "keyToSymbol", options: KEY_TO_SYMBOL_OPTIONS, cols: 2 },
+  { label: "Ey.Cln", key: "eyCln", options: EY_CLN_OPTIONS, cols: 4 },
+  { label: "H&A", key: "hAndA", options: H_AND_A_OPTIONS, cols: 4 },
+];
+
 export default function KeySymbolFilter({
   filters,
   onFiltersChange,
@@ -42,119 +54,74 @@ export default function KeySymbolFilter({
     const newValues = currentValues.includes(value)
       ? currentValues.filter((v) => v !== value)
       : [...currentValues, value];
-
-    onFiltersChange({
-      ...filters,
-      [category]: newValues,
-    });
+    onFiltersChange({ ...filters, [category]: newValues });
   };
 
   const isSelected = (category: keyof KeySymbolFilters, value: string) =>
     filters[category]?.includes(value) || false;
 
   return (
-    <div
-      className="mb-2 mt-1"
-      style={{ width: "fit-content", minWidth: "260px" }}
-    >
-      {/* Key To Symbol Section */}
+    <div className={`${playFair.className} mb-2 mt-1`} style={{ width: "fit-content" }}>
+      {/* Header */}
       <div
-        className="flex items-center gap-1.5 px-2 py-1.5"
-        style={{ backgroundColor: "#000033" }}
+        className="flex items-center px-2.5"
+        style={{ backgroundColor: "#000033", height: "32px" }}
       >
-        <span className="text-sm font-semibold text-white">Key To Symbol</span>
-      </div>
-      <div
-        className="bg-white p-2"
-        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
-      >
-        <div className="grid grid-cols-2 gap-1.5">
-          {KEY_TO_SYMBOL_OPTIONS.map((option) => (
-            <button
-              key={option}
-              onClick={() => toggleFilter("keyToSymbol", option)}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors break-words text-center leading-tight ${
-                isSelected("keyToSymbol", option)
-                  ? "text-blue-600 bg-blue-50"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                minHeight: "36px",
-                border: isSelected("keyToSymbol", option)
-                  ? "1px solid #2563eb"
-                  : "1px solid #f9e8cd",
-              }}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
+        <span className="text-xs font-semibold text-white">KEY TO SYMBOL</span>
       </div>
 
-      {/* Ey.Cln Section */}
+      {/* Filter Sections */}
       <div
-        className="flex items-center gap-1.5 px-2 py-1.5"
-        style={{ backgroundColor: "#000033" }}
-      >
-        <span className="text-sm font-semibold text-white">Ey.Cln</span>
-      </div>
-      <div
-        className="bg-white p-2"
+        className="bg-white p-1.5"
         style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
       >
-        <div className="grid grid-cols-4 gap-1.5">
-          {EY_CLN_OPTIONS.map((option) => (
-            <button
-              key={option}
-              onClick={() => toggleFilter("eyCln", option)}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors break-words ${
-                isSelected("eyCln", option)
-                  ? "text-blue-600 bg-blue-50"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                minHeight: "28px",
-                border: isSelected("eyCln", option)
-                  ? "1px solid #2563eb"
-                  : "1px solid #f9e8cd",
-              }}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
+        <div className="space-y-1.5">
+          {FILTER_SECTIONS.map((section) => (
+            <div key={section.key}>
+              {/* Sub-header */}
+              <div
+                className="px-2.5 py-0.5 font-semibold text-white text-xs"
+                style={{ backgroundColor: "#000033" }}
+              >
+                {section.label}
+              </div>
 
-      {/* H&A Section */}
-      <div
-        className="flex items-center gap-1.5 px-2 py-1.5"
-        style={{ backgroundColor: "#000033" }}
-      >
-        <span className="text-sm font-semibold text-white">H&A</span>
-      </div>
-      <div
-        className="bg-white p-2"
-        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
-      >
-        <div className="grid grid-cols-4 gap-1.5">
-          {H_AND_A_OPTIONS.map((option) => (
-            <button
-              key={option}
-              onClick={() => toggleFilter("hAndA", option)}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors break-words ${
-                isSelected("hAndA", option)
-                  ? "text-blue-600 bg-blue-50"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                minHeight: "28px",
-                border: isSelected("hAndA", option)
-                  ? "1px solid #2563eb"
-                  : "1px solid #f9e8cd",
-              }}
-            >
-              {option}
-            </button>
+              {/* Options */}
+              <div
+                className={`grid gap-1.5 mt-1.5 mb-1`}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: `repeat(${section.cols}, minmax(0, 1fr))`,
+                  gap: "6px",
+                }}
+              >
+                {section.options.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() =>
+                      toggleFilter(section.key as keyof KeySymbolFilters, option)
+                    }
+                    className={`px-2 py-1 text-xs font-normal transition-colors ${
+                      isSelected(section.key as keyof KeySymbolFilters, option)
+                        ? "text-blue-600 bg-blue-50"
+                        : "bg-white text-gray-700 hover:bg-gray-50"
+                    }`}
+                    style={{
+                      minWidth: "65px",
+                      minHeight: "28px",
+                      border: isSelected(
+                        section.key as keyof KeySymbolFilters,
+                        option
+                      )
+                        ? "1px solid #2563eb"
+                        : "1px solid #f9e8cd",
+                    }}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>
