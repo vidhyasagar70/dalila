@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const slides = [
     { image: "/dalila_img/banners/new/Banner_01.jpg" },
     { image: "/dalila_img/banners/new/Banner_02.jpg" },
@@ -28,7 +27,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-[calc(100vh+8rem)] flex items-center overflow-hidden bg-slate-900">
+    <section className="relative h-[calc(100vh+8rem)] flex items-center overflow-hidden bg-white">
       {/* Background Carousel */}
       <div className="absolute inset-0">
         <div
@@ -47,7 +46,6 @@ export default function HeroSection() {
                 className="object-cover"
                 priority={index === 0}
               />
-              <div className="absolute inset-0 bg-slate-900/20" />
             </div>
           ))}
         </div>
@@ -57,24 +55,32 @@ export default function HeroSection() {
       <button
         onClick={prevSlide}
         aria-label="Previous slide"
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 text-white/60 hover:text-amber-400 transition-colors"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white text-slate-900 rounded-full p-2 transition-all shadow-lg"
       >
-        <ChevronLeft className="w-8 h-8 md:w-10 md:h-10" />
+        <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
       </button>
-
       <button
         onClick={nextSlide}
         aria-label="Next slide"
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 text-white/60 hover:text-amber-400 transition-colors"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white text-slate-900 rounded-full p-2 transition-all shadow-lg"
       >
-        <ChevronRight className="w-8 h-8 md:w-10 md:h-10" />
+        <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
       </button>
 
-      {/* Main Content Container */}
-      <div className="container mx-auto px-6 py-20 md:py-32 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          {/* Content removed - images contain all details */}
-        </div>
+      {/* Slide Indicators */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+            className={`w-2 h-2 rounded-full transition-all ${
+              currentSlide === index
+                ? "bg-amber-500 w-8"
+                : "bg-white/60 hover:bg-white/80"
+            }`}
+          />
+        ))}
       </div>
     </section>
   );
