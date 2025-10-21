@@ -9,17 +9,17 @@ const playFair = Playfair_Display({
 });
 
 const STATIC_SHAPE_OPTIONS = [
-  { value: "ROUND", label: "Round", image: "/shapefilter/vector (4).png" },
-  { value: "RADIANT", label: "Radiant", image: "/shapefilter/vector (3).png" },
-  { value: "PEAR", label: "Pear", image: "/shapefilter/vector (2).png" },
-  { value: "SQUARE", label: "Square", image: "/shapefilter/vector.png" },
-  { value: "EMERALD", label: "Emerald", image: "/shapefilter/vector (5).png" },
-  { value: "OVAL", label: "Oval", image: "/shapefilter/vector-oval.png" },
-  { value: "CUSHION", label: "Cushion", image: "/shapefilter/vector (6).png" },
-  { value: "TRILLIANT", label: "Trilliant", image: "/shapefilter/vector (7).png" },
+  { value: "ROUND", label: "Round", image: "/shapefilter/round.png" },
+  { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
+  { value: "PEAR", label: "Pear", image: "/shapefilter/pear.png" },
+  { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
+  { value: "EMERALD", label: "Emerald", image: "/shapefilter/emerald.png" },
+  { value: "OVAL", label: "Oval", image: "/shapefilter/oval.png" },
+  { value: "CUSHION", label: "Cushion", image: "/shapefilter/cushion.png" },
+  { value: "TRILLIANT", label: "Trilliant", image: "/shapefilter/trilliant.png" },
   { value: "HEART", label: "Heart", image: "/shapefilter/Vector-heart.png" },
-  { value: "PRINCESS", label: "Princess", image: "/shapefilter/vector_princess.png" },
-  { value: "MARQUISE", label: "Marquise", image: "/shapefilter/vector_marque.png" },
+  { value: "PRINCESS", label: "Princess", image: "/shapefilter/princess.png" },
+  { value: "MARQUISE", label: "Marquise", image: "/shapefilter/marque.png" },
   { value: "OTHER", label: "Other", image: "/shapefilter/others.png" },
 ];
 
