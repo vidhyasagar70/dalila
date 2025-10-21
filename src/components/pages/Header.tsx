@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Loader2 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { userApi } from "@/lib/api";
 
@@ -279,7 +279,9 @@ export default function Header() {
           {/* Right Auth Buttons - Desktop/Tablet */}
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
             {isCheckingAuth ? (
-              <div className="h-8 w-24 bg-white/10 animate-pulse rounded"></div>
+              <div className="py-1 px-3 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+              </div>
             ) : !isLoggedIn ? (
               <>
                 <button
@@ -308,7 +310,9 @@ export default function Header() {
           {/* Tablet Only - Compact Buttons */}
           <div className="hidden md:flex lg:hidden items-center gap-2">
             {isCheckingAuth ? (
-              <div className="h-8 w-16 bg-white/10 animate-pulse rounded"></div>
+              <div className="py-1 px-3 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+              </div>
             ) : !isLoggedIn ? (
               <button
                 onClick={() => router.push("/login")}
@@ -329,7 +333,9 @@ export default function Header() {
           {/* Mobile - Login Button Only */}
           <div className="flex md:hidden">
             {isCheckingAuth ? (
-              <div className="h-8 w-16 bg-white/10 animate-pulse rounded"></div>
+              <div className="py-1 px-4 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+              </div>
             ) : !isLoggedIn ? (
               <button
                 onClick={() => router.push("/login")}
@@ -382,7 +388,9 @@ export default function Header() {
             {/* Mobile Auth Buttons */}
             <div className="flex flex-col gap-3">
               {isCheckingAuth ? (
-                <div className="h-12 w-full bg-white/10 animate-pulse rounded"></div>
+                <div className="flex justify-center">
+                  <Loader2 className="w-8 h-8 text-[#c89e3a] animate-spin" />
+                </div>
               ) : !isLoggedIn ? (
                 <>
                   <button

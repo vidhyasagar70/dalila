@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { Diamond, FileText, DollarSign, ShoppingCart, Pause, List, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Dashboard = () => {
@@ -20,7 +19,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FEFCF9] p-6">
+    <div className="min-h-screen bg-[#FEFCF9] p-6 mt-30">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
@@ -98,11 +97,16 @@ const Dashboard = () => {
               {diamonds.map((diamond) => (
                 <div key={diamond.id} className="rounded-xl border border-[#F9EAD4] bg-white p-4 shadow-sm">
                   <div className="mb-4 flex h-48 w-48 items-center justify-center rounded-lg bg-gradient-to-br from-gray-50 to-gray-100">
-                    <Image
-                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='diamond-gradient'%3E%3Cstop offset='0%25' style='stop-color:%23ffffff'/%3E%3Cstop offset='100%25' style='stop-color:%23e0e0e0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='80' fill='url(%23diamond-gradient)' /%3E%3Cpath d='M100 40 L140 80 L120 130 L80 130 L60 80 Z' fill='%23f5f5f5' opacity='0.8'/%3E%3C/svg%3E"
-                      alt="Diamond"
-                      className="h-40 w-40 object-contain"
-                    />
+                    <svg className="h-40 w-40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <radialGradient id={`diamond-gradient-${diamond.id}`}>
+                          <stop offset="0%" style={{ stopColor: '#ffffff' }} />
+                          <stop offset="100%" style={{ stopColor: '#e0e0e0' }} />
+                        </radialGradient>
+                      </defs>
+                      <circle cx="100" cy="100" r="80" fill={`url(#diamond-gradient-${diamond.id})`} />
+                      <path d="M100 40 L140 80 L120 130 L80 130 L60 80 Z" fill="#f5f5f5" opacity="0.8" />
+                    </svg>
                   </div>
                   <div className="space-y-1 text-center text-sm">
                     <div className="flex justify-between">
