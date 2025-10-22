@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { X, ExternalLink, FileText, Play} from "lucide-react";
+import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 
 interface DiamondDetailViewProps {
@@ -12,6 +12,9 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   diamond,
   onClose,
 }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [viewMode, setViewMode] = useState<'image' | 'video'>('image');
+
   const formatCurrency = (value: string | number) => {
     const num = parseFloat(String(value));
     return isNaN(num)
@@ -19,7 +22,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       : `$${num.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        })}`;
+        })} USD`;
   };
 
   const formatPercentage = (value: string | number) => {
@@ -27,7 +30,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
   };
 
-const formatDate = (date: string | undefined) => {
+  const formatDate = (date: string | undefined) => {
     if (!date) return "N/A";
     try {
       return new Date(date).toLocaleDateString();
@@ -36,415 +39,412 @@ const formatDate = (date: string | undefined) => {
     }
   };
 
+  const InfoItem = ({ icon, label, value, description }: { icon: React.ReactNode; label: string; value: string; description: string }) => (
+    <div className="space-y-1">
+      <div className="flex items-center gap-2 text-gray-600">
+        {icon}
+        <span className="text-xs font-medium">{label}</span>
+      </div>
+      <p className="text-base font-semibold text-gray-900">{value}</p>
+      {description && <p className="text-xs text-gray-500">{description}</p>}
+    </div>
+  );
+
+  const DetailTable = ({ title, data }: { title: string; data: [string, string | number][] }) => (
+    <div className="bg-white rounded overflow-hidden border-2 border-[#F9F1E3]">
+      <div className="bg-[#050C3A] text-white px-4 py-2.5">
+        <h3 className="font-semibold text-sm">{title}</h3>
+      </div>
+      <div className="divide-y-2 divide-[#F9F1E3]">
+        {data.map(([key, value], idx) => (
+          <div key={idx} className="grid grid-cols-2 hover:bg-gray-50">
+            <div className="px-4 py-2.5 bg-gray-50">
+              <p className="text-sm font-medium text-gray-700">{key}</p>
+            </div>
+            <div className="px-4 py-2.5">
+              <p className="text-sm text-gray-900">{value}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-7xl max-h-[95vh] overflow-hidden"
+        className="bg-white rounded-lg shadow-xl w-full max-w-7xl my-8 max-h-[95vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#050c3a] text-white px-6 py-4 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold">Diamond Details</h2>
-            <p className="text-sm text-gray-300 mt-1">
-              Stock ID: {diamond.STONE_NO}
-            </p>
-          </div>
+        <div className="bg-[#050C3A] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+          <h2 className="text-xl font-bold">Diamond Details</h2>
           <button
             onClick={onClose}
             className="text-white hover:text-gray-300 transition-colors"
           >
-            <X size={28} />
+            <X size={24} />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 overflow-y-auto max-h-[calc(95vh-80px)]">
-          {/* LEFT SIDE - Images and Media */}
-          <div className="space-y-4">
-            {/* Main Image */}
-            <div className="bg-gradient-to-b from-gray-100 to-white rounded-lg border border-gray-200 p-8">
-              {diamond.REAL_IMAGE ? (
-                <div className="relative w-full aspect-square">
-                  <Image
-                    src={diamond.REAL_IMAGE}
-                    alt={diamond.STONE_NO}
-                    fill
-                    className="object-contain"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='16'%3ENo Image Available%3C/text%3E%3C/svg%3E";
-                    }}
+        <div className="p-6">
+          {/* Top Section: Images and Info */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* LEFT - Single Image/Video */}
+            <div className="space-y-3">
+              {/* View Mode Toggle */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewMode('image')}
+                  className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                    viewMode === 'image'
+                      ? 'bg-[#050C3A] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Image
+                </button>
+                <button
+                  onClick={() => setViewMode('video')}
+                  className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                    viewMode === 'video'
+                      ? 'bg-[#050C3A] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Video
+                </button>
+              </div>
+
+              {/* Main Display Area */}
+              <div className="relative bg-gray-100 rounded-md border border-gray-200 p-6">
+                <div className="absolute top-3 right-3 flex gap-2 z-10">
+                  <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
+                    <Share2 size={16} className="text-gray-700" />
+                  </button>
+                  <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
+                    <Download size={16} className="text-gray-700" />
+                  </button>
+                  <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
+                    <Heart size={16} className="text-gray-700" />
+                  </button>
+                </div>
+
+                {viewMode === 'image' ? (
+                  diamond.REAL_IMAGE ? (
+                    <div className="relative w-full aspect-square">
+                      <Image
+                        src={diamond.REAL_IMAGE}
+                        alt={diamond.STONE_NO}
+                        fill
+                        className="object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='16'%3ENo Image%3C/text%3E%3C/svg%3E";
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full aspect-square flex items-center justify-center text-gray-400">
+                      No Image Available
+                    </div>
+                  )
+                ) : (
+                  diamond.MP4 ? (
+                    <div className="relative w-full aspect-square">
+                      <video
+                        src={diamond.MP4}
+                        controls
+                        className="w-full h-full object-contain"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  ) : (
+                    <div className="w-full aspect-square flex items-center justify-center text-gray-400">
+                      <div className="text-center">
+                        <Play size={48} className="mx-auto mb-2 text-gray-300" />
+                        <p>No Video Available</p>
+                      </div>
+                    </div>
+                  )
+                )}
+
+                <button className="absolute bottom-3 right-3 flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
+                  <Search size={14} className="text-gray-700" />
+                  <span className="text-xs text-gray-700 font-medium">Search Similar</span>
+                </button>
+              </div>
+            </div>
+
+            {/* RIGHT - Diamond Info */}
+            <div className="space-y-4">
+              {/* Title Section with Rating */}
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-500 mb-1">Diamond Images</p>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{diamond.SHAPE}</h1>
+                  <p className="text-sm text-gray-600">Expertly cut for exceptional sparkle and clarity.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex text-yellow-400 text-base">
+                    ★★★★★
+                  </div>
+                  <span className="text-sm text-gray-600">5.0(258)</span>
+                </div>
+              </div>
+
+              {/* Price Section */}
+              <div className="py-2">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-3xl font-bold text-gray-900">
+                    {formatCurrency(diamond.NET_VALUE)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Basic Information */}
+              <div className="bg-white rounded-md border-t-2 border-[#F9F1E3] p-4">
+                <h3 className="text-base font-bold text-gray-900 mb-4">Basic Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <InfoItem
+                    icon={
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                      </svg>
+                    }
+                    label="Shape"
+                    value={diamond.SHAPE}
+                    description="Classic cut known for maximum sparkle."
+                  />
+                  <InfoItem
+                    icon={
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10"/>
+                      </svg>
+                    }
+                    label="Carat"
+                    value={String(diamond.CARATS || diamond.SIZE)}
+                    description="Measures a diamond's size and weight."
+                  />
+                  <InfoItem
+                    icon={
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                      </svg>
+                    }
+                    label="Color"
+                    value={diamond.COLOR}
+                    description="Grades a diamond's whiteness and purity."
+                  />
+                  <InfoItem
+                    icon={
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                      </svg>
+                    }
+                    label="Clarity"
+                    value={diamond.CLARITY}
+                    description="Indicates a diamond's internal and external flaws."
                   />
                 </div>
-              ) : (
-                <div className="w-full aspect-square flex items-center justify-center text-gray-400">
-                  No Image Available
-                </div>
-              )}
-            </div>
+              </div>
 
-            {/* Additional Images */}
-            {(diamond.ARROW_IMAGE || diamond.HEART_IMAGE) && (
-              <div className="grid grid-cols-2 gap-4">
-                {diamond.ARROW_IMAGE && (
-                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">
-                      Arrow Image
-                    </p>
-                    <a
-                      href={diamond.ARROW_IMAGE}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-[#050c3a] hover:opacity-80 text-sm"
-                    >
-                      <ExternalLink size={16} />
-                      View Image
-                    </a>
+              {/* Quantity and Add to Cart - Same Row */}
+              <div className="border-t-2 border-[#F9F1E3] pt-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-gray-700">Quantity</span>
+                    <div className="flex items-center border-2 border-[#F9F1E3] rounded overflow-hidden">
+                      <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="px-3 py-1.5 hover:bg-gray-100 text-gray-700 font-medium"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        value={quantity}
+                        readOnly
+                        className="w-10 text-center border-x-2 border-[#F9F1E3] py-1.5 text-sm"
+                      />
+                      <button
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="px-3 py-1.5 hover:bg-gray-100 text-gray-700 font-medium"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
+                  <button className="flex-1 bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm">
+                    ADD TO CART
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Tables Section - 3 Columns with Key-Value Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Details */}
+            <DetailTable
+              title="Details"
+              data={[
+                ["Packet No", diamond.STONE_NO || "N/A"],
+                ["Report No", diamond.REPORT_NO || "N/A"],
+                ["Lab", diamond.LAB || "N/A"],
+                ["Rap.($)", diamond.RAP_PRICE || "N/A"],
+                ["Shape", diamond.SHAPE || "N/A"],
+                ["Carat", diamond.CARATS || diamond.SIZE || "N/A"],
+                ["Color", diamond.COLOR || "N/A"],
+                ["Clarity", diamond.CLARITY || "N/A"],
+                ["Shade", diamond.TINGE || "NO BGM"],
+                ["Cut", diamond.CUT || "N/A"],
+                ["Polish", diamond.POL || "N/A"],
+                ["Symmetry", diamond.SYM || "N/A"],
+                ["Fluorescence", diamond.FLOUR || "N/A"]
+              ]}
+            />
+
+            {/* Measurements */}
+            <DetailTable
+              title="Measurements"
+              data={[
+                ["Table%", diamond.TABLE_PER || "N/A"],
+                ["Depth%", diamond.DEPTH_PER || "N/A"],
+                ["Length", diamond.MEASUREMENTS?.split('x')[0]?.trim() || "N/A"],
+                ["Width", diamond.MEASUREMENTS?.split('x')[1]?.trim() || "N/A"],
+                ["Depth", diamond.MEASUREMENTS?.split('x')[2]?.trim() || "N/A"],
+                ["Ratio", "-"],
+                ["Crown Angle", diamond.CROWN_ANGLE || "N/A"],
+                ["Crown Height", diamond.CROWN_HEIGHT || "N/A"],
+                ["Pav Angle", diamond.PAVILLION_ANGLE || "N/A"],
+                ["Pav Height", diamond.PAVILLION_HEIGHT || "N/A"],
+                ["Girdle", "THN"],
+                ["Culet", "NON"]
+              ]}
+            />
+
+            {/* Inclusion Details */}
+            <DetailTable
+              title="Inclusion Details"
+              data={[
+                ["Center Natts", diamond.CN || "MINOR"],
+                ["Side Natts", diamond.SN || "NONE"],
+                ["Center White", diamond.CW || "VERY SLIGHT"],
+                ["Side White", diamond.SW || "SLIGHT"],
+                ["Table Open", "TO-O"],
+                ["Crown Open", "CO-O"],
+                ["Pavilion Open", "PO-O"],
+                ["Eye Clean", "100%"],
+                ["Heart & Arrow", diamond.HA || "-"],
+                ["Brilliancy", "EX"],
+                ["Type2 Cert", "-"],
+                ["Country Of Origin", "-"]
+              ]}
+            />
+          </div>
+
+          {/* Comments Section */}
+          <div className="mt-6 bg-white rounded overflow-hidden border-2 border-[#F9F1E3]">
+            <div className="bg-[#050C3A] text-white px-4 py-2.5">
+              <h3 className="font-semibold text-sm">Additional Information</h3>
+            </div>
+            <div className="divide-y-2 divide-[#F9F1E3]">
+              <div className="grid grid-cols-2 hover:bg-gray-50">
+                <div className="px-4 py-3 bg-gray-50">
+                  <p className="text-sm font-medium text-gray-700">Key to Symbols</p>
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-sm text-gray-900">{diamond.KEY_TO_SYMBOLS || "N/A"}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 hover:bg-gray-50">
+                <div className="px-4 py-3 bg-gray-50">
+                  <p className="text-sm font-medium text-gray-700">Report Comments</p>
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-sm text-gray-900">{diamond.REPORT_COMMENTS || "-"}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 hover:bg-gray-50">
+                <div className="px-4 py-3 bg-gray-50">
+                  <p className="text-sm font-medium text-gray-700">HRC Comments</p>
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-sm text-gray-900">{diamond.COMMENTS_1 || "N/A"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Media Links */}
+          {(diamond.CERTI_PDF || diamond.MP4 || diamond.DNA || diamond.ARROW_IMAGE || diamond.HEART_IMAGE) && (
+            <div className="mt-6 bg-white rounded border-2 border-[#F9F1E3] p-4">
+              <h3 className="text-sm font-semibold text-gray-800 mb-3">Documents & Media</h3>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                {diamond.CERTI_PDF && (
+                  <a
+                    href={diamond.CERTI_PDF}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 text-[#050C3A] hover:opacity-80 p-3 bg-gray-50 rounded text-center"
+                  >
+                    <FileText size={24} />
+                    <span className="text-xs font-medium">Certificate</span>
+                  </a>
+                )}
+                {diamond.MP4 && (
+                  <a
+                    href={diamond.MP4}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 text-[#050C3A] hover:opacity-80 p-3 bg-gray-50 rounded text-center"
+                  >
+                    <Play size={24} />
+                    <span className="text-xs font-medium">Video</span>
+                  </a>
+                )}
+                {diamond.ARROW_IMAGE && (
+                  <a
+                    href={diamond.ARROW_IMAGE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 text-[#050C3A] hover:opacity-80 p-3 bg-gray-50 rounded text-center"
+                  >
+                    <ExternalLink size={24} />
+                    <span className="text-xs font-medium">Arrow Image</span>
+                  </a>
                 )}
                 {diamond.HEART_IMAGE && (
-                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                    <p className="text-xs text-gray-600 mb-2 font-medium">
-                      Heart Image
-                    </p>
-                    <a
-                      href={diamond.HEART_IMAGE}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-[#050c3a] hover:opacity-80 text-sm"
-                    >
-                      <ExternalLink size={16} />
-                      View Image
-                    </a>
-                  </div>
+                  <a
+                    href={diamond.HEART_IMAGE}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 text-[#050C3A] hover:opacity-80 p-3 bg-gray-50 rounded text-center"
+                  >
+                    <ExternalLink size={24} />
+                    <span className="text-xs font-medium">Heart Image</span>
+                  </a>
                 )}
-              </div>
-            )}
-
-            {/* Media Links */}
-            <div className="bg-[#faf6eb] rounded-lg border border-gray-200 p-4 space-y-3">
-              <h3 className="text-sm font-semibold text-gray-800 mb-3">
-                Documents & Media
-              </h3>
-              {diamond.CERTI_PDF && (
-                <a
-                  href={diamond.CERTI_PDF}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-[#050c3a] hover:opacity-80 p-2 bg-white rounded border border-gray-200"
-                >
-                  <FileText size={20} />
-                  <span className="text-sm font-medium">
-                    View Certificate PDF
-                  </span>
-                </a>
-              )}
-              {diamond.MP4 && (
-                <a
-                  href={diamond.MP4}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-[#050c3a] hover:opacity-80 p-2 bg-white rounded border border-gray-200"
-                >
-                  <Play size={20} />
-                  <span className="text-sm font-medium">Watch Video</span>
-                </a>
-              )}
-              {diamond.DNA && (
-                <a
-                  href={diamond.DNA}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-[#050c3a] hover:opacity-80 p-2 bg-white rounded border border-gray-200"
-                >
-                  <ExternalLink size={20} />
-                  <span className="text-sm font-medium">View DNA Report</span>
-                </a>
-              )}
-            </div>
-          </div>
-
-          {/* RIGHT SIDE - Details */}
-          <div className="space-y-4">
-            {/* Price Section */}
-            <div className="bg-[#faf6eb] rounded-lg border border-gray-200 p-6">
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-4xl font-bold text-gray-900">
-                  {formatCurrency(diamond.NET_VALUE)}
-                </span>
-                {diamond.DISC_PER && (
-                  <span className="text-lg font-semibold text-red-600">
-                    {formatPercentage(diamond.DISC_PER)} OFF
-                  </span>
-                )}
-              </div>
-              {diamond.RAP_PRICE && (
-                <p className="text-sm text-gray-600">
-                  Rap Price:{" "}
-                  <span className="line-through">
-                    {formatCurrency(diamond.RAP_PRICE)}
-                  </span>
-                </p>
-              )}
-              {diamond.NET_RATE && (
-                <p className="text-sm text-gray-600 mt-1">
-                  Net Rate: {formatCurrency(diamond.NET_RATE)} per carat
-                </p>
-              )}
-            </div>
-
-            {/* Basic Information */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                Basic Information
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Shape</p>
-                  <p className="font-semibold text-gray-900">{diamond.SHAPE}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Carat Weight</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.CARATS}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Color</p>
-                  <p className="font-semibold text-gray-900">{diamond.COLOR}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Clarity</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.CLARITY}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Cut</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.CUT || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Polish</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.POL || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Symmetry</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.SYM || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Fluorescence</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.FLOUR || "N/A"}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Certificate Information */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                Certificate Information
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Lab</p>
-                  <p className="font-semibold text-gray-900">{diamond.LAB}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Report Number</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.REPORT_NO}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Report Date</p>
-                  <p className="font-semibold text-gray-900">
-                    {formatDate(diamond.REPORT_DATE)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Location</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.LOCATION}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Measurements & Proportions */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                Measurements & Proportions
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Measurements</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.MEASUREMENTS || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Table %</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.TABLE_PER || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Depth %</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.DEPTH_PER || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Crown Angle</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.CROWN_ANGLE || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Crown Height</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.CROWN_HEIGHT || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Pavilion Angle</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.PAVILLION_ANGLE || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Pavilion Height</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.PAVILLION_HEIGHT || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1">Stage</p>
-                  <p className="font-semibold text-gray-900">
-                    {diamond.STAGE || "N/A"}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Additional Details */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
-              <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                Additional Details
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {diamond.TINGE && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">Tinge</p>
-                    <p className="font-semibold text-gray-900">
-                      {diamond.TINGE}
-                    </p>
-                  </div>
-                )}
-                {diamond.CN && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">CN</p>
-                    <p className="font-semibold text-gray-900">{diamond.CN}</p>
-                  </div>
-                )}
-                {diamond.CW && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">CW</p>
-                    <p className="font-semibold text-gray-900">{diamond.CW}</p>
-                  </div>
-                )}
-                {diamond.SN && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">SN</p>
-                    <p className="font-semibold text-gray-900">{diamond.SN}</p>
-                  </div>
-                )}
-                {diamond.SW && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">SW</p>
-                    <p className="font-semibold text-gray-900">{diamond.SW}</p>
-                  </div>
-                )}
-                {diamond.HA && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">H&A</p>
-                    <p className="font-semibold text-gray-900">{diamond.HA}</p>
-                  </div>
-                )}
-                {diamond.BRANCH && (
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">Branch</p>
-                    <p className="font-semibold text-gray-900">
-                      {diamond.BRANCH}
-                    </p>
-                  </div>
+                {diamond.DNA && (
+                  <a
+                    href={diamond.DNA}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 text-[#050C3A] hover:opacity-80 p-3 bg-gray-50 rounded text-center"
+                  >
+                    <ExternalLink size={24} />
+                    <span className="text-xs font-medium">DNA Report</span>
+                  </a>
                 )}
               </div>
             </div>
-
-            {/* Characteristics */}
-            {(diamond.KEY_TO_SYMBOLS ||
-              diamond.CLARITY_CHARACTERISTICS ||
-              diamond.COMMENTS_1 ||
-              diamond.REPORT_COMMENTS) && (
-              <div className="bg-white rounded-lg border border-gray-200 p-5">
-                <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                  Characteristics & Comments
-                </h3>
-                <div className="space-y-3">
-                  {diamond.KEY_TO_SYMBOLS && (
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">
-                        Key to Symbols
-                      </p>
-                      <p className="text-sm text-gray-900">
-                        {diamond.KEY_TO_SYMBOLS}
-                      </p>
-                    </div>
-                  )}
-                  {diamond.CLARITY_CHARACTERISTICS && (
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">
-                        Clarity Characteristics
-                      </p>
-                      <p className="text-sm text-gray-900">
-                        {diamond.CLARITY_CHARACTERISTICS}
-                      </p>
-                    </div>
-                  )}
-                  {diamond.COMMENTS_1 && (
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Comments</p>
-                      <p className="text-sm text-gray-900">
-                        {diamond.COMMENTS_1}
-                      </p>
-                    </div>
-                  )}
-                  {diamond.REPORT_COMMENTS && (
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">
-                        Report Comments
-                      </p>
-                      <p className="text-sm text-gray-900">
-                        {diamond.REPORT_COMMENTS}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>

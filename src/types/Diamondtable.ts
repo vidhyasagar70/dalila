@@ -43,6 +43,7 @@ export interface DiamondData {
   ARROW_IMAGE?: string;
   HA?: string;
   CLARITY_CHARACTERISTICS?: string;
+  SIZE?: number;
 }
 
 export interface TableProps {
@@ -58,6 +59,7 @@ export interface TableProps {
   selectedCut?: string;
   selectedPolish?: string;
   selectedSymmetry?: string;
+  onSelectionChange?: (selectedIds: string[], selectedDiamonds: DiamondData[]) => void;
 }
 
 export interface FilterParams {

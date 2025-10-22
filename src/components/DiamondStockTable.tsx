@@ -17,6 +17,12 @@ import type {
   FilterParams,
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
+import { Playfair_Display } from "next/font/google";
+
+const playFair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 const DiamondStockTable: React.FC<TableProps> = ({
   pageSize = 20,
   onRowClick,
@@ -30,6 +36,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedCut = "",
   selectedPolish = "",
   selectedSymmetry = "",
+   onSelectionChange
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -226,13 +233,19 @@ const DiamondStockTable: React.FC<TableProps> = ({
       const allIds = new Set(paginatedData.map((row) => row._id));
       setSelectedRows(allIds);
       setSelectAll(true);
+      // Notify parent of selection change
+      if (onSelectionChange) {
+        onSelectionChange(Array.from(allIds), paginatedData);
+      }
     } else {
       setSelectedRows(new Set());
       setSelectAll(false);
+      if (onSelectionChange) {
+        onSelectionChange([], []);
+      }
     }
   };
-
-  const handleRowSelect = (id: string, checked: boolean) => {
+ const handleRowSelect = (id: string, checked: boolean) => {
     const newSelected = new Set(selectedRows);
     if (checked) {
       newSelected.add(id);
@@ -241,8 +254,13 @@ const DiamondStockTable: React.FC<TableProps> = ({
       setSelectAll(false);
     }
     setSelectedRows(newSelected);
+    
+    // Get the selected diamond objects
+    const selectedDiamonds = data.filter(d => newSelected.has(d._id));
+    if (onSelectionChange) {
+      onSelectionChange(Array.from(newSelected), selectedDiamonds);
+    }
   };
-
   // Loading state
   if (loading) {
     return (
@@ -329,9 +347,22 @@ const DiamondStockTable: React.FC<TableProps> = ({
       </div>
     );
   }
+
+   const hasActiveFilters = 
+    (searchTerm && searchTerm.trim()) ||
+    (selectedShape && selectedShape !== "ALL") ||
+    (selectedColor && selectedColor !== "ALL") ||
+    selectedClarity.length > 0 ||
+    (selectedCut && selectedCut.trim()) ||
+    (selectedPolish && selectedPolish.trim()) ||
+    (selectedSymmetry && selectedSymmetry.trim()) ||
+    (selectedFluor && selectedFluor !== "ALL") ||
+    (selectedMinCarat && selectedMinCarat.trim()) ||
+    (selectedMaxCarat && selectedMaxCarat.trim());
+
   return (
     <>
-      <div className="w-full flex flex-col bg-gray-50 p-4">
+      <div className={`w-full flex flex-col bg-gray-50 p-4 ${playFair.className}`}>
         {/* Active Filters Display */}
         {(searchTerm ||
           selectedShape ||
@@ -398,7 +429,8 @@ const DiamondStockTable: React.FC<TableProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
               {/* Header */}
-              <thead className="bg-[#050c3a] text-white sticky top-0 z-10">
+              <thead className={`bg-[#050c3a] text-white sticky top-0 z-10 ${playFair.className}`}>
+
                 <tr>
                   <th className="w-12 px-2 py-3 text-center">
                     <input

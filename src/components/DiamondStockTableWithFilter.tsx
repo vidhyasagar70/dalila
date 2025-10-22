@@ -4,6 +4,8 @@
 import React, { useState } from "react";
 import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
+import { DiamondData } from "@/types/Diamondtable";
+import DiamondComparisonPage from "./DiamondComparisonPage";
 
 import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
@@ -20,6 +22,8 @@ import PriceLocationFilter, {
 } from "./Priceandloction";
 import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
+import CompareButton from "./CompareButton";
+import EmailButton from "./EmailButton";
 
 export default function DiamondStockTableWithFilter() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -34,6 +38,8 @@ export default function DiamondStockTableWithFilter() {
   const [selectedFluor, setSelectedFluor] = useState("");
   const [selectedMinCarat, setSelectedMinCarat] = useState("");
   const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
+  const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
 
   const [measurements, setMeasurements] = useState({
     length: { from: "0.50", to: "0.50" },
@@ -122,6 +128,16 @@ export default function DiamondStockTableWithFilter() {
     setSelectedMaxCarat(max);
   };
 
+  const handleSelectionChange = (selectedIds: string[], diamonds: DiamondData[]) => {
+    setSelectedDiamonds(diamonds);
+  };
+
+  const handleCompare = () => {
+    if (selectedDiamonds.length > 0) {
+      setShowComparison(true);
+    }
+  };
+
   const handleResetFilters = () => {
     setSelectedColor("");
     setSelectedShape("");
@@ -173,42 +189,56 @@ export default function DiamondStockTableWithFilter() {
       </div>
 
       {/* SEARCH AND NAVIGATION ROW */}
-      <div className="flex items-center gap-3 mt-0.1 bg-[#faf6eb] px-4 py-2 rounded">
+      <div className="flex items-center gap-3 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded">
         {/* View Mode Toggle - Left Side */}
-        <div className="flex items-center gap-0 bg-white rounded overflow-hidden">
+        <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
           <button
             onClick={() => setViewMode("list")}
-            className={`p-1.5 transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
               viewMode === "list"
                 ? "bg-[#000033] text-white"
-                : "bg-white text-gray-600 hover:bg-gray-100"
+                : "bg-[#faf6eb] text-gray-600"
             }`}
-            title="List View"
+            title="Table View"
           >
             <List className="w-4 h-4" />
+            <span className="text-sm font-medium">Table View</span>
           </button>
           <button
             onClick={() => setViewMode("grid")}
-            className={`p-1.5 transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
               viewMode === "grid"
                 ? "bg-[#000033] text-white"
-                : "bg-white text-gray-600 hover:bg-gray-100"
+                : "bg-[#faf6eb] text-gray-600"
             }`}
             title="Grid View"
           >
             <Grid3x3 className="w-4 h-4" />
+            <span className="text-sm font-medium">Grid View</span>
           </button>
         </div>
 
         {/* Spacer to push items to the right */}
         <div className="flex-1"></div>
 
-        {/* Search Bar and Advanced Filters - Right Side */}
+        {/* Search Bar and Action Buttons - Right Side */}
         <div className="flex items-center gap-2">
           <SearchBar onSearch={handleSearch} />
+          
+          <CompareButton
+            selectedCount={selectedDiamonds.length}
+            onCompare={handleCompare}
+            disabled={selectedDiamonds.length === 0}
+          />
+
+          <EmailButton
+            selectedCount={selectedDiamonds.length}
+            onEmail={() => console.log('Email clicked')}
+          />
+
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white transition-colors shadow-sm rounded"
+            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded"
           >
             <Image
               src="/filtersicon/filter-add.png"
@@ -219,29 +249,30 @@ export default function DiamondStockTableWithFilter() {
             />
             <span className="text-sm font-medium">Show Advanced Filters</span>
             {showFilters ? (
-              <ChevronUp className="w-3.5 h-3.5" />
+              <ChevronUp className="w-4 h-4" />
             ) : (
-              <ChevronDown className="w-3.5 h-3.5" />
+              <ChevronDown className="w-4 h-4" />
             )}
           </button>
 
           <button
             onClick={handleResetFilters}
-            className="flex items-center gap-2 px-4 py-1.5 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
+            className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
             title="Reset All Filters"
           >
             <Image
               src="/filtersicon/filter-remove.png"
               alt="Reset"
-              width={20}
-              height={20}
-              className="w-5 h-5"
+              width={18}
+              height={18}
+              className="w-4.5 h-4.5"
             />
             <span className="text-sm font-medium">Reset Filters</span>
           </button>
         </div>
       </div>
 
+      {/* Advanced Filters Section */}
       {showFilters && (
         <div className="grid grid-cols-5 gap-4 mt-4">
           <InclusionFilter
@@ -261,7 +292,6 @@ export default function DiamondStockTableWithFilter() {
               filters={priceLocationFilters}
               onFiltersChange={setPriceLocationFilters}
             />
-            
           </div>
           <MeasurementFilter
             measurements={measurements}
@@ -270,35 +300,45 @@ export default function DiamondStockTableWithFilter() {
         </div>
       )}
 
-     {viewMode === "list" ? (
-  <DiamondStockTable
-    searchTerm={searchTerm}
-    selectedShape={selectedShape}
-    selectedColor={selectedColor}
-    selectedMinCarat={selectedMinCarat}
-    selectedMaxCarat={selectedMaxCarat}
-    selectedFluor={selectedFluor}
-    selectedClarity={selectedClarity}
-    selectedCut={selectedCut}
-    selectedPolish={selectedPolish}
-    selectedSymmetry={selectedSymmetry}
-    pageSize={10}
-  />
-) : (
-  <DiamondGridView
-    searchTerm={searchTerm}
-    selectedShape={selectedShape}
-    selectedColor={selectedColor}
-    selectedMinCarat={selectedMinCarat}
-    selectedMaxCarat={selectedMaxCarat}
-    selectedFluor={selectedFluor}
-    selectedClarity={selectedClarity}
-    selectedCut={selectedCut}
-    selectedPolish={selectedPolish}
-    selectedSymmetry={selectedSymmetry}
-    pageSize={12}
-  />
-)}
+      {/* Table or Grid View */}
+      {viewMode === "list" ? (
+        <DiamondStockTable
+          searchTerm={searchTerm}
+          selectedShape={selectedShape}
+          selectedColor={selectedColor}
+          selectedMinCarat={selectedMinCarat}
+          selectedMaxCarat={selectedMaxCarat}
+          selectedFluor={selectedFluor}
+          selectedClarity={selectedClarity}
+          selectedCut={selectedCut}
+          selectedPolish={selectedPolish}
+          selectedSymmetry={selectedSymmetry}
+          onSelectionChange={handleSelectionChange}
+          pageSize={10}
+        />
+      ) : (
+        <DiamondGridView
+          searchTerm={searchTerm}
+          selectedShape={selectedShape}
+          selectedColor={selectedColor}
+          selectedMinCarat={selectedMinCarat}
+          selectedMaxCarat={selectedMaxCarat}
+          selectedFluor={selectedFluor}
+          selectedClarity={selectedClarity}
+          selectedCut={selectedCut}
+          selectedPolish={selectedPolish}
+          selectedSymmetry={selectedSymmetry}
+          pageSize={12}
+        />
+      )}
+
+      {/* Comparison Modal */}
+      {showComparison && (
+        <DiamondComparisonPage
+          diamonds={selectedDiamonds}
+          onClose={() => setShowComparison(false)}
+        />
+      )}
     </div>
   );
 }

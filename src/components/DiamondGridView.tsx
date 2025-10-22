@@ -12,6 +12,7 @@ import type {
   FilterParams,
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
+
 const DiamondGridView: React.FC<TableProps> = ({
   pageSize = 20,
   onRowClick,
@@ -140,13 +141,6 @@ const DiamondGridView: React.FC<TableProps> = ({
     currentPage * rowsPerPage
   );
 
-  const formatCurrency = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num)
-      ? "N/A"
-      : `$${num.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-  };
-
   // Loading state
   if (loading) {
     return (
@@ -202,7 +196,7 @@ const DiamondGridView: React.FC<TableProps> = ({
 
   return (
     <>
-      <div className="w-full flex flex-col bg-gray-50 p-4">
+      <div className="w-full flex flex-col bg-white p-6">
         {/* Active Filters Display */}
         {(searchTerm ||
           selectedShape ||
@@ -214,7 +208,7 @@ const DiamondGridView: React.FC<TableProps> = ({
           selectedFluor ||
           selectedMinCarat ||
           selectedMaxCarat) && (
-          <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
+          <div className="mb-4 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
             <span className="font-medium">Active Filters:</span>
             {selectedShape && selectedShape !== "ALL" && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
@@ -265,27 +259,37 @@ const DiamondGridView: React.FC<TableProps> = ({
         )}
 
         {/* Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 mb-6">
           {paginatedData.map((diamond) => (
-           <div
+            <div
               key={diamond._id}
-              onClick={() => {
-                if (onRowClick) {
-                  onRowClick(diamond);
-                } else {
-                  setSelectedDiamond(diamond);
-                }
-              }}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer overflow-hidden border border-gray-200"
+              className="bg-white rounded-lg hover:shadow-lg transition-all duration-300 overflow-hidden relative"
+              style={{ border: '1px solid #f9e8cd' }}
             >
+              {/* Heart Icon */}
+              <button className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white rounded-full transition-colors">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#666"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+
               {/* Image Container */}
-              <div className="relative w-full aspect-square bg-gradient-to-b from-gray-100 to-white p-6">
+              <div className="relative w-full h-40 bg-gray-50 p-3">
                 {diamond.REAL_IMAGE ? (
                   <Image
                     src={diamond.REAL_IMAGE}
                     alt={diamond.STONE_NO}
                     fill
-                    className="object-contain"
+                    className="object-contain p-2"
                     onError={(e) => {
                       e.currentTarget.src =
                         "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23f3f4f6' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -299,30 +303,47 @@ const DiamondGridView: React.FC<TableProps> = ({
               </div>
 
               {/* Diamond Info */}
-              <div className="p-3 space-y-2 bg-white">
-                {/* Color and Shape Row */}
-                <div className="flex items-center justify-between">
-                  <div className="text-sm">
-                    <span className="text-gray-600">Color: </span>
-                    <span className="font-semibold text-gray-800">{diamond.COLOR}</span>
-                  </div>
-                  <div className="text-sm font-medium text-gray-800">
-                    {diamond.SHAPE}
-                  </div>
+              <div className="px-4 pb-4 pt-2 space-y-1 bg-white">
+                {/* Shape */}
+                <div className="text-sm">
+                  <span className="font-semibold text-gray-900">Shape: </span>
+                  <span className="text-gray-700">{diamond.SHAPE}</span>
                 </div>
 
-                {/* Price - Large and Prominent */}
-                <div className="text-center py-1">
-                  <div className="text-2xl font-bold text-gray-900">
-                    {formatCurrency(diamond.NET_VALUE)}
-                  </div>
+                {/* Carat */}
+                <div className="text-sm">
+                  <span className="font-semibold text-gray-900">Carat: </span>
+                  <span className="text-gray-700">{diamond.CARATS || diamond.SIZE}</span>
                 </div>
 
-                {/* Stone ID - Bottom */}
-                <div className="text-center pt-1 border-t border-gray-100">
-                  <div className="text-xs text-gray-500">
-                    ID: {diamond.STONE_NO}
-                  </div>
+                {/* Color */}
+                <div className="text-sm">
+                  <span className="font-semibold text-gray-900">Color: </span>
+                  <span className="text-gray-700">{diamond.COLOR}</span>
+                </div>
+
+                {/* Clarity */}
+                <div className="text-sm mb-3">
+                  <span className="font-semibold text-gray-900">Clarity: </span>
+                  <span className="text-gray-700">{diamond.CLARITY}</span>
+                </div>
+
+                {/* View Details Button */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (onRowClick) {
+                        onRowClick(diamond);
+                      } else {
+                        setSelectedDiamond(diamond);
+                      }
+                    }}
+                    className="mt-2 px-4 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 rounded"
+                    style={{ border: '1px solid #d1d5db' }}
+                  >
+                    View Details
+                  </button>
                 </div>
               </div>
             </div>
@@ -330,24 +351,25 @@ const DiamondGridView: React.FC<TableProps> = ({
         </div>
 
         {/* Footer/Pagination */}
-        {/* Footer/Pagination */}
         <div
-          className="px-4 py-3 bg-white rounded-lg shadow-sm flex items-center justify-between"
+          className="px-6 py-4 bg-white rounded-lg shadow-sm flex items-center justify-between"
           style={{
             background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
+            border: '0.5px solid #f9e8cd'
           }}
         >
-          <div className="text-sm text-gray-700">
+          <div className="text-sm text-gray-700 font-medium">
             Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
             {Math.min(currentPage * rowsPerPage, data.length)} of {data.length}{" "}
             diamonds
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700">Items per page</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-700 font-medium">Items per page</span>
               <select
-                className="border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer"
+                className="border rounded px-3 py-2 text-sm text-gray-800 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#070b3a]"
+                style={{ border: '0.5px solid #f9e8cd' }}
                 value={rowsPerPage}
                 onChange={(e) => {
                   setRowsPerPage(Number(e.target.value));
@@ -365,12 +387,13 @@ const DiamondGridView: React.FC<TableProps> = ({
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a]"
+                className="p-2 rounded hover:bg-white/50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                style={{ border: '0.5px solid #f9e8cd' }}
               >
-                <ChevronLeft size={16} className="text-[#070b3a]" />
+                <ChevronLeft size={18} className="text-[#070b3a]" />
               </button>
 
-              <span className="text-sm text-gray-700 px-2">
+              <span className="text-sm text-gray-700 font-medium px-3">
                 Page {currentPage} of {totalPages}
               </span>
 
@@ -380,7 +403,12 @@ const DiamondGridView: React.FC<TableProps> = ({
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-7 h-7 rounded text-sm font-medium ${currentPage === page ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}
+                    className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
+                      currentPage === page
+                        ? "bg-[#070b3a] text-white"
+                        : "text-gray-700 hover:bg-white/50"
+                    }`}
+                    style={{ border: '0.5px solid #f9e8cd' }}
                   >
                     {page}
                   </button>
@@ -389,10 +417,15 @@ const DiamondGridView: React.FC<TableProps> = ({
 
               {totalPages > 5 && (
                 <>
-                  <span className="text-sm text-gray-600">...</span>
+                  <span className="text-sm text-gray-600 px-1">...</span>
                   <button
                     onClick={() => setCurrentPage(totalPages)}
-                    className={`w-7 h-7 rounded text-sm font-medium ${currentPage === totalPages ? "bg-[#070b3a] text-white" : "text-gray-700 hover:bg-gray-100"}`}
+                    className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
+                      currentPage === totalPages
+                        ? "bg-[#070b3a] text-white"
+                        : "text-gray-700 hover:bg-white/50"
+                    }`}
+                    style={{ border: '0.5px solid #f9e8cd' }}
                   >
                     {totalPages}
                   </button>
@@ -404,16 +437,16 @@ const DiamondGridView: React.FC<TableProps> = ({
                   setCurrentPage(Math.min(totalPages, currentPage + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a]"
+                className="p-2 rounded hover:bg-white/50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                style={{ border: '0.5px solid #f9e8cd' }}
               >
-                <ChevronRight size={16} className="text-[#070b3a]" />
+                <ChevronRight size={18} className="text-[#070b3a]" />
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Detail Modal */}
       {/* Detail Modal */}
       {selectedDiamond && (
         <DiamondDetailView
