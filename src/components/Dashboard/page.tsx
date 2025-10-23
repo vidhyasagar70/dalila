@@ -19,7 +19,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FEFCF9] p-6 mt-35">
+    <div className="min-h-screen bg-[#FEFCF9] p-6 mt-30">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>

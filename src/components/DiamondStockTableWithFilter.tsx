@@ -1,5 +1,3 @@
-// components/DiamondStockTableWithFilter.tsx
-
 "use client";
 import React, { useState } from "react";
 import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
@@ -138,6 +136,10 @@ export default function DiamondStockTableWithFilter() {
     }
   };
 
+  const handleEmail = () => {
+    console.log('Email sent for diamonds:', selectedDiamonds.map(d => d.STONE_NO));
+  };
+
   const handleResetFilters = () => {
     setSelectedColor("");
     setSelectedShape("");
@@ -233,7 +235,8 @@ export default function DiamondStockTableWithFilter() {
 
           <EmailButton
             selectedCount={selectedDiamonds.length}
-            onEmail={() => console.log('Email clicked')}
+            selectedStoneNumbers={selectedDiamonds.map(d => d.STONE_NO)}
+            onEmail={handleEmail}
           />
 
           <button

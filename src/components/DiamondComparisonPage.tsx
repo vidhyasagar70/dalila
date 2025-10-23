@@ -52,7 +52,7 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
   return (
     <div className="fixed inset-0 bg-white z-50 overflow-auto">
       {/* Header */}
-      <div className="bg-[#050C3A] text-white px-6 py-4 sticky top-0 z-10 border-b" style={{ borderColor: '#F1E9DC' }}>
+      <div className="bg-[#050C3A] text-white px-6 py-4 sticky top-0 z-50 border-b" style={{ borderColor: '#F1E9DC' }}>
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <button
             onClick={onClose}
@@ -71,11 +71,11 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
         <div className="bg-white rounded-lg shadow-sm overflow-hidden" style={{ border: '1px solid #F1E9DC' }}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
-              <thead>
+              <thead className="sticky top-[73px] z-40">
                 <tr>
                   <th 
-                    className="bg-white p-4 text-left text-sm font-semibold text-gray-800 sticky left-0 z-10 min-w-[150px]"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-4 text-left text-sm font-semibold text-gray-800 sticky left-0 z-50 min-w-[150px]"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     {/* Empty header cell */}
                   </th>
@@ -119,21 +119,23 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Stage Row */}
                 <tr>
                   <th 
-                    className="bg-[#050C3A] p-3 text-left text-xs font-semibold text-white sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Stage
                   </th>
                   {diamonds.map((diamond, index) => (
                     <td
                       key={diamond._id}
-                      className="p-3 text-center bg-[#050C3A] text-white font-semibold text-sm"
+                      className="p-3 text-center bg-gray-50"
                       style={{ 
                         borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
                         borderBottom: '1px solid #F1E9DC'
                       }}
                     >
-                      {diamond.STAGE || "N/A"}
+                      <span className="inline-block bg-[#050C3A] text-white px-4 py-1.5 rounded text-sm font-semibold">
+                        {diamond.STAGE || "N/A"}
+                      </span>
                     </td>
                   ))}
                 </tr>
@@ -141,8 +143,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Packet No */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Packet No
                   </th>
@@ -163,8 +165,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Location */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Location
                   </th>
@@ -185,8 +187,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Report No */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Report No
                   </th>
@@ -207,8 +209,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Lab */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Lab
                   </th>
@@ -229,8 +231,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Shape */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Shape
                   </th>
@@ -251,8 +253,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Wgt (Carat) */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Wgt
                   </th>
@@ -273,8 +275,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Col (Color) */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Col
                   </th>
@@ -295,8 +297,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Clarity */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Clarity
                   </th>
@@ -317,8 +319,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Cut */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Cut
                   </th>
@@ -339,8 +341,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Pol (Polish) */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Pol
                   </th>
@@ -361,8 +363,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Sym (Symmetry) */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Sym
                   </th>
@@ -383,8 +385,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Fls (Fluorescence) */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Fls
                   </th>
@@ -405,8 +407,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Rap ($) */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Rap.($)
                   </th>
@@ -427,8 +429,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Length */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Length
                   </th>
@@ -449,8 +451,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Width */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Width
                   </th>
@@ -471,8 +473,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Depth */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Depth
                   </th>
@@ -493,8 +495,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Depth % */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Depth %
                   </th>
@@ -515,8 +517,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Table % */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Table %
                   </th>
@@ -537,8 +539,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Disc % */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Disc %
                   </th>
@@ -559,8 +561,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Net Rate */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Net Rate
                   </th>
@@ -581,8 +583,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Net Value */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Net Value
                   </th>
@@ -603,8 +605,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* C/A */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     C/A
                   </th>
@@ -625,8 +627,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* C/H */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     C/H
                   </th>
@@ -647,8 +649,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* P/A */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     P/A
                   </th>
@@ -669,8 +671,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* P/H */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     P/H
                   </th>
@@ -688,11 +690,11 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                   ))}
                 </tr>
 
-                 {/* Key To Symbols */}
+                {/* Key To Symbols */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Key To Symbols
                   </th>
@@ -710,11 +712,11 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                   ))}
                 </tr>
 
-               {/* Report Comments */}
+                {/* Report Comments */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Report Comments
                   </th>
@@ -735,8 +737,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Comments 1 */}
                 <tr>
                   <th 
-                    className="bg-gray-50 p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
                   >
                     Comments 1
                   </th>
@@ -757,8 +759,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 {/* Heart & Arrow */}
                 <tr>
                   <th 
-                    className="bg-white p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC' }}
+                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
+                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
                   >
                     Heart & Arrow
                   </th>

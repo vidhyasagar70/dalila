@@ -406,6 +406,8 @@ export const diamondApi = {
     );
   },
 
+  
+
   // Get filter options
   getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
     try {
@@ -427,9 +429,27 @@ export const diamondApi = {
   refresh: () => api.post<{ message: string }>("/api/diamonds/refresh", {}),
 
   // Email diamonds
-  email: (data: { stoneNumbers: string[]; emails: string[] }) =>
-    api.post<{ message: string }>("/api/diamonds/email", data),
-};
+  email: async (data: { stoneNumbers: string[]; emails: string[] }) => {
+    try {
+      const response = await apiClient.post<{
+        success: boolean;
+        message: string;
+        data: {
+          totalRequested: number;
+          totalFound: number;
+          totalEmailed: number;
+          foundStoneNumbers: string[];
+          notFoundStoneNumbers: string[];
+          result: string;
+        };
+      }>("/api/diamonds/email", data);
+      return response.data;
+    } catch (error) {
+      console.error("Email error:", error);
+      throw error;
+    }
+  },
+}
 
 // Cart API endpoints
 export const cartApi = {
