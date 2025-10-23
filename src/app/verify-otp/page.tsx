@@ -17,7 +17,7 @@ function OTPVerificationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState<string>("");
-  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isResending, setIsResending] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -55,7 +55,7 @@ function OTPVerificationContent() {
     setOtp(newOtp);
 
     // Auto-focus next input
-    if (value && index < 5) {
+    if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -73,14 +73,14 @@ function OTPVerificationContent() {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
 
-    // Only allow 6-digit numbers
-    if (!/^\d{6}$/.test(pastedData)) return;
+    // Only allow 4-digit numbers
+    if (!/^\d{4}$/.test(pastedData)) return;
 
     const newOtp = pastedData.split("");
     setOtp(newOtp);
 
     // Focus last input
-    inputRefs.current[5]?.focus();
+    inputRefs.current[3]?.focus();
   };
 
   const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,8 +88,8 @@ function OTPVerificationContent() {
 
     // Validate OTP
     const otpString = otp.join("");
-    if (otpString.length !== 6) {
-      setError("Please enter the complete 6-digit OTP");
+    if (otpString.length !== 4) {
+      setError("Please enter the complete 4-digit OTP");
       return;
     }
 
@@ -163,7 +163,7 @@ function OTPVerificationContent() {
       if (response && response.success) {
         setSuccess(response.message || "OTP sent successfully to your email!");
         setCountdown(60); // Start 60 second countdown
-        setOtp(["", "", "", "", "", ""]); // Clear OTP inputs
+        setOtp(["", "", "", ""]); // Clear OTP inputs
         inputRefs.current[0]?.focus(); // Focus first input
       } else {
         setError(
@@ -229,7 +229,7 @@ function OTPVerificationContent() {
               </h2>
 
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
-                We&apos;ve sent a 6-digit verification code to your email
+                We&apos;ve sent a 4-digit verification code to your email
                 address. Please enter it below to complete your registration.
               </p>
             </div>
@@ -296,7 +296,7 @@ function OTPVerificationContent() {
 
               {/* OTP Input */}
               <div className="mb-8">
-                <div className="flex justify-center gap-2 md:gap-3">
+                <div className="flex justify-center gap-3 md:gap-4">
                   {otp.map((digit, index) => (
                     <input
                       key={index}
@@ -311,7 +311,7 @@ function OTPVerificationContent() {
                       onKeyDown={(e) => handleKeyDown(index, e)}
                       onPaste={index === 0 ? handlePaste : undefined}
                       disabled={isLoading}
-                      className="w-12 h-14 md:w-14 md:h-16 text-center text-2xl font-bold rounded-lg bg-white border-2 border-gray-300 focus:border-[#FFD166] text-black focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                      className="w-14 h-16 md:w-16 md:h-18 text-center text-2xl font-bold rounded-lg bg-white border-2 border-gray-300 focus:border-[#FFD166] text-black focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                       autoComplete="off"
                     />
                   ))}
@@ -321,7 +321,7 @@ function OTPVerificationContent() {
               {/* Verify Button */}
               <button
                 type="submit"
-                disabled={isLoading || otp.join("").length !== 6}
+                disabled={isLoading || otp.join("").length !== 4}
                 className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] mb-4"
               >
                 {isLoading ? (
