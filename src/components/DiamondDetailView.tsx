@@ -188,7 +188,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               {/* Main Display Area */}
               <div className="relative bg-gray-100 rounded-md border border-gray-200 p-6">
                 <div className="absolute top-3 right-3 flex gap-2 z-10">
-                  <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
+                  {/* <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
                     <Share2 size={16} className="text-gray-700" />
                   </button>
                   <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
@@ -196,7 +196,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   </button>
                   <button className="p-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
                     <Heart size={16} className="text-gray-700" />
-                  </button>
+                  </button> */}
                 </div>
 
                 {viewMode === 'image' ? (
@@ -239,10 +239,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   )
                 )}
 
-                <button className="absolute bottom-3 right-3 flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
+                {/* <button className="absolute bottom-3 right-3 flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
                   <Search size={14} className="text-gray-700" />
                   <span className="text-xs text-gray-700 font-medium">Search Similar</span>
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -324,9 +324,9 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               <div className="border-t-2 border-[#F9F1E3] pt-4">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-700">Quantity</span>
+                    {/* <span className="text-sm font-medium text-gray-700">Quantity</span> */}
                     <div className="flex items-center border-2 border-[#F9F1E3] rounded overflow-hidden">
-                      <button
+                      {/* <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         className="px-3 py-1.5 hover:bg-gray-100 text-gray-700 font-medium"
                         disabled={isAddingToCart}
@@ -345,7 +345,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         disabled={isAddingToCart}
                       >
                         +
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                   <button 
@@ -462,7 +462,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
           </div>
 
           {/* Media Links */}
-          {(diamond.CERTI_PDF || diamond.MP4 || diamond.DNA || diamond.ARROW_IMAGE || diamond.HEART_IMAGE) && (
+          {/* {(diamond.CERTI_PDF || diamond.MP4 || diamond.DNA || diamond.ARROW_IMAGE || diamond.HEART_IMAGE) && (
             <div className="mt-6 bg-white rounded border-2 border-[#F9F1E3] p-4">
               <h3 className="text-sm font-semibold text-gray-800 mb-3">Documents & Media</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -523,7 +523,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 )}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
