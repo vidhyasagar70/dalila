@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Search, CheckCircle, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { userApi } from "@/lib/api";
 
 // Extended User interface matching API response
 interface Address {
@@ -63,71 +64,27 @@ export default function MembersManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Get auth token from cookies
-  const getAuthToken = (): string => {
-    if (typeof document !== "undefined") {
-      const cookies = document.cookie.split(';');
-      const authCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
-      if (authCookie) {
-        return authCookie.split('=')[1];
-      }
-    }
-    
-    // Fallback to localStorage
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
-      return token || "";
-    }
-    
-    return "";
-  };
-
   // Fetch pending customer data
   const fetchPendingUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const token = getAuthToken();
-      console.log("Token being used:", token ? "Token exists" : "No token found");
+      const response = await userApi.getPendingCustomerData();
       
-      if (!token) {
-        setError("Authentication required. Please login again.");
+      if (!response) {
+        setError("Failed to fetch pending users");
         setLoading(false);
         return;
       }
 
-      const response = await fetch(
-        "https://dalila-inventory-service-dev.caratlogic.com/api/users/customer-data-pending",
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          credentials: 'include',
-        }
-      );
+      console.log("Pending users response:", response);
 
-      console.log("Response status:", response.status);
-
-      if (response.status === 401) {
-        setError("Session expired. Please login again.");
-        setLoading(false);
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to fetch pending users: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Pending users response:", data);
-
-      if (data.success && data.data) {
-        // The API returns users directly in data array
-        const transformedUsers: ExtendedUser[] = data.data.map((user: ExtendedUser) => ({
+      if (response.success && response.data) {
+        // The response.data is directly an array of users
+        const pendingUsers = Array.isArray(response.data) ? response.data : [];
+        
+        const transformedUsers: ExtendedUser[] = pendingUsers.map((user) => ({
           ...user,
           id: user._id || user.id,
           firstName: user.customerData?.firstName || user.firstName,
@@ -156,48 +113,32 @@ export default function MembersManagement() {
       setLoading(true);
       setError(null);
 
-      const token = getAuthToken();
+      const response = await userApi.getAllUsers();
       
-      if (!token) {
-        setError("Authentication required. Please login again.");
+      if (!response) {
+        setError("Failed to fetch authorized users");
         setLoading(false);
         return;
       }
 
-      const response = await fetch(
-        "https://dalila-inventory-service-dev.caratlogic.com/api/users",
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          credentials: 'include',
-        }
-      );
+      console.log("Authorized users response:", response);
 
-      if (response.status === 401) {
-        setError("Session expired. Please login again.");
-        setLoading(false);
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to fetch users: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Authorized users response:", data);
-
-      if (data.success && data.data && data.data.users) {
-        // Filter only approved users
-        const authorizedUsers = data.data.users.filter(
-          (user: ExtendedUser) => user.kycStatus === "approved"
-        ).map((user: ExtendedUser) => ({
-          ...user,
-          id: user._id || user.id,
-        }));
+      if (response.success && response.data && response.data.users) {
+        // Filter only approved users and transform to ExtendedUser type
+        const authorizedUsers: ExtendedUser[] = response.data.users
+          .filter((user) => user.kycStatus === "approved")
+          .map((user) => ({
+            _id: user._id || user.id || "",
+            id: user.id || user._id,
+            email: user.email,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            kycStatus: user.kycStatus,
+            status: user.status,
+            role: user.role,
+            customerData: user.customerData,
+          }));
 
         setUsers(authorizedUsers);
         setFilteredUsers(authorizedUsers);
@@ -248,45 +189,17 @@ export default function MembersManagement() {
   const handleApprove = useCallback(async (userId: string) => {
     try {
       setActionLoading(userId);
-      const token = getAuthToken();
       
-      if (!token) {
-        setError("Authentication required. Please login again.");
-        return;
-      }
+      const response = await userApi.approveCustomerData(userId);
 
-      const response = await fetch(
-        `https://dalila-inventory-service-dev.caratlogic.com/api/users/${userId}/approve-customer-data`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          credentials: 'include',
-        }
-      );
+      console.log("Approve response:", response);
 
-      if (response.status === 401) {
-        setError("Session expired. Please login again.");
-        setActionLoading(null);
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to approve user: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Approve response:", data);
-
-      if (data.success) {
+      if (response && response.success) {
         // Refresh the user list
         await fetchPendingUsers();
         setError(null);
       } else {
-        setError(data.message || "Failed to approve user");
+        setError(response?.message || "Failed to approve user");
       }
     } catch (error) {
       console.error("Error approving user:", error);
@@ -306,46 +219,17 @@ export default function MembersManagement() {
 
     try {
       setActionLoading(userId);
-      const token = getAuthToken();
       
-      if (!token) {
-        setError("Authentication required. Please login again.");
-        return;
-      }
+      const response = await userApi.rejectCustomerData(userId, reason.trim());
 
-      const response = await fetch(
-        `https://dalila-inventory-service-dev.caratlogic.com/api/users/${userId}/reject-customer-data`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          credentials: 'include',
-          body: JSON.stringify({ reason: reason.trim() }),
-        }
-      );
+      console.log("Reject response:", response);
 
-      if (response.status === 401) {
-        setError("Session expired. Please login again.");
-        setActionLoading(null);
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to reject user: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Reject response:", data);
-
-      if (data.success) {
+      if (response && response.success) {
         // Refresh the user list
         await fetchPendingUsers();
         setError(null);
       } else {
-        setError(data.message || "Failed to reject user");
+        setError(response?.message || "Failed to reject user");
       }
     } catch (error) {
       console.error("Error rejecting user:", error);
@@ -534,42 +418,42 @@ export default function MembersManagement() {
             </thead>
             <tbody>
               {loading ? (
-  <tr>
-    <td colSpan={10} className="px-4 py-8 text-center text-gray-500 text-xs">
-      Loading members...
-    </td>
-  </tr>
-) : currentUsers.length > 0 ? (
-  currentUsers.map((user, index) => {
-    const userData = user.customerData;
-    const fullName = `${userData?.firstName || user.firstName || ""} ${userData?.lastName || user.lastName || ""}`.trim();
-    const phone = userData?.countryCode && userData?.phoneNumber 
-      ? `${userData.countryCode} ${userData.phoneNumber}`
-      : "N/A";
-    const address = userData?.address 
-      ? `${userData.address.street}, ${userData.address.city}, ${userData.address.state} ${userData.address.postalCode}`
-      : "N/A";
-    const userId = user._id || user.id || "";
-    
-    return (
-      <tr key={userId} style={{ borderBottom: '1px solid #f9ead4' }} className="hover:bg-gray-50">
-        <td className="px-2 py-2 text-xs text-gray-900">{startIndex + index + 1}</td>
-        <td className="px-2 py-2 text-xs text-gray-900">{fullName || "N/A"}</td>
-        <td className="px-2 py-2 text-xs text-gray-900">{user.username || "N/A"}</td>
-        <td className="px-2 py-2 text-xs text-gray-900">{user.email}</td>
-        <td className="px-2 py-2 text-xs text-gray-900">{phone}</td>
-        <td className="px-2 py-2 text-xs text-gray-900">
-          {userData?.businessInfo?.companyName || "N/A"}
-        </td>
-        <td className="px-2 py-2 text-xs text-gray-900">
-          {userData?.businessInfo?.businessType || "N/A"}
-        </td>
-        <td className="px-2 py-2 text-xs text-gray-900">
-          {userData?.businessInfo?.vatNumber || "N/A"}
-        </td>
-        <td className="px-2 py-2 text-xs text-gray-900 max-w-[120px] truncate" title={address}>
-          {address}
-        </td>
+                <tr>
+                  <td colSpan={10} className="px-4 py-8 text-center text-gray-500 text-xs">
+                    Loading members...
+                  </td>
+                </tr>
+              ) : currentUsers.length > 0 ? (
+                currentUsers.map((user, index) => {
+                  const userData = user.customerData;
+                  const fullName = `${userData?.firstName || user.firstName || ""} ${userData?.lastName || user.lastName || ""}`.trim();
+                  const phone = userData?.countryCode && userData?.phoneNumber 
+                    ? `${userData.countryCode} ${userData.phoneNumber}`
+                    : "N/A";
+                  const address = userData?.address 
+                    ? `${userData.address.street}, ${userData.address.city}, ${userData.address.state} ${userData.address.postalCode}`
+                    : "N/A";
+                  const userId = user._id || user.id || "";
+                  
+                  return (
+                    <tr key={userId} style={{ borderBottom: '1px solid #f9ead4' }} className="hover:bg-gray-50">
+                      <td className="px-2 py-2 text-xs text-gray-900">{startIndex + index + 1}</td>
+                      <td className="px-2 py-2 text-xs text-gray-900">{fullName || "N/A"}</td>
+                      <td className="px-2 py-2 text-xs text-gray-900">{user.username || "N/A"}</td>
+                      <td className="px-2 py-2 text-xs text-gray-900">{user.email}</td>
+                      <td className="px-2 py-2 text-xs text-gray-900">{phone}</td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {userData?.businessInfo?.companyName || "N/A"}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {userData?.businessInfo?.businessType || "N/A"}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {userData?.businessInfo?.vatNumber || "N/A"}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900 max-w-[120px] truncate" title={address}>
+                        {address}
+                      </td>
                       <td className="px-2 py-2 text-xs">
                         {activeTab === "waiting" ? (
                           <div className="flex gap-1">
