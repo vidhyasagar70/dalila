@@ -348,18 +348,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     );
   }
 
-   const hasActiveFilters = 
-    (searchTerm && searchTerm.trim()) ||
-    (selectedShape && selectedShape !== "ALL") ||
-    (selectedColor && selectedColor !== "ALL") ||
-    selectedClarity.length > 0 ||
-    (selectedCut && selectedCut.trim()) ||
-    (selectedPolish && selectedPolish.trim()) ||
-    (selectedSymmetry && selectedSymmetry.trim()) ||
-    (selectedFluor && selectedFluor !== "ALL") ||
-    (selectedMinCarat && selectedMinCarat.trim()) ||
-    (selectedMaxCarat && selectedMaxCarat.trim());
-
+  
   return (
     <>
       <div className={`w-full flex flex-col bg-gray-50 p-4 ${playFair.className}`}>

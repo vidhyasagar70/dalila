@@ -103,6 +103,13 @@ interface Quotation {
 }
 
 const getAuthToken = (): string => {
+  // First try to get from cookies
+  const cookieToken = getAuthTokenFromCookies();
+  if (cookieToken) {
+    return cookieToken;
+  }
+  
+  // Fallback to localStorage
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("authToken");
     return token || "";
@@ -133,13 +140,13 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  withCredentials: true, // This is already there, which is good!
 });
 
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    const token = getAuthToken();
+    const token = getAuthToken(); // This now checks cookies first
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -149,7 +156,6 @@ apiClient.interceptors.request.use(
     return Promise.reject(error);
   },
 );
-
 // Response interceptor
 apiClient.interceptors.response.use(
   (response) => response,
@@ -167,6 +173,17 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+const getAuthTokenFromCookies = (): string => {
+  if (typeof document !== "undefined") {
+    const cookies = document.cookie.split(';');
+    const authCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
+    if (authCookie) {
+      return authCookie.split('=')[1];
+    }
+  }
+  return "";
+};
 
 // Generic API methods
 export const api = {
@@ -451,14 +468,27 @@ export const diamondApi = {
   },
 }
 
-// Cart API endpoints
 export const cartApi = {
   // Add to cart
   add: (stoneNo: string) =>
     api.post<{ message: string }>("/api/diamonds/cart/add", { stoneNo }),
 
-  // Get cart items
-  get: () => api.get<{ cartItems: CartItem[] }>("/api/diamonds/cart"),
+  // Get cart items - UPDATED INTERFACE
+  get: () => api.get<{ 
+    cart: { 
+      items: Array<{
+        stoneNo: string;
+        diamond: Diamond;
+        addedAt: string;
+        _id: string;
+      }>;
+      _id: string;
+      userId: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    totalItems: number;
+  }>("/api/diamonds/cart"),
 
   // Get specific cart item
   getByStoneNo: (stoneNo: string) =>
@@ -748,15 +778,22 @@ export const userApi = {
     api.get<{ users: User[] }>("/api/users/search", params as FetchParams),
 
   getPendingCustomerData: () =>
-    api.get<{ pendingUsers: User[] }>("/api/users/customer-data-pending"),
+  api.get<{ pendingUsers: Array<{ user: User; customerData: Record<string, unknown> }> }>(
+    "/api/users/customer-data-pending"
+  ),
+
 
   approveCustomerData: (id: string) =>
-    api.post<{ message: string }>(`/api/users/${id}/approve-customer-data`, {}),
+    api.post<{ message: string; user: User }>(
+      `/api/users/${id}/approve-customer-data`,
+      {}
+    ),
 
   rejectCustomerData: (id: string, reason: string) =>
-    api.post<{ message: string }>(`/api/users/${id}/reject-customer-data`, {
-      reason,
-    }),
+    api.post<{ message: string }>(
+      `/api/users/${id}/reject-customer-data`,
+      { reason }
+    ),
 };
 
 // Quotation API endpoints

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play } from "lucide-react";
+import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play, Loader2, Check, AlertCircle } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
+import { cartApi } from "@/lib/api";
 
 interface DiamondDetailViewProps {
   diamond: DiamondData;
@@ -14,6 +15,8 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [viewMode, setViewMode] = useState<'image' | 'video'>('image');
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [cartMessage, setCartMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const formatCurrency = (value: string | number) => {
     const num = parseFloat(String(value));
@@ -25,17 +28,56 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         })} USD`;
   };
 
-  const formatPercentage = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
-  };
 
-  const formatDate = (date: string | undefined) => {
-    if (!date) return "N/A";
+
+  const handleAddToCart = async () => {
     try {
-      return new Date(date).toLocaleDateString();
-    } catch {
-      return "N/A";
+      setIsAddingToCart(true);
+      setCartMessage(null);
+
+      const response = await cartApi.add(diamond.STONE_NO);
+
+      if (response?.success) {
+        setCartMessage({
+          type: 'success',
+          text: `${diamond.STONE_NO} added to cart successfully!`
+        });
+
+        // Dispatch cart update event for header to update cart count
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("cart-updated"));
+        }
+
+        // Auto-hide success message after 3 seconds
+        setTimeout(() => setCartMessage(null), 3000);
+      } else {
+        setCartMessage({
+          type: 'error',
+          text: response?.message || 'Failed to add to cart'
+        });
+      }
+    } catch (error: unknown) {
+      console.error("Error adding to cart:", error);
+      
+      // Handle specific error messages
+      let errorMessage = 'Failed to add to cart. Please try again.';
+     if (error && typeof error === 'object' && 'response' in error) {
+  const err = error as { response?: { status?: number; data?: { error?: string } }; message?: string };
+  if (err.response?.status === 401) {
+    errorMessage = 'Please log in to add items to cart.';
+  } else if (err.response?.data?.error) {
+    errorMessage = err.response.data.error;
+  } else if (err.message) {
+    errorMessage = err.message;
+  }
+}
+
+      setCartMessage({
+        type: 'error',
+        text: errorMessage
+      });
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
@@ -91,6 +133,30 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         </div>
 
         <div className="p-6">
+          {/* Cart Message */}
+          {cartMessage && (
+            <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 animate-fade-in ${
+              cartMessage.type === 'success' 
+                ? 'bg-green-500/10 border border-green-500/30' 
+                : 'bg-red-500/10 border border-red-500/30'
+            }`}>
+              {cartMessage.type === 'success' ? (
+                <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+              )}
+              <p className={cartMessage.type === 'success' ? 'text-green-400' : 'text-red-400'}>
+                {cartMessage.text}
+              </p>
+              <button
+                onClick={() => setCartMessage(null)}
+                className={`ml-auto ${cartMessage.type === 'success' ? 'text-green-400 hover:text-green-300' : 'text-red-400 hover:text-red-300'}`}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+
           {/* Top Section: Images and Info */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* LEFT - Single Image/Video */}
@@ -263,6 +329,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         className="px-3 py-1.5 hover:bg-gray-100 text-gray-700 font-medium"
+                        disabled={isAddingToCart}
                       >
                         -
                       </button>
@@ -275,13 +342,25 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                       <button
                         onClick={() => setQuantity(quantity + 1)}
                         className="px-3 py-1.5 hover:bg-gray-100 text-gray-700 font-medium"
+                        disabled={isAddingToCart}
                       >
                         +
                       </button>
                     </div>
                   </div>
-                  <button className="flex-1 bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm">
-                    ADD TO CART
+                  <button 
+                    onClick={handleAddToCart}
+                    disabled={isAddingToCart}
+                    className="flex-1 bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isAddingToCart ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Adding...
+                      </>
+                    ) : (
+                      'ADD TO CART'
+                    )}
                   </button>
                 </div>
               </div>

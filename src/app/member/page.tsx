@@ -1,58 +1,53 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Search, CheckCircle, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, CheckCircle, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-// Extended User interface with additional fields
-interface ExtendedUser {
-  id: string;
-  username?: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  identityNumber?: string;
-  company?: string;
-  shopName?: string;
-  shopRegistrationNumber?: string;
-  taxNumber?: string;
-  password?: string;
-  kycStatus?: string;
-  role?: string;
+// Extended User interface matching API response
+interface Address {
+  street: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
 }
 
-// Single mock user data that will be replicated
-const mockUser: ExtendedUser = {
-  id: "1",
-  username: "ABC",
-  email: "@gmail.com",
-  firstName: "ABC",
-  lastName: "",
-  phone: "1234567891",
-  identityNumber: "123245",
-  company: "",
-  shopName: "ABC",
-  shopRegistrationNumber: "VN",
-  taxNumber: "VN",
-  password: "mock123",
-  kycStatus: "pending",
-  role: "customer"
-};
+interface BusinessInfo {
+  companyName: string;
+  businessType: string;
+  vatNumber: string;
+  websiteUrl?: string;
+}
 
-// Generate multiple rows from single mock data
-const generateMockUsers = (count: number, status: string): ExtendedUser[] => {
-  return Array.from({ length: count }, (_, index) => ({
-    ...mockUser,
-    id: `${index + 1}`,
-    kycStatus: status
-  }));
-};
+interface CustomerData {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  countryCode: string;
+  address: Address;
+  businessInfo: BusinessInfo;
+  submittedAt?: string;
+}
+
+interface ExtendedUser {
+  _id: string;
+  id?: string;
+  email: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  kycStatus?: string;
+  status?: string;
+  role?: string;
+  customerData?: CustomerData;
+}
 
 export default function MembersManagement() {
   const [users, setUsers] = useState<ExtendedUser[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<ExtendedUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   
   // Filter states
   const [activeTab, setActiveTab] = useState<"authorized" | "waiting">("waiting");
@@ -68,79 +63,165 @@ export default function MembersManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Fetch users from API
-  const fetchUsers = useCallback(async () => {
+  // Get auth token from cookies
+  const getAuthToken = (): string => {
+    if (typeof document !== "undefined") {
+      const cookies = document.cookie.split(';');
+      const authCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
+      if (authCookie) {
+        return authCookie.split('=')[1];
+      }
+    }
+    
+    // Fallback to localStorage
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("authToken");
+      return token || "";
+    }
+    
+    return "";
+  };
+
+  // Fetch pending customer data
+  const fetchPendingUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Simulate API call - replace with your actual API
-      // For now, using mock data directly
-      setTimeout(() => {
-        if (activeTab === "waiting") {
-          const mockData = generateMockUsers(25, "pending");
-          setUsers(mockData);
-          setFilteredUsers(mockData);
-        } else {
-          const mockData = generateMockUsers(15, "approved");
-          setUsers(mockData);
-          setFilteredUsers(mockData);
-        }
+      const token = getAuthToken();
+      console.log("Token being used:", token ? "Token exists" : "No token found");
+      
+      if (!token) {
+        setError("Authentication required. Please login again.");
         setLoading(false);
-      }, 500);
-
-      /* Uncomment this when your API is ready:
-      if (activeTab === "waiting") {
-        try {
-          const response = await userApi.getPendingCustomerData();
-          if (response && response.success && response.data) {
-            const pendingUsers = response.data.pendingUsers.map((item: any) => ({
-              ...item.user,
-              ...item.customerData,
-              kycStatus: "pending"
-            }));
-            setUsers(pendingUsers);
-            setFilteredUsers(pendingUsers);
-            setLoading(false);
-            return;
-          }
-        } catch (apiError) {
-          console.log("API not ready, using mock data");
-        }
-        const mockData = generateMockUsers(25, "pending");
-        setUsers(mockData);
-        setFilteredUsers(mockData);
-      } else {
-        try {
-          const response = await userApi.getAllUsers();
-          if (response && response.success && response.data) {
-            const authorizedUsers = (response.data.users || []).filter(
-              (user: ExtendedUser) => user.kycStatus === "approved"
-            );
-            setUsers(authorizedUsers);
-            setFilteredUsers(authorizedUsers);
-            setLoading(false);
-            return;
-          }
-        } catch (apiError) {
-          console.log("API not ready, using mock data");
-        }
-        const mockData = generateMockUsers(15, "approved");
-        setUsers(mockData);
-        setFilteredUsers(mockData);
+        return;
       }
+
+      const response = await fetch(
+        "https://dalila-inventory-service-dev.caratlogic.com/api/users/customer-data-pending",
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+        }
+      );
+
+      console.log("Response status:", response.status);
+
+      if (response.status === 401) {
+        setError("Session expired. Please login again.");
+        setLoading(false);
+        return;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to fetch pending users: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Pending users response:", data);
+
+      if (data.success && data.data) {
+        // The API returns users directly in data array
+        const transformedUsers: ExtendedUser[] = data.data.map((user: ExtendedUser) => ({
+          ...user,
+          id: user._id || user.id,
+          firstName: user.customerData?.firstName || user.firstName,
+          lastName: user.customerData?.lastName || user.lastName,
+        }));
+
+        console.log("Transformed users:", transformedUsers);
+        setUsers(transformedUsers);
+        setFilteredUsers(transformedUsers);
+      } else {
+        setUsers([]);
+        setFilteredUsers([]);
+      }
+      
       setLoading(false);
-      */
     } catch (error) {
-      console.error("Error fetching users:", error);
-      setError("Failed to load users. Please try again.");
+      console.error("Error fetching pending users:", error);
+      setError(error instanceof Error ? error.message : "Failed to load pending users");
       setLoading(false);
     }
-  }, [activeTab]);
+  }, []);
 
+  // Fetch authorized users
+  const fetchAuthorizedUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const token = getAuthToken();
+      
+      if (!token) {
+        setError("Authentication required. Please login again.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(
+        "https://dalila-inventory-service-dev.caratlogic.com/api/users",
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+        }
+      );
+
+      if (response.status === 401) {
+        setError("Session expired. Please login again.");
+        setLoading(false);
+        return;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to fetch users: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Authorized users response:", data);
+
+      if (data.success && data.data && data.data.users) {
+        // Filter only approved users
+        const authorizedUsers = data.data.users.filter(
+          (user: ExtendedUser) => user.kycStatus === "approved"
+        ).map((user: ExtendedUser) => ({
+          ...user,
+          id: user._id || user.id,
+        }));
+
+        setUsers(authorizedUsers);
+        setFilteredUsers(authorizedUsers);
+      } else {
+        setUsers([]);
+        setFilteredUsers([]);
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching authorized users:", error);
+      setError(error instanceof Error ? error.message : "Failed to load authorized users");
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch users based on active tab
   useEffect(() => {
-    fetchUsers();
-  }, [activeTab, fetchUsers]);
+    if (activeTab === "waiting") {
+      fetchPendingUsers();
+    } else {
+      fetchAuthorizedUsers();
+    }
+  }, [activeTab, fetchPendingUsers, fetchAuthorizedUsers]);
 
   // Handle search
   useEffect(() => {
@@ -148,12 +229,14 @@ export default function MembersManagement() {
 
     // Apply search filter
     if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(user =>
-        user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.company?.toLowerCase().includes(searchQuery.toLowerCase())
+        user.username?.toLowerCase().includes(query) ||
+        user.email?.toLowerCase().includes(query) ||
+        user.firstName?.toLowerCase().includes(query) ||
+        user.lastName?.toLowerCase().includes(query) ||
+        user.customerData?.businessInfo?.companyName?.toLowerCase().includes(query) ||
+        user.customerData?.phoneNumber?.includes(query)
       );
     }
 
@@ -164,32 +247,113 @@ export default function MembersManagement() {
   // Approve user
   const handleApprove = useCallback(async (userId: string) => {
     try {
-      // Replace with actual API call when ready
-      console.log("Approving user:", userId);
-      // const response = await userApi.approveCustomerData(userId);
-      // if (response && response.success) {
-      await fetchUsers();
-      // }
+      setActionLoading(userId);
+      const token = getAuthToken();
+      
+      if (!token) {
+        setError("Authentication required. Please login again.");
+        return;
+      }
+
+      const response = await fetch(
+        `https://dalila-inventory-service-dev.caratlogic.com/api/users/${userId}/approve-customer-data`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+        }
+      );
+
+      if (response.status === 401) {
+        setError("Session expired. Please login again.");
+        setActionLoading(null);
+        return;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to approve user: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Approve response:", data);
+
+      if (data.success) {
+        // Refresh the user list
+        await fetchPendingUsers();
+        setError(null);
+      } else {
+        setError(data.message || "Failed to approve user");
+      }
     } catch (error) {
       console.error("Error approving user:", error);
-      setError("Failed to approve user");
+      setError(error instanceof Error ? error.message : "Failed to approve user");
+    } finally {
+      setActionLoading(null);
     }
-  }, [fetchUsers]);
+  }, [fetchPendingUsers]);
 
   // Reject user
   const handleReject = useCallback(async (userId: string) => {
+    const reason = prompt("Please enter rejection reason:");
+    
+    if (!reason || reason.trim() === "") {
+      return;
+    }
+
     try {
-      // Replace with actual API call when ready
-      console.log("Rejecting user:", userId);
-      // const response = await userApi.rejectCustomerData(userId, "Not eligible");
-      // if (response && response.success) {
-      await fetchUsers();
-      // }
+      setActionLoading(userId);
+      const token = getAuthToken();
+      
+      if (!token) {
+        setError("Authentication required. Please login again.");
+        return;
+      }
+
+      const response = await fetch(
+        `https://dalila-inventory-service-dev.caratlogic.com/api/users/${userId}/reject-customer-data`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+          body: JSON.stringify({ reason: reason.trim() }),
+        }
+      );
+
+      if (response.status === 401) {
+        setError("Session expired. Please login again.");
+        setActionLoading(null);
+        return;
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Failed to reject user: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Reject response:", data);
+
+      if (data.success) {
+        // Refresh the user list
+        await fetchPendingUsers();
+        setError(null);
+      } else {
+        setError(data.message || "Failed to reject user");
+      }
     } catch (error) {
       console.error("Error rejecting user:", error);
-      setError("Failed to reject user");
+      setError(error instanceof Error ? error.message : "Failed to reject user");
+    } finally {
+      setActionLoading(null);
     }
-  }, [fetchUsers]);
+  }, [fetchPendingUsers]);
 
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -239,10 +403,19 @@ export default function MembersManagement() {
           }`}
           style={activeTab === "waiting" ? { backgroundColor: '#050c3a' } : { border: '1px solid #e5e7eb' }}
         >
-          Waiting Authorization
+          Waiting Authorization ({filteredUsers.length})
         </button>
-       
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
+          <span className="text-red-800 text-sm">{error}</span>
+          <button onClick={() => setError(null)} className="text-red-600 hover:text-red-800">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="mb-6 grid grid-cols-4 gap-4">
@@ -269,7 +442,7 @@ export default function MembersManagement() {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search by name, email, phone..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-2.5 rounded-lg focus:outline-none"
@@ -348,83 +521,94 @@ export default function MembersManagement() {
             <thead style={{ backgroundColor: '#050c3a' }}>
               <tr style={{ borderBottom: '1px solid #f9ead4' }}>
                 <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '40px' }}>Sr</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>ID (Password)</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Name (Company)</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>Identity Number</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Name</th>
                 <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Username</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Email address</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>Phone Number</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Shop Name</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>Shop Registration number</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>TAX Number</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '40px' }}></th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Email</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>Phone</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Company</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Business Type</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>VAT Number</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Address</th>
+                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-gray-500 text-xs">
-                    Loading members...
-                  </td>
-                </tr>
-              ) : error ? (
-                <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center text-red-500 text-xs">
-                    {error}
-                  </td>
-                </tr>
-              ) : currentUsers.length > 0 ? (
-                currentUsers.map((user, index) => (
-                  <tr key={user.id} style={{ borderBottom: '1px solid #f9ead4' }} className="hover:bg-gray-50">
-                    <td className="px-2 py-2 text-xs text-gray-900">{startIndex + index + 1}</td>
-                    <td className="px-2 py-2 text-xs text-gray-900">
-                      {user.password ? "#######" : "N/A"}
-                    </td>
-                    <td className="px-2 py-2 text-xs text-gray-900">
-                      {`${user.firstName || ""} ${user.lastName || ""}`.trim() || "N/A"}
-                      {user.company && (
-                        <div className="text-xs text-gray-500">{user.company}</div>
-                      )}
-                    </td>
-                    <td className="px-2 py-2 text-xs text-gray-900">
-                      {user.identityNumber || "N/A"}
-                    </td>
-                    <td className="px-2 py-2 text-xs text-gray-900">{user.username || user.email}</td>
-                    <td className="px-2 py-2 text-xs text-gray-900">{user.email}</td>
-                    <td className="px-2 py-2 text-xs text-gray-900">{user.phone || "N/A"}</td>
-                    <td className="px-2 py-2 text-xs text-gray-900">{user.shopName || "N/A"}</td>
-                    <td className="px-2 py-2 text-xs text-gray-900">
-                      {user.shopRegistrationNumber || "N/A"}
-                    </td>
-                    <td className="px-2 py-2 text-xs text-gray-900">{user.taxNumber || "N/A"}</td>
-                    <td className="px-2 py-2 text-xs">
-                      {activeTab === "waiting" ? (
-                        <div className="flex gap-1">
-                          <button
-                            onClick={() => handleApprove(user.id)}
-                            className="text-emerald-600 hover:text-emerald-700"
-                            title="Approve"
-                          >
-                            <CheckCircle className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleReject(user.id)}
-                            className="text-red-600 hover:text-red-700"
-                            title="Reject"
-                          >
-                            <span className="text-lg">×</span>
-                          </button>
-                        </div>
-                      ) : (
-                        <CheckCircle className="w-4 h-4 text-emerald-600" />
-                      )}
-                    </td>
-                  </tr>
-                ))
+  <tr>
+    <td colSpan={10} className="px-4 py-8 text-center text-gray-500 text-xs">
+      Loading members...
+    </td>
+  </tr>
+) : currentUsers.length > 0 ? (
+  currentUsers.map((user, index) => {
+    const userData = user.customerData;
+    const fullName = `${userData?.firstName || user.firstName || ""} ${userData?.lastName || user.lastName || ""}`.trim();
+    const phone = userData?.countryCode && userData?.phoneNumber 
+      ? `${userData.countryCode} ${userData.phoneNumber}`
+      : "N/A";
+    const address = userData?.address 
+      ? `${userData.address.street}, ${userData.address.city}, ${userData.address.state} ${userData.address.postalCode}`
+      : "N/A";
+    const userId = user._id || user.id || "";
+    
+    return (
+      <tr key={userId} style={{ borderBottom: '1px solid #f9ead4' }} className="hover:bg-gray-50">
+        <td className="px-2 py-2 text-xs text-gray-900">{startIndex + index + 1}</td>
+        <td className="px-2 py-2 text-xs text-gray-900">{fullName || "N/A"}</td>
+        <td className="px-2 py-2 text-xs text-gray-900">{user.username || "N/A"}</td>
+        <td className="px-2 py-2 text-xs text-gray-900">{user.email}</td>
+        <td className="px-2 py-2 text-xs text-gray-900">{phone}</td>
+        <td className="px-2 py-2 text-xs text-gray-900">
+          {userData?.businessInfo?.companyName || "N/A"}
+        </td>
+        <td className="px-2 py-2 text-xs text-gray-900">
+          {userData?.businessInfo?.businessType || "N/A"}
+        </td>
+        <td className="px-2 py-2 text-xs text-gray-900">
+          {userData?.businessInfo?.vatNumber || "N/A"}
+        </td>
+        <td className="px-2 py-2 text-xs text-gray-900 max-w-[120px] truncate" title={address}>
+          {address}
+        </td>
+                      <td className="px-2 py-2 text-xs">
+                        {activeTab === "waiting" ? (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleApprove(userId)}
+                              disabled={actionLoading === userId}
+                              className="text-emerald-600 hover:text-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Approve"
+                            >
+                              {actionLoading === userId ? (
+                                <span className="text-xs">...</span>
+                              ) : (
+                                <CheckCircle className="w-4 h-4" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleReject(userId)}
+                              disabled={actionLoading === userId}
+                              className="text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Reject"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <CheckCircle className="w-4 h-4 text-emerald-600" />
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan={11} className="px-4 py-8 text-center">
-                    <p className="text-gray-500 font-medium text-xs">No members found</p>
+                  <td colSpan={10} className="px-4 py-8 text-center">
+                    <p className="text-gray-500 font-medium text-xs">
+                      {activeTab === "waiting" 
+                        ? "No pending members found" 
+                        : "No authorized members found"}
+                    </p>
                   </td>
                 </tr>
               )}

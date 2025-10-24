@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Loader2 } from "lucide-react";
+import { Menu, X, Loader2, ShoppingCart } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { userApi } from "@/lib/api";
+import { userApi, cartApi } from "@/lib/api";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +12,7 @@ export default function Header() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [cartCount, setCartCount] = useState(0);
   const router = useRouter();
   const pathname = usePathname();
   const isTestingPage = pathname === "/Testingpages";
@@ -23,6 +24,29 @@ export default function Header() {
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
+
+  // Fetch cart count - wrapped in useCallback
+  const fetchCartCount = useCallback(async () => {
+    if (!isLoggedIn) {
+      setCartCount(0);
+      return;
+    }
+
+    try {
+      const response = await cartApi.get();
+      console.log("Header - Cart response:", response);
+      
+      // Updated to match the actual API response structure
+      if (response?.success && response.data?.cart?.items) {
+        setCartCount(response.data.cart.items.length);
+      } else {
+        setCartCount(0);
+      }
+    } catch (error) {
+      console.error("Error fetching cart count:", error);
+      setCartCount(0);
+    }
+  }, [isLoggedIn]);
 
   // Check user authentication and role on mount and when pathname changes
   useEffect(() => {
@@ -110,6 +134,23 @@ export default function Header() {
     }
   }, [pathname]);
 
+  // Fetch cart count when logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchCartCount();
+
+      // Listen for cart update events
+      const handleCartUpdate = () => {
+        fetchCartCount();
+      };
+
+      window.addEventListener("cart-updated", handleCartUpdate);
+      return () => {
+        window.removeEventListener("cart-updated", handleCartUpdate);
+      };
+    }
+  }, [isLoggedIn, fetchCartCount]);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -136,21 +177,18 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       console.log("Logout initiated...");
-      // Call logout API
       await userApi.logout();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear local state
       setIsLoggedIn(false);
       setUserRole(null);
+      setCartCount(0);
 
-      // Clear localStorage
       if (typeof window !== "undefined") {
         localStorage.removeItem("authToken");
         localStorage.removeItem("user");
 
-        // Clear cookies
         document.cookie =
           "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
         document.cookie =
@@ -159,13 +197,11 @@ export default function Header() {
         console.log("✅ Logout complete - storage cleared");
       }
 
-      // Dispatch logout event for ProtectedRoute to listen
       if (typeof window !== "undefined") {
         const logoutEvent = new CustomEvent("user-logged-out");
         window.dispatchEvent(logoutEvent);
       }
 
-      // Redirect to home
       router.push("/");
     }
   };
@@ -178,28 +214,34 @@ export default function Header() {
     }
   };
 
+  // Handle cart click
+  const handleCartClick = () => {
+    if (!isLoggedIn) {
+      router.push("/login");
+    } else {
+      router.push("/cart");
+    }
+  };
+
   // Menu items based on authentication status and role
   let navigationItems: { href: string; label: string; requiresAuth?: boolean }[] = [];
 
   if (!isLoggedIn) {
-    // Before login - show these for everyone
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/contact", label: "Contact Us" },
       { href: "/blogs", label: "Blogs" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-      { href: "/inventory", label: "Inventory", requiresAuth: true }, // Shows but redirects to login
+      { href: "/inventory", label: "Inventory", requiresAuth: true },
     ];
   } else if (isAdmin) {
-    // Admin after login - no Contact Us
     navigationItems = [
       { href: "/dashboard", label: "Dashboard" },
       { href: "/inventory", label: "Inventory" },
       { href: "/member", label: "Members" },
-      { href: "/offer-enquiry", label: "Offers" },
+      // { href: "/offer-enquiry", label: "Offers" },
     ];
   } else {
-    // Regular user after login - shows Contact Us
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/contact", label: "Contact Us" },
@@ -276,8 +318,24 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Right Auth Buttons - Desktop/Tablet */}
+          {/* Right Auth Buttons & Cart - Desktop/Tablet */}
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
+            {/* Cart Icon */}
+            {isLoggedIn && (
+              <button
+                onClick={handleCartClick}
+                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                aria-label="Shopping cart"
+              >
+                <ShoppingCart className="w-6 h-6" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </button>
+            )}
+
             {isCheckingAuth ? (
               <div className="py-1 px-3 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
@@ -309,6 +367,21 @@ export default function Header() {
 
           {/* Tablet Only - Compact Buttons */}
           <div className="hidden md:flex lg:hidden items-center gap-2">
+            {isLoggedIn && (
+              <button
+                onClick={handleCartClick}
+                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                aria-label="Shopping cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </button>
+            )}
+
             {isCheckingAuth ? (
               <div className="py-1 px-3 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
@@ -330,8 +403,23 @@ export default function Header() {
             )}
           </div>
 
-          {/* Mobile - Login Button Only */}
-          <div className="flex md:hidden">
+          {/* Mobile - Cart & Login Button */}
+          <div className="flex md:hidden items-center gap-2">
+            {isLoggedIn && (
+              <button
+                onClick={handleCartClick}
+                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                aria-label="Shopping cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+                    {cartCount > 9 ? "9+" : cartCount}
+                  </span>
+                )}
+              </button>
+            )}
+
             {isCheckingAuth ? (
               <div className="py-1 px-4 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
@@ -383,6 +471,24 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
+
+              {/* Cart Link in Mobile Menu */}
+              {isLoggedIn && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleCartClick();
+                  }}
+                  className="flex items-center justify-between text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                >
+                  <span>Cart</span>
+                  {cartCount > 0 && (
+                    <span className="bg-[#c89e3a] text-white text-sm font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
+              )}
             </nav>
 
             {/* Mobile Auth Buttons */}
