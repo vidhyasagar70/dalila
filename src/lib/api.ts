@@ -76,7 +76,6 @@ interface Diamond {
   [key: string]: unknown;
 }
 
-
 interface User {
   _id?: string;
   id: string;
@@ -131,7 +130,7 @@ const getAuthToken = (): string => {
   if (cookieToken) {
     return cookieToken;
   }
-  
+
   // Fallback to localStorage
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("authToken");
@@ -199,10 +198,12 @@ apiClient.interceptors.response.use(
 
 const getAuthTokenFromCookies = (): string => {
   if (typeof document !== "undefined") {
-    const cookies = document.cookie.split(';');
-    const authCookie = cookies.find(cookie => cookie.trim().startsWith('authToken='));
+    const cookies = document.cookie.split(";");
+    const authCookie = cookies.find((cookie) =>
+      cookie.trim().startsWith("authToken="),
+    );
     if (authCookie) {
-      return authCookie.split('=')[1];
+      return authCookie.split("=")[1];
     }
   }
   return "";
@@ -446,8 +447,6 @@ export const diamondApi = {
     );
   },
 
-  
-
   // Get filter options
   getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
     try {
@@ -489,7 +488,7 @@ export const diamondApi = {
       throw error;
     }
   },
-}
+};
 
 export const cartApi = {
   // Add to cart
@@ -497,21 +496,22 @@ export const cartApi = {
     api.post<{ message: string }>("/api/diamonds/cart/add", { stoneNo }),
 
   // Get cart items - UPDATED INTERFACE
-  get: () => api.get<{ 
-    cart: { 
-      items: Array<{
-        stoneNo: string;
-        diamond: Diamond;
-        addedAt: string;
+  get: () =>
+    api.get<{
+      cart: {
+        items: Array<{
+          stoneNo: string;
+          diamond: Diamond;
+          addedAt: string;
+          _id: string;
+        }>;
         _id: string;
-      }>;
-      _id: string;
-      userId: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    totalItems: number;
-  }>("/api/diamonds/cart"),
+        userId: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+      totalItems: number;
+    }>("/api/diamonds/cart"),
 
   // Get specific cart item
   getByStoneNo: (stoneNo: string) =>
@@ -800,56 +800,57 @@ export const userApi = {
   searchUsers: (params: { q: string; field?: string }) =>
     api.get<{ users: User[] }>("/api/users/search", params as FetchParams),
 
-   getPendingCustomerData: () =>
-    api.get<Array<{
-      _id: string;
-      id?: string;
-      email: string;
-      username?: string;
-      firstName?: string;
-      lastName?: string;
-      kycStatus?: string;
-      status?: string;
-      role?: string;
-      customerData?: {
-        firstName: string;
-        lastName: string;
-        phoneNumber: string;
-        countryCode: string;
-        address: {
-          street: string;
-          city: string;
-          state: string;
-          postalCode: string;
-          country: string;
+  getPendingCustomerData: () =>
+    api.get<
+      Array<{
+        _id: string;
+        id?: string;
+        email: string;
+        username?: string;
+        firstName?: string;
+        lastName?: string;
+        kycStatus?: string;
+        status?: string;
+        role?: string;
+        customerData?: {
+          firstName: string;
+          lastName: string;
+          phoneNumber: string;
+          countryCode: string;
+          address: {
+            street: string;
+            city: string;
+            state: string;
+            postalCode: string;
+            country: string;
+          };
+          businessInfo: {
+            companyName: string;
+            businessType: string;
+            vatNumber: string;
+            websiteUrl?: string;
+          };
+          submittedAt?: string;
         };
-        businessInfo: {
-          companyName: string;
-          businessType: string;
-          vatNumber: string;
-          websiteUrl?: string;
-        };
-        submittedAt?: string;
-      };
-    }>>("/api/users/customer-data-pending"),
+      }>
+    >("/api/users/customer-data-pending"),
 
   // Get authorized users (approved KYC)
   getAuthorizedUsers: (params?: FetchParams) =>
     api.get<PaginationData<User>>("/api/users", {
       ...params,
-      filter: { kycStatus: 'approved' }
+      filter: { kycStatus: "approved" },
     }),
 
   // Approve customer data
   approveCustomerData: async (userId: string) => {
     try {
-      const response = await apiClient.post<ApiResponse<{ 
-        message: string; 
-        user: User 
-      }>>(
-        `/api/users/${userId}/approve-customer-data`,
-        {}
-      );
+      const response = await apiClient.post<
+        ApiResponse<{
+          message: string;
+          user: User;
+        }>
+      >(`/api/users/${userId}/approve-customer-data`, {});
       return response.data;
     } catch (error: unknown) {
       console.error("Approve customer data error:", error);
@@ -861,7 +862,7 @@ export const userApi = {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Failed to approve customer data"
+              "Failed to approve customer data",
           );
         }
       }
@@ -872,12 +873,11 @@ export const userApi = {
   // Reject customer data
   rejectCustomerData: async (userId: string, reason: string) => {
     try {
-      const response = await apiClient.post<ApiResponse<{ 
-        message: string 
-      }>>(
-        `/api/users/${userId}/reject-customer-data`,
-        { reason }
-      );
+      const response = await apiClient.post<
+        ApiResponse<{
+          message: string;
+        }>
+      >(`/api/users/${userId}/reject-customer-data`, { reason });
       return response.data;
     } catch (error: unknown) {
       console.error("Reject customer data error:", error);
@@ -889,7 +889,7 @@ export const userApi = {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Failed to reject customer data"
+              "Failed to reject customer data",
           );
         }
       }
@@ -897,7 +897,6 @@ export const userApi = {
     }
   },
 };
-
 
 // Quotation API endpoints
 export const quotationApi = {

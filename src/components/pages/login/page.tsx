@@ -339,10 +339,10 @@ export default function LoginPage() {
                 className="w-[90%] ml-5 bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isLoading ? (
-  <Loader2 className="w-5 h-5 animate-spin" />
-) : (
-  <span>LOGIN</span>
-)}
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <span>LOGIN</span>
+                )}
               </button>
 
               {/* Register Link */}

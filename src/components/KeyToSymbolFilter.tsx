@@ -40,7 +40,12 @@ interface KeySymbolFilterProps {
 }
 
 const FILTER_SECTIONS = [
-  { label: "Key To Symbol", key: "keyToSymbol", options: KEY_TO_SYMBOL_OPTIONS, cols: 2 },
+  {
+    label: "Key To Symbol",
+    key: "keyToSymbol",
+    options: KEY_TO_SYMBOL_OPTIONS,
+    cols: 2,
+  },
   { label: "Ey.Cln", key: "eyCln", options: EY_CLN_OPTIONS, cols: 4 },
   { label: "H&A", key: "hAndA", options: H_AND_A_OPTIONS, cols: 4 },
 ];
@@ -61,7 +66,10 @@ export default function KeySymbolFilter({
     filters[category]?.includes(value) || false;
 
   return (
-    <div className={`${playFair.className} mb-2 mt-1`} style={{ width: "fit-content" }}>
+    <div
+      className={`${playFair.className} mb-2 mt-1`}
+      style={{ width: "fit-content" }}
+    >
       {/* Header */}
       <div
         className="flex items-center px-2.5"
@@ -99,7 +107,10 @@ export default function KeySymbolFilter({
                   <button
                     key={option}
                     onClick={() =>
-                      toggleFilter(section.key as keyof KeySymbolFilters, option)
+                      toggleFilter(
+                        section.key as keyof KeySymbolFilters,
+                        option,
+                      )
                     }
                     className={`px-2 py-1 text-xs font-normal transition-colors ${
                       isSelected(section.key as keyof KeySymbolFilters, option)
@@ -111,7 +122,7 @@ export default function KeySymbolFilter({
                       minHeight: "28px",
                       border: isSelected(
                         section.key as keyof KeySymbolFilters,
-                        option
+                        option,
                       )
                         ? "1px solid #2563eb"
                         : "1px solid #f9e8cd",

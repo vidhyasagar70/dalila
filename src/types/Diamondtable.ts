@@ -59,7 +59,10 @@ export interface TableProps {
   selectedCut?: string;
   selectedPolish?: string;
   selectedSymmetry?: string;
-  onSelectionChange?: (selectedIds: string[], selectedDiamonds: DiamondData[]) => void;
+  onSelectionChange?: (
+    selectedIds: string[],
+    selectedDiamonds: DiamondData[],
+  ) => void;
 }
 
 export interface FilterParams {

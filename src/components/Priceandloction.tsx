@@ -36,7 +36,7 @@ export default function PriceLocationFilter({
   const handlePriceChange = (
     field: "pricePerCarat" | "discount" | "totalPrice",
     type: "from" | "to",
-    value: string
+    value: string,
   ) => {
     onFiltersChange({
       ...filters,
@@ -49,7 +49,7 @@ export default function PriceLocationFilter({
 
   const incrementValue = (
     field: "pricePerCarat" | "discount" | "totalPrice",
-    type: "from" | "to"
+    type: "from" | "to",
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0.50");
     const newValue = (currentValue + 0.01).toFixed(2);
@@ -58,7 +58,7 @@ export default function PriceLocationFilter({
 
   const decrementValue = (
     field: "pricePerCarat" | "discount" | "totalPrice",
-    type: "from" | "to"
+    type: "from" | "to",
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0.50");
     const newValue = Math.max(0, currentValue - 0.01).toFixed(2);
@@ -98,7 +98,10 @@ export default function PriceLocationFilter({
   };
 
   return (
-    <div className={`${playFair.className} mb-2 mt-1`} style={{ width: "fit-content" }}>
+    <div
+      className={`${playFair.className} mb-2 mt-1`}
+      style={{ width: "fit-content" }}
+    >
       {/* Price Section */}
       <div
         className="flex items-center gap-1.5 px-2 py-1.5"

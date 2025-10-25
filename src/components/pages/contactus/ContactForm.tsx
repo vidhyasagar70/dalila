@@ -1,11 +1,19 @@
 "use client";
 import { useState, ChangeEvent } from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { Playfair_Display } from "next/font/google";
-
-const playFair = Playfair_Display({
+import { Marcellus, Jost } from "next/font/google";
+import AnimatedContainer from "@/components/shared/AnimatedContainer";
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400",
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export default function ContactUsPage() {
@@ -34,165 +42,193 @@ export default function ContactUsPage() {
   };
 
   return (
-    <div className={`bg-gray-50 ${playFair.className}`}>
+    <div className="bg-gray-50">
       {/* Contact Form Section */}
       <section className="pt-16 pb-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-8 items-start">
-            <div className="bg-white rounded-lg p-8 lg:p-12 shadow-sm">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                Get in Touch
-              </h2>
-              <div
-                className="w-20 h-1 mb-8"
-                style={{ background: goldGradient }}
-              ></div>
+            <AnimatedContainer direction="left">
+              <div className="bg-white rounded-lg p-8 lg:p-12">
+                <h2
+                  className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-2 ${
+                    marcellus.className
+                  }`}
+                >
+                  Get in Touch
+                </h2>
+                <div
+                  className="w-20 h-1 mb-8"
+                  style={{ background: goldGradient }}
+                ></div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Left Column - Form Fields */}
-                <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column - Form Fields */}
+                  <div className="space-y-6">
+                    <div>
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Your Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                        onFocus={(e) =>
+                          (e.target.style.borderColor = goldColor)
+                        }
+                        onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Your Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                        onFocus={(e) =>
+                          (e.target.style.borderColor = goldColor)
+                        }
+                        onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Your Phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                        onFocus={(e) =>
+                          (e.target.style.borderColor = goldColor)
+                        }
+                        onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-center items-center h-full ml-10">
+                        <button
+                          onClick={handleSubmit}
+                          className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded uppercase tracking-wide text-sm"
+                          style={{
+                            background: goldGradient,
+                            boxShadow: "0 2px 4px rgba(181, 137, 0, 0.2)",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background =
+                              "linear-gradient(to right, #9d7400 0%, #9d7400 100%)";
+                            e.currentTarget.style.boxShadow =
+                              "0 4px 8px rgba(181, 137, 0, 0.3)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = goldGradient;
+                            e.currentTarget.style.boxShadow =
+                              "0 2px 4px rgba(181, 137, 0, 0.2)";
+                          }}
+                        >
+                          Send Message
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column - Message Field */}
                   <div>
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Your Name"
-                      value={formData.name}
+                    <textarea
+                      name="message"
+                      placeholder="Your Message"
+                      value={formData.message}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                      rows={7}
+                      className="w-full  px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors resize-none text-gray-700 placeholder:text-gray-400"
                       onFocus={(e) => (e.target.style.borderColor = goldColor)}
                       onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                     />
                   </div>
-
-                  <div>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Your Email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
-                      onFocus={(e) => (e.target.style.borderColor = goldColor)}
-                      onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
-                    />
-                  </div>
-
-                  <div>
-                    <input
-                      type="tel"
-                      name="phone"
-                      placeholder="Your Phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
-                      onFocus={(e) => (e.target.style.borderColor = goldColor)}
-                      onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
-                    />
-                  </div>
-
-                  <div>
-                    <button
-                      onClick={handleSubmit}
-                      className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded uppercase tracking-wide text-sm"
-                      style={{
-                        background: goldGradient,
-                        boxShadow: "0 2px 4px rgba(181, 137, 0, 0.2)",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background =
-                          "linear-gradient(to right, #9d7400 0%, #9d7400 100%)";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 8px rgba(181, 137, 0, 0.3)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = goldGradient;
-                        e.currentTarget.style.boxShadow =
-                          "0 2px 4px rgba(181, 137, 0, 0.2)";
-                      }}
-                    >
-                      Send Message
-                    </button>
-                  </div>
-                </div>
-
-                {/* Right Column - Message Field */}
-                <div>
-                  <textarea
-                    name="message"
-                    placeholder="Your Message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={10}
-                    className="w-full h-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors resize-none text-gray-700 placeholder:text-gray-400"
-                    onFocus={(e) => (e.target.style.borderColor = goldColor)}
-                    onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
-                  />
                 </div>
               </div>
-            </div>
+            </AnimatedContainer>
 
             {/* Right Column - Contact Information */}
-            <div className="bg-white rounded-lg p-8 lg:p-12 shadow-sm">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-8">
-                Contact Information
-              </h2>
+            <AnimatedContainer direction="right">
+              <div className="bg-white rounded-lg p-8 lg:p-12 shadow-sm">
+                <h2
+                  className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-8 ${marcellus.className}`}
+                >
+                  Contact Information
+                </h2>
 
-              <div className="space-y-8">
-                <div className="flex items-start gap-4">
-                  <div
-                    className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ background: goldGradient }}
-                  >
-                    <MapPin className="w-5 h-5 text-white" />
+                <div className="space-y-8">
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{ background: goldGradient }}
+                    >
+                      <MapPin className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p
+                        className={`text-gray-600 text-base ${jost.className}`}
+                      >
+                        123 Diamond Street, Jewelry District, XYZ City
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-gray-600 text-base">
-                      123 Diamond Street, Jewelry District, XYZ City
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start gap-4">
-                  <div
-                    className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ background: goldGradient }}
-                  >
-                    <Phone className="w-5 h-5 text-white" />
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{ background: goldGradient }}
+                    >
+                      <Phone className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p
+                        className={`text-gray-600 text-base ${jost.className}`}
+                      >
+                        +1 234 567 890
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-gray-600 text-base">+1 234 567 890</p>
-                  </div>
-                </div>
 
-                <div className="flex items-start gap-4">
-                  <div
-                    className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ background: goldGradient }}
-                  >
-                    <Mail className="w-5 h-5 text-white" />
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{ background: goldGradient }}
+                    >
+                      <Mail className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p
+                        className={`text-gray-600 text-base ${jost.className}`}
+                      >
+                        contact@dalila.com
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-gray-600 text-base">
-                      contact@dalila.com
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start gap-4">
-                  <div
-                    className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ background: goldGradient }}
-                  >
-                    <Clock className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-gray-600 text-base">
-                      Mon - Fri: 9:00 AM - 5:00 PM
-                    </p>
+                  <div className="flex items-start gap-4">
+                    <div
+                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{ background: goldGradient }}
+                    >
+                      <Clock className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p
+                        className={`text-gray-600 text-base ${jost.className}`}
+                      >
+                        Mon - Fri: 9:00 AM - 5:00 PM
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </AnimatedContainer>
           </div>
         </div>
       </section>
