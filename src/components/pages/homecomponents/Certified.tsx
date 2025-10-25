@@ -3,107 +3,107 @@ import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 
 const playFair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
 });
 export default function CertifiedBy() {
-  const certifications = [
-    { name: "IGI", image: "/dalila_img/client/client_1.png" },
-    { name: "GIA", image: "/dalila_img/client/client_2.png" },
-    { name: "HRD", image: "/dalila_img/client/client_3.png" },
-  ];
+    const certifications = [
+        { name: "IGI", image: "/dalila_img/client/client_1.png" },
+        { name: "GIA", image: "/dalila_img/client/client_2.png" },
+        { name: "HRD", image: "/dalila_img/client/client_3.png" },
+    ];
 
-  const slideStyle = {
-    animation: "slide 15s linear infinite",
-  };
+    const slideStyle = {
+        animation: "slide 15s linear infinite",
+    };
 
-  return (
-    <div className="bg-white py-16">
-      <div className="container mx-auto px-6">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2
-            className={`text-4xl md:text-5xl font-bold text-slate-900 mb-2 ${playFair.className}`}
-          >
-            Certified By
-          </h2>
+    return (
+        <div className="bg-white py-16">
+            <div className="container mx-auto px-6">
+                {/* Section Header */}
+                <div className="text-center mb-12">
+                    <h2
+                        className={`text-4xl md:text-5xl font-medium text-slate-900 mb-2 ${playFair.className}`}
+                    >
+                        Certified By
+                    </h2>
+                </div>
+
+                {/* Sliding Logos Container */}
+                <div className="relative overflow-hidden">
+                    {/* Gradient Overlays */}
+                    <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+                    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+                    {/* Sliding Track */}
+                    <div
+                        className="flex hover:[animation-play-state:paused]"
+                        style={slideStyle}
+                    >
+                        {/* First set of logos */}
+                        {certifications.map((cert, index) => (
+                            <div
+                                key={`first-${index}`}
+                                className="flex-shrink-0 mx-12 md:mx-16 w-[200px]"
+                            >
+                                <div className="relative h-24 w-full">
+                                    <Image
+                                        src={cert.image}
+                                        alt={`${cert.name} certification`}
+                                        fill
+                                        className="object-contain transition-all duration-300"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Duplicate set for seamless loop */}
+                        {certifications.map((cert, index) => (
+                            <div
+                                key={`second-${index}`}
+                                className="flex-shrink-0 mx-12 md:mx-16 w-[200px]"
+                            >
+                                <div className="relative h-24 w-full">
+                                    <Image
+                                        src={cert.image}
+                                        alt={`${cert.name} certification`}
+                                        fill
+                                        className="object-contain transition-all duration-300"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Third set for extra smooth loop */}
+                        {certifications.map((cert, index) => (
+                            <div
+                                key={`third-${index}`}
+                                className="flex-shrink-0 mx-12 md:mx-16 w-[200px]"
+                            >
+                                <div className="relative h-24 w-full">
+                                    <Image
+                                        src={cert.image}
+                                        alt={`${cert.name} certification`}
+                                        fill
+                                        className="object-contain transition-all duration-300"
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <style jsx>{`
+                @keyframes slide {
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(-33.333%);
+                    }
+                }
+            `}</style>
         </div>
-
-        {/* Sliding Logos Container */}
-        <div className="relative overflow-hidden">
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
-
-          {/* Sliding Track */}
-          <div
-            className="flex hover:[animation-play-state:paused]"
-            style={slideStyle}
-          >
-            {/* First set of logos */}
-            {certifications.map((cert, index) => (
-              <div
-                key={`first-${index}`}
-                className="flex-shrink-0 mx-12 md:mx-16 w-[200px]"
-              >
-                <div className="relative h-24 w-full">
-                  <Image
-                    src={cert.image}
-                    alt={`${cert.name} certification`}
-                    fill
-                    className="object-contain transition-all duration-300"
-                  />
-                </div>
-              </div>
-            ))}
-
-            {/* Duplicate set for seamless loop */}
-            {certifications.map((cert, index) => (
-              <div
-                key={`second-${index}`}
-                className="flex-shrink-0 mx-12 md:mx-16 w-[200px]"
-              >
-                <div className="relative h-24 w-full">
-                  <Image
-                    src={cert.image}
-                    alt={`${cert.name} certification`}
-                    fill
-                    className="object-contain transition-all duration-300"
-                  />
-                </div>
-              </div>
-            ))}
-
-            {/* Third set for extra smooth loop */}
-            {certifications.map((cert, index) => (
-              <div
-                key={`third-${index}`}
-                className="flex-shrink-0 mx-12 md:mx-16 w-[200px]"
-              >
-                <div className="relative h-24 w-full">
-                  <Image
-                    src={cert.image}
-                    alt={`${cert.name} certification`}
-                    fill
-                    className="object-contain transition-all duration-300"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <style jsx>{`
-        @keyframes slide {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-      `}</style>
-    </div>
-  );
+    );
 }
