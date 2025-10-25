@@ -2,7 +2,7 @@
 "use client";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-import Dashboard from "../dashboaard/page";
+import Dashboard from "../../components/Dashboard/page";
 export default function DashboardPage() {
   return (
     <ProtectedRoute

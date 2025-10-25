@@ -83,70 +83,71 @@ function OTPVerificationContent() {
     inputRefs.current[3]?.focus();
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    // Validate OTP
-    const otpString = otp.join("");
-    if (otpString.length !== 4) {
-      setError("Please enter the complete 4-digit OTP");
-      return;
+  // Validate OTP
+  const otpString = otp.join("");
+  if (otpString.length !== 4) {
+    setError("Please enter the complete 4-digit OTP");
+    return;
+  }
+
+  setIsLoading(true);
+  setError("");
+  setSuccess("");
+
+  try {
+    console.log("Verifying OTP...");
+
+    const response = await userApi.verifyOtp({
+      email: email,
+      otp: otpString,
+    });
+
+    if (response && response.success) {
+      console.log("OTP verified successfully!", response);
+
+      setSuccess("Email verified successfully! Redirecting...");
+
+      // After OTP verification, redirect to customer details page
+      // The customer will need to fill this form before being able to login
+      setTimeout(() => {
+        router.push(`/customer-details?email=${encodeURIComponent(email)}`);
+      }, 2000);
+    } else {
+      setError(response?.message || "Invalid OTP. Please try again.");
     }
+  } catch (err: unknown) {
+    console.error("OTP verification error:", err);
 
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
+    if (err instanceof Error) {
+      const errorMessage = err.message;
 
-    try {
-      console.log("Verifying OTP...");
-
-      const response = await userApi.verifyOtp({
-        email: email,
-        otp: otpString,
-      });
-
-      if (response && response.success) {
-        console.log("OTP verified successfully!", response);
-
-        setSuccess(response.message || "Email verified successfully!");
-
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+      if (errorMessage.includes("expired")) {
+        setError("OTP has expired. Please request a new one.");
+      } else if (
+        errorMessage.includes("invalid") ||
+        errorMessage.includes("incorrect")
+      ) {
+        setError("Invalid OTP. Please check and try again.");
+      } else if (
+        errorMessage.includes("network") ||
+        errorMessage.includes("fetch")
+      ) {
+        setError(
+          "Unable to connect to server. Please check your internet connection."
+        );
       } else {
-        setError(response?.message || "Invalid OTP. Please try again.");
+        setError(errorMessage || "Verification failed. Please try again.");
       }
-    } catch (err: unknown) {
-      console.error("OTP verification error:", err);
-
-      if (err instanceof Error) {
-        const errorMessage = err.message;
-
-        if (errorMessage.includes("expired")) {
-          setError("OTP has expired. Please request a new one.");
-        } else if (
-          errorMessage.includes("invalid") ||
-          errorMessage.includes("incorrect")
-        ) {
-          setError("Invalid OTP. Please check and try again.");
-        } else if (
-          errorMessage.includes("network") ||
-          errorMessage.includes("fetch")
-        ) {
-          setError(
-            "Unable to connect to server. Please check your internet connection.",
-          );
-        } else {
-          setError(errorMessage || "Verification failed. Please try again.");
-        }
-      } else {
-        setError("Unable to connect to server. Please try again.");
-      }
-    } finally {
-      setIsLoading(false);
+    } else {
+      setError("Unable to connect to server. Please try again.");
     }
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleResendOtp = async () => {
     if (countdown > 0) return;

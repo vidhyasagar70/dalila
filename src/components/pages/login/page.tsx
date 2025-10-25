@@ -41,133 +41,203 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+ const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setError("");
+  setIsLoading(true);
 
-    // Basic validation
-    if (!email.trim()) {
-      setError("Email is required");
-      setIsLoading(false);
-      return;
-    }
+  // Basic validation
+  if (!email.trim()) {
+    setError("Email is required");
+    setIsLoading(false);
+    return;
+  }
 
-    if (!password.trim()) {
-      setError("Password is required");
-      setIsLoading(false);
-      return;
-    }
+  if (!password.trim()) {
+    setError("Password is required");
+    setIsLoading(false);
+    return;
+  }
 
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address");
-      setIsLoading(false);
-      return;
-    }
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    setError("Please enter a valid email address");
+    setIsLoading(false);
+    return;
+  }
 
-    try {
-      // Call the login API
-      const response = await userApi.login({
-        email: email.trim(),
-        password: password,
-      });
+  try {
+    console.log("🔐 Attempting login...");
+    
+    // Call the login API
+    const response = await userApi.login({
+      email: email.trim(),
+      password: password,
+    });
 
-      if (response && response.success && response.data) {
-        const { token, user } = response.data;
+    if (response && response.success && response.data) {
+      const { token, user } = response.data;
 
-        if (typeof window !== "undefined") {
-          // Handle remember me
-          if (rememberMe) {
-            localStorage.setItem("rememberedEmail", email);
+      console.log("✅ Login successful!");
+      console.log("User data:", user);
+
+      if (typeof window !== "undefined") {
+        // Handle remember me
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
+        if (user) {
+          const userString = JSON.stringify(user);
+          localStorage.setItem("user", userString);
+          const cookieUser = encodeURIComponent(userString);
+          document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
+        } else {
+          setError("Login failed. User data not received.");
+          setIsLoading(false);
+          return;
+        }
+
+        // Store token if provided
+        if (token) {
+          localStorage.setItem("authToken", token);
+          document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+        } else {
+          localStorage.setItem("authToken", "httpOnly_cookie_auth");
+          document.cookie = `authToken=httpOnly_cookie_auth; path=/; max-age=86400; SameSite=Lax`;
+        }
+
+        // Final verification
+        const finalToken = localStorage.getItem("authToken");
+        const finalUser = localStorage.getItem("user");
+
+        if (!finalToken || !finalUser) {
+          setError("Login failed. Please try again.");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // UPDATED REDIRECT LOGIC - Check customer data status
+      if (user) {
+        let redirectUrl = "/";
+        
+        console.log("👤 User role:", user.role);
+        console.log("📋 Customer data exists:", !!user.customerData);
+        console.log("📋 Customer data:", user.customerData);
+        console.log("✅ KYC Status:", user.kycStatus);
+        
+        // Check if user is admin
+        if (user.role === "ADMIN") {
+          console.log("✅ Admin user - redirecting to dashboard");
+          redirectUrl = searchParams.get("redirect") || "/";
+          setError("");
+        } 
+        // Check if customer data object exists and has required fields
+        else if (!user.customerData || 
+                 Object.keys(user.customerData).length === 0 ||
+                 !user.customerData.firstName ||
+                 !user.customerData.businessInfo) {
+          console.log("⚠️ Customer data missing or incomplete - redirecting to form");
+          redirectUrl = "/customer-details";
+          setError("");
+        } 
+        // Check KYC status if customer data exists
+        else if (user.kycStatus === "pending") {
+          console.log("⏳ KYC pending approval");
+          setError("Your account is pending approval. Please wait for admin verification.");
+          setIsLoading(false);
+          return;
+        }
+        else if (user.kycStatus === "rejected") {
+          console.log("❌ KYC rejected");
+          setError("Your account application was rejected. Please contact support.");
+          setIsLoading(false);
+          return;
+        }
+        else if (user.kycStatus === "approved") {
+          console.log("✅ KYC approved - redirecting to app");
+          redirectUrl = searchParams.get("redirect") || "/";
+          setError("");
+        }
+        // If no KYC status but has customer data, redirect to customer details
+        else {
+          console.log("⚠️ No KYC status - checking customer data completeness");
+          // Double check if customer data is actually complete
+          const hasCompleteData = user.customerData.firstName && 
+                                 user.customerData.lastName &&
+                                 user.customerData.phoneNumber &&
+                                 user.customerData.address &&
+                                 user.customerData.businessInfo;
+          
+          if (hasCompleteData) {
+            console.log("✅ Customer data complete - setting pending status");
+            redirectUrl = searchParams.get("redirect") || "/";
+            setError("");
           } else {
-            localStorage.removeItem("rememberedEmail");
-          }
-
-          if (user) {
-            const userString = JSON.stringify(user);
-            localStorage.setItem("user", userString);
-            const cookieUser = encodeURIComponent(userString);
-            document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
-          } else {
-            setError("Login failed. User data not received.");
-            setIsLoading(false);
-            return;
-          }
-
-          // If token was provided in response body, store it
-          if (token) {
-            localStorage.setItem("authToken", token);
-            document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
-          } else {
-            localStorage.setItem("authToken", "httpOnly_cookie_auth");
-            document.cookie = `authToken=httpOnly_cookie_auth; path=/; max-age=86400; SameSite=Lax`;
-          }
-
-          // Final verification
-          const finalToken = localStorage.getItem("authToken");
-          const finalUser = localStorage.getItem("user");
-
-          if (!finalToken || !finalUser) {
-            setError("Login failed. Please try again.");
-            setIsLoading(false);
-            return;
+            console.log("⚠️ Customer data incomplete - redirecting to form");
+            redirectUrl = "/customer-details";
+            setError("");
           }
         }
 
-        // Get redirect URL from query params or default to dashboard
-        const redirect = searchParams.get("redirect") || "/";
-        setError("");
+        console.log("🔀 Redirecting to:", redirectUrl);
+
         setTimeout(() => {
-          window.location.href = redirect;
+          window.location.href = redirectUrl;
         }, 1000);
       } else {
-        const errorMsg =
-          response?.message ||
-          response?.error ||
-          "Login failed. Please try again.";
-        setError(errorMsg);
+        setError("Login failed. User data not received.");
         setIsLoading(false);
       }
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        // Check for specific error messages from the API
-        const errorMessage = err.message;
-
-        console.log("Error message:", errorMessage);
-
-        if (
-          errorMessage.includes("Invalid credentials") ||
-          errorMessage.includes("incorrect password") ||
-          errorMessage.includes("not found")
-        ) {
-          setError("Invalid email or password. Please try again.");
-        } else if (errorMessage.includes("not verified")) {
-          setError("Please verify your email address before logging in.");
-        } else if (
-          errorMessage.includes("account is locked") ||
-          errorMessage.includes("suspended")
-        ) {
-          setError("Your account has been suspended. Please contact support.");
-        } else if (
-          errorMessage.includes("network") ||
-          errorMessage.includes("fetch")
-        ) {
-          setError(
-            "Unable to connect to server. Please check your internet connection.",
-          );
-        } else {
-          setError(errorMessage || "Login failed. Please try again.");
-        }
-      } else {
-        setError(
-          "Unable to connect to server. Please check your internet connection and try again.",
-        );
-      }
+    } else {
+      const errorMsg =
+        response?.message ||
+        response?.error ||
+        "Login failed. Please try again.";
+      setError(errorMsg);
       setIsLoading(false);
     }
-  };
+  } catch (err: unknown) {
+    console.error("❌ Login error:", err);
+    
+    if (err instanceof Error) {
+      const errorMessage = err.message;
+
+      if (
+        errorMessage.includes("Invalid credentials") ||
+        errorMessage.includes("incorrect password") ||
+        errorMessage.includes("not found")
+      ) {
+        setError("Invalid email or password. Please try again.");
+      } else if (errorMessage.includes("not verified")) {
+        setError("Please verify your email address before logging in.");
+      } else if (
+        errorMessage.includes("account is locked") ||
+        errorMessage.includes("suspended")
+      ) {
+        setError("Your account has been suspended. Please contact support.");
+      } else if (
+        errorMessage.includes("network") ||
+        errorMessage.includes("fetch")
+      ) {
+        setError(
+          "Unable to connect to server. Please check your internet connection.",
+        );
+      } else {
+        setError(errorMessage || "Login failed. Please try again.");
+      }
+    } else {
+      setError(
+        "Unable to connect to server. Please check your internet connection and try again.",
+      );
+    }
+    setIsLoading(false);
+  }
+};
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

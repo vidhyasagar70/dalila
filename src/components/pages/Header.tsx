@@ -10,6 +10,7 @@ export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [userRole, setUserRole] = useState<string | null>(null);
+    const [userStatus, setUserStatus] = useState<string | null>(null); // NEW: Track user status
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [cartCount, setCartCount] = useState(0);
@@ -23,9 +24,13 @@ export default function Header() {
     const memberPage = pathname === "/member";
     const dashboardPage = pathname === "/dashboard";
     const CartPage = pathname === "/cart";
+    const CustomerPage = pathname === "/customer-details";
 
     // Determine if user is admin
     const isAdmin = isLoggedIn && userRole === "ADMIN";
+    
+    // NEW: Check if inventory is accessible (Admin or APPROVED status)
+    const isInventoryAccessible = isLoggedIn && (userRole === "ADMIN" || userStatus === "APPROVED");
 
     // Fetch cart count - wrapped in useCallback
     const fetchCartCount = useCallback(async () => {
@@ -38,7 +43,6 @@ export default function Header() {
             const response = await cartApi.get();
             console.log("Header - Cart response:", response);
 
-            // Updated to match the actual API response structure
             if (response?.success && response.data?.cart?.items) {
                 setCartCount(response.data.cart.items.length);
             } else {
@@ -55,11 +59,9 @@ export default function Header() {
             if (typeof window !== "undefined") {
                 setIsCheckingAuth(true);
 
-                // First, try localStorage
                 let token = localStorage.getItem("authToken");
                 let userStr = localStorage.getItem("user");
 
-                // If not in localStorage, check cookies
                 if (!userStr || !token) {
                     console.log("Checking cookies...");
                     const cookies = document.cookie.split(";");
@@ -87,20 +89,24 @@ export default function Header() {
                     }
                 }
 
-                // Check if user is authenticated
                 const hasValidAuth = !!(userStr && token);
 
                 if (hasValidAuth && userStr) {
                     try {
                         const user = JSON.parse(userStr);
                         setUserRole(user.role || null);
+                        setUserStatus(user.status || null); // NEW: Set user status
                         setIsLoggedIn(true);
+                        console.log("User role:", user.role);
+                        console.log("User status:", user.status); // NEW: Log status
                     } catch {
                         setUserRole(null);
+                        setUserStatus(null); // NEW: Reset status
                         setIsLoggedIn(false);
                     }
                 } else {
                     setUserRole(null);
+                    setUserStatus(null); // NEW: Reset status
                     setIsLoggedIn(false);
                 }
 
@@ -112,7 +118,6 @@ export default function Header() {
 
         checkUserAuth();
 
-        // Listen for auth events
         const handleAuthEvent = (event: Event) => {
             console.log("Auth event received:", event.type);
             setTimeout(checkUserAuth, 100);
@@ -131,12 +136,10 @@ export default function Header() {
         }
     }, [pathname]);
 
-    // Fetch cart count when logged in
     useEffect(() => {
         if (isLoggedIn) {
             fetchCartCount();
 
-            // Listen for cart update events
             const handleCartUpdate = () => {
                 fetchCartCount();
             };
@@ -170,7 +173,6 @@ export default function Header() {
         document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
     }, [isMobileMenuOpen]);
 
-    // Handle logout
     const handleLogout = async () => {
         try {
             console.log("Logout initiated...");
@@ -179,6 +181,7 @@ export default function Header() {
         } finally {
             setIsLoggedIn(false);
             setUserRole(null);
+            setUserStatus(null); // NEW: Reset status
             setCartCount(0);
 
             if (typeof window !== "undefined") {
@@ -202,15 +205,17 @@ export default function Header() {
         }
     };
 
-    // Handle inventory click for non-logged in users
+    // NEW: Updated handler for inventory access
     const handleInventoryClick = (e: React.MouseEvent) => {
         if (!isLoggedIn) {
             e.preventDefault();
             router.push("/login");
+        } else if (userRole !== "ADMIN" && userStatus !== "APPROVED") {
+            e.preventDefault();
+            alert("Your account is pending approval. Please wait for admin verification to access the inventory.");
         }
     };
 
-    // Handle cart click
     const handleCartClick = () => {
         if (!isLoggedIn) {
             router.push("/login");
@@ -219,7 +224,6 @@ export default function Header() {
         }
     };
 
-    // Menu items based on authentication status and role
     let navigationItems: {
         href: string;
         label: string;
@@ -231,7 +235,6 @@ export default function Header() {
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
             { href: "/weBuy", label: "We Buy" },
-            // { href: "/blogs", labe     l: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
         ];
     } else if (isAdmin) {
@@ -239,16 +242,13 @@ export default function Header() {
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
             { href: "/weBuy", label: "We Buy" },
-            // { href: "/blogs", labe     l: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-            // { href: "/offer-enquiry", label: "Offers" },
         ];
     } else {
         navigationItems = [
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
             { href: "/weBuy", label: "We Buy" },
-            // { href: "/blogs", labe     l: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
         ];
     }
@@ -261,27 +261,23 @@ export default function Header() {
                 inventoryPage ||
                 offerenquiryPage ||
                 memberPage ||
-                dashboardPage ||
+                dashboardPage || 
+                CustomerPage ||
                 CartPage
                     ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
                     : "bg-transparent py-2.5 md:py-3"
             }`}
         >
-            <div className="  ">
-                {/* Top Tagline - Hidden on mobile */}
+            <div className="">
                 <div className="hidden sm:flex justify-center mb-0.5 md:mb-1">
                     <p className="text-xs md:text-md tracking-wide text-white">
                         Where Trust Shines, And Quality Sparkles
                     </p>
                 </div>
 
-                {/* Divider Line - Hidden on mobile */}
                 <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-0"></div>
 
-                {/* Main Navigation Bar */}
-
                 <div className="flex container mx-auto px-4 md:px-6 lg:px-8 items-center justify-between">
-                    {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
@@ -294,7 +290,6 @@ export default function Header() {
                         )}
                     </button>
 
-                    {/* Left Navigation - Desktop/Tablet */}
                     <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
                         {navigationItems.map((item) => (
                             <Link
@@ -312,7 +307,6 @@ export default function Header() {
                         ))}
                     </nav>
 
-                    {/* Center Logo */}
                     <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
                         <button
                             onClick={() => router.push("/")}
@@ -329,9 +323,7 @@ export default function Header() {
                         </button>
                     </div>
 
-                    {/* Right Auth Buttons & Cart - Desktop/Tablet */}
                     <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
-                        {/* Cart Icon */}
                         {isLoggedIn && (
                             <div className="flex gap-15">
                                 <button
@@ -370,12 +362,27 @@ export default function Header() {
                             </>
                         ) : (
                             <div className="flex gap-3">
+                                {/* NEW: Updated INVENTORY button with access control */}
                                 <button
-                                    onClick={() => router.push("/inventory")}
-                                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                                    onClick={(e) => {
+                                        if (isInventoryAccessible) {
+                                            router.push("/inventory");
+                                        } else {
+                                            e.preventDefault();
+                                            alert("Your account is pending approval. Please wait for admin verification to access the inventory.");
+                                        }
+                                    }}
+                                    disabled={!isInventoryAccessible}
+                                    className={`py-3 px-3 xl:px-5 text-xs xl:text-sm border border-[#c89e3a] transition-colors whitespace-nowrap ${
+                                        isInventoryAccessible
+                                            ? "text-white hover:bg-[#c89e3a] hover:text-white cursor-pointer"
+                                            : "text-gray-400 bg-gray-700 cursor-not-allowed opacity-60"
+                                    }`}
+                                    title={!isInventoryAccessible ? "Your account is pending approval" : ""}
                                 >
                                     INVENTORY
                                 </button>
+                                
                                 {isAdmin && (
                                     <div className="relative group">
                                         <button
@@ -390,7 +397,6 @@ export default function Header() {
                                             ADMIN PANEL
                                         </button>
 
-                                        {/* Dropdown Menu */}
                                         {isAdminDropdownOpen && (
                                             <div
                                                 onMouseEnter={() =>
@@ -429,7 +435,7 @@ export default function Header() {
                         )}
                     </div>
 
-                    {/* Tablet Only - Compact Buttons */}
+                    {/* Tablet Only */}
                     <div className="hidden md:flex lg:hidden items-center gap-2">
                         {isLoggedIn && (
                             <button
@@ -467,7 +473,7 @@ export default function Header() {
                         )}
                     </div>
 
-                    {/* Mobile - Cart & Login Button */}
+                    {/* Mobile */}
                     <div className="flex md:hidden items-center gap-2">
                         {isLoggedIn && (
                             <button
@@ -507,18 +513,16 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* Mobile Menu Overlay */}
+            {/* Mobile Menu */}
             {isMobileMenuOpen && (
                 <div className="lg:hidden fixed inset-0 top-[72px] bg-[#050c3a] z-40">
                     <div className="container mx-auto px-4 py-6">
-                        {/* Mobile Tagline */}
                         <div className="flex justify-center mb-4 pb-4 border-b border-white/30">
                             <p className="text-xs tracking-wide text-gray-300">
                                 Where Trust Shines, And Quality Sparkles
                             </p>
                         </div>
 
-                        {/* Mobile Navigation */}
                         <nav className="flex flex-col gap-4 mb-8">
                             {navigationItems.map((item) => (
                                 <Link
@@ -536,7 +540,29 @@ export default function Header() {
                                 </Link>
                             ))}
 
-                            {/* Cart Link in Mobile Menu */}
+                            {/* NEW: Inventory in mobile menu with access control */}
+                            {isLoggedIn && (
+                                <button
+                                    onClick={(e) => {
+                                        if (isInventoryAccessible) {
+                                            setIsMobileMenuOpen(false);
+                                            router.push("/inventory");
+                                        } else {
+                                            e.preventDefault();
+                                            alert("Your account is pending approval. Please wait for admin verification to access the inventory.");
+                                        }
+                                    }}
+                                    disabled={!isInventoryAccessible}
+                                    className={`text-left text-lg py-2 border-b border-white/10 transition-colors ${
+                                        isInventoryAccessible
+                                            ? "text-white hover:text-[#c89e3a]"
+                                            : "text-gray-500 cursor-not-allowed"
+                                    }`}
+                                >
+                                    Inventory {!isInventoryAccessible && "(Pending Approval)"}
+                                </button>
+                            )}
+
                             {isLoggedIn && (
                                 <button
                                     onClick={() => {
@@ -555,7 +581,6 @@ export default function Header() {
                             )}
                         </nav>
 
-                        {/* Mobile Auth Buttons */}
                         <div className="flex flex-col gap-3">
                             {isCheckingAuth ? (
                                 <div className="flex justify-center">

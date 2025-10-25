@@ -1,4 +1,3 @@
-// components/ProtectedRoute.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -9,6 +8,9 @@ interface ProtectedRouteProps {
   redirectIfAuth?: boolean;
   redirectTo?: string;
   allowedRoles?: string[];
+  requireCustomerData?: boolean;
+  requireKycApproval?: boolean;
+  requireApprovedStatus?: boolean; // NEW: Check if user status is APPROVED
 }
 
 export default function ProtectedRoute({
@@ -17,6 +19,9 @@ export default function ProtectedRoute({
   redirectIfAuth = false,
   redirectTo = "/",
   allowedRoles,
+  requireCustomerData = false,
+  requireKycApproval = false,
+  requireApprovedStatus = false, // NEW parameter
 }: ProtectedRouteProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -27,26 +32,24 @@ export default function ProtectedRoute({
     const checkAuth = () => {
       if (typeof window === "undefined") return;
 
-      // Get auth data from localStorage FIRST (most reliable)
+      // Get auth data from localStorage
       let userStr = localStorage.getItem("user");
-
       let token = localStorage.getItem("authToken");
+
+      // Fallback to cookies
       if (!userStr || !token) {
-        console.log("Checking cookies as fallback...");
         const cookies = document.cookie.split(";");
         const tokenCookie = cookies.find((c) =>
-          c.trim().startsWith("authToken="),
+          c.trim().startsWith("authToken=")
         );
         const userCookie = cookies.find((c) => c.trim().startsWith("user="));
 
         if (tokenCookie && !token) {
           token = tokenCookie.split("=")[1].trim();
-          console.log("Found token in cookie");
         }
         if (userCookie && !userStr) {
           try {
             userStr = decodeURIComponent(userCookie.split("=")[1].trim());
-            console.log("Found user in cookie");
           } catch (e) {
             console.error("Error decoding user cookie:", e);
           }
@@ -55,32 +58,40 @@ export default function ProtectedRoute({
 
       const isLoggedIn = !!(userStr && token);
       let userRole: string | null = null;
+      let hasCustomerData = false;
+      let kycStatus: string | null = null;
+      let userStatus: string | null = null; // NEW: Get user status
 
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
           userRole = user.role || null;
-          console.log("Parsed user role:", userRole);
+          hasCustomerData = !!(user.customerData && Object.keys(user.customerData).length > 0);
+          kycStatus = user.kycStatus || null;
+          userStatus = user.status || null; // NEW: Extract status
         } catch (e) {
           console.error("Error parsing user data:", e);
         }
       }
 
-      console.log("ProtectedRoute Decision:", {
+      console.log("ProtectedRoute Check:", {
         pathname,
         isLoggedIn,
         userRole,
+        hasCustomerData,
+        kycStatus,
+        userStatus, // NEW: Log status
         requireAuth,
-        redirectIfAuth,
-        hasToken: !!token,
-        hasUser: !!userStr,
+        requireCustomerData,
+        requireKycApproval,
+        requireApprovedStatus, // NEW: Log requirement
       });
 
       // Case 1: Route requires authentication but user is not logged in
       if (requireAuth && !isLoggedIn) {
         setIsAuthorized(false);
         setIsChecking(false);
-        router.push(redirectTo);
+        router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
         return;
       }
 
@@ -88,11 +99,62 @@ export default function ProtectedRoute({
       if (redirectIfAuth && isLoggedIn) {
         setIsAuthorized(false);
         setIsChecking(false);
-        router.push(redirectTo);
+        
+        // If admin, go to dashboard
+        if (userRole === "ADMIN") {
+          router.push("/");
+        }
+        // If user hasn't completed customer data, go to customer-details
+        else if (!hasCustomerData) {
+          router.push("/customer-details");
+        }
+        // Otherwise, go to intended destination
+        else {
+          router.push(redirectTo);
+        }
         return;
       }
 
-      // Case 3: Check role-based access if roles are specified
+      // Case 3: Route requires customer data but user hasn't submitted it
+      // (Except for admin users who don't need customer data)
+      if (requireAuth && requireCustomerData && userRole !== "ADMIN" && !hasCustomerData) {
+        setIsAuthorized(false);
+        setIsChecking(false);
+        router.push("/customer-details");
+        return;
+      }
+
+      // Case 4: Route requires KYC approval
+      // (Except for admin users who don't need KYC)
+      if (requireAuth && requireKycApproval && userRole !== "ADMIN") {
+        if (kycStatus !== "approved") {
+          setIsAuthorized(false);
+          setIsChecking(false);
+          
+          if (kycStatus === "pending") {
+            router.push("/pending-approval");
+          } else if (kycStatus === "rejected") {
+            router.push("/kyc-rejected");
+          } else {
+            router.push("/customer-details");
+          }
+          return;
+        }
+      }
+
+      // NEW Case 5: Route requires APPROVED status
+      // (Except for admin users who don't need status check)
+      if (requireAuth && requireApprovedStatus && userRole !== "ADMIN") {
+        if (userStatus !== "APPROVED") {
+          setIsAuthorized(false);
+          setIsChecking(false);
+          // Redirect to pending approval page or show access denied
+          router.push("/pending-approval");
+          return;
+        }
+      }
+
+      // Case 6: Check role-based access if roles are specified
       if (requireAuth && allowedRoles && allowedRoles.length > 0) {
         if (!userRole || !allowedRoles.includes(userRole)) {
           setIsAuthorized(false);
@@ -108,7 +170,6 @@ export default function ProtectedRoute({
       setIsChecking(false);
     };
 
-    // Delay to ensure localStorage is populated after login
     const timeoutId = setTimeout(checkAuth, 200);
 
     // Listen for auth changes
@@ -126,9 +187,8 @@ export default function ProtectedRoute({
       window.removeEventListener("user-logged-in", handleAuthChange);
       window.removeEventListener("user-logged-out", handleAuthChange);
     };
-  }, [pathname, requireAuth, redirectIfAuth, redirectTo, allowedRoles, router]);
+  }, [pathname, requireAuth, redirectIfAuth, redirectTo, allowedRoles, requireCustomerData, requireKycApproval, requireApprovedStatus, router]);
 
-  // Show loading state while checking
   if (isChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#050c3a]">
@@ -140,11 +200,9 @@ export default function ProtectedRoute({
     );
   }
 
-  // Show nothing if not authorized (already redirecting)
   if (!isAuthorized) {
     return null;
   }
 
-  // Render children if authorized
   return <>{children}</>;
 }

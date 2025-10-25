@@ -754,8 +754,7 @@ export const userApi = {
     }
   },
 
-  // Profile
-  getProfile: () => api.get<{ user: User }>("/api/users/profile"),
+
 
   updateEmail: (newEmail: string) =>
     api.put<{ message: string }>("/api/users", "update-email", { newEmail }),
@@ -763,20 +762,90 @@ export const userApi = {
   updatePassword: (data: { email: string; newPassword: string }) =>
     api.put<{ message: string }>("/api/users", "update-password", data),
 
-  // KYC
-  submitCustomerData: (data: {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    address: string;
+  submitCustomerData: async (data: {
+  email?: string; // Add email parameter
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  countryCode: string;
+  address: {
+    street: string;
     city: string;
     state: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
-    businessName?: string;
-    businessType?: string;
-    taxId?: string;
-  }) => api.post<{ message: string }>("/api/users/customer-data", data),
+  };
+  businessInfo: {
+    companyName: string;
+    businessType: string;
+    vatNumber: string;
+    websiteUrl?: string;
+  };
+}) => {
+  try {
+    // Try to get token
+    const token = getAuthToken();
+    console.log("🔑 Token check:", token ? "EXISTS" : "MISSING");
+    
+    // Prepare headers
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (token && token.trim() !== "") {
+      headers['Authorization'] = `Bearer ${token}`;
+      console.log("✅ Adding Authorization header");
+    } else {
+      console.warn("⚠️ No token found, proceeding without auth header");
+    }
+
+    console.log("📤 Submitting customer data:");
+    console.log(JSON.stringify(data, null, 2));
+
+    const response = await apiClient.post<ApiResponse<{
+      message: string;
+      user: User;
+    }>>("/api/users/customer-data", data, { headers });
+
+    console.log("✅ Response:", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    console.error("❌ Submit error:", error);
+    
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as {
+        response?: { 
+          data?: { error?: string; message?: string };
+          status?: number;
+        };
+      };
+      
+      console.error("Status:", axiosError.response?.status);
+      console.error("Error data:", axiosError.response?.data);
+      
+      // Provide more detailed error message
+      const errorMessage = axiosError.response?.data?.error || 
+                          axiosError.response?.data?.message ||
+                          "Failed to submit customer data";
+      
+      console.error("Error message:", errorMessage);
+      throw new Error(errorMessage);
+    }
+    throw error;
+  }
+},
+
+getProfile: async () => {
+  try {
+    const response = await apiClient.get<ApiResponse<{ user: User }>>(
+      "/api/users/profile"
+    );
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Get profile error:", error);
+    throw error;
+  }
+},
 
   // Admin endpoints
   getAllUsers: (params?: FetchParams) =>

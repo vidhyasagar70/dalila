@@ -82,70 +82,87 @@ export default function OTPVerificationPage() {
     inputRefs.current[5]?.focus();
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+ const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    // Validate OTP
-    const otpString = otp.join("");
-    if (otpString.length !== 6) {
-      setError("Please enter the complete 6-digit OTP");
-      return;
-    }
+  const otpString = otp.join("");
+  if (otpString.length !== 4) {
+    setError("Please enter the complete 4-digit OTP");
+    return;
+  }
 
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
+  setIsLoading(true);
+  setError("");
+  setSuccess("");
 
-    try {
-      console.log("Verifying OTP...");
+  try {
+    console.log("Verifying OTP...");
 
-      const response = await userApi.verifyOtp({
-        email: email,
-        otp: otpString,
-      });
+    const response = await userApi.verifyOtp({
+      email: email,
+      otp: otpString,
+    });
 
-      if (response && response.success) {
-        console.log("OTP verified successfully!", response);
+    if (response && response.success) {
+      console.log("OTP verified successfully!", response);
 
-        setSuccess(response.message || "Email verified successfully!");
-
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
-      } else {
-        setError(response?.message || "Invalid OTP. Please try again.");
-      }
-    } catch (err: unknown) {
-      console.error("OTP verification error:", err);
-
-      if (err instanceof Error) {
-        const errorMessage = err.message;
-
-        if (errorMessage.includes("expired")) {
-          setError("OTP has expired. Please request a new one.");
-        } else if (
-          errorMessage.includes("invalid") ||
-          errorMessage.includes("incorrect")
-        ) {
-          setError("Invalid OTP. Please check and try again.");
-        } else if (
-          errorMessage.includes("network") ||
-          errorMessage.includes("fetch")
-        ) {
-          setError(
-            "Unable to connect to server. Please check your internet connection.",
-          );
-        } else {
-          setError(errorMessage || "Verification failed. Please try again.");
+      // CRITICAL: Store the authentication token if provided
+      if (response.data && 'token' in response.data) {
+        const token = (response.data as { token?: string }).token;
+        if (token) {
+          console.log("✅ Storing authentication token from OTP verification");
+          
+          // Store in localStorage
+          if (typeof window !== "undefined") {
+            localStorage.setItem("authToken", token);
+          }
+          
+          // Store in cookie
+          if (typeof document !== "undefined") {
+            document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
+          }
         }
-      } else {
-        setError("Unable to connect to server. Please try again.");
       }
-    } finally {
-      setIsLoading(false);
+
+      setSuccess("Email verified successfully! Redirecting...");
+
+      // Redirect to customer details page
+      setTimeout(() => {
+        router.push(`/customer-details?email=${encodeURIComponent(email)}`);
+      }, 2000);
+    } else {
+      setError(response?.message || "Invalid OTP. Please try again.");
     }
-  };
+  } catch (err: unknown) {
+    console.error("OTP verification error:", err);
+
+    if (err instanceof Error) {
+      const errorMessage = err.message;
+
+      if (errorMessage.includes("expired")) {
+        setError("OTP has expired. Please request a new one.");
+      } else if (
+        errorMessage.includes("invalid") ||
+        errorMessage.includes("incorrect")
+      ) {
+        setError("Invalid OTP. Please check and try again.");
+      } else if (
+        errorMessage.includes("network") ||
+        errorMessage.includes("fetch")
+      ) {
+        setError(
+          "Unable to connect to server. Please check your internet connection."
+        );
+      } else {
+        setError(errorMessage || "Verification failed. Please try again.");
+      }
+    } else {
+      setError("Unable to connect to server. Please try again.");
+    }
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleResendOtp = async () => {
     if (countdown > 0) return;
