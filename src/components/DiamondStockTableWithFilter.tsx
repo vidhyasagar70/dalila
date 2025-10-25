@@ -126,21 +126,12 @@ export default function DiamondStockTableWithFilter() {
         setSelectedMaxCarat(max);
     };
 
-<<<<<<< HEAD
     const handleSelectionChange = (
         selectedIds: string[],
         diamonds: DiamondData[]
     ) => {
         setSelectedDiamonds(diamonds);
     };
-=======
-  const handleSelectionChange = (
-    selectedIds: string[],
-    diamonds: DiamondData[],
-  ) => {
-    setSelectedDiamonds(diamonds);
-  };
->>>>>>> 6b33d17d84c968ff8de55de115abb70d36a8326e
 
     const handleCompare = () => {
         if (selectedDiamonds.length > 0) {
@@ -148,21 +139,12 @@ export default function DiamondStockTableWithFilter() {
         }
     };
 
-<<<<<<< HEAD
     const handleEmail = () => {
         console.log(
             "Email sent for diamonds:",
             selectedDiamonds.map((d) => d.STONE_NO)
         );
     };
-=======
-  const handleEmail = () => {
-    console.log(
-      "Email sent for diamonds:",
-      selectedDiamonds.map((d) => d.STONE_NO),
-    );
-  };
->>>>>>> 6b33d17d84c968ff8de55de115abb70d36a8326e
 
     const handleResetFilters = () => {
         setSelectedColor("");
@@ -247,7 +229,6 @@ export default function DiamondStockTableWithFilter() {
                 {/* Spacer to push items to the right */}
                 <div className="flex-1"></div>
 
-<<<<<<< HEAD
                 {/* Search Bar and Action Buttons - Right Side */}
                 <div className="flex flex-wrap items-center gap-2">
                     <SearchBar onSearch={handleSearch} />
@@ -257,23 +238,6 @@ export default function DiamondStockTableWithFilter() {
                         onCompare={handleCompare}
                         disabled={selectedDiamonds.length === 0}
                     />
-=======
-        {/* Search Bar and Action Buttons - Right Side */}
-        <div className="flex items-center gap-2">
-          <SearchBar onSearch={handleSearch} />
-
-          <CompareButton
-            selectedCount={selectedDiamonds.length}
-            onCompare={handleCompare}
-            disabled={selectedDiamonds.length === 0}
-          />
-
-          <EmailButton
-            selectedCount={selectedDiamonds.length}
-            selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
-            onEmail={handleEmail}
-          />
->>>>>>> 6b33d17d84c968ff8de55de115abb70d36a8326e
 
                     <EmailButton
                         selectedCount={selectedDiamonds.length}
@@ -391,79 +355,5 @@ export default function DiamondStockTableWithFilter() {
                 />
             )}
         </div>
-<<<<<<< HEAD
     );
-=======
-      </div>
-
-      {/* Advanced Filters Section */}
-      {showFilters && (
-        <div className="grid grid-cols-5 gap-4 mt-4">
-          <InclusionFilter
-            inclusions={inclusions}
-            onInclusionChange={setInclusions}
-          />
-          <ShadesFilter
-            filters={shadesFilters}
-            onFiltersChange={setShadesFilters}
-          />
-          <KeySymbolFilter
-            filters={keySymbolFilters}
-            onFiltersChange={setKeySymbolFilters}
-          />
-          <div className="flex flex-col gap-2">
-            <PriceLocationFilter
-              filters={priceLocationFilters}
-              onFiltersChange={setPriceLocationFilters}
-            />
-          </div>
-          <MeasurementFilter
-            measurements={measurements}
-            onMeasurementChange={setMeasurements}
-          />
-        </div>
-      )}
-
-      {/* Table or Grid View */}
-      {viewMode === "list" ? (
-        <DiamondStockTable
-          searchTerm={searchTerm}
-          selectedShape={selectedShape}
-          selectedColor={selectedColor}
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
-          selectedFluor={selectedFluor}
-          selectedClarity={selectedClarity}
-          selectedCut={selectedCut}
-          selectedPolish={selectedPolish}
-          selectedSymmetry={selectedSymmetry}
-          onSelectionChange={handleSelectionChange}
-          pageSize={10}
-        />
-      ) : (
-        <DiamondGridView
-          searchTerm={searchTerm}
-          selectedShape={selectedShape}
-          selectedColor={selectedColor}
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
-          selectedFluor={selectedFluor}
-          selectedClarity={selectedClarity}
-          selectedCut={selectedCut}
-          selectedPolish={selectedPolish}
-          selectedSymmetry={selectedSymmetry}
-          pageSize={12}
-        />
-      )}
-
-      {/* Comparison Modal */}
-      {showComparison && (
-        <DiamondComparisonPage
-          diamonds={selectedDiamonds}
-          onClose={() => setShowComparison(false)}
-        />
-      )}
-    </div>
-  );
->>>>>>> 6b33d17d84c968ff8de55de115abb70d36a8326e
 }
