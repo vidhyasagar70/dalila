@@ -1,11 +1,13 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
+import {Maven_Pro } from "next/font/google";
 
-const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
 });
 
 const STATIC_SHAPE_OPTIONS = [
@@ -49,7 +51,7 @@ export default function ShapeFilter({
     };
 
     return (
-        <div className={`${playFair.className} mb-1.5 mt-0.5`}>
+        <div className={`${mavenPro.className} mb-1.5 mt-0.5`}>
             <div
                 className="flex items-center gap-1.5 px-2.5 py-1.5"
                 style={{ backgroundColor: "#000033" }}

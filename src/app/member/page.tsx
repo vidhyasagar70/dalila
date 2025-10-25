@@ -56,7 +56,7 @@ export default function MembersManagement() {
     const [activeTab, setActiveTab] = useState<"authorized" | "waiting">(
         "waiting"
     );
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery] = useState("");
     // const [selectedFilter, setSelectedFilter] = useState("");
     // const [selectedPerson, setSelectedPerson] = useState("");
     // const [selectedStockLimit, setSelectedStockLimit] = useState("");
@@ -432,7 +432,7 @@ export default function MembersManagement() {
             onChange={(e) => setByExApp(e.target.checked)}
             className="w-4 h-4 border-gray-300 rounded focus:ring-slate-900"
           />
-          <span className="text-sm text-gray-700">By Ex. App</span>
+          <span className="text-sm text-gray-700">By Ex. App.</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input

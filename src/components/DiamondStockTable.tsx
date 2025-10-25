@@ -19,11 +19,13 @@ import type {
     FilterParams,
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
-import { Playfair_Display } from "next/font/google";
+import {Maven_Pro } from "next/font/google";
 
-const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
 });
 const DiamondStockTable: React.FC<TableProps> = ({
     pageSize = 20,
@@ -302,9 +304,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
             );
 
             // Check for successes
-            const successful = results.filter(
-                (r) => r.status === "fulfilled" && (r.value as any)?.success
-            );
+           const successful = results.filter(
+    (r) => r.status === "fulfilled" && 
+           (r.value as { success?: boolean })?.success
+);
             const failed = results.length - successful.length;
 
             if (successful.length > 0) {
@@ -438,7 +441,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     return (
         <>
             <div
-                className={`w-full flex flex-col bg-gray-50 p-4 ${playFair.className}`}
+                className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
             >
                 {/* Cart Message Alert */}
                 {cartMessage && (
@@ -584,7 +587,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                         <table className="w-full border-collapse table-fixed">
                             {/* Header */}
                             <thead
-                                className={`bg-[#050c3a] text-white sticky top-0 z-10 ${playFair.className}`}
+                                className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}
                             >
                                 <tr>
                                     <th className="w-12 px-2 py-3 text-center">

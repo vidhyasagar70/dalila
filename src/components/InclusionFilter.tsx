@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
-import { Playfair_Display } from "next/font/google";
+import {Maven_Pro } from "next/font/google";
 
-const playFair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
 });
 
 const INCLUSION_OPTIONS = [
@@ -62,7 +64,7 @@ export default function InclusionFilter({
         style={{ backgroundColor: "#000033", height: "32px" }}
       >
         <span
-          className={`${playFair.className} text-xs font-semibold text-white`}
+          className={`${mavenPro.className} text-xs font-semibold text-white`}
         >
           INCLUSION
         </span>
@@ -78,7 +80,7 @@ export default function InclusionFilter({
             <div key={type.key}>
               {/* Sub-header */}
               <div
-                className={`${playFair.className} px-2.5 py-0.5 font-semibold text-white text-xs`}
+                className={`${mavenPro.className} px-2.5 py-0.5 font-semibold text-white text-xs`}
                 style={{ backgroundColor: "#000033" }}
               >
                 {type.label}
@@ -95,7 +97,7 @@ export default function InclusionFilter({
                         option,
                       )
                     }
-                    className={`${playFair.className} px-2 py-1 text-xs font-normal transition-colors ${
+                    className={`${mavenPro.className} px-2 py-1 text-xs font-normal transition-colors ${
                       isSelected(type.key as keyof InclusionFilters, option)
                         ? "text-blue-600 bg-blue-50"
                         : "bg-white text-gray-700 hover:bg-gray-50"

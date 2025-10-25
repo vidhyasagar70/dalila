@@ -22,6 +22,14 @@ import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
 import CompareButton from "./CompareButton";
 import EmailButton from "./EmailButton";
+import {Maven_Pro } from "next/font/google";
+
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
+});
 
 export default function DiamondStockTableWithFilter() {
     const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -197,7 +205,7 @@ export default function DiamondStockTableWithFilter() {
             </div>
 
             {/* SEARCH AND NAVIGATION ROW */}
-            <div className="flex flex-wrap items-center gap-3 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded">
+            <div className={`flex flex-wrap items-center gap-3 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}>
                 {/* View Mode Toggle - Left Side */}
                 <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
                     <button
@@ -230,7 +238,7 @@ export default function DiamondStockTableWithFilter() {
                 <div className="flex-1"></div>
 
                 {/* Search Bar and Action Buttons - Right Side */}
-                <div className="flex flex-wrap items-center gap-2">
+                <div className={`flex flex-wrap items-center gap-2 ${mavenPro.className}`}>
                     <SearchBar onSearch={handleSearch} />
 
                     <CompareButton

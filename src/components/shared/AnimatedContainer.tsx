@@ -2,9 +2,20 @@ import React from "react";
 import * as Motion from "motion/react-client";
 import { cn } from "@/lib/utils";
 
-const getAnimationProperties = (direction: string, distance: number) => {
-  let initial = {};
-  let animate = {};
+type AnimationProps = {
+  x?: number;
+  y?: number;
+  scale?: number;
+  opacity?: number;
+};
+
+const getAnimationProperties = (
+  direction: string,
+  distance: number
+): [AnimationProps, AnimationProps] => {
+  let initial: AnimationProps = {};
+  let animate: AnimationProps = {};
+  
   // New variables for scale-related initial values
   const scaleFactorIn = 1 - distance / 100; // e.g., if distance=20, scaleFactorIn=0.8
   const scaleFactorOut = 1 + distance / 100; // e.g., if distance=20, scaleFactorOut=1.2
@@ -40,6 +51,7 @@ const getAnimationProperties = (direction: string, distance: number) => {
       animate = { opacity: 1 };
       break;
   }
+
   return [initial, animate];
 };
 
@@ -68,7 +80,7 @@ const AnimatedContainer = ({
   const transition = {
     duration,
     delay,
-    ease: "easeOut",
+    ease: "easeOut" as const,
   };
 
   return (
@@ -76,7 +88,7 @@ const AnimatedContainer = ({
       className={cn("w-full", className)}
       initial={initial}
       // animate={animate} // Commented out, as you are using whileInView
-      transition={transition as any}
+      transition={transition}
       whileInView={animate}
       viewport={{ once: once }} // Using the 'once' prop here
       {...rest}

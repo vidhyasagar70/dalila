@@ -1,11 +1,13 @@
 "use client";
 
 import React from "react";
-import { Playfair_Display } from "next/font/google";
+import {Maven_Pro } from "next/font/google";
 
-const playFair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
 });
 
 const KEY_TO_SYMBOL_OPTIONS = [
@@ -67,7 +69,7 @@ export default function KeySymbolFilter({
 
   return (
     <div
-      className={`${playFair.className} mb-2 mt-1`}
+      className={`${mavenPro.className} mb-2 mt-1`}
       style={{ width: "fit-content" }}
     >
       {/* Header */}

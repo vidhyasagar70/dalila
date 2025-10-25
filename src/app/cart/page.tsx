@@ -18,8 +18,8 @@ import Image from "next/image";
 import DiamondComparisonPage from "../../components/DiamondComparisonPage";
 
 interface CartDiamondData {
-  _id?: string;
-  STONE_NO?: string;
+  _id: string;
+  STONE_NO: string;
   SHAPE?: string;
   CARATS?: string;
   COLOR?: string;
@@ -57,7 +57,12 @@ interface CartDiamondData {
   HA?: string;
   [key: string]: string | undefined;
 }
-
+interface ApiCartItem {
+  stoneNo: string;
+  addedAt: string;
+  _id: string;
+  diamond: Partial<CartDiamondData>;
+}
 interface CartItemWithDetails {
   stoneNo: string;
   addedAt: string;
@@ -99,27 +104,37 @@ export default function CartPage() {
     fetchCartItems();
   }, []);
 
-  const fetchCartItems = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+ const fetchCartItems = async () => {
+  try {
+    setIsLoading(true);
+    setError(null);
 
-      const response = await cartApi.get();
+    const response = await cartApi.get();
 
-      if (response?.success && response.data?.cart?.items) {
-        const items = response.data.cart.items as CartItemWithDetails[];
-        setCartItems(items);
-      } else {
-        setCartItems([]);
-      }
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-      setError("Failed to load cart items. Please try again.");
+    if (response?.success && response.data?.cart?.items) {
+      const items = (response.data.cart.items as ApiCartItem[]).map((item) => ({
+        stoneNo: item.stoneNo,
+        addedAt: item.addedAt,
+        _id: item._id,
+        diamond: {
+          _id: item.diamond._id || item._id || item.stoneNo,
+          STONE_NO: item.diamond.STONE_NO || item.stoneNo,
+          ...item.diamond,
+        } as CartDiamondData,
+      }));
+      
+      setCartItems(items);
+    } else {
       setCartItems([]);
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("Error fetching cart:", err);
+    setError("Failed to load cart items. Please try again.");
+    setCartItems([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleRemoveSelected = async () => {
     if (selectedItems.size === 0) return;
@@ -793,11 +808,14 @@ export default function CartPage() {
 
       {/* Comparison Modal */}
       {showComparison && (
-        <DiamondComparisonPage
-          diamonds={selectedDiamondsForComparison as any}
-          onClose={() => setShowComparison(false)}
-        />
-      )}
+  <DiamondComparisonPage
+    diamonds={selectedDiamondsForComparison}
+    onClose={() => setShowComparison(false)}
+  />
+)}
     </div>
   );
 }
+
+
+

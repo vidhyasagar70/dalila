@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Playfair_Display, Jost, Marcellus } from "next/font/google";
+import { Playfair_Display, Jost, Marcellus,Maven_Pro } from "next/font/google";
 import "./globals.css";
 import HeaderFooterWrapper from "@/components/HeaderFooterWrapper";
 
@@ -22,6 +22,13 @@ const marcellus = Marcellus({
   subsets: ["latin"],
   weight: "400",
 });
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
+});
+
 
 export const metadata: Metadata = {
   title: "Dalila Diamonds - Premium B2B Diamond Supplier",
@@ -34,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${jost.variable} ${marcellus.variable}`}
+      className={`${playfair.variable} ${jost.variable} ${marcellus.variable} ${mavenPro.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-jost">

@@ -1,14 +1,15 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
+import {Maven_Pro } from "next/font/google";
 
-const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
 });
 
-// Static color options matching your UI image
 const STATIC_COLOR_OPTIONS = [
     { label: "All", value: "ALL" },
     { label: "D", value: "D" },
@@ -57,7 +58,7 @@ export default function ColorFilter({
                     className="w-4.5 h-4.5"
                 />
                 <span
-                    className={`${playFair.className} text-base font-semibold text-white`}
+                    className={`${mavenPro.className} text-base font-semibold text-white`}
                 >
                     Color
                 </span>
@@ -74,7 +75,7 @@ export default function ColorFilter({
                     <button
                         key={option.value}
                         onClick={() => handleColorClick(option.value)}
-                        className={`${playFair.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+                        className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
                             selectedColor === option.value
                                 ? "text-blue-600 bg-blue-50"
                                 : "bg-white text-gray-700 hover:bg-gray-50"

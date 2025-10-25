@@ -1,14 +1,16 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
+import {Maven_Pro } from "next/font/google";
 
-const playFair = Playfair_Display({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],  
+  weight: ["400", "500", "600", "700", "800"],  
+  display: "swap",
 });
 
-// Static fluorescence options matching your UI image
+
 const STATIC_FLUOR_OPTIONS = ["NON", "VSL", "FNT", "SL", "MED", "STG", "VST"];
 
 interface FluorFilterProps {
@@ -38,7 +40,7 @@ export default function FluorFilter({
                     className="w-4.5 h-4.5"
                 />
                 <span
-                    className={`${playFair.className} text-base font-semibold text-white`}
+                    className={`${mavenPro.className} text-base font-semibold text-white`}
                 >
                     Fluor
                 </span>
@@ -55,7 +57,7 @@ export default function FluorFilter({
                     <button
                         key={option}
                         onClick={() => handleFluorClick(option)}
-                        className={`${playFair.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+                        className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
                             selectedFluor === option
                                 ? "text-blue-600 bg-blue-50"
                                 : "bg-white text-gray-700 hover:bg-gray-50"
