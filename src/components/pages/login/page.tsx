@@ -117,7 +117,7 @@ export default function LoginPage() {
         }
 
         // Get redirect URL from query params or default to dashboard
-        const redirect = searchParams.get("redirect") || "/dashboard";
+        const redirect = searchParams.get("redirect") || "/";
         setError("");
         setTimeout(() => {
           window.location.href = redirect;

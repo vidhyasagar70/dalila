@@ -15,12 +15,13 @@ export default function Header() {
     const [cartCount, setCartCount] = useState(0);
     const router = useRouter();
     const pathname = usePathname();
-    const isTestingPage = pathname === "/Testingpages";
+
     const adminpanelPage = pathname === "/adminpanel";
     const inventoryPage = pathname === "/inventory";
     const offerenquiryPage = pathname === "/offer-enquiry";
     const memberPage = pathname === "/member";
     const dashboardPage = pathname === "/dashboard";
+    const CartPage = pathname === "/cart";
 
     // Determine if user is admin
     const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -42,8 +43,7 @@ export default function Header() {
             } else {
                 setCartCount(0);
             }
-        } catch (error) {
-            console.error("Error fetching cart count:", error);
+        } catch {
             setCartCount(0);
         }
     }, [isLoggedIn]);
@@ -57,16 +57,6 @@ export default function Header() {
                 // First, try localStorage
                 let token = localStorage.getItem("authToken");
                 let userStr = localStorage.getItem("user");
-
-                console.log("=== HEADER AUTH CHECK ===");
-                console.log(
-                    "LocalStorage Token:",
-                    token ? "EXISTS" : "MISSING"
-                );
-                console.log(
-                    "LocalStorage User:",
-                    userStr ? "EXISTS" : "MISSING"
-                );
 
                 // If not in localStorage, check cookies
                 if (!userStr || !token) {
@@ -102,17 +92,13 @@ export default function Header() {
                 if (hasValidAuth && userStr) {
                     try {
                         const user = JSON.parse(userStr);
-                        console.log("✅ User authenticated:", user.email);
-                        console.log("✅ User role:", user.role);
                         setUserRole(user.role || null);
                         setIsLoggedIn(true);
-                    } catch (error) {
-                        console.error("❌ Error parsing user data:", error);
+                    } catch {
                         setUserRole(null);
                         setIsLoggedIn(false);
                     }
                 } else {
-                    console.log("❌ No valid authentication found");
                     setUserRole(null);
                     setIsLoggedIn(false);
                 }
@@ -188,8 +174,7 @@ export default function Header() {
         try {
             console.log("Logout initiated...");
             await userApi.logout();
-        } catch (error) {
-            console.error("Logout error:", error);
+        } catch {
         } finally {
             setIsLoggedIn(false);
             setUserRole(null);
@@ -204,7 +189,7 @@ export default function Header() {
                 document.cookie =
                     "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 
-                console.log("✅ Logout complete - storage cleared");
+                console.log("Logout complete - storage cleared");
             }
 
             if (typeof window !== "undefined") {
@@ -244,7 +229,7 @@ export default function Header() {
         navigationItems = [
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
-            { href: "/blogs", label: "Blogs" },
+            // { href: "/blogs", label: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
             { href: "/inventory", label: "Inventory", requiresAuth: true },
         ];
@@ -259,7 +244,7 @@ export default function Header() {
         navigationItems = [
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
-            { href: "/blogs", label: "Blogs" },
+            // { href: "/blogs", label: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
             { href: "/inventory", label: "Inventory" },
         ];
@@ -269,20 +254,20 @@ export default function Header() {
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ||
-                isTestingPage ||
                 adminpanelPage ||
                 inventoryPage ||
                 offerenquiryPage ||
                 memberPage ||
-                dashboardPage
+                dashboardPage ||
+                CartPage
                     ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
                     : "bg-transparent py-2.5 md:py-3"
             }`}
         >
-            <div className="">
+            <div className="container mx-auto px-4 sm:px-6">
                 {/* Top Tagline - Hidden on mobile */}
                 <div className="hidden sm:flex justify-center mb-0.5 md:mb-1">
-                    <p className="text-xs md:text-lg tracking-wide text-white">
+                    <p className="text-xs md:text-sm tracking-wide text-gray-300">
                         Where Trust Shines, And Quality Sparkles
                     </p>
                 </div>
@@ -291,180 +276,176 @@ export default function Header() {
                 <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-0"></div>
 
                 {/* Main Navigation Bar */}
-                <div className="container mx-auto px-4 sm:px-6">
-                    <div className="flex items-center justify-between">
-                        {/* Mobile Menu Button */}
-                        <button
-                            onClick={() =>
-                                setIsMobileMenuOpen(!isMobileMenuOpen)
-                            }
-                            className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
-                            aria-label="Toggle menu"
-                        >
-                            {isMobileMenuOpen ? (
-                                <X size={24} />
-                            ) : (
-                                <Menu size={24} />
-                            )}
-                        </button>
+                <div className="flex items-center justify-between">
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
+                        aria-label="Toggle menu"
+                    >
+                        {isMobileMenuOpen ? (
+                            <X size={24} />
+                        ) : (
+                            <Menu size={24} />
+                        )}
+                    </button>
 
-                        {/* Left Navigation - Desktop/Tablet */}
-                        <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
-                            {navigationItems.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={
-                                        item.requiresAuth
-                                            ? handleInventoryClick
-                                            : undefined
-                                    }
-                                    className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
-                                >
-                                    {item.label}
-                                </Link>
-                            ))}
-                        </nav>
-
-                        {/* Center Logo */}
-                        <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-20 sm:w-[240px] md:h-20 md:w-[310px]">
-                            <button
-                                onClick={() => router.push("/")}
-                                className="block w-full h-full focus:outline-none"
-                                aria-label="Go to home page"
+                    {/* Left Navigation - Desktop/Tablet */}
+                    <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
+                        {navigationItems.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={
+                                    item.requiresAuth
+                                        ? handleInventoryClick
+                                        : undefined
+                                }
+                                className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
                             >
-                                <Image
-                                    src="/dalila_img/Dalila_Logo.png"
-                                    alt="Dalila Diamonds"
-                                    fill
-                                    style={{ objectFit: "contain" }}
-                                    priority
-                                />
+                                {item.label}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    {/* Center Logo */}
+                    <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
+                        <button
+                            onClick={() => router.push("/")}
+                            className="block w-full h-full focus:outline-none"
+                            aria-label="Go to home page"
+                        >
+                            <Image
+                                src="/dalila_img/Dalila_Logo.png"
+                                alt="Dalila Diamonds"
+                                fill
+                                style={{ objectFit: "contain" }}
+                                priority
+                            />
+                        </button>
+                    </div>
+
+                    {/* Right Auth Buttons & Cart - Desktop/Tablet */}
+                    <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
+                        {/* Cart Icon */}
+                        {isLoggedIn && (
+                            <button
+                                onClick={handleCartClick}
+                                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                                aria-label="Shopping cart"
+                            >
+                                <ShoppingCart className="w-6 h-6" />
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                        {cartCount > 99 ? "99+" : cartCount}
+                                    </span>
+                                )}
                             </button>
-                        </div>
+                        )}
 
-                        {/* Right Auth Buttons & Cart - Desktop/Tablet */}
-                        <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
-                            {/* Cart Icon */}
-                            {isLoggedIn && (
-                                <button
-                                    onClick={handleCartClick}
-                                    className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                                    aria-label="Shopping cart"
-                                >
-                                    <ShoppingCart className="w-6 h-6" />
-                                    {cartCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                                            {cartCount > 99 ? "99+" : cartCount}
-                                        </span>
-                                    )}
-                                </button>
-                            )}
-
-                            {isCheckingAuth ? (
-                                <div className="py-3 px-3 flex items-center justify-center">
-                                    <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
-                                </div>
-                            ) : !isLoggedIn ? (
-                                <>
-                                    <button
-                                        onClick={() => router.push("/login")}
-                                        className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
-                                    >
-                                        LOGIN
-                                    </button>
-                                    <button
-                                        onClick={() => router.push("/register")}
-                                        className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
-                                    >
-                                        REGISTER
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={handleLogout}
-                                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
-                                >
-                                    LOGOUT
-                                </button>
-                            )}
-                        </div>
-
-                        {/* Tablet Only - Compact Buttons */}
-                        <div className="hidden md:flex lg:hidden items-center gap-2">
-                            {isLoggedIn && (
-                                <button
-                                    onClick={handleCartClick}
-                                    className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                                    aria-label="Shopping cart"
-                                >
-                                    <ShoppingCart className="w-5 h-5" />
-                                    {cartCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                                            {cartCount > 99 ? "99+" : cartCount}
-                                        </span>
-                                    )}
-                                </button>
-                            )}
-
-                            {isCheckingAuth ? (
-                                <div className="py-1 px-3 flex items-center justify-center">
-                                    <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
-                                </div>
-                            ) : !isLoggedIn ? (
+                        {isCheckingAuth ? (
+                            <div className="py-1 px-3 flex items-center justify-center">
+                                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+                            </div>
+                        ) : !isLoggedIn ? (
+                            <>
                                 <button
                                     onClick={() => router.push("/login")}
-                                    className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                                    className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                                 >
                                     LOGIN
                                 </button>
-                            ) : (
                                 <button
-                                    onClick={handleLogout}
-                                    className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                                    onClick={() => router.push("/register")}
+                                    className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                                 >
-                                    LOGOUT
+                                    REGISTER
                                 </button>
-                            )}
-                        </div>
+                            </>
+                        ) : (
+                            <button
+                                onClick={handleLogout}
+                                className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                            >
+                                LOGOUT
+                            </button>
+                        )}
+                    </div>
 
-                        {/* Mobile - Cart & Login Button */}
-                        <div className="flex md:hidden items-center gap-2">
-                            {isLoggedIn && (
-                                <button
-                                    onClick={handleCartClick}
-                                    className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                                    aria-label="Shopping cart"
-                                >
-                                    <ShoppingCart className="w-5 h-5" />
-                                    {cartCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-                                            {cartCount > 9 ? "9+" : cartCount}
-                                        </span>
-                                    )}
-                                </button>
-                            )}
+                    {/* Tablet Only - Compact Buttons */}
+                    <div className="hidden md:flex lg:hidden items-center gap-2">
+                        {isLoggedIn && (
+                            <button
+                                onClick={handleCartClick}
+                                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                                aria-label="Shopping cart"
+                            >
+                                <ShoppingCart className="w-5 h-5" />
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                        {cartCount > 99 ? "99+" : cartCount}
+                                    </span>
+                                )}
+                            </button>
+                        )}
 
-                            {isCheckingAuth ? (
-                                <div className="py-1 px-4 flex items-center justify-center">
-                                    <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
-                                </div>
-                            ) : !isLoggedIn ? (
-                                <button
-                                    onClick={() => router.push("/login")}
-                                    className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
-                                >
-                                    LOGIN
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleLogout}
-                                    className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
-                                >
-                                    LOGOUT
-                                </button>
-                            )}
-                        </div>
+                        {isCheckingAuth ? (
+                            <div className="py-1 px-3 flex items-center justify-center">
+                                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+                            </div>
+                        ) : !isLoggedIn ? (
+                            <button
+                                onClick={() => router.push("/login")}
+                                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                            >
+                                LOGIN
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleLogout}
+                                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                            >
+                                LOGOUT
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Mobile - Cart & Login Button */}
+                    <div className="flex md:hidden items-center gap-2">
+                        {isLoggedIn && (
+                            <button
+                                onClick={handleCartClick}
+                                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                                aria-label="Shopping cart"
+                            >
+                                <ShoppingCart className="w-5 h-5" />
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+                                        {cartCount > 9 ? "9+" : cartCount}
+                                    </span>
+                                )}
+                            </button>
+                        )}
+
+                        {isCheckingAuth ? (
+                            <div className="py-1 px-4 flex items-center justify-center">
+                                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+                            </div>
+                        ) : !isLoggedIn ? (
+                            <button
+                                onClick={() => router.push("/login")}
+                                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                            >
+                                LOGIN
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleLogout}
+                                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                            >
+                                LOGOUT
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

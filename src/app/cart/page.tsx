@@ -2,21 +2,24 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ShoppingCart,
-  Trash2,
+  Download,
   Mail,
-  FileText,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
   Loader2,
   AlertCircle,
-  Package,
   X,
-  Check
+  Check,
+  GitCompare,
 } from "lucide-react";
-import { cartApi } from "@/lib/api";
+import { cartApi, diamondApi } from "@/lib/api";
+import Image from "next/image";
+import DiamondComparisonPage from "../../components/DiamondComparisonPage";
 
-
-interface DiamondData {
-  STONE_NO?: string;  
+interface CartDiamondData {
+  _id?: string;
+  STONE_NO?: string;
   SHAPE?: string;
   CARATS?: string;
   COLOR?: string;
@@ -44,24 +47,51 @@ interface DiamondData {
   MP4?: string;
   CERTI_PDF?: string;
   DNA?: string;
+  CROWN_ANGLE?: string;
+  CROWN_HEIGHT?: string;
+  PAVILLION_ANGLE?: string;
+  PAVILLION_HEIGHT?: string;
+  DISC_PER?: string;
+  KEY_TO_SYMBOLS?: string;
+  REPORT_COMMENTS?: string;
+  HA?: string;
   [key: string]: string | undefined;
 }
+
 interface CartItemWithDetails {
   stoneNo: string;
   addedAt: string;
   _id: string;
-  diamond: DiamondData;
+  diamond: CartDiamondData;
 }
+
+// Helper function to get cookie value
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  
+  return null;
+};
 
 export default function CartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItemWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
-  const [isClearing, setIsClearing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const [showComparison, setShowComparison] = useState(false);
+  const [selectedDiamondsForComparison, setSelectedDiamondsForComparison] = useState<Array<CartDiamondData & { _id: string }>>([]);
+  const [isEmailSending, setIsEmailSending] = useState(false);
 
   // Fetch cart items on mount
   useEffect(() => {
@@ -73,18 +103,12 @@ export default function CartPage() {
       setIsLoading(true);
       setError(null);
 
-      console.log("Fetching cart items...");
       const response = await cartApi.get();
-      console.log("Cart API Response:", response);
 
       if (response?.success && response.data?.cart?.items) {
         const items = response.data.cart.items as CartItemWithDetails[];
-        console.log("Cart items found:", items.length);
-        console.log("First item:", items[0]);
-        
         setCartItems(items);
       } else {
-        console.log("No items in response or unsuccessful response");
         setCartItems([]);
       }
     } catch (err) {
@@ -93,6 +117,24 @@ export default function CartPage() {
       setCartItems([]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRemoveSelected = async () => {
+    if (selectedItems.size === 0) return;
+    
+    try {
+      setError(null);
+      const selectedStones = cartItems.filter((item) => selectedItems.has(item.stoneNo));
+      
+      for (const item of selectedStones) {
+        await handleRemoveItem(item.stoneNo);
+      }
+      
+      setSelectedItems(new Set());
+    } catch (err) {
+      console.error("Error removing selected items:", err);
+      setError("Failed to remove some items");
     }
   };
 
@@ -110,11 +152,10 @@ export default function CartPage() {
           newSet.delete(stoneNo);
           return newSet;
         });
-        
+
         setSuccessMessage(`${stoneNo} removed from cart`);
         setTimeout(() => setSuccessMessage(null), 3000);
 
-        // Dispatch cart update event for header
         window.dispatchEvent(new CustomEvent("cart-updated"));
       } else {
         setError(response?.message || "Failed to remove item");
@@ -124,37 +165,6 @@ export default function CartPage() {
       setError(err instanceof Error ? err.message : "Failed to remove item from cart");
     } finally {
       setIsRemoving(null);
-    }
-  };
-
-  const handleClearCart = async () => {
-    if (!window.confirm("Are you sure you want to clear your entire cart?")) {
-      return;
-    }
-
-    try {
-      setIsClearing(true);
-      setError(null);
-
-      const response = await cartApi.clear();
-
-      if (response?.success) {
-        setCartItems([]);
-        setSelectedItems(new Set());
-        
-        setSuccessMessage("Cart cleared successfully");
-        setTimeout(() => setSuccessMessage(null), 3000);
-
-        // Dispatch cart update event for header
-        window.dispatchEvent(new CustomEvent("cart-updated"));
-      } else {
-        setError(response?.message || "Failed to clear cart");
-      }
-    } catch (err) {
-      console.error("Error clearing cart:", err);
-      setError(err instanceof Error ? err.message : "Failed to clear cart");
-    } finally {
-      setIsClearing(false);
     }
   };
 
@@ -171,33 +181,187 @@ export default function CartPage() {
   };
 
   const toggleSelectAll = () => {
-    if (selectedItems.size === cartItems.length) {
+    if (selectedItems.size === paginatedItems.length) {
       setSelectedItems(new Set());
     } else {
-      setSelectedItems(new Set(cartItems.map((item) => item.stoneNo)));
+      setSelectedItems(new Set(paginatedItems.map((item) => item.stoneNo)));
     }
   };
 
-  const handleRequestQuote = () => {
+  const handleExportToExcel = () => {
     if (selectedItems.size === 0) {
-      setError("Please select at least one item to request a quote");
+      setError("Please select at least one item to export");
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Create CSV content
+    const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.stoneNo));
+    const headers = ["Stone No", "Location", "Report No", "Lab", "Shape", "Carat", "Color", "Clarity", "Cut", "Polish", "Rap Price", "Total"];
+    const csvContent = [
+      headers.join(","),
+      ...selectedCartItems.map((item) =>
+        [
+          item.stoneNo,
+          item.diamond.LOCATION || "",
+          item.diamond.REPORT_NO || "",
+          item.diamond.LAB || "",
+          item.diamond.SHAPE || "",
+          item.diamond.CARATS || "",
+          item.diamond.COLOR || "",
+          item.diamond.CLARITY || "",
+          item.diamond.CUT || "",
+          item.diamond.POL || "",
+          item.diamond.RAP_PRICE || "",
+          item.diamond.NET_VALUE || "",
+        ].join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "cart-items.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+const handleCompare = () => {
+  if (selectedItems.size === 0) {
+    setError("Please select at least one item to compare");
+    setTimeout(() => setError(null), 3000);
+    return;
+  }
+  
+  // Get the selected diamonds data
+  const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.stoneNo));
+  const diamondsToCompare = selectedCartItems
+    .map((item) => {
+      // Ensure _id is present
+      const diamondId = item._id || item.diamond._id || item.stoneNo;
+      if (!diamondId) return null;
+      
+      return {
+        ...item.diamond,
+        _id: diamondId,
+      };
+    })
+    .filter((diamond): diamond is CartDiamondData & { _id: string } => diamond !== null);
+  
+  setSelectedDiamondsForComparison(diamondsToCompare);
+  setShowComparison(true);
+};
+
+  const handleEnquire = async () => {
+    if (selectedItems.size === 0) {
+      setError("Please select at least one item to enquire");
       setTimeout(() => setError(null), 3000);
       return;
     }
 
+    setIsEmailSending(true);
+    setError(null);
+
+    try {
+      // Get auth token from cookies
+      const authToken = getCookie("authToken") || localStorage.getItem("authToken");
+      
+      if (!authToken) {
+        setError('Authentication token not found. Please log in again.');
+        setIsEmailSending(false);
+        return;
+      }
+
+      // Get user email from cookies or localStorage
+      let userEmail = null;
+      const userCookie = getCookie("user");
+      
+      if (userCookie) {
+        try {
+          const user = JSON.parse(decodeURIComponent(userCookie));
+          userEmail = user.email;
+        } catch (e) {
+          console.error('Error parsing user cookie:', e);
+        }
+      }
+      
+      // Fallback to localStorage
+      if (!userEmail) {
+        const userStr = localStorage.getItem("user");
+        if (userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            userEmail = user.email;
+          } catch (e) {
+            console.error('Error parsing user from localStorage:', e);
+          }
+        }
+      }
+
+      if (!userEmail) {
+        setError('User email not found. Please log in again.');
+        setIsEmailSending(false);
+        return;
+      }
+
+      const selectedStoneNumbers = Array.from(selectedItems);
+
+      // Call the email API
+      const response = await diamondApi.email({
+        stoneNumbers: selectedStoneNumbers,
+        emails: [userEmail],
+      });
+
+      if (response.success) {
+        setSuccessMessage(`Successfully emailed ${response.data.totalEmailed} diamond(s) to ${userEmail}`);
+        setTimeout(() => setSuccessMessage(null), 3000);
+      } else {
+        setError(response.message || 'Failed to send email');
+      }
+    } catch (err: unknown) {
+      console.error('Email error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send email. Please try again.';
+      setError(errorMessage);
+    } finally {
+      setIsEmailSending(false);
+    }
+  };
+
+  const handleAddItem = () => {
+    router.push("/inventory");
+  };
+
+  const handlePlaceOrder = () => {
+    if (selectedItems.size === 0) {
+      setError("Please select at least one item to place order");
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
     const selectedStoneNumbers = Array.from(selectedItems);
     router.push(`/quotation?stones=${selectedStoneNumbers.join(",")}`);
   };
 
-  const handleEmailSelected = () => {
-    if (selectedItems.size === 0) {
-      setError("Please select at least one item to email");
-      setTimeout(() => setError(null), 3000);
-      return;
-    }
+  // Pagination
+  const totalPages = Math.ceil(cartItems.length / itemsPerPage);
+  const paginatedItems = cartItems.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-    const selectedStoneNumbers = Array.from(selectedItems);
-    router.push(`/email-diamonds?stones=${selectedStoneNumbers.join(",")}`);
+  const formatCurrency = (value: string | undefined) => {
+    if (!value) return "$0.00";
+    const num = parseFloat(value);
+    return isNaN(num)
+      ? "$0.00"
+      : `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const getMeasurement = (measurements: string | undefined, index: number) => {
+    if (!measurements) return "N/A";
+    const parts = measurements.split("x");
+    return parts[index]?.trim() || "N/A";
   };
 
   const calculateTotal = () => {
@@ -209,26 +373,32 @@ export default function CartPage() {
       }, 0);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "";
-    try {
-      return new Date(dateString).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    } catch {
-      return "";
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#050c3a] to-[#0a1854] pt-32 pb-16">
+      <div className="min-h-screen bg-[#faf6eb] pt-32 pb-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-12 h-12 text-[#c89e3a] animate-spin mb-4" />
-            <p className="text-white text-lg">Loading your cart...</p>
+            <p className="text-[#060c3c] text-lg">Loading your cart...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#faf6eb] pt-32 pb-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center justify-center py-20">
+            <h1 className="text-3xl font-bold text-[#060c3c] mb-4">My Cart</h1>
+            <p className="text-[#060c3c]/60 mb-6">Your cart is empty</p>
+            <button
+              onClick={handleAddItem}
+              className="px-6 py-3 bg-[#c89e3a] text-white rounded-lg hover:bg-[#b08830] transition-colors"
+            >
+              Browse Inventory
+            </button>
           </div>
         </div>
       </div>
@@ -236,33 +406,19 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#050c3a] to-[#0a1854] pt-32 pb-16">
+    <div className="min-h-screen  pt-32 pb-16 mt-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          
-          
-          <div className="flex items-center gap-3 mb-4">
-            <ShoppingCart className="w-8 h-8 text-[#c89e3a]" />
-            <h1 className="text-3xl md:text-4xl font-bold text-white">
-              Shopping Cart
-            </h1>
-          </div>
-          <p className="text-gray-300">
-            {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in
-            your cart
-          </p>
+        <div className="mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#060c3c] mb-2">My Cart</h1>
         </div>
 
         {/* Success Message */}
         {successMessage && (
           <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
-            <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
-            <p className="text-green-400">{successMessage}</p>
-            <button
-              onClick={() => setSuccessMessage(null)}
-              className="ml-auto text-green-400 hover:text-green-300"
-            >
+            <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+            <p className="text-green-700">{successMessage}</p>
+            <button onClick={() => setSuccessMessage(null)} className="ml-auto text-green-600 hover:text-green-700">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -271,241 +427,266 @@ export default function CartPage() {
         {/* Error Message */}
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
-            <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-            <p className="text-red-400">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto text-red-400 hover:text-red-300"
-            >
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-red-700">{error}</p>
+            <button onClick={() => setError(null)} className="ml-auto text-red-600 hover:text-red-700">
               <X className="w-5 h-5" />
             </button>
           </div>
         )}
 
-        {/* Empty Cart */}
-        {cartItems.length === 0 ? (
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-12 text-center">
-            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-white mb-2">
-              Your cart is empty
-            </h2>
-            <p className="text-gray-400 mb-6">
-              Add diamonds to your cart to get started
-            </p>
-            <button
-              onClick={() => router.push("/inventory")}
-              className="px-6 py-3 bg-[#c89e3a] text-white rounded-lg hover:bg-[#b08830] transition-colors"
-            >
-              Browse Inventory
-            </button>
-          </div>
-        ) : (
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
-              {/* Select All & Clear Cart */}
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-4 flex items-center justify-between">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={
-                      cartItems.length > 0 &&
-                      selectedItems.size === cartItems.length
-                    }
-                    onChange={toggleSelectAll}
-                    className="w-5 h-5 rounded border-gray-600 text-[#c89e3a] focus:ring-[#c89e3a] focus:ring-offset-0 cursor-pointer"
+        {/* Action Buttons */}
+<div className="mb-4 flex flex-wrap items-center gap-0">
+  <button
+    onClick={handleRemoveSelected}
+    disabled={selectedItems.size === 0 || isRemoving !== null}
+    className="flex items-center gap-2 px-4 py-2.5 text-[#151C48] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+  >
+    <Trash2 className="w-4 h-4" />
+    <span className="text-sm font-medium">Remove from cart</span>
+  </button>
+  <button
+    onClick={handleExportToExcel}
+    disabled={selectedItems.size === 0}
+    className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+  >
+    <Download className="w-4 h-4" />
+    <span className="text-sm font-medium">Export to excel</span>
+  </button>
+  <button
+    onClick={handleCompare}
+    disabled={selectedItems.size === 0}
+    className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+  >
+    <GitCompare className="w-4 h-4" />
+    <span className="text-sm font-medium">Compare stone</span>
+  </button>
+  <button
+    onClick={handleEnquire}
+    disabled={selectedItems.size === 0 || isEmailSending}
+    className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+  >
+    {isEmailSending ? (
+      <Loader2 className="w-4 h-4 animate-spin" />
+    ) : (
+      <Mail className="w-4 h-4" />
+    )}
+    <span className="text-sm font-medium">{isEmailSending ? 'Sending...' : 'Enquiree'}</span>
+  </button>
+  
+  <div className="ml-auto flex items-center gap-0 border-l border-gray-200">
+    <button 
+      onClick={handleExportToExcel}
+      disabled={selectedItems.size === 0}
+      className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+      title="Export to excel"
+    >
+      <Download className="w-5 h-5" />
+    </button>
+    <button 
+      onClick={handleEnquire}
+      disabled={selectedItems.size === 0 || isEmailSending}
+      className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+      title="Enquire"
+    >
+      {isEmailSending ? (
+        <Loader2 className="w-5 h-5 animate-spin" />
+      ) : (
+        <Mail className="w-5 h-5" />
+      )}
+    </button>
+  </div>
+</div>
+
+
+{/* Table */}
+<div className="bg-white border border-[#060c3c]/10 rounded-lg overflow-hidden shadow-sm">
+  <div className="overflow-x-auto">
+    <table className="w-full">
+      <thead className="bg-[#060c3c] text-white">
+        <tr>
+          <th className="px-4 py-3 text-left border-b border-[#F9E8CD]">
+            <input
+              type="checkbox"
+              checked={selectedItems.size === paginatedItems.length && paginatedItems.length > 0}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 cursor-pointer accent-[#c89e3a]"
+              style={{ outline: '1px solid #F9E8CD', outlineOffset: '-1px' }}
+            />
+          </th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Image</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Pct No</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Location</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Report No</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Lab</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Shape</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Carat</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Color</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Purty</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Cut</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Pol</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Rap.($)</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Length</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Width</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Depth</th>
+          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">$/Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {paginatedItems.map((item, idx) => (
+          <tr
+            key={item._id}
+            className={`${idx % 2 === 0 ? "bg-white" : "bg-[#faf6eb]"} hover:bg-[#060c3c]/5 transition-colors border-b border-[#F9E8CD]`}
+          >
+            <td className="px-4 py-3">
+              <input
+                type="checkbox"
+                checked={selectedItems.has(item.stoneNo)}
+                onChange={() => toggleSelectItem(item.stoneNo)}
+                className="w-4 h-4 cursor-pointer accent-[#c89e3a]"
+                style={{ outline: '1px solid #F9E8CD', outlineOffset: '-1px' }}
+              />
+            </td>
+            <td className="px-4 py-3">
+              <div className="w-12 h-12 bg-[#060c3c]/10 rounded overflow-hidden">
+                {item.diamond.REAL_IMAGE ? (
+                  <Image
+                    src={item.diamond.REAL_IMAGE}
+                    alt={item.stoneNo}
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23e5e7eb' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='10'%3ENo Image%3C/text%3E%3C/svg%3E";
+                    }}
                   />
-                  <span className="text-white font-medium">Select All</span>
-                </label>
-
-                <button
-                  onClick={handleClearCart}
-                  disabled={isClearing || cartItems.length === 0}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isClearing ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="w-4 h-4" />
-                  )}
-                  Clear Cart
-                </button>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[#060c3c]/50 text-xs">
+                    No img
+                  </div>
+                )}
               </div>
+            </td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.stoneNo}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.LOCATION || "BE"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.REPORT_NO || "N/A"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.LAB || "GIA"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.SHAPE || "ROUND"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.CARATS || "0.00"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.COLOR || "F"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.CLARITY || "N/A"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.CUT || "N/A"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.POL || "N/A"}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">{formatCurrency(item.diamond.RAP_PRICE)}</td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">
+              {getMeasurement(item.diamond.MEASUREMENTS, 0)}
+            </td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">
+              {getMeasurement(item.diamond.MEASUREMENTS, 1)}
+            </td>
+            <td className="px-4 py-3 text-sm text-[#060c3c]">
+              {item.diamond.DEPTH_PER || "N/A"}
+            </td>
+            <td className="px-4 py-3 text-sm text-[#c89e3a] font-semibold">
+              {formatCurrency(item.diamond.NET_VALUE)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 
-              {/* Cart Items List */}
-              {cartItems.map((item) => (
-                <div
-                  key={item._id}
-                  className={`bg-white/5 backdrop-blur-sm border rounded-lg p-4 sm:p-6 transition-all ${
-                    selectedItems.has(item.stoneNo)
-                      ? "border-[#c89e3a] bg-white/10"
-                      : "border-white/10 hover:bg-white/10"
-                  }`}
-                >
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    {/* Checkbox */}
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.has(item.stoneNo)}
-                      onChange={() => toggleSelectItem(item.stoneNo)}
-                      className="w-5 h-5 rounded border-gray-600 text-[#c89e3a] focus:ring-[#c89e3a] focus:ring-offset-0 mt-1 cursor-pointer flex-shrink-0"
-                    />
+  {/* Pagination Footer */}
+  <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-[#F9E8CD]">
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+        className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+      
+      <div className="flex items-center gap-1">
+        {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
+              currentPage === page
+                ? "bg-[#060c3c] text-white"
+                : "text-[#060c3c] hover:bg-[#060c3c]/5"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        
+        {totalPages > 10 && (
+          <>
+            <span className="text-[#060c3c]/50 px-2 text-xs">...</span>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
+                currentPage === totalPages
+                  ? "bg-[#060c3c] text-white"
+                  : "text-[#060c3c] hover:bg-[#060c3c]/5"
+              }`}
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
+      </div>
+      
+      <button
+        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+        className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+    
+    <div className="flex items-center gap-3">
+      <button 
+        onClick={handleAddItem}
+        className="px-6 py-2 bg-white border border-[#060c3c]/20 text-[#060c3c] rounded hover:bg-[#060c3c]/5 transition-colors font-medium"
+      >
+        ADD ITEM
+      </button>
+      <button 
+        onClick={handlePlaceOrder}
+        disabled={selectedItems.size === 0}
+        className="px-6 py-2 bg-[#050C3A] text-white rounded hover:bg-[#050C3A]/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        PLACE ORDER
+      </button>
+    </div>
+  </div>
+</div>
 
-                    {/* Item Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                        {/* Left Side - Details */}
-                        <div className="flex-1">
-                          <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 break-all">
-                            {item.stoneNo}
-                          </h3>
-
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm mb-2">
-                            {item.diamond.SHAPE && (
-                              <p className="text-gray-300">
-                                <span className="text-gray-400">Shape:</span>{" "}
-                                <span className="font-medium">{item.diamond.SHAPE}</span>
-                              </p>
-                            )}
-                            {item.diamond.CARATS && (
-                              <p className="text-gray-300">
-                                <span className="text-gray-400">Carat:</span>{" "}
-                                <span className="font-medium">
-                                  {item.diamond.CARATS}
-                                </span>
-                              </p>
-                            )}
-                            {item.diamond.COLOR && (
-                              <p className="text-gray-300">
-                                <span className="text-gray-400">Color:</span>{" "}
-                                <span className="font-medium">{item.diamond.COLOR}</span>
-                              </p>
-                            )}
-                            {item.diamond.CLARITY && (
-                              <p className="text-gray-300">
-                                <span className="text-gray-400">Clarity:</span>{" "}
-                                <span className="font-medium">
-                                  {item.diamond.CLARITY}
-                                </span>
-                              </p>
-                            )}
-                            {item.diamond.CUT && (
-                              <p className="text-gray-300">
-                                <span className="text-gray-400">Cut:</span>{" "}
-                                <span className="font-medium">{item.diamond.CUT}</span>
-                              </p>
-                            )}
-                          </div>
-
-                          {item.addedAt && (
-                            <p className="text-xs text-gray-400 mt-2">
-                              Added: {formatDate(item.addedAt)}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Right Side - Price & Remove */}
-                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4">
-                          {item.diamond.NET_VALUE && (
-                            <p className="text-xl sm:text-2xl font-bold text-[#c89e3a] whitespace-nowrap">
-                              ${parseFloat(item.diamond.NET_VALUE).toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              })}
-                            </p>
-                          )}
-
-                          <button
-                            onClick={() => handleRemoveItem(item.stoneNo)}
-                            disabled={isRemoving === item.stoneNo}
-                            className="flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            {isRemoving === item.stoneNo ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Trash2 className="w-4 h-4" />
-                            )}
-                            <span className="hidden sm:inline">Remove</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Summary Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg p-6 sticky top-32">
-                <h2 className="text-xl font-bold text-white mb-6">
-                  Cart Summary
-                </h2>
-
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-gray-300">
-                    <span>Total Items:</span>
-                    <span className="font-semibold">{cartItems.length}</span>
-                  </div>
-
-                  <div className="flex justify-between text-gray-300">
-                    <span>Selected Items:</span>
-                    <span className="font-semibold">{selectedItems.size}</span>
-                  </div>
-
-                  <div className="border-t border-white/10 pt-4">
-                    <div className="flex justify-between text-lg">
-                      <span className="text-white font-semibold">
-                        Selected Total:
-                      </span>
-                      <span className="text-[#c89e3a] font-bold">
-                        ${calculateTotal().toLocaleString(undefined, {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <button
-                    onClick={handleRequestQuote}
-                    disabled={selectedItems.size === 0}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#c89e3a] text-white rounded-lg hover:bg-[#b08830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#c89e3a]"
-                  >
-                    <FileText className="w-5 h-5" />
-                    Request Quote ({selectedItems.size})
-                  </button>
-
-                  <button
-                    onClick={handleEmailSelected}
-                    disabled={selectedItems.size === 0}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 border border-[#c89e3a] text-[#c89e3a] rounded-lg hover:bg-[#c89e3a] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[#c89e3a]"
-                  >
-                    <Mail className="w-5 h-5" />
-                    Email Selected ({selectedItems.size})
-                  </button>
-
-                  <button
-                    onClick={() => router.push("/inventory")}
-                    className="w-full px-6 py-3 border border-white/30 text-white rounded-lg hover:bg-white/5 transition-colors"
-                  >
-                    Continue Shopping
-                  </button>
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-white/10">
-                  <p className="text-xs text-gray-400 text-center leading-relaxed">
-                    Need help selecting diamonds? Our experts are here to
-                    assist you.
-                  </p>
-                </div>
-              </div>
-            </div>
+        {/* Selected Total */}
+        {selectedItems.size > 0 && (
+          <div className="mt-6 p-4 bg-white border border-[#060c3c]/10 rounded-lg flex items-center justify-between shadow-sm">
+            <span className="text-[#060c3c] text-lg">
+              Selected Items: <span className="font-semibold text-[#c89e3a]">{selectedItems.size}</span>
+            </span>
+            <span className="text-[#c89e3a] text-xl font-bold">
+              Total: {formatCurrency(calculateTotal().toString())}
+            </span>
           </div>
         )}
       </div>
+
+      {/* Comparison Modal */}
+      {showComparison && (
+        <DiamondComparisonPage
+          diamonds={selectedDiamondsForComparison as any}
+          onClose={() => setShowComparison(false)}
+        />
+      )}
     </div>
   );
 }
