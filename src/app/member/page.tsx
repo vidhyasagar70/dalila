@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Search, CheckCircle, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { CheckCircle,ChevronLeft, ChevronRight, X } from "lucide-react";
+// import { Search, CheckCircle,ChevronLeft, ChevronRight, X } from "lucide-react";
 import { userApi } from "@/lib/api";
 
 // Extended User interface matching API response
@@ -53,12 +54,12 @@ export default function MembersManagement() {
   // Filter states
   const [activeTab, setActiveTab] = useState<"authorized" | "waiting">("waiting");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("");
-  const [selectedPerson, setSelectedPerson] = useState("");
-  const [selectedStockLimit, setSelectedStockLimit] = useState("");
-  const [byExApp, setByExApp] = useState(false);
-  const [onlyInStock, setOnlyInStock] = useState(false);
-  const [memoParty, setMemoParty] = useState(false);
+  // const [selectedFilter, setSelectedFilter] = useState("");
+  // const [selectedPerson, setSelectedPerson] = useState("");
+  // const [selectedStockLimit, setSelectedStockLimit] = useState("");
+  // const [byExApp, setByExApp] = useState(false);
+  // const [onlyInStock, setOnlyInStock] = useState(false);
+  // const [memoParty, setMemoParty] = useState(false);
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,7 +108,7 @@ export default function MembersManagement() {
     }
   }, []);
 
-  // Fetch authorized users
+ // Fetch authorized users
   const fetchAuthorizedUsers = useCallback(async () => {
     try {
       setLoading(true);
@@ -123,23 +124,27 @@ export default function MembersManagement() {
 
       console.log("Authorized users response:", response);
 
-      if (response.success && response.data && response.data.users) {
-        // Filter only approved users and transform to ExtendedUser type
-        const authorizedUsers: ExtendedUser[] = response.data.users
-          .filter((user) => user.kycStatus === "approved")
+      if (response.success && response.data) {
+        // Access the users array from response.data
+        const usersArray = Array.isArray(response.data) ? response.data : [];
+        
+        // Filter only users with status "APPROVED" and transform to ExtendedUser type
+        const authorizedUsers: ExtendedUser[] = usersArray
+          .filter((user) => user.status === "APPROVED")
           .map((user) => ({
             _id: user._id || user.id || "",
             id: user.id || user._id,
             email: user.email,
             username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
+            firstName: user.firstName || user.customerData?.firstName,
+            lastName: user.lastName || user.customerData?.lastName,
             kycStatus: user.kycStatus,
             status: user.status,
             role: user.role,
             customerData: user.customerData,
           }));
 
+        console.log("Filtered authorized users:", authorizedUsers);
         setUsers(authorizedUsers);
         setFilteredUsers(authorizedUsers);
       } else {
@@ -265,16 +270,16 @@ export default function MembersManagement() {
 
   return (
     <div className="min-h-screen bg-white p-8 mt-35">
-      {/* Header Tabs */}
+     {/* Header Tabs */}
       <div className="mb-6 flex gap-4">
         <button
           onClick={() => setActiveTab("authorized")}
           className={`px-6 py-2.5 rounded-lg font-medium transition ${
             activeTab === "authorized"
-              ? "bg-white text-slate-900"
+              ? "text-white"
               : "bg-white text-gray-700 hover:bg-gray-50"
           }`}
-          style={activeTab === "authorized" ? { border: '1px solid #f9ead4' } : { border: '1px solid #e5e7eb' }}
+          style={activeTab === "authorized" ? { backgroundColor: '#050c3a' } : { border: '1px solid #e5e7eb' }}
         >
           Authorized Members
         </button>
@@ -287,10 +292,9 @@ export default function MembersManagement() {
           }`}
           style={activeTab === "waiting" ? { backgroundColor: '#050c3a' } : { border: '1px solid #e5e7eb' }}
         >
-          Waiting Authorization ({filteredUsers.length})
+          Waiting Authorization
         </button>
       </div>
-
       {/* Error Message */}
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
@@ -303,25 +307,8 @@ export default function MembersManagement() {
 
       {/* Filters */}
       <div className="mb-6 grid grid-cols-4 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select</label>
-          <div className="relative">
-            <select
-              value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg appearance-none bg-white focus:outline-none"
-              style={{ border: '1px solid #f9ead4' }}
-            >
-              <option value="">Select</option>
-              <option value="all">All Users</option>
-              <option value="verified">Verified</option>
-              <option value="unverified">Unverified</option>
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-          </div>
-        </div>
-
-        <div>
+       
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Search User</label>
           <div className="relative">
             <input
@@ -334,9 +321,9 @@ export default function MembersManagement() {
             />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           </div>
-        </div>
+        </div> */}
 
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">M. Person</label>
           <div className="relative">
             <select
@@ -364,11 +351,11 @@ export default function MembersManagement() {
             </select>
             <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Checkboxes */}
-      <div className="mb-6 flex gap-6">
+      {/* <div className="mb-6 flex gap-6">
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
@@ -396,7 +383,7 @@ export default function MembersManagement() {
           />
           <span className="text-sm text-gray-700">Memo Party</span>
         </label>
-      </div>
+      </div> */}
 
       {/* Table */}
       <div className="bg-white overflow-hidden" style={{ border: '1px solid #f9ead4' }}>

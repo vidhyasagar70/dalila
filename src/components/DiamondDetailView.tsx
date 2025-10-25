@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play, Loader2, Check, AlertCircle } from "lucide-react";
+import { X,Play, Loader2, Check, AlertCircle } from "lucide-react";
+// import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play, Loader2, Check, AlertCircle } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi } from "@/lib/api";
 
@@ -13,7 +14,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   diamond,
   onClose,
 }) => {
-  const [quantity, setQuantity] = useState(1);
+  // const [quantity, setQuantity] = useState(1);
   const [viewMode, setViewMode] = useState<'image' | 'video'>('image');
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [cartMessage, setCartMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);

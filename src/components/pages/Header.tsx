@@ -15,12 +15,13 @@ export default function Header() {
   const [cartCount, setCartCount] = useState(0);
   const router = useRouter();
   const pathname = usePathname();
-  const isTestingPage = pathname === "/Testingpages";
+
   const adminpanelPage = pathname === "/adminpanel";
   const inventoryPage = pathname === "/inventory";
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
   const dashboardPage = pathname === "/dashboard";
+  const CartPage = pathname === "/cart";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -42,8 +43,8 @@ export default function Header() {
       } else {
         setCartCount(0);
       }
-    } catch (error) {
-      console.error("Error fetching cart count:", error);
+    } catch{
+      
       setCartCount(0);
     }
   }, [isLoggedIn]);
@@ -58,10 +59,7 @@ export default function Header() {
         let token = localStorage.getItem("authToken");
         let userStr = localStorage.getItem("user");
 
-        console.log("=== HEADER AUTH CHECK ===");
-        console.log("LocalStorage Token:", token ? "EXISTS" : "MISSING");
-        console.log("LocalStorage User:", userStr ? "EXISTS" : "MISSING");
-
+      
         // If not in localStorage, check cookies
         if (!userStr || !token) {
           console.log("Checking cookies...");
@@ -92,17 +90,13 @@ export default function Header() {
         if (hasValidAuth && userStr) {
           try {
             const user = JSON.parse(userStr);
-            console.log("✅ User authenticated:", user.email);
-            console.log("✅ User role:", user.role);
             setUserRole(user.role || null);
             setIsLoggedIn(true);
-          } catch (error) {
-            console.error("❌ Error parsing user data:", error);
+          } catch {
             setUserRole(null);
             setIsLoggedIn(false);
           }
         } else {
-          console.log("❌ No valid authentication found");
           setUserRole(null);
           setIsLoggedIn(false);
         }
@@ -178,8 +172,8 @@ export default function Header() {
     try {
       console.log("Logout initiated...");
       await userApi.logout();
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch  {
+      
     } finally {
       setIsLoggedIn(false);
       setUserRole(null);
@@ -194,7 +188,7 @@ export default function Header() {
         document.cookie =
           "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 
-        console.log("✅ Logout complete - storage cleared");
+        console.log("Logout complete - storage cleared");
       }
 
       if (typeof window !== "undefined") {
@@ -230,7 +224,7 @@ export default function Header() {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/contact", label: "Contact Us" },
-      { href: "/blogs", label: "Blogs" },
+      // { href: "/blogs", label: "Blogs" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
       { href: "/inventory", label: "Inventory", requiresAuth: true },
     ];
@@ -245,7 +239,7 @@ export default function Header() {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/contact", label: "Contact Us" },
-      { href: "/blogs", label: "Blogs" },
+      // { href: "/blogs", label: "Blogs" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
       { href: "/inventory", label: "Inventory" },
     ];
@@ -255,12 +249,11 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ||
-        isTestingPage ||
         adminpanelPage ||
         inventoryPage ||
         offerenquiryPage ||
         memberPage ||
-        dashboardPage
+        dashboardPage ||CartPage
           ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
           : "bg-transparent py-2.5 md:py-3"
       }`}
