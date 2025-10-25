@@ -378,16 +378,16 @@ export default function CartPage() {
     router.push("/inventory");
   };
 
-  const handlePlaceOrder = () => {
-    if (selectedItems.size === 0) {
-      setError("Please select at least one item to place order");
-      setTimeout(() => setError(null), 3000);
-      return;
-    }
+  // const handlePlaceOrder = () => {
+  //   if (selectedItems.size === 0) {
+  //     setError("Please select at least one item to place order");
+  //     setTimeout(() => setError(null), 3000);
+  //     return;
+  //   }
 
-    const selectedStoneNumbers = Array.from(selectedItems);
-    router.push(`/quotation?stones=${selectedStoneNumbers.join(",")}`);
-  };
+  //   const selectedStoneNumbers = Array.from(selectedItems);
+  //   router.push(`/quotation?stones=${selectedStoneNumbers.join(",")}`);
+  // };
 
   // Pagination
   const totalPages = Math.ceil(cartItems.length / itemsPerPage);

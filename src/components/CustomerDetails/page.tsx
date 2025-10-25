@@ -453,7 +453,7 @@ function CustomerDetailsContent() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-[#FFD166] mt-0.5 flex-shrink-0" />
-                    <span>You'll receive approval notification via email</span>
+                    <span>You&apos;ll receive approval notification via email</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-[#FFD166] mt-0.5 flex-shrink-0" />
@@ -712,7 +712,7 @@ function CustomerDetailsContent() {
                 <p className="text-xs text-blue-200 flex items-start gap-2">
                   <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>
-                    All information will be reviewed by our team. You'll receive
+                    All information will be reviewed by our team. You&apos;ll receive
                     an email notification once your account is approved.
                   </span>
                 </p>
