@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { X, Play, Loader2, Check, AlertCircle } from "lucide-react";
+
+import { ArrowLeft, Play, Loader2, Check, AlertCircle ,X} from "lucide-react";
 // import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play, Loader2, Check, AlertCircle } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi } from "@/lib/api";
@@ -151,14 +152,14 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             >
                 {/* Header */}
                 <div className="bg-[#050C3A] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
-                    <h2 className="text-xl font-bold">Diamond Details</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-white hover:text-gray-300 transition-colors"
-                    >
-                        <X size={24} />
-                    </button>
-                </div>
+    <button
+        onClick={onClose}
+        className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
+    >
+        <ArrowLeft size={20} />
+        <span className="text-xl font-bold">Back</span>
+    </button>
+</div>
 
                 <div className="p-6">
                     {/* Cart Message */}

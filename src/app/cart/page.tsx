@@ -773,7 +773,7 @@ export default function CartPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button
+              {/* <button
                 onClick={handleAddItem}
                 className="px-6 py-2 bg-white border border-[#060c3c]/20 text-[#060c3c] rounded hover:bg-[#060c3c]/5 transition-colors font-medium"
               >
@@ -785,7 +785,7 @@ export default function CartPage() {
                 className="px-6 py-2 bg-[#050C3A] text-white rounded hover:bg-[#050C3A]/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 PLACE ORDER
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
