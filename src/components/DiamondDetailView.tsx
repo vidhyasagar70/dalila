@@ -150,14 +150,16 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 className="bg-white rounded-lg shadow-xl w-full  my-8 max-h-[95vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header */}
-                <div className="bg-[#050C3A] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+               {/* Header */}
+<div className="bg-[#050C3A] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+    <h2 className="text-xl font-bold">Diamond Details</h2>
     <button
         onClick={onClose}
         className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
     >
+        
         <ArrowLeft size={20} />
-        <span className="text-xl font-bold">Back</span>
+        <span className="font-semibold">Back</span>
     </button>
 </div>
 

@@ -1717,38 +1717,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                                         </button>
                                     </th>
                                     
-                                    <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
-                                        <button
-                                            onClick={() => handleSort("HA")}
-                                            className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                                        >
-                                            HA
-                                            <div className="flex flex-col -space-y-1">
-                                                <ChevronUp
-                                                    size={12}
-                                                    className={
-                                                        sortConfig?.key ===
-                                                            "HA" &&
-                                                        sortConfig.direction ===
-                                                            "asc"
-                                                            ? "opacity-100"
-                                                            : "opacity-30"
-                                                    }
-                                                />
-                                                <ChevronDown
-                                                    size={12}
-                                                    className={
-                                                        sortConfig?.key ===
-                                                            "HA" &&
-                                                        sortConfig.direction ===
-                                                            "desc"
-                                                            ? "opacity-100"
-                                                            : "opacity-30"
-                                                    }
-                                                />
-                                            </div>
-                                        </button>
-                                    </th>
+                                   
                                 </tr>
                             </thead>
 
@@ -1950,9 +1919,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                                             </div>
                                         </td>
                                         
-                                        <td className="px-2 py-1 text-[12px] text-gray-700">
-                                            {row.HA || "N/A"}
-                                        </td>
+                                       
                                     </tr>
                                 ))}
                             </tbody>
