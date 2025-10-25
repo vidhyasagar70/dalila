@@ -13,6 +13,7 @@ export default function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [cartCount, setCartCount] = useState(0);
+    const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -229,24 +230,26 @@ export default function Header() {
         navigationItems = [
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
-            // { href: "/blogs", label: "Blogs" },
+            { href: "/weBuy", label: "We Buy" },
+            // { href: "/blogs", labe     l: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-            { href: "/inventory", label: "Inventory", requiresAuth: true },
         ];
     } else if (isAdmin) {
         navigationItems = [
-            { href: "/dashboard", label: "Dashboard" },
-            { href: "/inventory", label: "Inventory" },
-            { href: "/member", label: "Members" },
+            { href: "/aboutUs", label: "About us" },
+            { href: "/contact", label: "Contact Us" },
+            { href: "/weBuy", label: "We Buy" },
+            // { href: "/blogs", labe     l: "Blogs" },
+            { href: "/diamondKnowledge", label: "Diamond Knowledge" },
             // { href: "/offer-enquiry", label: "Offers" },
         ];
     } else {
         navigationItems = [
             { href: "/aboutUs", label: "About us" },
             { href: "/contact", label: "Contact Us" },
-            // { href: "/blogs", label: "Blogs" },
+            { href: "/weBuy", label: "We Buy" },
+            // { href: "/blogs", labe     l: "Blogs" },
             { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-            { href: "/inventory", label: "Inventory" },
         ];
     }
 
@@ -264,10 +267,10 @@ export default function Header() {
                     : "bg-transparent py-2.5 md:py-3"
             }`}
         >
-            <div className="container mx-auto px-4 sm:px-6">
+            <div className="  ">
                 {/* Top Tagline - Hidden on mobile */}
                 <div className="hidden sm:flex justify-center mb-0.5 md:mb-1">
-                    <p className="text-xs md:text-sm tracking-wide text-gray-300">
+                    <p className="text-xs md:text-md tracking-wide text-white">
                         Where Trust Shines, And Quality Sparkles
                     </p>
                 </div>
@@ -276,7 +279,8 @@ export default function Header() {
                 <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-0"></div>
 
                 {/* Main Navigation Bar */}
-                <div className="flex items-center justify-between">
+
+                <div className="flex container mx-auto items-center justify-between">
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -329,18 +333,20 @@ export default function Header() {
                     <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
                         {/* Cart Icon */}
                         {isLoggedIn && (
-                            <button
-                                onClick={handleCartClick}
-                                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                                aria-label="Shopping cart"
-                            >
-                                <ShoppingCart className="w-6 h-6" />
-                                {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                                        {cartCount > 99 ? "99+" : cartCount}
-                                    </span>
-                                )}
-                            </button>
+                            <div className="flex gap-15">
+                                <button
+                                    onClick={handleCartClick}
+                                    className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
+                                    aria-label="Shopping cart"
+                                >
+                                    <ShoppingCart className="w-6 h-6" />
+                                    {cartCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                            {cartCount > 99 ? "99+" : cartCount}
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
                         )}
 
                         {isCheckingAuth ? (
@@ -351,24 +357,75 @@ export default function Header() {
                             <>
                                 <button
                                     onClick={() => router.push("/login")}
-                                    className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                                 >
                                     LOGIN
                                 </button>
                                 <button
                                     onClick={() => router.push("/register")}
-                                    className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                                 >
                                     REGISTER
                                 </button>
                             </>
                         ) : (
-                            <button
-                                onClick={handleLogout}
-                                className="py-1 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
-                            >
-                                LOGOUT
-                            </button>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => router.push("/inventory")}
+                                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                                >
+                                    INVENTORY
+                                </button>
+                                {isAdmin && (
+                                    <div className="relative group">
+                                        <button
+                                            onMouseEnter={() =>
+                                                setIsAdminDropdownOpen(true)
+                                            }
+                                            onMouseLeave={() =>
+                                                setIsAdminDropdownOpen(false)
+                                            }
+                                            className="py-3 cursor-pointer px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                                        >
+                                            ADMIN PANEL
+                                        </button>
+
+                                        {/* Dropdown Menu */}
+                                        {isAdminDropdownOpen && (
+                                            <div
+                                                onMouseEnter={() =>
+                                                    setIsAdminDropdownOpen(true)
+                                                }
+                                                onMouseLeave={() =>
+                                                    setIsAdminDropdownOpen(
+                                                        false
+                                                    )
+                                                }
+                                                className="absolute top-full left-0 mt-0 w-full bg-[#050c3a] border border-[#c89e3a] rounded shadow-lg z-50"
+                                            >
+                                                <Link
+                                                    href="/dashboard"
+                                                    className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-[#c89e3a]/30"
+                                                >
+                                                    Dashboard
+                                                </Link>
+                                                <Link
+                                                    href="/member"
+                                                    className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-[#c89e3a]/30"
+                                                >
+                                                    Members
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                <button
+                                    onClick={handleLogout}
+                                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                                >
+                                    LOGOUT
+                                </button>
+                            </div>
                         )}
                     </div>
 

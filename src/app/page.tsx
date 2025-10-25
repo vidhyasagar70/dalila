@@ -9,19 +9,19 @@ import VideoContent from "@/components/pages/homecomponents/VideoContent";
 import Experience from "@/components/pages/homecomponents/experience";
 
 export default function Home() {
-  return (
-    <>
-      <main className="relative">
-        <HeroSection />
-        <AboutDalila />
-        <DiamondShapes />
-        <CertifiedBy />
-        <HomeContent />
-        <BookComponent />
-        <VideoContent />
-        <DiamondSource />
-        <Experience />
-      </main>
-    </>
-  );
+    return (
+        <>
+            <main className="relative">
+                <HeroSection />
+                <AboutDalila />
+                <DiamondShapes />
+                <CertifiedBy />
+                <HomeContent />
+                <BookComponent />
+                <VideoContent />
+                <DiamondSource />
+                <Experience />
+            </main>
+        </>
+    );
 }

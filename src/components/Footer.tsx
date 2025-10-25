@@ -40,7 +40,7 @@ export default function Footer() {
     return (
         <footer className="bg-[#0a0e27] text-white">
             {/* Newsletter Section */}
-            <div className="border-b border-white/10">
+            {/* <div className="border-b border-white/10">
                 <div className="container mx-auto px-6 py-12">
                     <div className="max-w-2xl mx-auto text-center">
                         <h3 className="text-2xl font-serif mb-6">
@@ -58,7 +58,7 @@ export default function Footer() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Main Footer Content */}
             <div className="border-b border-white/10">
