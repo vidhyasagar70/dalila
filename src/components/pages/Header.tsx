@@ -280,7 +280,7 @@ export default function Header() {
 
                 {/* Main Navigation Bar */}
 
-                <div className="flex container mx-auto items-center justify-between">
+                <div className="flex container mx-auto px-4 md:px-6 lg:px-8 items-center justify-between">
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
