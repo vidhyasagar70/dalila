@@ -142,14 +142,14 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     );
 
     return (
-        <div
-            className="fixed left-0 top-27 mb-10 w-full flex items-center justify-center z-50  overflow-y-auto"
-            onClick={onClose}
-        >
-            <div
-                className="bg-white rounded-lg shadow-xl w-full  my-8 max-h-[95vh] overflow-y-auto"
-                onClick={(e) => e.stopPropagation()}
-            >
+       <div
+    className="fixed left-0 top-27 w-full h-full flex items-center justify-center z-50"
+    onClick={onClose}
+>
+    <div
+        className="bg-white rounded-lg shadow-xl w-full my-8 max-h-[90vh] overflow-y-auto scrollbar-hide"
+        onClick={(e) => e.stopPropagation()}
+    >
                {/* Header */}
 <div className="bg-[#050C3A] text-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
     <h2 className="text-xl font-bold">Diamond Details</h2>
@@ -163,7 +163,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     </button>
 </div>
 
-                <div className="p-6">
+                <div className="p-6 pb-20">
                     {/* Cart Message */}
                     {cartMessage && (
                         <div
@@ -542,7 +542,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     </div>
 
                     {/* Comments Section */}
-                    <div className="mt-6 bg-white rounded overflow-hidden border-2 border-[#F9F1E3]">
+                    {/* <div className="mt-6 bg-white rounded overflow-hidden border-2 border-[#F9F1E3]">
                         <div className="bg-[#050C3A] text-white px-4 py-2.5">
                             <h3 className="font-semibold text-sm">
                                 Additional Information
@@ -586,7 +586,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Media Links */}
                     {/* {(diamond.CERTI_PDF || diamond.MP4 || diamond.DNA || diamond.ARROW_IMAGE || diamond.HEART_IMAGE) && (
