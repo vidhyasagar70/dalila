@@ -25,18 +25,18 @@ interface CaratRange {
 const STATIC_CARAT_RANGES: CaratRange[] = [
   { label: "0.17 - 0.22", value: "0.17-0.22", min: 0.17, max: 0.22 },
   { label: "0.23 - 0.29", value: "0.23-0.29", min: 0.23, max: 0.29 },
-  { label: "0.30 - 0.39", value: "0.30-0.39", min: 0.30, max: 0.39 },
-  { label: "0.40 - 0.49", value: "0.40-0.49", min: 0.40, max: 0.49 },
-  { label: "0.50 - 0.69", value: "0.50-0.69", min: 0.50, max: 0.69 },
-  { label: "0.70 - 0.79", value: "0.70-0.79", min: 0.70, max: 0.79 },
-  { label: "0.80 - 0.89", value: "0.80-0.89", min: 0.80, max: 0.89 },
-  { label: "0.90 - 0.99", value: "0.90-0.99", min: 0.90, max: 0.99 },
-  { label: "1.00 - 1.49", value: "1.00-1.49", min: 1.00, max: 1.49 },
+  { label: "0.30 - 0.39", value: "0.30-0.39", min: 0.3, max: 0.39 },
+  { label: "0.40 - 0.49", value: "0.40-0.49", min: 0.4, max: 0.49 },
+  { label: "0.50 - 0.69", value: "0.50-0.69", min: 0.5, max: 0.69 },
+  { label: "0.70 - 0.79", value: "0.70-0.79", min: 0.7, max: 0.79 },
+  { label: "0.80 - 0.89", value: "0.80-0.89", min: 0.8, max: 0.89 },
+  { label: "0.90 - 0.99", value: "0.90-0.99", min: 0.9, max: 0.99 },
+  { label: "1.00 - 1.49", value: "1.00-1.49", min: 1.0, max: 1.49 },
   { label: "1.59 - 1.99", value: "1.59-1.99", min: 1.59, max: 1.99 },
-  { label: "2.00 - 2.99", value: "2.00-2.99", min: 2.00, max: 2.99 },
-  { label: "3.00 - 3.99", value: "3.00-3.99", min: 3.00, max: 3.99 },
-  { label: "4.00 - 4.99", value: "4.00-4.99", min: 4.00, max: 4.99 },
-  { label: "5.00 - 99.99", value: "5.00-99.99", min: 5.00, max: 99.99 },
+  { label: "2.00 - 2.99", value: "2.00-2.99", min: 2.0, max: 2.99 },
+  { label: "3.00 - 3.99", value: "3.00-3.99", min: 3.0, max: 3.99 },
+  { label: "4.00 - 4.99", value: "4.00-4.99", min: 4.0, max: 4.99 },
+  { label: "5.00 - 99.99", value: "5.00-99.99", min: 5.0, max: 99.99 },
 ];
 
 export default function CaratFilter({
@@ -78,7 +78,10 @@ export default function CaratFilter({
   };
 
   return (
-    <div className={`${playFair.className} mb-1.5 mt-0.5`} style={{ width: "360px" }}>
+    <div
+      className={`${playFair.className} mb-1.5 mt-0.5`}
+      style={{ width: "360px" }}
+    >
       {/* Header */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"

@@ -67,15 +67,15 @@ interface CartItemWithDetails {
 
 // Helper function to get cookie value
 const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null;
-  
+  if (typeof document === "undefined") return null;
+
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  
+
   if (parts.length === 2) {
-    return parts.pop()?.split(';').shift() || null;
+    return parts.pop()?.split(";").shift() || null;
   }
-  
+
   return null;
 };
 
@@ -90,7 +90,8 @@ export default function CartPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [showComparison, setShowComparison] = useState(false);
-  const [selectedDiamondsForComparison, setSelectedDiamondsForComparison] = useState<Array<CartDiamondData & { _id: string }>>([]);
+  const [selectedDiamondsForComparison, setSelectedDiamondsForComparison] =
+    useState<Array<CartDiamondData & { _id: string }>>([]);
   const [isEmailSending, setIsEmailSending] = useState(false);
 
   // Fetch cart items on mount
@@ -122,15 +123,17 @@ export default function CartPage() {
 
   const handleRemoveSelected = async () => {
     if (selectedItems.size === 0) return;
-    
+
     try {
       setError(null);
-      const selectedStones = cartItems.filter((item) => selectedItems.has(item.stoneNo));
-      
+      const selectedStones = cartItems.filter((item) =>
+        selectedItems.has(item.stoneNo),
+      );
+
       for (const item of selectedStones) {
         await handleRemoveItem(item.stoneNo);
       }
-      
+
       setSelectedItems(new Set());
     } catch (err) {
       console.error("Error removing selected items:", err);
@@ -162,7 +165,9 @@ export default function CartPage() {
       }
     } catch (err) {
       console.error("Error removing item:", err);
-      setError(err instanceof Error ? err.message : "Failed to remove item from cart");
+      setError(
+        err instanceof Error ? err.message : "Failed to remove item from cart",
+      );
     } finally {
       setIsRemoving(null);
     }
@@ -194,10 +199,25 @@ export default function CartPage() {
       setTimeout(() => setError(null), 3000);
       return;
     }
-    
+
     // Create CSV content
-    const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.stoneNo));
-    const headers = ["Stone No", "Location", "Report No", "Lab", "Shape", "Carat", "Color", "Clarity", "Cut", "Polish", "Rap Price", "Total"];
+    const selectedCartItems = cartItems.filter((item) =>
+      selectedItems.has(item.stoneNo),
+    );
+    const headers = [
+      "Stone No",
+      "Location",
+      "Report No",
+      "Lab",
+      "Shape",
+      "Carat",
+      "Color",
+      "Clarity",
+      "Cut",
+      "Polish",
+      "Rap Price",
+      "Total",
+    ];
     const csvContent = [
       headers.join(","),
       ...selectedCartItems.map((item) =>
@@ -214,7 +234,7 @@ export default function CartPage() {
           item.diamond.POL || "",
           item.diamond.RAP_PRICE || "",
           item.diamond.NET_VALUE || "",
-        ].join(",")
+        ].join(","),
       ),
     ].join("\n");
 
@@ -227,31 +247,36 @@ export default function CartPage() {
     window.URL.revokeObjectURL(url);
   };
 
-const handleCompare = () => {
-  if (selectedItems.size === 0) {
-    setError("Please select at least one item to compare");
-    setTimeout(() => setError(null), 3000);
-    return;
-  }
-  
-  // Get the selected diamonds data
-  const selectedCartItems = cartItems.filter((item) => selectedItems.has(item.stoneNo));
-  const diamondsToCompare = selectedCartItems
-    .map((item) => {
-      // Ensure _id is present
-      const diamondId = item._id || item.diamond._id || item.stoneNo;
-      if (!diamondId) return null;
-      
-      return {
-        ...item.diamond,
-        _id: diamondId,
-      };
-    })
-    .filter((diamond): diamond is CartDiamondData & { _id: string } => diamond !== null);
-  
-  setSelectedDiamondsForComparison(diamondsToCompare);
-  setShowComparison(true);
-};
+  const handleCompare = () => {
+    if (selectedItems.size === 0) {
+      setError("Please select at least one item to compare");
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    // Get the selected diamonds data
+    const selectedCartItems = cartItems.filter((item) =>
+      selectedItems.has(item.stoneNo),
+    );
+    const diamondsToCompare = selectedCartItems
+      .map((item) => {
+        // Ensure _id is present
+        const diamondId = item._id || item.diamond._id || item.stoneNo;
+        if (!diamondId) return null;
+
+        return {
+          ...item.diamond,
+          _id: diamondId,
+        };
+      })
+      .filter(
+        (diamond): diamond is CartDiamondData & { _id: string } =>
+          diamond !== null,
+      );
+
+    setSelectedDiamondsForComparison(diamondsToCompare);
+    setShowComparison(true);
+  };
 
   const handleEnquire = async () => {
     if (selectedItems.size === 0) {
@@ -265,10 +290,11 @@ const handleCompare = () => {
 
     try {
       // Get auth token from cookies
-      const authToken = getCookie("authToken") || localStorage.getItem("authToken");
-      
+      const authToken =
+        getCookie("authToken") || localStorage.getItem("authToken");
+
       if (!authToken) {
-        setError('Authentication token not found. Please log in again.');
+        setError("Authentication token not found. Please log in again.");
         setIsEmailSending(false);
         return;
       }
@@ -276,16 +302,16 @@ const handleCompare = () => {
       // Get user email from cookies or localStorage
       let userEmail = null;
       const userCookie = getCookie("user");
-      
+
       if (userCookie) {
         try {
           const user = JSON.parse(decodeURIComponent(userCookie));
           userEmail = user.email;
         } catch (e) {
-          console.error('Error parsing user cookie:', e);
+          console.error("Error parsing user cookie:", e);
         }
       }
-      
+
       // Fallback to localStorage
       if (!userEmail) {
         const userStr = localStorage.getItem("user");
@@ -294,13 +320,13 @@ const handleCompare = () => {
             const user = JSON.parse(userStr);
             userEmail = user.email;
           } catch (e) {
-            console.error('Error parsing user from localStorage:', e);
+            console.error("Error parsing user from localStorage:", e);
           }
         }
       }
 
       if (!userEmail) {
-        setError('User email not found. Please log in again.');
+        setError("User email not found. Please log in again.");
         setIsEmailSending(false);
         return;
       }
@@ -314,14 +340,19 @@ const handleCompare = () => {
       });
 
       if (response.success) {
-        setSuccessMessage(`Successfully emailed ${response.data.totalEmailed} diamond(s) to ${userEmail}`);
+        setSuccessMessage(
+          `Successfully emailed ${response.data.totalEmailed} diamond(s) to ${userEmail}`,
+        );
         setTimeout(() => setSuccessMessage(null), 3000);
       } else {
-        setError(response.message || 'Failed to send email');
+        setError(response.message || "Failed to send email");
       }
     } catch (err: unknown) {
-      console.error('Email error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send email. Please try again.';
+      console.error("Email error:", err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to send email. Please try again.";
       setError(errorMessage);
     } finally {
       setIsEmailSending(false);
@@ -338,7 +369,7 @@ const handleCompare = () => {
       setTimeout(() => setError(null), 3000);
       return;
     }
-    
+
     const selectedStoneNumbers = Array.from(selectedItems);
     router.push(`/quotation?stones=${selectedStoneNumbers.join(",")}`);
   };
@@ -347,7 +378,7 @@ const handleCompare = () => {
   const totalPages = Math.ceil(cartItems.length / itemsPerPage);
   const paginatedItems = cartItems.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const formatCurrency = (value: string | undefined) => {
@@ -410,7 +441,9 @@ const handleCompare = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#060c3c] mb-2">My Cart</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#060c3c] mb-2">
+            My Cart
+          </h1>
         </div>
 
         {/* Success Message */}
@@ -418,7 +451,10 @@ const handleCompare = () => {
           <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
             <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
             <p className="text-green-700">{successMessage}</p>
-            <button onClick={() => setSuccessMessage(null)} className="ml-auto text-green-600 hover:text-green-700">
+            <button
+              onClick={() => setSuccessMessage(null)}
+              className="ml-auto text-green-600 hover:text-green-700"
+            >
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -429,249 +465,324 @@ const handleCompare = () => {
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
             <p className="text-red-700">{error}</p>
-            <button onClick={() => setError(null)} className="ml-auto text-red-600 hover:text-red-700">
+            <button
+              onClick={() => setError(null)}
+              className="ml-auto text-red-600 hover:text-red-700"
+            >
               <X className="w-5 h-5" />
             </button>
           </div>
         )}
 
         {/* Action Buttons */}
-<div className="mb-4 flex flex-wrap items-center gap-0">
-  <button
-    onClick={handleRemoveSelected}
-    disabled={selectedItems.size === 0 || isRemoving !== null}
-    className="flex items-center gap-2 px-4 py-2.5 text-[#151C48] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
-  >
-    <Trash2 className="w-4 h-4" />
-    <span className="text-sm font-medium">Remove from cart</span>
-  </button>
-  <button
-    onClick={handleExportToExcel}
-    disabled={selectedItems.size === 0}
-    className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
-  >
-    <Download className="w-4 h-4" />
-    <span className="text-sm font-medium">Export to excel</span>
-  </button>
-  <button
-    onClick={handleCompare}
-    disabled={selectedItems.size === 0}
-    className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
-  >
-    <GitCompare className="w-4 h-4" />
-    <span className="text-sm font-medium">Compare stone</span>
-  </button>
-  <button
-    onClick={handleEnquire}
-    disabled={selectedItems.size === 0 || isEmailSending}
-    className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-  >
-    {isEmailSending ? (
-      <Loader2 className="w-4 h-4 animate-spin" />
-    ) : (
-      <Mail className="w-4 h-4" />
-    )}
-    <span className="text-sm font-medium">{isEmailSending ? 'Sending...' : 'Enquiree'}</span>
-  </button>
-  
-  <div className="ml-auto flex items-center gap-0 border-l border-gray-200">
-    <button 
-      onClick={handleExportToExcel}
-      disabled={selectedItems.size === 0}
-      className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
-      title="Export to excel"
-    >
-      <Download className="w-5 h-5" />
-    </button>
-    <button 
-      onClick={handleEnquire}
-      disabled={selectedItems.size === 0 || isEmailSending}
-      className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-      title="Enquire"
-    >
-      {isEmailSending ? (
-        <Loader2 className="w-5 h-5 animate-spin" />
-      ) : (
-        <Mail className="w-5 h-5" />
-      )}
-    </button>
-  </div>
-</div>
-
-
-{/* Table */}
-<div className="bg-white border border-[#060c3c]/10 rounded-lg overflow-hidden shadow-sm">
-  <div className="overflow-x-auto">
-    <table className="w-full">
-      <thead className="bg-[#060c3c] text-white">
-        <tr>
-          <th className="px-4 py-3 text-left border-b border-[#F9E8CD]">
-            <input
-              type="checkbox"
-              checked={selectedItems.size === paginatedItems.length && paginatedItems.length > 0}
-              onChange={toggleSelectAll}
-              className="w-4 h-4 cursor-pointer accent-[#c89e3a]"
-              style={{ outline: '1px solid #F9E8CD', outlineOffset: '-1px' }}
-            />
-          </th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Image</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Pct No</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Location</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Report No</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Lab</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Shape</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Carat</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Color</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Purty</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Cut</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Pol</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Rap.($)</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Length</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Width</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">Depth</th>
-          <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">$/Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {paginatedItems.map((item, idx) => (
-          <tr
-            key={item._id}
-            className={`${idx % 2 === 0 ? "bg-white" : "bg-[#faf6eb]"} hover:bg-[#060c3c]/5 transition-colors border-b border-[#F9E8CD]`}
+        <div className="mb-4 flex flex-wrap items-center gap-0">
+          <button
+            onClick={handleRemoveSelected}
+            disabled={selectedItems.size === 0 || isRemoving !== null}
+            className="flex items-center gap-2 px-4 py-2.5 text-[#151C48] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
           >
-            <td className="px-4 py-3">
-              <input
-                type="checkbox"
-                checked={selectedItems.has(item.stoneNo)}
-                onChange={() => toggleSelectItem(item.stoneNo)}
-                className="w-4 h-4 cursor-pointer accent-[#c89e3a]"
-                style={{ outline: '1px solid #F9E8CD', outlineOffset: '-1px' }}
-              />
-            </td>
-            <td className="px-4 py-3">
-              <div className="w-12 h-12 bg-[#060c3c]/10 rounded overflow-hidden">
-                {item.diamond.REAL_IMAGE ? (
-                  <Image
-                    src={item.diamond.REAL_IMAGE}
-                    alt={item.stoneNo}
-                    width={48}
-                    height={48}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23e5e7eb' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='10'%3ENo Image%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[#060c3c]/50 text-xs">
-                    No img
-                  </div>
+            <Trash2 className="w-4 h-4" />
+            <span className="text-sm font-medium">Remove from cart</span>
+          </button>
+          <button
+            onClick={handleExportToExcel}
+            disabled={selectedItems.size === 0}
+            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+          >
+            <Download className="w-4 h-4" />
+            <span className="text-sm font-medium">Export to excel</span>
+          </button>
+          <button
+            onClick={handleCompare}
+            disabled={selectedItems.size === 0}
+            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+          >
+            <GitCompare className="w-4 h-4" />
+            <span className="text-sm font-medium">Compare stone</span>
+          </button>
+          <button
+            onClick={handleEnquire}
+            disabled={selectedItems.size === 0 || isEmailSending}
+            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {isEmailSending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Mail className="w-4 h-4" />
+            )}
+            <span className="text-sm font-medium">
+              {isEmailSending ? "Sending..." : "Enquiree"}
+            </span>
+          </button>
+
+          <div className="ml-auto flex items-center gap-0 border-l border-gray-200">
+            <button
+              onClick={handleExportToExcel}
+              disabled={selectedItems.size === 0}
+              className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+              title="Export to excel"
+            >
+              <Download className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleEnquire}
+              disabled={selectedItems.size === 0 || isEmailSending}
+              className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              title="Enquire"
+            >
+              {isEmailSending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Mail className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="bg-white border border-[#060c3c]/10 rounded-lg overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-[#060c3c] text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left border-b border-[#F9E8CD]">
+                    <input
+                      type="checkbox"
+                      checked={
+                        selectedItems.size === paginatedItems.length &&
+                        paginatedItems.length > 0
+                      }
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 cursor-pointer accent-[#c89e3a]"
+                      style={{
+                        outline: "1px solid #F9E8CD",
+                        outlineOffset: "-1px",
+                      }}
+                    />
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Image
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Pct No
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Location
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Report No
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Lab
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Shape
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Carat
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Color
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Purty
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Cut
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Pol
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Rap.($)
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Length
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Width
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    Depth
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                    $/Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedItems.map((item, idx) => (
+                  <tr
+                    key={item._id}
+                    className={`${idx % 2 === 0 ? "bg-white" : "bg-[#faf6eb]"} hover:bg-[#060c3c]/5 transition-colors border-b border-[#F9E8CD]`}
+                  >
+                    <td className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.has(item.stoneNo)}
+                        onChange={() => toggleSelectItem(item.stoneNo)}
+                        className="w-4 h-4 cursor-pointer accent-[#c89e3a]"
+                        style={{
+                          outline: "1px solid #F9E8CD",
+                          outlineOffset: "-1px",
+                        }}
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="w-12 h-12 bg-[#060c3c]/10 rounded overflow-hidden">
+                        {item.diamond.REAL_IMAGE ? (
+                          <Image
+                            src={item.diamond.REAL_IMAGE}
+                            alt={item.stoneNo}
+                            width={48}
+                            height={48}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src =
+                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect fill='%23e5e7eb' width='48' height='48'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='10'%3ENo Image%3C/text%3E%3C/svg%3E";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[#060c3c]/50 text-xs">
+                            No img
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.stoneNo}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.LOCATION || "BE"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.REPORT_NO || "N/A"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.LAB || "GIA"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.SHAPE || "ROUND"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.CARATS || "0.00"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.COLOR || "F"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.CLARITY || "N/A"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.CUT || "N/A"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.POL || "N/A"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {formatCurrency(item.diamond.RAP_PRICE)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {getMeasurement(item.diamond.MEASUREMENTS, 0)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {getMeasurement(item.diamond.MEASUREMENTS, 1)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                      {item.diamond.DEPTH_PER || "N/A"}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[#c89e3a] font-semibold">
+                      {formatCurrency(item.diamond.NET_VALUE)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination Footer */}
+          <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-[#F9E8CD]">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-1">
+                {Array.from(
+                  { length: Math.min(totalPages, 10) },
+                  (_, i) => i + 1,
+                ).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
+                      currentPage === page
+                        ? "bg-[#060c3c] text-white"
+                        : "text-[#060c3c] hover:bg-[#060c3c]/5"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                {totalPages > 10 && (
+                  <>
+                    <span className="text-[#060c3c]/50 px-2 text-xs">...</span>
+                    <button
+                      onClick={() => setCurrentPage(totalPages)}
+                      className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
+                        currentPage === totalPages
+                          ? "bg-[#060c3c] text-white"
+                          : "text-[#060c3c] hover:bg-[#060c3c]/5"
+                      }`}
+                    >
+                      {totalPages}
+                    </button>
+                  </>
                 )}
               </div>
-            </td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.stoneNo}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.LOCATION || "BE"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.REPORT_NO || "N/A"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.LAB || "GIA"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.SHAPE || "ROUND"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.CARATS || "0.00"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.COLOR || "F"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.CLARITY || "N/A"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.CUT || "N/A"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{item.diamond.POL || "N/A"}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">{formatCurrency(item.diamond.RAP_PRICE)}</td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">
-              {getMeasurement(item.diamond.MEASUREMENTS, 0)}
-            </td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">
-              {getMeasurement(item.diamond.MEASUREMENTS, 1)}
-            </td>
-            <td className="px-4 py-3 text-sm text-[#060c3c]">
-              {item.diamond.DEPTH_PER || "N/A"}
-            </td>
-            <td className="px-4 py-3 text-sm text-[#c89e3a] font-semibold">
-              {formatCurrency(item.diamond.NET_VALUE)}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
 
-  {/* Pagination Footer */}
-  <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-[#F9E8CD]">
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1}
-        className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
-      
-      <div className="flex items-center gap-1">
-        {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
-              currentPage === page
-                ? "bg-[#060c3c] text-white"
-                : "text-[#060c3c] hover:bg-[#060c3c]/5"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
-        
-        {totalPages > 10 && (
-          <>
-            <span className="text-[#060c3c]/50 px-2 text-xs">...</span>
-            <button
-              onClick={() => setCurrentPage(totalPages)}
-              className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
-                currentPage === totalPages
-                  ? "bg-[#060c3c] text-white"
-                  : "text-[#060c3c] hover:bg-[#060c3c]/5"
-              }`}
-            >
-              {totalPages}
-            </button>
-          </>
-        )}
-      </div>
-      
-      <button
-        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
-        className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
-        <ChevronRight className="w-4 h-4" />
-      </button>
-    </div>
-    
-    <div className="flex items-center gap-3">
-      <button 
-        onClick={handleAddItem}
-        className="px-6 py-2 bg-white border border-[#060c3c]/20 text-[#060c3c] rounded hover:bg-[#060c3c]/5 transition-colors font-medium"
-      >
-        ADD ITEM
-      </button>
-      <button 
-        onClick={handlePlaceOrder}
-        disabled={selectedItems.size === 0}
-        className="px-6 py-2 bg-[#050C3A] text-white rounded hover:bg-[#050C3A]/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        PLACE ORDER
-      </button>
-    </div>
-  </div>
-</div>
+              <button
+                onClick={() =>
+                  setCurrentPage(Math.min(totalPages, currentPage + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleAddItem}
+                className="px-6 py-2 bg-white border border-[#060c3c]/20 text-[#060c3c] rounded hover:bg-[#060c3c]/5 transition-colors font-medium"
+              >
+                ADD ITEM
+              </button>
+              <button
+                onClick={handlePlaceOrder}
+                disabled={selectedItems.size === 0}
+                className="px-6 py-2 bg-[#050C3A] text-white rounded hover:bg-[#050C3A]/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                PLACE ORDER
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Selected Total */}
         {selectedItems.size > 0 && (
           <div className="mt-6 p-4 bg-white border border-[#060c3c]/10 rounded-lg flex items-center justify-between shadow-sm">
             <span className="text-[#060c3c] text-lg">
-              Selected Items: <span className="font-semibold text-[#c89e3a]">{selectedItems.size}</span>
+              Selected Items:{" "}
+              <span className="font-semibold text-[#c89e3a]">
+                {selectedItems.size}
+              </span>
             </span>
             <span className="text-[#c89e3a] text-xl font-bold">
               Total: {formatCurrency(calculateTotal().toString())}

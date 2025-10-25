@@ -10,8 +10,18 @@ const playFair = Playfair_Display({
 
 // Static filter options matching your UI image
 const STATIC_CLARITY_OPTIONS = [
-  "FL", "IF", "VVS1", "VVS2", "VS1", "VS2",
-  "SI1", "SI2", "SI3", "I1", "I2", "I3"
+  "FL",
+  "IF",
+  "VVS1",
+  "VVS2",
+  "VS1",
+  "VS2",
+  "SI1",
+  "SI2",
+  "SI3",
+  "I1",
+  "I2",
+  "I3",
 ];
 
 const STATIC_SPECIAL_OPTIONS = ["3EX", "EX-", "VG+", "VG-"];
@@ -75,7 +85,10 @@ export default function ClarityFilter({
   };
 
   return (
-    <div className={`${playFair.className} mb-1.5 mt-0.5`} style={{ width: "360px" }}>
+    <div
+      className={`${playFair.className} mb-1.5 mt-0.5`}
+      style={{ width: "360px" }}
+    >
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}

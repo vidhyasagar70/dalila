@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { CheckCircle,ChevronLeft, ChevronRight, X } from "lucide-react";
+import { CheckCircle, ChevronLeft, ChevronRight, X } from "lucide-react";
 // import { Search, CheckCircle,ChevronLeft, ChevronRight, X } from "lucide-react";
 import { userApi } from "@/lib/api";
 
@@ -50,17 +50,19 @@ export default function MembersManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  
+
   // Filter states
-  const [activeTab, setActiveTab] = useState<"authorized" | "waiting">("waiting");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"authorized" | "waiting">(
+    "waiting",
+  );
+  // const [searchQuery, setSearchQuery] = useState("");
   // const [selectedFilter, setSelectedFilter] = useState("");
   // const [selectedPerson, setSelectedPerson] = useState("");
   // const [selectedStockLimit, setSelectedStockLimit] = useState("");
   // const [byExApp, setByExApp] = useState(false);
   // const [onlyInStock, setOnlyInStock] = useState(false);
   // const [memoParty, setMemoParty] = useState(false);
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -72,7 +74,7 @@ export default function MembersManagement() {
       setError(null);
 
       const response = await userApi.getPendingCustomerData();
-      
+
       if (!response) {
         setError("Failed to fetch pending users");
         setLoading(false);
@@ -84,7 +86,7 @@ export default function MembersManagement() {
       if (response.success && response.data) {
         // The response.data is directly an array of users
         const pendingUsers = Array.isArray(response.data) ? response.data : [];
-        
+
         const transformedUsers: ExtendedUser[] = pendingUsers.map((user) => ({
           ...user,
           id: user._id || user.id,
@@ -99,23 +101,25 @@ export default function MembersManagement() {
         setUsers([]);
         setFilteredUsers([]);
       }
-      
+
       setLoading(false);
     } catch (error) {
       console.error("Error fetching pending users:", error);
-      setError(error instanceof Error ? error.message : "Failed to load pending users");
+      setError(
+        error instanceof Error ? error.message : "Failed to load pending users",
+      );
       setLoading(false);
     }
   }, []);
 
- // Fetch authorized users
+  // Fetch authorized users
   const fetchAuthorizedUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
       const response = await userApi.getAllUsers();
-      
+
       if (!response) {
         setError("Failed to fetch authorized users");
         setLoading(false);
@@ -127,7 +131,7 @@ export default function MembersManagement() {
       if (response.success && response.data) {
         // Access the users array from response.data
         const usersArray = Array.isArray(response.data) ? response.data : [];
-        
+
         // Filter only users with status "APPROVED" and transform to ExtendedUser type
         const authorizedUsers: ExtendedUser[] = usersArray
           .filter((user) => user.status === "APPROVED")
@@ -151,11 +155,15 @@ export default function MembersManagement() {
         setUsers([]);
         setFilteredUsers([]);
       }
-      
+
       setLoading(false);
     } catch (error) {
       console.error("Error fetching authorized users:", error);
-      setError(error instanceof Error ? error.message : "Failed to load authorized users");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to load authorized users",
+      );
       setLoading(false);
     }
   }, []);
@@ -169,80 +177,72 @@ export default function MembersManagement() {
     }
   }, [activeTab, fetchPendingUsers, fetchAuthorizedUsers]);
 
-  // Handle search
-  useEffect(() => {
-    let filtered = users;
-
-    // Apply search filter
-    if (searchQuery.trim() !== "") {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(user =>
-        user.username?.toLowerCase().includes(query) ||
-        user.email?.toLowerCase().includes(query) ||
-        user.firstName?.toLowerCase().includes(query) ||
-        user.lastName?.toLowerCase().includes(query) ||
-        user.customerData?.businessInfo?.companyName?.toLowerCase().includes(query) ||
-        user.customerData?.phoneNumber?.includes(query)
-      );
-    }
-
-    setFilteredUsers(filtered);
-    setCurrentPage(1);
-  }, [searchQuery, users]);
-
   // Approve user
-  const handleApprove = useCallback(async (userId: string) => {
-    try {
-      setActionLoading(userId);
-      
-      const response = await userApi.approveCustomerData(userId);
+  const handleApprove = useCallback(
+    async (userId: string) => {
+      try {
+        setActionLoading(userId);
 
-      console.log("Approve response:", response);
+        const response = await userApi.approveCustomerData(userId);
 
-      if (response && response.success) {
-        // Refresh the user list
-        await fetchPendingUsers();
-        setError(null);
-      } else {
-        setError(response?.message || "Failed to approve user");
+        console.log("Approve response:", response);
+
+        if (response && response.success) {
+          // Refresh the user list
+          await fetchPendingUsers();
+          setError(null);
+        } else {
+          setError(response?.message || "Failed to approve user");
+        }
+      } catch (error) {
+        console.error("Error approving user:", error);
+        setError(
+          error instanceof Error ? error.message : "Failed to approve user",
+        );
+      } finally {
+        setActionLoading(null);
       }
-    } catch (error) {
-      console.error("Error approving user:", error);
-      setError(error instanceof Error ? error.message : "Failed to approve user");
-    } finally {
-      setActionLoading(null);
-    }
-  }, [fetchPendingUsers]);
+    },
+    [fetchPendingUsers],
+  );
 
   // Reject user
-  const handleReject = useCallback(async (userId: string) => {
-    const reason = prompt("Please enter rejection reason:");
-    
-    if (!reason || reason.trim() === "") {
-      return;
-    }
+  const handleReject = useCallback(
+    async (userId: string) => {
+      const reason = prompt("Please enter rejection reason:");
 
-    try {
-      setActionLoading(userId);
-      
-      const response = await userApi.rejectCustomerData(userId, reason.trim());
-
-      console.log("Reject response:", response);
-
-      if (response && response.success) {
-        // Refresh the user list
-        await fetchPendingUsers();
-        setError(null);
-      } else {
-        setError(response?.message || "Failed to reject user");
+      if (!reason || reason.trim() === "") {
+        return;
       }
-    } catch (error) {
-      console.error("Error rejecting user:", error);
-      setError(error instanceof Error ? error.message : "Failed to reject user");
-    } finally {
-      setActionLoading(null);
-    }
-  }, [fetchPendingUsers]);
+
+      try {
+        setActionLoading(userId);
+
+        const response = await userApi.rejectCustomerData(
+          userId,
+          reason.trim(),
+        );
+
+        console.log("Reject response:", response);
+
+        if (response && response.success) {
+          // Refresh the user list
+          await fetchPendingUsers();
+          setError(null);
+        } else {
+          setError(response?.message || "Failed to reject user");
+        }
+      } catch (error) {
+        console.error("Error rejecting user:", error);
+        setError(
+          error instanceof Error ? error.message : "Failed to reject user",
+        );
+      } finally {
+        setActionLoading(null);
+      }
+    },
+    [fetchPendingUsers],
+  );
 
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -260,9 +260,24 @@ export default function MembersManagement() {
       if (currentPage <= 3) {
         pages.push(1, 2, 3, 4, "...", totalPages);
       } else if (currentPage >= totalPages - 2) {
-        pages.push(1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+        pages.push(
+          1,
+          "...",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages,
+        );
       } else {
-        pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages);
+        pages.push(
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPages,
+        );
       }
     }
     return pages;
@@ -270,7 +285,7 @@ export default function MembersManagement() {
 
   return (
     <div className="min-h-screen bg-white p-8 mt-35">
-     {/* Header Tabs */}
+      {/* Header Tabs */}
       <div className="mb-6 flex gap-4">
         <button
           onClick={() => setActiveTab("authorized")}
@@ -279,7 +294,11 @@ export default function MembersManagement() {
               ? "text-white"
               : "bg-white text-gray-700 hover:bg-gray-50"
           }`}
-          style={activeTab === "authorized" ? { backgroundColor: '#050c3a' } : { border: '1px solid #e5e7eb' }}
+          style={
+            activeTab === "authorized"
+              ? { backgroundColor: "#050c3a" }
+              : { border: "1px solid #e5e7eb" }
+          }
         >
           Authorized Members
         </button>
@@ -290,7 +309,11 @@ export default function MembersManagement() {
               ? "text-white"
               : "bg-white text-gray-700 hover:bg-gray-50"
           }`}
-          style={activeTab === "waiting" ? { backgroundColor: '#050c3a' } : { border: '1px solid #e5e7eb' }}
+          style={
+            activeTab === "waiting"
+              ? { backgroundColor: "#050c3a" }
+              : { border: "1px solid #e5e7eb" }
+          }
         >
           Waiting Authorization
         </button>
@@ -299,7 +322,10 @@ export default function MembersManagement() {
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
           <span className="text-red-800 text-sm">{error}</span>
-          <button onClick={() => setError(null)} className="text-red-600 hover:text-red-800">
+          <button
+            onClick={() => setError(null)}
+            className="text-red-600 hover:text-red-800"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -307,7 +333,6 @@ export default function MembersManagement() {
 
       {/* Filters */}
       <div className="mb-6 grid grid-cols-4 gap-4">
-       
         {/* <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Search User</label>
           <div className="relative">
@@ -386,49 +411,121 @@ export default function MembersManagement() {
       </div> */}
 
       {/* Table */}
-      <div className="bg-white overflow-hidden" style={{ border: '1px solid #f9ead4' }}>
+      <div
+        className="bg-white overflow-hidden"
+        style={{ border: "1px solid #f9ead4" }}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
-            <thead style={{ backgroundColor: '#050c3a' }}>
-              <tr style={{ borderBottom: '1px solid #f9ead4' }}>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '40px' }}>Sr</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Name</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Username</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Email</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>Phone</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Company</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Business Type</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '100px' }}>VAT Number</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '120px' }}>Address</th>
-                <th className="px-3 py-3.5 text-left text-xs font-semibold text-white" style={{ width: '80px' }}>Actions</th>
+            <thead style={{ backgroundColor: "#050c3a" }}>
+              <tr style={{ borderBottom: "1px solid #f9ead4" }}>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "40px" }}
+                >
+                  Sr
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "120px" }}
+                >
+                  Name
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "80px" }}
+                >
+                  Username
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "120px" }}
+                >
+                  Email
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "100px" }}
+                >
+                  Phone
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "120px" }}
+                >
+                  Company
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "80px" }}
+                >
+                  Business Type
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "100px" }}
+                >
+                  VAT Number
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "120px" }}
+                >
+                  Address
+                </th>
+                <th
+                  className="px-3 py-3.5 text-left text-xs font-semibold text-white"
+                  style={{ width: "80px" }}
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-gray-500 text-xs">
+                  <td
+                    colSpan={10}
+                    className="px-4 py-8 text-center text-gray-500 text-xs"
+                  >
                     Loading members...
                   </td>
                 </tr>
               ) : currentUsers.length > 0 ? (
                 currentUsers.map((user, index) => {
                   const userData = user.customerData;
-                  const fullName = `${userData?.firstName || user.firstName || ""} ${userData?.lastName || user.lastName || ""}`.trim();
-                  const phone = userData?.countryCode && userData?.phoneNumber 
-                    ? `${userData.countryCode} ${userData.phoneNumber}`
-                    : "N/A";
-                  const address = userData?.address 
+                  const fullName =
+                    `${userData?.firstName || user.firstName || ""} ${userData?.lastName || user.lastName || ""}`.trim();
+                  const phone =
+                    userData?.countryCode && userData?.phoneNumber
+                      ? `${userData.countryCode} ${userData.phoneNumber}`
+                      : "N/A";
+                  const address = userData?.address
                     ? `${userData.address.street}, ${userData.address.city}, ${userData.address.state} ${userData.address.postalCode}`
                     : "N/A";
                   const userId = user._id || user.id || "";
-                  
+
                   return (
-                    <tr key={userId} style={{ borderBottom: '1px solid #f9ead4' }} className="hover:bg-gray-50">
-                      <td className="px-2 py-2 text-xs text-gray-900">{startIndex + index + 1}</td>
-                      <td className="px-2 py-2 text-xs text-gray-900">{fullName || "N/A"}</td>
-                      <td className="px-2 py-2 text-xs text-gray-900">{user.username || "N/A"}</td>
-                      <td className="px-2 py-2 text-xs text-gray-900">{user.email}</td>
-                      <td className="px-2 py-2 text-xs text-gray-900">{phone}</td>
+                    <tr
+                      key={userId}
+                      style={{ borderBottom: "1px solid #f9ead4" }}
+                      className="hover:bg-gray-50"
+                    >
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {startIndex + index + 1}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {fullName || "N/A"}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {user.username || "N/A"}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {user.email}
+                      </td>
+                      <td className="px-2 py-2 text-xs text-gray-900">
+                        {phone}
+                      </td>
                       <td className="px-2 py-2 text-xs text-gray-900">
                         {userData?.businessInfo?.companyName || "N/A"}
                       </td>
@@ -438,7 +535,10 @@ export default function MembersManagement() {
                       <td className="px-2 py-2 text-xs text-gray-900">
                         {userData?.businessInfo?.vatNumber || "N/A"}
                       </td>
-                      <td className="px-2 py-2 text-xs text-gray-900 max-w-[120px] truncate" title={address}>
+                      <td
+                        className="px-2 py-2 text-xs text-gray-900 max-w-[120px] truncate"
+                        title={address}
+                      >
                         {address}
                       </td>
                       <td className="px-2 py-2 text-xs">
@@ -476,8 +576,8 @@ export default function MembersManagement() {
                 <tr>
                   <td colSpan={10} className="px-4 py-8 text-center">
                     <p className="text-gray-500 font-medium text-xs">
-                      {activeTab === "waiting" 
-                        ? "No pending members found" 
+                      {activeTab === "waiting"
+                        ? "No pending members found"
                         : "No authorized members found"}
                     </p>
                   </td>
@@ -489,9 +589,15 @@ export default function MembersManagement() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-4 py-3 flex justify-between items-center" style={{ borderTop: '1px solid #f9ead4', backgroundColor: '#faf6eb' }}>
+          <div
+            className="px-4 py-3 flex justify-between items-center"
+            style={{
+              borderTop: "1px solid #f9ead4",
+              backgroundColor: "#faf6eb",
+            }}
+          >
             <button
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
@@ -502,16 +608,22 @@ export default function MembersManagement() {
               {getPageNumbers().map((page, index) => (
                 <button
                   key={index}
-                  onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                  onClick={() =>
+                    typeof page === "number" && setCurrentPage(page)
+                  }
                   disabled={page === "..."}
                   className={`min-w-[32px] h-8 px-2.5 rounded text-xs font-medium transition ${
                     page === currentPage
-                      ? 'bg-slate-900 text-white'
+                      ? "bg-slate-900 text-white"
                       : page === "..."
-                      ? 'text-gray-400 cursor-default bg-transparent'
-                      : 'text-gray-700 bg-white hover:bg-gray-50'
+                        ? "text-gray-400 cursor-default bg-transparent"
+                        : "text-gray-700 bg-white hover:bg-gray-50"
                   }`}
-                  style={page !== "..." && page !== currentPage ? { border: '1px solid #f9ead4' } : {}}
+                  style={
+                    page !== "..." && page !== currentPage
+                      ? { border: "1px solid #f9ead4" }
+                      : {}
+                  }
                 >
                   {page}
                 </button>
@@ -519,7 +631,9 @@ export default function MembersManagement() {
             </div>
 
             <button
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+              }
               disabled={currentPage === totalPages}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white disabled:opacity-50 disabled:cursor-not-allowed transition"
             >

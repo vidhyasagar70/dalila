@@ -36,7 +36,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedCut = "",
   selectedPolish = "",
   selectedSymmetry = "",
-   onSelectionChange
+  onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,127 +50,127 @@ const DiamondStockTable: React.FC<TableProps> = ({
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
     null,
   );
- 
+
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
   useEffect(() => {
-  const fetchDiamonds = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    const fetchDiamonds = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const hasSearchTerm = searchTerm && searchTerm.trim();
-      const hasShapeFilter =
-        selectedShape && selectedShape.trim() && selectedShape !== "ALL";
-      const hasColorFilter =
-        selectedColor && selectedColor.trim() && selectedColor !== "ALL";
-      const hasCaratFilter =
-        (selectedMinCarat && selectedMinCarat.trim()) ||
-        (selectedMaxCarat && selectedMaxCarat.trim());
-      const hasFluorFilter =
-        selectedFluor && selectedFluor.trim() && selectedFluor !== "ALL";
-      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-      const hasCutFilter = selectedCut && selectedCut.trim();
-      const hasPolishFilter = selectedPolish && selectedPolish.trim();
-      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+        const hasSearchTerm = searchTerm && searchTerm.trim();
+        const hasShapeFilter =
+          selectedShape && selectedShape.trim() && selectedShape !== "ALL";
+        const hasColorFilter =
+          selectedColor && selectedColor.trim() && selectedColor !== "ALL";
+        const hasCaratFilter =
+          (selectedMinCarat && selectedMinCarat.trim()) ||
+          (selectedMaxCarat && selectedMaxCarat.trim());
+        const hasFluorFilter =
+          selectedFluor && selectedFluor.trim() && selectedFluor !== "ALL";
+        const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
+        const hasCutFilter = selectedCut && selectedCut.trim();
+        const hasPolishFilter = selectedPolish && selectedPolish.trim();
+        const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
 
-      console.log("Filter checks:", {
-        hasSearchTerm,
-        hasShapeFilter,
-        hasColorFilter,
-        hasCaratFilter,
-        hasFluorFilter,
-        hasClarityFilter,
-        hasCutFilter,
-        hasPolishFilter,
-        hasSymmetryFilter,
-      });
+        console.log("Filter checks:", {
+          hasSearchTerm,
+          hasShapeFilter,
+          hasColorFilter,
+          hasCaratFilter,
+          hasFluorFilter,
+          hasClarityFilter,
+          hasCutFilter,
+          hasPolishFilter,
+          hasSymmetryFilter,
+        });
 
-      const hasAnyFilter =
-        hasShapeFilter ||
-        hasColorFilter ||
-        hasSearchTerm ||
-        hasCaratFilter ||
-        hasFluorFilter ||
-        hasClarityFilter ||
-        hasCutFilter ||
-        hasPolishFilter ||
-        hasSymmetryFilter;
+        const hasAnyFilter =
+          hasShapeFilter ||
+          hasColorFilter ||
+          hasSearchTerm ||
+          hasCaratFilter ||
+          hasFluorFilter ||
+          hasClarityFilter ||
+          hasCutFilter ||
+          hasPolishFilter ||
+          hasSymmetryFilter;
 
-      console.log("hasAnyFilter:", hasAnyFilter);
+        console.log("hasAnyFilter:", hasAnyFilter);
 
-      let response;
-      if (hasAnyFilter) {
-        const filters: FilterParams = {};
-        if (hasShapeFilter) filters.shape = selectedShape.trim();
-        if (hasColorFilter) filters.color = selectedColor.trim();
-        if (hasCaratFilter) {
-          if (selectedMinCarat && selectedMinCarat.trim()) {
-            filters.minCarats = parseFloat(selectedMinCarat);
+        let response;
+        if (hasAnyFilter) {
+          const filters: FilterParams = {};
+          if (hasShapeFilter) filters.shape = selectedShape.trim();
+          if (hasColorFilter) filters.color = selectedColor.trim();
+          if (hasCaratFilter) {
+            if (selectedMinCarat && selectedMinCarat.trim()) {
+              filters.minCarats = parseFloat(selectedMinCarat);
+            }
+            if (selectedMaxCarat && selectedMaxCarat.trim()) {
+              filters.maxCarats = parseFloat(selectedMaxCarat);
+            }
           }
-          if (selectedMaxCarat && selectedMaxCarat.trim()) {
-            filters.maxCarats = parseFloat(selectedMaxCarat);
-          }
-        }
 
-        if (hasFluorFilter) filters.fluorescence = selectedFluor.trim();
-        if (hasClarityFilter) filters.clarity = selectedClarity.join(",");
-        if (hasCutFilter) filters.cut = selectedCut.trim();
-        if (hasPolishFilter) filters.polish = selectedPolish.trim();
-        if (hasSymmetryFilter) filters.symmetry = selectedSymmetry.trim();
-        if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
+          if (hasFluorFilter) filters.fluorescence = selectedFluor.trim();
+          if (hasClarityFilter) filters.clarity = selectedClarity.join(",");
+          if (hasCutFilter) filters.cut = selectedCut.trim();
+          if (hasPolishFilter) filters.polish = selectedPolish.trim();
+          if (hasSymmetryFilter) filters.symmetry = selectedSymmetry.trim();
+          if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
 
-        console.log("Calling API with filters:", filters);
-        response = await diamondApi.search(filters);
-        console.log("API response:", response);
-      } else {
-        console.log("Fetching all diamonds (no filters)");
-        response = await diamondApi.getAllNoPagination();
-      }
-
-      if (response?.success && response.data) {
-        let diamonds: DiamondData[];
-        if (Array.isArray(response.data)) {
-          diamonds = response.data as unknown as DiamondData[];
-        } else if (
-          response.data.diamonds &&
-          Array.isArray(response.data.diamonds)
-        ) {
-          diamonds = response.data.diamonds as unknown as DiamondData[];
+          console.log("Calling API with filters:", filters);
+          response = await diamondApi.search(filters);
+          console.log("API response:", response);
         } else {
-          diamonds = [];
+          console.log("Fetching all diamonds (no filters)");
+          response = await diamondApi.getAllNoPagination();
         }
-        console.log(`Fetched ${diamonds.length} diamonds`);
-        setData(diamonds);
-        setCurrentPage(1);
-      } else {
-        console.log("No data received from API");
-        setData([]);
-      }
-    } catch (err) {
-      console.error("Error fetching diamonds:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch diamonds",
-      );
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  fetchDiamonds();
-}, [
-  searchTerm,
-  selectedShape,
-  selectedColor,
-  selectedMinCarat,
-  selectedMaxCarat,
-  selectedFluor,
-  selectedClarity,
-  selectedCut,
-  selectedPolish,
-  selectedSymmetry,
-]);
+        if (response?.success && response.data) {
+          let diamonds: DiamondData[];
+          if (Array.isArray(response.data)) {
+            diamonds = response.data as unknown as DiamondData[];
+          } else if (
+            response.data.diamonds &&
+            Array.isArray(response.data.diamonds)
+          ) {
+            diamonds = response.data.diamonds as unknown as DiamondData[];
+          } else {
+            diamonds = [];
+          }
+          console.log(`Fetched ${diamonds.length} diamonds`);
+          setData(diamonds);
+          setCurrentPage(1);
+        } else {
+          console.log("No data received from API");
+          setData([]);
+        }
+      } catch (err) {
+        console.error("Error fetching diamonds:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch diamonds",
+        );
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDiamonds();
+  }, [
+    searchTerm,
+    selectedShape,
+    selectedColor,
+    selectedMinCarat,
+    selectedMaxCarat,
+    selectedFluor,
+    selectedClarity,
+    selectedCut,
+    selectedPolish,
+    selectedSymmetry,
+  ]);
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
@@ -226,8 +226,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
     return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
   };
 
-  
-
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       const allIds = new Set(paginatedData.map((row) => row._id));
@@ -245,7 +243,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
       }
     }
   };
- const handleRowSelect = (id: string, checked: boolean) => {
+  const handleRowSelect = (id: string, checked: boolean) => {
     const newSelected = new Set(selectedRows);
     if (checked) {
       newSelected.add(id);
@@ -254,9 +252,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
       setSelectAll(false);
     }
     setSelectedRows(newSelected);
-    
+
     // Get the selected diamond objects
-    const selectedDiamonds = data.filter(d => newSelected.has(d._id));
+    const selectedDiamonds = data.filter((d) => newSelected.has(d._id));
     if (onSelectionChange) {
       onSelectionChange(Array.from(newSelected), selectedDiamonds);
     }
@@ -348,10 +346,11 @@ const DiamondStockTable: React.FC<TableProps> = ({
     );
   }
 
-  
   return (
     <>
-      <div className={`w-full flex flex-col bg-gray-50 p-4 ${playFair.className}`}>
+      <div
+        className={`w-full flex flex-col bg-gray-50 p-4 ${playFair.className}`}
+      >
         {/* Active Filters Display */}
         {(searchTerm ||
           selectedShape ||
@@ -418,8 +417,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
               {/* Header */}
-              <thead className={`bg-[#050c3a] text-white sticky top-0 z-10 ${playFair.className}`}>
-
+              <thead
+                className={`bg-[#050c3a] text-white sticky top-0 z-10 ${playFair.className}`}
+              >
                 <tr>
                   <th className="w-12 px-2 py-3 text-center">
                     <input
@@ -1601,7 +1601,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
               {/* Body */}
               <tbody>
                 {paginatedData.map((row, idx) => (
-                 <tr
+                  <tr
                     key={row._id}
                     onClick={() => {
                       if (onRowClick) {
@@ -1950,7 +1950,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
           </div>
         </div>
       </div>
-     {/* Detail Modal */}
+      {/* Detail Modal */}
       {selectedDiamond && (
         <DiamondDetailView
           diamond={selectedDiamond}

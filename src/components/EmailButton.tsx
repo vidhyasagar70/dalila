@@ -12,15 +12,15 @@ interface EmailButtonProps {
 
 // Helper function to get cookie value
 const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null;
-  
+  if (typeof document === "undefined") return null;
+
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  
+
   if (parts.length === 2) {
-    return parts.pop()?.split(';').shift() || null;
+    return parts.pop()?.split(";").shift() || null;
   }
-  
+
   return null;
 };
 
@@ -33,32 +33,33 @@ export default function EmailButton({
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [emailStatus, setEmailStatus] = useState<{
-    type: 'success' | 'error' | null;
+    type: "success" | "error" | null;
     message: string;
-  }>({ type: null, message: '' });
+  }>({ type: null, message: "" });
 
   const handleEmailClick = () => {
     if (!disabled && selectedCount > 0) {
       setShowModal(true);
-      setEmailStatus({ type: null, message: '' });
+      setEmailStatus({ type: null, message: "" });
     }
   };
 
   const handleSendEmail = async () => {
     setIsLoading(true);
-    setEmailStatus({ type: null, message: '' });
+    setEmailStatus({ type: null, message: "" });
 
     try {
       // Get auth token from cookies
-      const authToken = getCookie("authToken") || localStorage.getItem("authToken");
-      
-      console.log('Auth token exists:', !!authToken);
-      console.log('All cookies:', document.cookie);
-      
+      const authToken =
+        getCookie("authToken") || localStorage.getItem("authToken");
+
+      console.log("Auth token exists:", !!authToken);
+      console.log("All cookies:", document.cookie);
+
       if (!authToken) {
         setEmailStatus({
-          type: 'error',
-          message: 'Authentication token not found. Please log in again.'
+          type: "error",
+          message: "Authentication token not found. Please log in again.",
         });
         setIsLoading(false);
         return;
@@ -67,16 +68,16 @@ export default function EmailButton({
       // Get user email from cookies or localStorage
       let userEmail = null;
       const userCookie = getCookie("user");
-      
+
       if (userCookie) {
         try {
           const user = JSON.parse(decodeURIComponent(userCookie));
           userEmail = user.email;
         } catch (e) {
-          console.error('Error parsing user cookie:', e);
+          console.error("Error parsing user cookie:", e);
         }
       }
-      
+
       // Fallback to localStorage
       if (!userEmail) {
         const userStr = localStorage.getItem("user");
@@ -85,57 +86,57 @@ export default function EmailButton({
             const user = JSON.parse(userStr);
             userEmail = user.email;
           } catch (e) {
-            console.error('Error parsing user from localStorage:', e);
+            console.error("Error parsing user from localStorage:", e);
           }
         }
       }
 
       if (!userEmail) {
         setEmailStatus({
-          type: 'error',
-          message: 'User email not found. Please log in again.'
+          type: "error",
+          message: "User email not found. Please log in again.",
         });
         setIsLoading(false);
         return;
       }
 
-      console.log('Sending email request:', {
+      console.log("Sending email request:", {
         stoneCount: selectedStoneNumbers.length,
         email: userEmail,
-        tokenLength: authToken.length
+        tokenLength: authToken.length,
       });
 
       // Make API call with proper authorization header
       const response = await fetch(
-        'https://dalila-inventory-service-dev.caratlogic.com/api/diamonds/email',
+        "https://dalila-inventory-service-dev.caratlogic.com/api/diamonds/email",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
           },
-          credentials: 'include', // Important: include cookies in the request
+          credentials: "include", // Important: include cookies in the request
           body: JSON.stringify({
             stoneNumbers: selectedStoneNumbers,
             emails: [userEmail],
           }),
-        }
+        },
       );
 
       const data = await response.json();
-      
-      console.log('Email API Response:', {
+
+      console.log("Email API Response:", {
         status: response.status,
         ok: response.ok,
-        data: data
+        data: data,
       });
 
       if (response.ok && data.success) {
         setEmailStatus({
-          type: 'success',
-          message: `Successfully emailed ${data.data.totalEmailed} diamond(s) to ${userEmail}`
+          type: "success",
+          message: `Successfully emailed ${data.data.totalEmailed} diamond(s) to ${userEmail}`,
         });
-        
+
         // Call parent callback if provided
         if (onEmail) {
           onEmail();
@@ -149,21 +150,21 @@ export default function EmailButton({
         // Handle error responses
         if (response.status === 401) {
           setEmailStatus({
-            type: 'error',
-            message: 'Session expired. Please log in again.'
+            type: "error",
+            message: "Session expired. Please log in again.",
           });
         } else {
           setEmailStatus({
-            type: 'error',
-            message: data.message || data.error || 'Failed to send email'
+            type: "error",
+            message: data.message || data.error || "Failed to send email",
           });
         }
       }
     } catch (error) {
-      console.error('Email error:', error);
+      console.error("Email error:", error);
       setEmailStatus({
-        type: 'error',
-        message: 'Failed to send email. Please try again.'
+        type: "error",
+        message: "Failed to send email. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -207,18 +208,21 @@ export default function EmailButton({
                 Email Diamond Details
               </h3>
               <p className="text-sm text-gray-600">
-                Send details of {selectedCount} selected diamond{selectedCount > 1 ? 's' : ''} to your email?
+                Send details of {selectedCount} selected diamond
+                {selectedCount > 1 ? "s" : ""} to your email?
               </p>
             </div>
 
             {/* Status Messages */}
             {emailStatus.type && (
-              <div className={`mb-4 p-3 rounded-lg flex items-start gap-2 ${
-                emailStatus.type === 'success' 
-                  ? 'bg-green-50 text-green-800 border border-green-200' 
-                  : 'bg-red-50 text-red-800 border border-red-200'
-              }`}>
-                {emailStatus.type === 'success' ? (
+              <div
+                className={`mb-4 p-3 rounded-lg flex items-start gap-2 ${
+                  emailStatus.type === "success"
+                    ? "bg-green-50 text-green-800 border border-green-200"
+                    : "bg-red-50 text-red-800 border border-red-200"
+                }`}
+              >
+                {emailStatus.type === "success" ? (
                   <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 ) : (
                   <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -230,10 +234,15 @@ export default function EmailButton({
             {/* Selected Stones Preview */}
             {!emailStatus.type && selectedStoneNumbers.length > 0 && (
               <div className="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
-                <p className="text-xs font-medium text-gray-700 mb-2">Selected Stones:</p>
+                <p className="text-xs font-medium text-gray-700 mb-2">
+                  Selected Stones:
+                </p>
                 <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
                   {selectedStoneNumbers.slice(0, 10).map((stone, idx) => (
-                    <span key={idx} className="text-xs bg-white px-2 py-1 rounded border border-gray-200">
+                    <span
+                      key={idx}
+                      className="text-xs bg-white px-2 py-1 rounded border border-gray-200"
+                    >
                       {stone}
                     </span>
                   ))}

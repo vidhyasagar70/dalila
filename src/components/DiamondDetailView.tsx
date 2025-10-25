@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { X,Play, Loader2, Check, AlertCircle } from "lucide-react";
+import { X, Play, Loader2, Check, AlertCircle } from "lucide-react";
 // import { X, Share2, Download, Heart, Search, ExternalLink, FileText, Play, Loader2, Check, AlertCircle } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi } from "@/lib/api";
@@ -15,9 +15,12 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   onClose,
 }) => {
   // const [quantity, setQuantity] = useState(1);
-  const [viewMode, setViewMode] = useState<'image' | 'video'>('image');
+  const [viewMode, setViewMode] = useState<"image" | "video">("image");
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [cartMessage, setCartMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [cartMessage, setCartMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const formatCurrency = (value: string | number) => {
     const num = parseFloat(String(value));
@@ -29,8 +32,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         })} USD`;
   };
 
-
-
   const handleAddToCart = async () => {
     try {
       setIsAddingToCart(true);
@@ -40,8 +41,8 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
       if (response?.success) {
         setCartMessage({
-          type: 'success',
-          text: `${diamond.STONE_NO} added to cart successfully!`
+          type: "success",
+          text: `${diamond.STONE_NO} added to cart successfully!`,
         });
 
         // Dispatch cart update event for header to update cart count
@@ -53,36 +54,49 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         setTimeout(() => setCartMessage(null), 3000);
       } else {
         setCartMessage({
-          type: 'error',
-          text: response?.message || 'Failed to add to cart'
+          type: "error",
+          text: response?.message || "Failed to add to cart",
         });
       }
     } catch (error: unknown) {
       console.error("Error adding to cart:", error);
-      
+
       // Handle specific error messages
-      let errorMessage = 'Failed to add to cart. Please try again.';
-     if (error && typeof error === 'object' && 'response' in error) {
-  const err = error as { response?: { status?: number; data?: { error?: string } }; message?: string };
-  if (err.response?.status === 401) {
-    errorMessage = 'Please log in to add items to cart.';
-  } else if (err.response?.data?.error) {
-    errorMessage = err.response.data.error;
-  } else if (err.message) {
-    errorMessage = err.message;
-  }
-}
+      let errorMessage = "Failed to add to cart. Please try again.";
+      if (error && typeof error === "object" && "response" in error) {
+        const err = error as {
+          response?: { status?: number; data?: { error?: string } };
+          message?: string;
+        };
+        if (err.response?.status === 401) {
+          errorMessage = "Please log in to add items to cart.";
+        } else if (err.response?.data?.error) {
+          errorMessage = err.response.data.error;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+      }
 
       setCartMessage({
-        type: 'error',
-        text: errorMessage
+        type: "error",
+        text: errorMessage,
       });
     } finally {
       setIsAddingToCart(false);
     }
   };
 
-  const InfoItem = ({ icon, label, value, description }: { icon: React.ReactNode; label: string; value: string; description: string }) => (
+  const InfoItem = ({
+    icon,
+    label,
+    value,
+    description,
+  }: {
+    icon: React.ReactNode;
+    label: string;
+    value: string;
+    description: string;
+  }) => (
     <div className="space-y-1">
       <div className="flex items-center gap-2 text-gray-600">
         {icon}
@@ -93,7 +107,13 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     </div>
   );
 
-  const DetailTable = ({ title, data }: { title: string; data: [string, string | number][] }) => (
+  const DetailTable = ({
+    title,
+    data,
+  }: {
+    title: string;
+    data: [string, string | number][];
+  }) => (
     <div className="bg-white rounded overflow-hidden border-2 border-[#F9F1E3]">
       <div className="bg-[#050C3A] text-white px-4 py-2.5">
         <h3 className="font-semibold text-sm">{title}</h3>
@@ -136,22 +156,30 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         <div className="p-6">
           {/* Cart Message */}
           {cartMessage && (
-            <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 animate-fade-in ${
-              cartMessage.type === 'success' 
-                ? 'bg-green-500/10 border border-green-500/30' 
-                : 'bg-red-500/10 border border-red-500/30'
-            }`}>
-              {cartMessage.type === 'success' ? (
+            <div
+              className={`mb-6 p-4 rounded-lg flex items-center gap-3 animate-fade-in ${
+                cartMessage.type === "success"
+                  ? "bg-green-500/10 border border-green-500/30"
+                  : "bg-red-500/10 border border-red-500/30"
+              }`}
+            >
+              {cartMessage.type === "success" ? (
                 <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
               ) : (
                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
               )}
-              <p className={cartMessage.type === 'success' ? 'text-green-400' : 'text-red-400'}>
+              <p
+                className={
+                  cartMessage.type === "success"
+                    ? "text-green-400"
+                    : "text-red-400"
+                }
+              >
                 {cartMessage.text}
               </p>
               <button
                 onClick={() => setCartMessage(null)}
-                className={`ml-auto ${cartMessage.type === 'success' ? 'text-green-400 hover:text-green-300' : 'text-red-400 hover:text-red-300'}`}
+                className={`ml-auto ${cartMessage.type === "success" ? "text-green-400 hover:text-green-300" : "text-red-400 hover:text-red-300"}`}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -165,21 +193,21 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               {/* View Mode Toggle */}
               <div className="flex gap-2">
                 <button
-                  onClick={() => setViewMode('image')}
+                  onClick={() => setViewMode("image")}
                   className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                    viewMode === 'image'
-                      ? 'bg-[#050C3A] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    viewMode === "image"
+                      ? "bg-[#050C3A] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   Image
                 </button>
                 <button
-                  onClick={() => setViewMode('video')}
+                  onClick={() => setViewMode("video")}
                   className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
-                    viewMode === 'video'
-                      ? 'bg-[#050C3A] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    viewMode === "video"
+                      ? "bg-[#050C3A] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   Video
@@ -200,7 +228,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   </button> */}
                 </div>
 
-                {viewMode === 'image' ? (
+                {viewMode === "image" ? (
                   diamond.REAL_IMAGE ? (
                     <div className="relative w-full aspect-square">
                       <Image
@@ -219,25 +247,23 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                       No Image Available
                     </div>
                   )
+                ) : diamond.MP4 ? (
+                  <div className="relative w-full aspect-square">
+                    <video
+                      src={diamond.MP4}
+                      controls
+                      className="w-full h-full object-contain"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
                 ) : (
-                  diamond.MP4 ? (
-                    <div className="relative w-full aspect-square">
-                      <video
-                        src={diamond.MP4}
-                        controls
-                        className="w-full h-full object-contain"
-                      >
-                        Your browser does not support the video tag.
-                      </video>
+                  <div className="w-full aspect-square flex items-center justify-center text-gray-400">
+                    <div className="text-center">
+                      <Play size={48} className="mx-auto mb-2 text-gray-300" />
+                      <p>No Video Available</p>
                     </div>
-                  ) : (
-                    <div className="w-full aspect-square flex items-center justify-center text-gray-400">
-                      <div className="text-center">
-                        <Play size={48} className="mx-auto mb-2 text-gray-300" />
-                        <p>No Video Available</p>
-                      </div>
-                    </div>
-                  )
+                  </div>
                 )}
 
                 {/* <button className="absolute bottom-3 right-3 flex items-center gap-2 px-3 py-2 bg-white rounded-md shadow-sm hover:bg-gray-50 border border-gray-200">
@@ -253,13 +279,15 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <p className="text-sm text-gray-500 mb-1">Diamond Images</p>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-1">{diamond.SHAPE}</h1>
-                  <p className="text-sm text-gray-600">Expertly cut for exceptional sparkle and clarity.</p>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                    {diamond.SHAPE}
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    Expertly cut for exceptional sparkle and clarity.
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex text-yellow-400 text-base">
-                    ★★★★★
-                  </div>
+                  <div className="flex text-yellow-400 text-base">★★★★★</div>
                   <span className="text-sm text-gray-600">5.0(258)</span>
                 </div>
               </div>
@@ -275,13 +303,22 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
               {/* Basic Information */}
               <div className="bg-white rounded-md border-t-2 border-[#F9F1E3] p-4">
-                <h3 className="text-base font-bold text-gray-900 mb-4">Basic Information</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-4">
+                  Basic Information
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <InfoItem
                     icon={
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
                       </svg>
                     }
                     label="Shape"
@@ -290,8 +327,15 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   />
                   <InfoItem
                     icon={
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="10"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
                       </svg>
                     }
                     label="Carat"
@@ -300,8 +344,15 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   />
                   <InfoItem
                     icon={
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
                       </svg>
                     }
                     label="Color"
@@ -310,8 +361,15 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   />
                   <InfoItem
                     icon={
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                       </svg>
                     }
                     label="Clarity"
@@ -349,7 +407,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                       </button> */}
                     </div>
                   </div>
-                  <button 
+                  <button
                     onClick={handleAddToCart}
                     disabled={isAddingToCart}
                     className="flex-1 bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -360,7 +418,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         Adding...
                       </>
                     ) : (
-                      'ADD TO CART'
+                      "ADD TO CART"
                     )}
                   </button>
                 </div>
@@ -386,7 +444,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 ["Cut", diamond.CUT || "N/A"],
                 ["Polish", diamond.POL || "N/A"],
                 ["Symmetry", diamond.SYM || "N/A"],
-                ["Fluorescence", diamond.FLOUR || "N/A"]
+                ["Fluorescence", diamond.FLOUR || "N/A"],
               ]}
             />
 
@@ -396,16 +454,19 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               data={[
                 ["Table%", diamond.TABLE_PER || "N/A"],
                 ["Depth%", diamond.DEPTH_PER || "N/A"],
-                ["Length", diamond.MEASUREMENTS?.split('x')[0]?.trim() || "N/A"],
-                ["Width", diamond.MEASUREMENTS?.split('x')[1]?.trim() || "N/A"],
-                ["Depth", diamond.MEASUREMENTS?.split('x')[2]?.trim() || "N/A"],
+                [
+                  "Length",
+                  diamond.MEASUREMENTS?.split("x")[0]?.trim() || "N/A",
+                ],
+                ["Width", diamond.MEASUREMENTS?.split("x")[1]?.trim() || "N/A"],
+                ["Depth", diamond.MEASUREMENTS?.split("x")[2]?.trim() || "N/A"],
                 ["Ratio", "-"],
                 ["Crown Angle", diamond.CROWN_ANGLE || "N/A"],
                 ["Crown Height", diamond.CROWN_HEIGHT || "N/A"],
                 ["Pav Angle", diamond.PAVILLION_ANGLE || "N/A"],
                 ["Pav Height", diamond.PAVILLION_HEIGHT || "N/A"],
                 ["Girdle", "THN"],
-                ["Culet", "NON"]
+                ["Culet", "NON"],
               ]}
             />
 
@@ -424,7 +485,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 ["Heart & Arrow", diamond.HA || "-"],
                 ["Brilliancy", "EX"],
                 ["Type2 Cert", "-"],
-                ["Country Of Origin", "-"]
+                ["Country Of Origin", "-"],
               ]}
             />
           </div>
@@ -437,26 +498,38 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             <div className="divide-y-2 divide-[#F9F1E3]">
               <div className="grid grid-cols-2 hover:bg-gray-50">
                 <div className="px-4 py-3 bg-gray-50">
-                  <p className="text-sm font-medium text-gray-700">Key to Symbols</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    Key to Symbols
+                  </p>
                 </div>
                 <div className="px-4 py-3">
-                  <p className="text-sm text-gray-900">{diamond.KEY_TO_SYMBOLS || "N/A"}</p>
+                  <p className="text-sm text-gray-900">
+                    {diamond.KEY_TO_SYMBOLS || "N/A"}
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 hover:bg-gray-50">
                 <div className="px-4 py-3 bg-gray-50">
-                  <p className="text-sm font-medium text-gray-700">Report Comments</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    Report Comments
+                  </p>
                 </div>
                 <div className="px-4 py-3">
-                  <p className="text-sm text-gray-900">{diamond.REPORT_COMMENTS || "-"}</p>
+                  <p className="text-sm text-gray-900">
+                    {diamond.REPORT_COMMENTS || "-"}
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-2 hover:bg-gray-50">
                 <div className="px-4 py-3 bg-gray-50">
-                  <p className="text-sm font-medium text-gray-700">HRC Comments</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    HRC Comments
+                  </p>
                 </div>
                 <div className="px-4 py-3">
-                  <p className="text-sm text-gray-900">{diamond.COMMENTS_1 || "N/A"}</p>
+                  <p className="text-sm text-gray-900">
+                    {diamond.COMMENTS_1 || "N/A"}
+                  </p>
                 </div>
               </div>
             </div>

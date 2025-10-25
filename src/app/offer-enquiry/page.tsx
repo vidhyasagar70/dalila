@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {CheckCircle, X, RefreshCw, FileText } from "lucide-react";
+import { CheckCircle, X, RefreshCw, FileText } from "lucide-react";
 
 // Define types inline
 interface ExtendedQuotation {
@@ -18,8 +18,14 @@ interface ExtendedQuotation {
 }
 
 interface QuotationAPI {
-  getAll?: () => Promise<{ success: boolean; data: { quotations: ExtendedQuotation[] } }>;
-  approve?: (id: string, data: { quotedPrice: number; validUntil: string; notes: string }) => Promise<{ success: boolean }>;
+  getAll?: () => Promise<{
+    success: boolean;
+    data: { quotations: ExtendedQuotation[] };
+  }>;
+  approve?: (
+    id: string,
+    data: { quotedPrice: number; validUntil: string; notes: string },
+  ) => Promise<{ success: boolean }>;
   reject?: (id: string, reason: string) => Promise<{ success: boolean }>;
 }
 
@@ -28,7 +34,9 @@ interface WindowWithAPI extends Window {
 }
 
 export default function QuotationsManagement() {
-  const [filteredQuotations, setFilteredQuotations] = useState<ExtendedQuotation[]>([]);
+  const [filteredQuotations, setFilteredQuotations] = useState<
+    ExtendedQuotation[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,16 +49,16 @@ export default function QuotationsManagement() {
     stoneNumbers: ["ST-1001", "ST-1002", "ST-1003"],
     quotedPrice: 5000,
     status: "pending",
-    user: { firstName: "John", lastName: "Doe", email: "john@example.com" }
+    user: { firstName: "John", lastName: "Doe", email: "john@example.com" },
   };
 
   // Generate mock data array using the single mock
   const generateMockData = (): ExtendedQuotation[] => {
     return Array.from({ length: 15 }, (_, i) => ({
       ...singleMockQuotation,
-      id: `Q${String(i + 1).padStart(3, '0')}`,
-      status: i % 3 === 0 ? 'approved' : i % 3 === 1 ? 'rejected' : 'pending',
-      quotedPrice: i % 3 === 2 ? 0 : 5000 + (i * 100)
+      id: `Q${String(i + 1).padStart(3, "0")}`,
+      status: i % 3 === 0 ? "approved" : i % 3 === 1 ? "rejected" : "pending",
+      quotedPrice: i % 3 === 2 ? 0 : 5000 + i * 100,
     }));
   };
 
@@ -64,14 +72,19 @@ export default function QuotationsManagement() {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Try to fetch from API
       try {
         const quotationApi = (window as WindowWithAPI).quotationApi;
         if (quotationApi && quotationApi.getAll) {
           const response = await quotationApi.getAll();
-          
-          if (response && response.success && response.data && response.data.quotations?.length > 0) {
+
+          if (
+            response &&
+            response.success &&
+            response.data &&
+            response.data.quotations?.length > 0
+          ) {
             setFilteredQuotations(response.data.quotations);
             setLoading(false);
             return;
@@ -80,11 +93,10 @@ export default function QuotationsManagement() {
       } catch {
         console.log("API not available, using mock data");
       }
-      
+
       // Use mock data if API fails or returns no data
       const mockData = generateMockData();
       setFilteredQuotations(mockData);
-      
     } catch (error) {
       console.error("Error fetching quotations:", error);
       // Use mock data on error
@@ -95,8 +107,6 @@ export default function QuotationsManagement() {
     }
   };
 
- 
-
   // Approve quotation
   const handleApprove = async (quotationId: string) => {
     try {
@@ -106,8 +116,10 @@ export default function QuotationsManagement() {
         if (quotationApi && quotationApi.approve) {
           const response = await quotationApi.approve(quotationId, {
             quotedPrice: 0,
-            validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            notes: "Approved"
+            validUntil: new Date(
+              Date.now() + 30 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+            notes: "Approved",
           });
 
           if (response && response.success) {
@@ -115,15 +127,16 @@ export default function QuotationsManagement() {
             return;
           }
         }
-      } catch  {
+      } catch {
         console.log("API not available");
       }
 
       // Update locally if API fails
-      setFilteredQuotations(prev => prev.map(q => 
-        q.id === quotationId ? { ...q, status: 'approved' } : q
-      ));
-      
+      setFilteredQuotations((prev) =>
+        prev.map((q) =>
+          q.id === quotationId ? { ...q, status: "approved" } : q,
+        ),
+      );
     } catch (error) {
       console.error("Error approving quotation:", error);
       setError("Failed to approve quotation");
@@ -137,22 +150,26 @@ export default function QuotationsManagement() {
       try {
         const quotationApi = (window as WindowWithAPI).quotationApi;
         if (quotationApi && quotationApi.reject) {
-          const response = await quotationApi.reject(quotationId, "Not available");
+          const response = await quotationApi.reject(
+            quotationId,
+            "Not available",
+          );
 
           if (response && response.success) {
             await fetchQuotations();
             return;
           }
         }
-      } catch  {
+      } catch {
         console.log("API not available");
       }
 
       // Update locally if API fails
-      setFilteredQuotations(prev => prev.map(q => 
-        q.id === quotationId ? { ...q, status: 'rejected' } : q
-      ));
-      
+      setFilteredQuotations((prev) =>
+        prev.map((q) =>
+          q.id === quotationId ? { ...q, status: "rejected" } : q,
+        ),
+      );
     } catch (error) {
       console.error("Error rejecting quotation:", error);
       setError("Failed to reject quotation");
@@ -175,9 +192,24 @@ export default function QuotationsManagement() {
       if (currentPage <= 3) {
         pages.push(1, 2, 3, 4, "...", totalPages);
       } else if (currentPage >= totalPages - 2) {
-        pages.push(1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+        pages.push(
+          1,
+          "...",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages,
+        );
       } else {
-        pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages);
+        pages.push(
+          1,
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPages,
+        );
       }
     }
     return pages;
@@ -185,16 +217,17 @@ export default function QuotationsManagement() {
 
   return (
     <div className="min-h-screen bg-white p-8 mt-35">
-    
-
       {/* Error Message */}
       {error && (
-        <div className="mb-6 p-4 bg-red-50 flex items-center justify-between" style={{ border: '1px solid #f9ead4' }}>
+        <div
+          className="mb-6 p-4 bg-red-50 flex items-center justify-between"
+          style={{ border: "1px solid #f9ead4" }}
+        >
           <div className="flex items-center gap-2">
             <X className="w-5 h-5 text-red-500" />
             <span className="text-red-700">{error}</span>
           </div>
-          <button 
+          <button
             onClick={() => setError(null)}
             className="text-red-500 hover:text-red-700"
           >
@@ -203,13 +236,14 @@ export default function QuotationsManagement() {
         </div>
       )}
 
- 
-
       {/* Table */}
-      <div className="bg-white overflow-hidden" style={{ border: '1px solid #f9ead4' }}>
+      <div
+        className="bg-white overflow-hidden"
+        style={{ border: "1px solid #f9ead4" }}
+      >
         <table className="w-full border-collapse">
-          <thead style={{ backgroundColor: '#050c3a' }}>
-            <tr style={{ borderBottom: '1px solid #f9ead4' }}>
+          <thead style={{ backgroundColor: "#050c3a" }}>
+            <tr style={{ borderBottom: "1px solid #f9ead4" }}>
               <th className="px-6 py-4 text-left text-sm font-semibold text-white">
                 Carat Number
               </th>
@@ -237,11 +271,18 @@ export default function QuotationsManagement() {
               </tr>
             ) : currentQuotations.length > 0 ? (
               currentQuotations.map((quotation) => (
-                <tr key={quotation.id} className="hover:bg-gray-50" style={{ borderBottom: '1px solid #f9ead4' }}>
+                <tr
+                  key={quotation.id}
+                  className="hover:bg-gray-50"
+                  style={{ borderBottom: "1px solid #f9ead4" }}
+                >
                   <td className="px-6 py-4 text-sm text-gray-900">
                     <div className="flex flex-wrap gap-1">
                       {quotation.stoneNumbers.slice(0, 3).map((stone, idx) => (
-                        <span key={idx} className="inline-block px-2 py-1 bg-gray-100 text-xs">
+                        <span
+                          key={idx}
+                          className="inline-block px-2 py-1 bg-gray-100 text-xs"
+                        >
                           {stone}
                         </span>
                       ))}
@@ -256,7 +297,9 @@ export default function QuotationsManagement() {
                     {quotation.stoneNumbers.length}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                    {quotation.quotedPrice ? `$${quotation.quotedPrice.toLocaleString()}` : "-"}
+                    {quotation.quotedPrice
+                      ? `$${quotation.quotedPrice.toLocaleString()}`
+                      : "-"}
                   </td>
                   <td className="px-6 py-4 text-sm">
                     {quotation.status === "approved" ? (
@@ -318,14 +361,30 @@ export default function QuotationsManagement() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 flex justify-between items-center" style={{ borderTop: '1px solid #f9ead4', backgroundColor: '#faf6eb' }}>
+          <div
+            className="px-6 py-4 flex justify-between items-center"
+            style={{
+              borderTop: "1px solid #f9ead4",
+              backgroundColor: "#faf6eb",
+            }}
+          >
             <button
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
               className="p-2 text-gray-600 hover:text-slate-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
             </button>
 
@@ -333,14 +392,16 @@ export default function QuotationsManagement() {
               {getPageNumbers().map((page, index) => (
                 <button
                   key={index}
-                  onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                  onClick={() =>
+                    typeof page === "number" && setCurrentPage(page)
+                  }
                   disabled={page === "..."}
                   className={`min-w-[40px] px-3 py-2 font-medium transition ${
                     page === currentPage
-                      ? 'bg-slate-900 text-white'
+                      ? "bg-slate-900 text-white"
                       : page === "..."
-                      ? 'text-gray-400 cursor-default'
-                      : 'text-gray-700 hover:bg-gray-100'
+                        ? "text-gray-400 cursor-default"
+                        : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   {page}
@@ -349,12 +410,24 @@ export default function QuotationsManagement() {
             </div>
 
             <button
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+              }
               disabled={currentPage === totalPages}
               className="p-2 text-gray-600 hover:text-slate-900 disabled:text-gray-300 disabled:cursor-not-allowed transition"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </button>
           </div>

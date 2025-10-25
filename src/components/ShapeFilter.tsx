@@ -16,7 +16,11 @@ const STATIC_SHAPE_OPTIONS = [
   { value: "EMERALD", label: "Emerald", image: "/shapefilter/emerald.png" },
   { value: "OVAL", label: "Oval", image: "/shapefilter/oval.png" },
   { value: "CUSHION", label: "Cushion", image: "/shapefilter/cushion.png" },
-  { value: "TRILLIANT", label: "Trilliant", image: "/shapefilter/trilliant.png" },
+  {
+    value: "TRILLIANT",
+    label: "Trilliant",
+    image: "/shapefilter/trilliant.png",
+  },
   { value: "HEART", label: "Heart", image: "/shapefilter/Vector-heart.png" },
   { value: "PRINCESS", label: "Princess", image: "/shapefilter/princess.png" },
   { value: "MARQUISE", label: "Marquise", image: "/shapefilter/marque.png" },
@@ -41,7 +45,10 @@ export default function ShapeFilter({
   };
 
   return (
-    <div className={`${playFair.className} mb-1.5 mt-0.5`} style={{ width: "360px" }}>
+    <div
+      className={`${playFair.className} mb-1.5 mt-0.5`}
+      style={{ width: "360px" }}
+    >
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
@@ -69,10 +76,11 @@ export default function ShapeFilter({
             <button
               key={option.value}
               onClick={() => handleShapeClick(option.value)}
-              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 transition-colors ${selectedShape === option.value
-                ? "text-blue-600 bg-blue-50"
-                : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
+              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 transition-colors ${
+                selectedShape === option.value
+                  ? "text-blue-600 bg-blue-50"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
               style={{
                 minWidth: "72px",
                 minHeight: "82px",

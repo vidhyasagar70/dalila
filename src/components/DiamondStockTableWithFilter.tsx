@@ -126,7 +126,10 @@ export default function DiamondStockTableWithFilter() {
     setSelectedMaxCarat(max);
   };
 
-  const handleSelectionChange = (selectedIds: string[], diamonds: DiamondData[]) => {
+  const handleSelectionChange = (
+    selectedIds: string[],
+    diamonds: DiamondData[],
+  ) => {
     setSelectedDiamonds(diamonds);
   };
 
@@ -137,7 +140,10 @@ export default function DiamondStockTableWithFilter() {
   };
 
   const handleEmail = () => {
-    console.log('Email sent for diamonds:', selectedDiamonds.map(d => d.STONE_NO));
+    console.log(
+      "Email sent for diamonds:",
+      selectedDiamonds.map((d) => d.STONE_NO),
+    );
   };
 
   const handleResetFilters = () => {
@@ -226,7 +232,7 @@ export default function DiamondStockTableWithFilter() {
         {/* Search Bar and Action Buttons - Right Side */}
         <div className="flex items-center gap-2">
           <SearchBar onSearch={handleSearch} />
-          
+
           <CompareButton
             selectedCount={selectedDiamonds.length}
             onCompare={handleCompare}
@@ -235,7 +241,7 @@ export default function DiamondStockTableWithFilter() {
 
           <EmailButton
             selectedCount={selectedDiamonds.length}
-            selectedStoneNumbers={selectedDiamonds.map(d => d.STONE_NO)}
+            selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
             onEmail={handleEmail}
           />
 

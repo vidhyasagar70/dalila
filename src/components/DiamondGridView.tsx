@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { diamondApi } from "@/lib/api";
 import type {
   DiamondData,
@@ -33,7 +29,7 @@ const DiamondGridView: React.FC<TableProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -113,7 +109,7 @@ const DiamondGridView: React.FC<TableProps> = ({
       } catch (err) {
         console.error("Error fetching diamonds:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to fetch diamonds"
+          err instanceof Error ? err.message : "Failed to fetch diamonds",
         );
         setData([]);
       } finally {
@@ -138,7 +134,7 @@ const DiamondGridView: React.FC<TableProps> = ({
   const totalPages = Math.ceil(data.length / rowsPerPage);
   const paginatedData = data.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   // Loading state
@@ -264,7 +260,7 @@ const DiamondGridView: React.FC<TableProps> = ({
             <div
               key={diamond._id}
               className="bg-white rounded-lg hover:shadow-lg transition-all duration-300 overflow-hidden relative"
-              style={{ border: '1px solid #f9e8cd' }}
+              style={{ border: "1px solid #f9e8cd" }}
             >
               {/* Heart Icon */}
               <button className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white rounded-full transition-colors">
@@ -313,7 +309,9 @@ const DiamondGridView: React.FC<TableProps> = ({
                 {/* Carat */}
                 <div className="text-sm">
                   <span className="font-semibold text-gray-900">Carat: </span>
-                  <span className="text-gray-700">{diamond.CARATS || diamond.SIZE}</span>
+                  <span className="text-gray-700">
+                    {diamond.CARATS || diamond.SIZE}
+                  </span>
                 </div>
 
                 {/* Color */}
@@ -340,7 +338,7 @@ const DiamondGridView: React.FC<TableProps> = ({
                       }
                     }}
                     className="mt-2 px-4 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 rounded"
-                    style={{ border: '1px solid #d1d5db' }}
+                    style={{ border: "1px solid #d1d5db" }}
                   >
                     View Details
                   </button>
@@ -355,7 +353,7 @@ const DiamondGridView: React.FC<TableProps> = ({
           className="px-6 py-4 bg-white rounded-lg shadow-sm flex items-center justify-between"
           style={{
             background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
-            border: '0.5px solid #f9e8cd'
+            border: "0.5px solid #f9e8cd",
           }}
         >
           <div className="text-sm text-gray-700 font-medium">
@@ -366,10 +364,12 @@ const DiamondGridView: React.FC<TableProps> = ({
 
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-700 font-medium">Items per page</span>
+              <span className="text-sm text-gray-700 font-medium">
+                Items per page
+              </span>
               <select
                 className="border rounded px-3 py-2 text-sm text-gray-800 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#070b3a]"
-                style={{ border: '0.5px solid #f9e8cd' }}
+                style={{ border: "0.5px solid #f9e8cd" }}
                 value={rowsPerPage}
                 onChange={(e) => {
                   setRowsPerPage(Number(e.target.value));
@@ -388,7 +388,7 @@ const DiamondGridView: React.FC<TableProps> = ({
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
                 className="p-2 rounded hover:bg-white/50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                style={{ border: '0.5px solid #f9e8cd' }}
+                style={{ border: "0.5px solid #f9e8cd" }}
               >
                 <ChevronLeft size={18} className="text-[#070b3a]" />
               </button>
@@ -408,7 +408,7 @@ const DiamondGridView: React.FC<TableProps> = ({
                         ? "bg-[#070b3a] text-white"
                         : "text-gray-700 hover:bg-white/50"
                     }`}
-                    style={{ border: '0.5px solid #f9e8cd' }}
+                    style={{ border: "0.5px solid #f9e8cd" }}
                   >
                     {page}
                   </button>
@@ -425,7 +425,7 @@ const DiamondGridView: React.FC<TableProps> = ({
                         ? "bg-[#070b3a] text-white"
                         : "text-gray-700 hover:bg-white/50"
                     }`}
-                    style={{ border: '0.5px solid #f9e8cd' }}
+                    style={{ border: "0.5px solid #f9e8cd" }}
                   >
                     {totalPages}
                   </button>
@@ -438,7 +438,7 @@ const DiamondGridView: React.FC<TableProps> = ({
                 }
                 disabled={currentPage === totalPages}
                 className="p-2 rounded hover:bg-white/50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                style={{ border: '0.5px solid #f9e8cd' }}
+                style={{ border: "0.5px solid #f9e8cd" }}
               >
                 <ChevronRight size={18} className="text-[#070b3a]" />
               </button>

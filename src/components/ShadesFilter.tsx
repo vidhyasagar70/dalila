@@ -8,7 +8,17 @@ const playFair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
-const SHADES_OPTIONS = ["HPHT", "NONE", "TTLB", "VLGY", "VLGW", "VLG", "MIX", "VLBW", "VLB"];
+const SHADES_OPTIONS = [
+  "HPHT",
+  "NONE",
+  "TTLB",
+  "VLGY",
+  "VLGW",
+  "VLG",
+  "MIX",
+  "VLBW",
+  "VLB",
+];
 const MILKY_OPTIONS = ["ML - 0", "ML - 1", "ML - 2", "ML - 3"];
 const TYPE2_OPTIONS = ["TYPE 2A", "TYPE 1AB"];
 const BRL_OPTIONS = ["EX", "VG", "GD"];
@@ -32,7 +42,10 @@ const FILTER_SECTIONS = [
   { label: "Brl.", key: "brl", options: BRL_OPTIONS, cols: 3 },
 ];
 
-export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterProps) {
+export default function ShadesFilter({
+  filters,
+  onFiltersChange,
+}: ShadesFilterProps) {
   const toggleFilter = (category: keyof ShadesFilters, value: string) => {
     const currentValues = filters[category] || [];
     const newValues = currentValues.includes(value)
@@ -45,7 +58,10 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
     filters[category]?.includes(value) || false;
 
   return (
-    <div className={`${playFair.className} mb-2 mt-1`} style={{ width: "fit-content" }}>
+    <div
+      className={`${playFair.className} mb-2 mt-1`}
+      style={{ width: "fit-content" }}
+    >
       {/* Header */}
       <div
         className="flex items-center px-2.5"
@@ -95,7 +111,7 @@ export default function ShadesFilter({ filters, onFiltersChange }: ShadesFilterP
                       minHeight: "28px",
                       border: isSelected(
                         section.key as keyof ShadesFilters,
-                        option
+                        option,
                       )
                         ? "1px solid #2563eb"
                         : "1px solid #f9e8cd",

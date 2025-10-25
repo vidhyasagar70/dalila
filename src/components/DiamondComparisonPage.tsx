@@ -52,7 +52,10 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
   return (
     <div className="fixed inset-0 bg-white z-50 overflow-auto">
       {/* Header */}
-      <div className="bg-[#050C3A] text-white px-6 py-4 sticky top-0 z-50 border-b" style={{ borderColor: '#F1E9DC' }}>
+      <div
+        className="bg-[#050C3A] text-white px-6 py-4 sticky top-0 z-50 border-b"
+        style={{ borderColor: "#F1E9DC" }}
+      >
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <button
             onClick={onClose}
@@ -68,14 +71,21 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
       {/* Comparison Table */}
       <div className="max-w-7xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden" style={{ border: '1px solid #F1E9DC' }}>
+        <div
+          className="bg-white rounded-lg shadow-sm overflow-hidden"
+          style={{ border: "1px solid #F1E9DC" }}
+        >
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead className="sticky top-[73px] z-40">
                 <tr>
-                  <th 
+                  <th
                     className="p-4 text-left text-sm font-semibold text-gray-800 sticky left-0 z-50 min-w-[150px]"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     {/* Empty header cell */}
                   </th>
@@ -83,20 +93,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     <td
                       key={diamond._id}
                       className="bg-gray-50 p-4 text-center relative min-w-[220px]"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       <button
                         onClick={() => removeDiamond(diamond._id)}
                         className="absolute top-2 right-2 p-1 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-sm"
-                        style={{ border: '1px solid #F1E9DC' }}
+                        style={{ border: "1px solid #F1E9DC" }}
                       >
                         <X className="w-4 h-4 text-gray-600" />
                       </button>
                       <div className="flex flex-col items-center gap-3 mt-6">
-                        <div className="relative w-32 h-32 bg-white rounded-lg overflow-hidden" style={{ border: '1px solid #F1E9DC' }}>
+                        <div
+                          className="relative w-32 h-32 bg-white rounded-lg overflow-hidden"
+                          style={{ border: "1px solid #F1E9DC" }}
+                        >
                           {diamond.REAL_IMAGE ? (
                             <Image
                               src={diamond.REAL_IMAGE}
@@ -118,9 +134,13 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
               <tbody>
                 {/* Stage Row */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Stage
                   </th>
@@ -128,9 +148,12 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     <td
                       key={diamond._id}
                       className="p-3 text-center bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       <span className="inline-block bg-[#050C3A] text-white px-4 py-1.5 rounded text-sm font-semibold">
@@ -142,19 +165,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Packet No */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Packet No
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.STONE_NO || "N/A"}
@@ -164,19 +194,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Location */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Location
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.LOCATION || "N/A"}
@@ -186,19 +223,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Report No */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Report No
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.REPORT_NO || "N/A"}
@@ -208,19 +252,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Lab */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Lab
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.LAB || "N/A"}
@@ -230,19 +281,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Shape */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Shape
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.SHAPE || "N/A"}
@@ -252,19 +310,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Wgt (Carat) */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Wgt
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.CARATS || "N/A"}
@@ -274,19 +339,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Col (Color) */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Col
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.COLOR || "N/A"}
@@ -296,19 +368,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Clarity */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Clarity
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.CLARITY || "N/A"}
@@ -318,19 +397,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Cut */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Cut
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.CUT || "N/A"}
@@ -340,19 +426,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Pol (Polish) */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Pol
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.POL || "N/A"}
@@ -362,19 +455,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Sym (Symmetry) */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Sym
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.SYM || "N/A"}
@@ -384,19 +484,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Fls (Fluorescence) */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Fls
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.FLOUR || "N/A"}
@@ -406,19 +513,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Rap ($) */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Rap.($)
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.RAP_PRICE || "N/A"}
@@ -428,19 +542,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Length */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Length
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.MEASUREMENTS?.split("x")[0]?.trim() || "N/A"}
@@ -450,19 +571,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Width */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Width
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.MEASUREMENTS?.split("x")[1]?.trim() || "N/A"}
@@ -472,19 +600,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Depth */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Depth
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.MEASUREMENTS?.split("x")[2]?.trim() || "N/A"}
@@ -494,19 +629,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Depth % */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Depth %
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.DEPTH_PER || "N/A"}
@@ -516,19 +658,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Table % */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Table %
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.TABLE_PER || "N/A"}
@@ -538,19 +687,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Disc % */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Disc %
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.DISC_PER || "N/A"}
@@ -560,19 +716,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Net Rate */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Net Rate
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.NET_RATE || "N/A"}
@@ -582,19 +745,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Net Value */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Net Value
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.NET_VALUE || "N/A"}
@@ -604,19 +774,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* C/A */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     C/A
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.CROWN_ANGLE || "N/A"}
@@ -626,19 +803,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* C/H */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     C/H
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.CROWN_HEIGHT || "N/A"}
@@ -648,19 +832,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* P/A */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     P/A
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.PAVILLION_ANGLE || "N/A"}
@@ -670,19 +861,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* P/H */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     P/H
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.PAVILLION_HEIGHT || "N/A"}
@@ -692,19 +890,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Key To Symbols */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Key To Symbols
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.KEY_TO_SYMBOLS || "N/A"}
@@ -714,19 +919,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Report Comments */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Report Comments
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.REPORT_COMMENTS || "N/A"}
@@ -736,19 +948,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Comments 1 */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#f9fafb' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#f9fafb",
+                    }}
                   >
                     Comments 1
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-gray-50"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.COMMENTS_1 || "N/A"}
@@ -758,19 +977,26 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
 
                 {/* Heart & Arrow */}
                 <tr>
-                  <th 
+                  <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{ borderRight: '1px solid #F1E9DC', borderBottom: '1px solid #F1E9DC', backgroundColor: '#ffffff' }}
+                    style={{
+                      borderRight: "1px solid #F1E9DC",
+                      borderBottom: "1px solid #F1E9DC",
+                      backgroundColor: "#ffffff",
+                    }}
                   >
                     Heart & Arrow
                   </th>
                   {diamonds.map((diamond, index) => (
-                    <td 
-                      key={diamond._id} 
+                    <td
+                      key={diamond._id}
                       className="p-3 text-center text-sm bg-white"
-                      style={{ 
-                        borderRight: index < diamonds.length - 1 ? '1px solid #F1E9DC' : 'none',
-                        borderBottom: '1px solid #F1E9DC'
+                      style={{
+                        borderRight:
+                          index < diamonds.length - 1
+                            ? "1px solid #F1E9DC"
+                            : "none",
+                        borderBottom: "1px solid #F1E9DC",
                       }}
                     >
                       {diamond.HA || "N/A"}

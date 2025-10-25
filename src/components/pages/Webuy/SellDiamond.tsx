@@ -1,11 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
-
-const playFair = Playfair_Display({
+import { Marcellus, Jost } from "next/font/google";
+import AnimatedContainer from "@/components/shared/AnimatedContainer";
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400",
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export default function SellDiamondsProcess() {
@@ -65,20 +73,25 @@ export default function SellDiamondsProcess() {
           {steps.map((step, index) => (
             <div key={index} className="relative w-full">
               {/* Image Section */}
-              <div
-                className={`relative w-full lg:w-1/2 ${
-                  step.imagePosition === "right" ? "ml-auto" : "mr-auto"
-                }`}
+              <AnimatedContainer
+                direction={step.imagePosition === "left" ? "left" : "right"}
+                delay={0.2}
               >
-                <Image
-                  src={step.image}
-                  alt={step.title}
-                  width={800}
-                  height={600}
-                  className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
-                  priority={index === 0} // Optional: prioritize the first image for LCP
-                />
-              </div>
+                <div
+                  className={`relative w-full lg:w-1/2 ${
+                    step.imagePosition === "right" ? "ml-auto" : "mr-auto"
+                  }`}
+                >
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    width={400}
+                    height={500}
+                    className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
+                    priority={index === 0}
+                  />
+                </div>
+              </AnimatedContainer>
 
               {/* Content Section - Overlapping */}
               <div
@@ -86,25 +99,30 @@ export default function SellDiamondsProcess() {
                   step.imagePosition === "right" ? "lg:left-0" : "lg:right-0"
                 } w-full lg:w-3/5 mt-8 lg:mt-0`}
               >
-                <div className="bg-white border border-gray-200 p-10 md:p-12 lg:p-16 shadow-lg mx-4 lg:mx-0">
-                  <div className="mb-6">
+                <AnimatedContainer
+                  direction={step.imagePosition === "left" ? "right" : "left"}
+                  delay={0.4}
+                >
+                  <div className="bg-white border border-gray-200 p-10 md:p-12 lg:p-16 shadow-lg mx-4 lg:mx-0">
+                    <div className="mb-6">
+                      <p
+                        className={`text-sm md:text-base text-gray-600 mb-3 ${marcellus.className}`}
+                      >
+                        {step.number}. {step.title}
+                      </p>
+                      <h2
+                        className={`text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-6 font-normal leading-tight ${marcellus.className}`}
+                      >
+                        {step.heading}
+                      </h2>
+                    </div>
                     <p
-                      className={`text-sm md:text-base text-gray-600 mb-3 ${playFair.className}`}
+                      className={`text-base md:text-lg text-gray-600 leading-relaxed ${jost.className}`}
                     >
-                      {step.number}. {step.title}
+                      {step.description}
                     </p>
-                    <h2
-                      className={`text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-6 font-normal leading-tight ${playFair.className}`}
-                    >
-                      {step.heading}
-                    </h2>
                   </div>
-                  <p
-                    className={`text-base md:text-lg text-gray-600 leading-relaxed ${playFair.className}`}
-                  >
-                    {step.description}
-                  </p>
-                </div>
+                </AnimatedContainer>
               </div>
             </div>
           ))}

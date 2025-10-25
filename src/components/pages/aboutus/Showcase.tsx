@@ -1,10 +1,20 @@
 "use client";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
+
 import GoldButton from "@/components/ui/button";
-const playFair = Playfair_Display({
+import { Marcellus, Jost } from "next/font/google";
+import AnimatedContainer from "@/components/shared/AnimatedContainer";
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400",
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export default function Aboutshowcase() {
@@ -13,26 +23,30 @@ export default function Aboutshowcase() {
       <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
         {/* Sell Diamonds Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-32">
-          <div>
-            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
-              <Image
-                src="/images/Heritage.png"
-                alt="Professional diamond dealer"
-                fill
-                className="object-cover"
-              />
+          <AnimatedContainer direction="scale-out">
+            <div>
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/Heritage.png"
+                  alt="Professional diamond dealer"
+                  fill
+                  className="object-cover"
+                />
+              </div>
             </div>
-          </div>
+          </AnimatedContainer>
 
           <div>
             <div className="max-w-xl">
-              <h2
-                className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className} `}
-              >
-                Our Heritage
-              </h2>
+              <AnimatedContainer direction="up">
+                <h2
+                  className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
+                >
+                  Our Heritage
+                </h2>
+              </AnimatedContainer>
               <p
-                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${playFair.className}`}
+                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
                 The origins of our company date back more than 50 years, when
                 three visionary brothers left their village in Gujarat at the
@@ -59,13 +73,15 @@ export default function Aboutshowcase() {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>
             <div className="max-w-xl">
-              <h2
-                className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className}`}
-              >
-                Diamond Knowledge Guide
-              </h2>
+              <AnimatedContainer direction="up">
+                <h2
+                  className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className}`}
+                >
+                  Diamond Knowledge Guide
+                </h2>
+              </AnimatedContainer>
               <p
-                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${playFair.className}`}
+                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
                 Diamonds are more than just gemstones — they are timeless
                 symbols of love, craftsmanship, and nature&apos;s brilliance.
@@ -85,42 +101,48 @@ export default function Aboutshowcase() {
           </div>
 
           <div>
-            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
-              <Image
-                src="/images/diamondwork.png"
-                alt="Diamond examination with tweezers"
-                fill
-                className="object-cover"
-              />
-            </div>
+            <AnimatedContainer direction="scale-out">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/diamondwork.png"
+                  alt="Diamond examination with tweezers"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </AnimatedContainer>
           </div>
         </div>
         {/* Sell Diamonds Section */}
         <div className="grid md:grid-cols-2 gap-16 items-center mb-25 mt-25">
           <div>
-            <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
-              <Image
-                src="/images/sell_page.jpg"
-                alt="Professional diamond dealer"
-                fill
-                className="object-cover"
-              />
-            </div>
+            <AnimatedContainer direction="scale-out" delay={0.5}>
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/sell_page.jpg"
+                  alt="Professional diamond dealer"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </AnimatedContainer>
           </div>
 
           <div>
             <div className="max-w-xl">
-              <h2
-                className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${playFair.className} `}
-              >
-                Sell Your Diamonds
-                <br />
-                Safely and
-                <br />
-                Seamlessly at Dalila
-              </h2>
+              <AnimatedContainer direction="up">
+                <h2
+                  className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
+                >
+                  Sell Your Diamonds
+                  <br />
+                  Safely and
+                  <br />
+                  Seamlessly at Dalila
+                </h2>
+              </AnimatedContainer>
               <p
-                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${playFair.className}`}
+                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
                 Selling your diamond or fine jewelry should be a seamless,
                 secure, and rewarding experience. At Dalila, we offer a
