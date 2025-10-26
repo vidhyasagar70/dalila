@@ -1,240 +1,245 @@
-import React from "react";
-import {
-  Diamond,
-  FileText,
-  DollarSign,
-  ShoppingCart,
-  Pause,
-  List,
-  Search,
+"use client";
+
+import { useState, useEffect } from 'react';
+import { 
+  Package, 
+  FileText, 
+  DollarSign, 
+  ShoppingCart, 
+  Loader2,
   RefreshCw,
+  AlertCircle,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react";
+  Search,
+  Gem,
+  List
+} from 'lucide-react';
+import { diamondApi } from '@/lib/api';
 
-const Dashboard = () => {
-  // Mock data - replace with API calls later
-  const stats = {
-    inventory: 763,
+export default function AdminDashboard() {
+  // Real data from API
+  const [totalDiamonds, setTotalDiamonds] = useState(0);
+  const [newlyAddedDiamonds, setNewlyAddedDiamonds] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Mock data
+  const mockStats = {
     newArrival: 25,
     priceRevised: 1234,
     cart: 123,
     holdStone: 0,
-    upcomingList: 127,
+    upcomingList: 127
   };
 
-  const diamonds = [
-    {
-      id: 1,
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "-EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
-    {
-      id: 2,
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "-EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
-    {
-      id: 3,
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "-EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
+  // Mock diamond data for carousel
+  const mockDiamonds = [
+    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
+    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
+    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
+    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
   ];
 
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const response = await diamondApi.getDashboardStats();
+
+      if (response && response.success && response.data) {
+        setTotalDiamonds(response.data.totalDiamonds);
+        setNewlyAddedDiamonds(response.data.newlyAddedDiamonds);
+      } else {
+        setError('Failed to fetch dashboard data');
+      }
+    } catch (err) {
+      console.error('Dashboard fetch error:', err);
+      setError('Unable to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % Math.max(1, mockDiamonds.length - 2));
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + Math.max(1, mockDiamonds.length - 2)) % Math.max(1, mockDiamonds.length - 2));
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
+          <p className="mt-4 text-gray-600 font-medium">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#FEFCF9] p-6 mt-30">
-      {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-96 rounded-lg border border-[#F9EAD4] py-2 pl-10 pr-4 focus:border-[#F9EAD4] focus:outline-none focus:ring-1 focus:ring-[#F9EAD4]"
-            />
-          </div>
-          <button className="flex items-center gap-2 rounded-lg border border-[#F9EAD4] bg-white px-4 py-2 text-gray-700 hover:bg-gray-50">
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </button>
-        </div>
-      </div>
-
-      {/* Top Stats Cards */}
-      <div className="mb-6 grid grid-cols-4 gap-6">
-        {/* Inventory Card */}
-        <div className="rounded-xl border border-[#F9EAD4] bg-gradient-to-br from-blue-900 to-blue-950 p-6 text-white shadow-sm">
-          <div className="mb-4 flex items-center gap-3">
-            <Diamond className="h-6 w-6" />
-            <span className="text-lg font-medium">Inventory</span>
-          </div>
-          <div className="text-5xl font-bold">{stats.inventory}</div>
-        </div>
-
-        {/* New Arrival Card */}
-        <div className="rounded-xl border border-[#F9EAD4] bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="rounded-lg bg-gray-50 p-2">
-              <FileText className="h-6 w-6 text-gray-600" />
+    <div className="min-h-screen bg-gray-50 p-6 mt-35">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search"
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-96 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
-            <span className="text-lg font-medium text-gray-900">
-              New Arrival
-            </span>
-          </div>
-          <div className="text-5xl font-bold text-gray-900">
-            {stats.newArrival}
-          </div>
-        </div>
-
-        {/* Price Revised Card */}
-        <div className="rounded-xl border border-[#F9EAD4] bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="rounded-lg bg-gray-50 p-2">
-              <DollarSign className="h-6 w-6 text-gray-600" />
-            </div>
-            <span className="text-lg font-medium text-gray-900">
-              Price Revised
-            </span>
-          </div>
-          <div className="text-5xl font-bold text-gray-900">
-            ${stats.priceRevised}
-          </div>
-        </div>
-
-        {/* Cart Card */}
-        <div className="rounded-xl border border-[#F9EAD4] bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="rounded-lg bg-gray-50 p-2">
-              <ShoppingCart className="h-6 w-6 text-gray-600" />
-            </div>
-            <span className="text-lg font-medium text-gray-900">Cart</span>
-          </div>
-          <div className="text-5xl font-bold text-gray-900">{stats.cart}</div>
-        </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div className="grid grid-cols-3 gap-6">
-        {/* Diamond Carousel */}
-        <div className="col-span-2 rounded-xl border border-[#F9EAD4] bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <button className="rounded-full bg-amber-100 p-3 hover:bg-amber-200">
-              <ChevronLeft className="h-5 w-5 text-amber-600" />
+            <button
+              onClick={fetchDashboardData}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+              <span className="font-medium">Refresh</span>
             </button>
+          </div>
+        </div>
 
-            <div className="flex gap-6">
-              {diamonds.map((diamond) => (
-                <div
-                  key={diamond.id}
-                  className="rounded-xl border border-[#F9EAD4] bg-white p-4 shadow-sm"
-                >
-                  <div className="mb-4 flex h-48 w-48 items-center justify-center rounded-lg bg-gradient-to-br from-gray-50 to-gray-100">
-                    <svg
-                      className="h-40 w-40"
-                      viewBox="0 0 200 200"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <defs>
-                        <radialGradient id={`diamond-gradient-${diamond.id}`}>
-                          <stop offset="0%" style={{ stopColor: "#ffffff" }} />
-                          <stop
-                            offset="100%"
-                            style={{ stopColor: "#e0e0e0" }}
-                          />
-                        </radialGradient>
-                      </defs>
-                      <circle
-                        cx="100"
-                        cy="100"
-                        r="80"
-                        fill={`url(#diamond-gradient-${diamond.id})`}
-                      />
-                      <path
-                        d="M100 40 L140 80 L120 130 L80 130 L60 80 Z"
-                        fill="#f5f5f5"
-                        opacity="0.8"
-                      />
-                    </svg>
-                  </div>
-                  <div className="space-y-1 text-center text-sm">
-                    <div className="flex justify-between">
-                      <span className="font-semibold">{diamond.shape}</span>
-                      <span className="font-semibold">{diamond.carat}</span>
-                      <span>{diamond.color}</span>
-                      <span>{diamond.clarity}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-600">
-                      <span>{diamond.cut}</span>
-                      <span>{diamond.polish}</span>
-                      <span>{diamond.symmetry}</span>
-                      <span>{diamond.lab}</span>
-                    </div>
-                  </div>
+        {error && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-red-600" />
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-12 gap-6">
+          {/* Left Section - Stats Cards */}
+          <div className="col-span-9">
+            {/* Top Row - 4 Cards */}
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              {/* Inventory Card - Dark Navy */}
+              <div className="bg-gradient-to-br from-blue-900 to-blue-950 rounded-xl p-6 text-white shadow-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <Gem className="w-8 h-8" />
+                  <span className="text-sm opacity-80">Inventory</span>
                 </div>
-              ))}
-            </div>
-
-            <button className="rounded-full bg-amber-100 p-3 hover:bg-amber-200">
-              <ChevronRight className="h-5 w-5 text-amber-600" />
-            </button>
-          </div>
-        </div>
-
-        {/* Right Side Cards */}
-        <div className="space-y-6">
-          {/* Hold Stone Card */}
-          <div className="rounded-xl border border-[#F9EAD4] bg-white p-6 shadow-sm">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="rounded-lg bg-gray-50 p-2">
-                <Pause className="h-6 w-6 text-gray-600" />
+                <div className="text-4xl font-bold">{totalDiamonds}</div>
               </div>
-              <span className="text-lg font-medium text-gray-900">
-                Hold Stone
-              </span>
+
+              {/* New Arrival Card */}
+              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="bg-gray-100 p-2 rounded-lg">
+                    <FileText className="w-6 h-6 text-gray-600" />
+                  </div>
+                  <span className="text-sm text-gray-600">New Arrival</span>
+                </div>
+                <div className="text-4xl font-bold text-gray-900">{newlyAddedDiamonds}</div>
+              </div>
+
+              {/* Price Revised Card */}
+              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="bg-gray-100 p-2 rounded-lg">
+                    <DollarSign className="w-6 h-6 text-gray-600" />
+                  </div>
+                  <span className="text-sm text-gray-600">Price Revised</span>
+                </div>
+                <div className="text-4xl font-bold text-gray-900">${mockStats.priceRevised}</div>
+              </div>
+
+              {/* Cart Card */}
+              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="bg-gray-100 p-2 rounded-lg">
+                    <ShoppingCart className="w-6 h-6 text-gray-600" />
+                  </div>
+                  <span className="text-sm text-gray-600">Cart</span>
+                </div>
+                <div className="text-4xl font-bold text-gray-900">{mockStats.cart}</div>
+              </div>
             </div>
-            <div className="text-5xl font-bold text-gray-900">
-              {stats.holdStone}
+
+            {/* Diamond Carousel */}
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <button
+                  onClick={prevSlide}
+                  className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6 text-yellow-600" />
+                </button>
+                
+                <div className="flex gap-4 flex-1 justify-center">
+                  {mockDiamonds.slice(currentSlide, currentSlide + 3).map((diamond, index) => (
+                    <div key={index} className="bg-white border border-gray-200 rounded-xl p-4 w-64">
+                      <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
+                        <img
+                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='diamondGrad'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,255,255);stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:rgb(230,240,255);stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:rgb(200,220,240);stop-opacity:1' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cpolygon points='100,20 160,80 100,180 40,80' fill='url(%23diamondGrad)' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E"
+                          alt="Diamond"
+                          className="w-32 h-32"
+                        />
+                      </div>
+                      <div className="text-center space-y-1">
+                        <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
+                          <span>{diamond.shape}</span>
+                          <span>{diamond.carat}</span>
+                          <span>{diamond.color}</span>
+                          <span>{diamond.clarity}</span>
+                        </div>
+                        <div className="flex justify-center gap-2 text-sm text-gray-600">
+                          <span>-{diamond.cut}</span>
+                          <span>{diamond.polish}</span>
+                          <span>{diamond.symmetry}</span>
+                          <span>{diamond.lab}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={nextSlide}
+                  className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6 text-yellow-600" />
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Upcoming List Card */}
-          <div className="rounded-xl border border-[#F9EAD4] bg-white p-6 shadow-sm">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="rounded-lg bg-gray-50 p-2">
-                <List className="h-6 w-6 text-gray-600" />
+          {/* Right Section - Hold Stone & Upcoming List */}
+          <div className="col-span-3 space-y-6">
+            {/* Hold Stone Card */}
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-gray-100 p-2 rounded-lg">
+                  <Package className="w-6 h-6 text-gray-600" />
+                </div>
+                <span className="text-lg font-semibold text-gray-900">Hold Stone</span>
               </div>
-              <span className="text-lg font-medium text-gray-900">
-                Upcoming List
-              </span>
+              <div className="text-5xl font-bold text-gray-900">{mockStats.holdStone}</div>
             </div>
-            <div className="text-5xl font-bold text-gray-900">
-              {stats.upcomingList}
+
+            {/* Upcoming List Card */}
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-gray-100 p-2 rounded-lg">
+                  <List className="w-6 h-6 text-gray-600" />
+                </div>
+                <span className="text-lg font-semibold text-gray-900">Upcoming List</span>
+              </div>
+              <div className="text-5xl font-bold text-gray-900">{mockStats.upcomingList}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default Dashboard;
+}

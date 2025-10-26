@@ -19,6 +19,10 @@ interface FetchParams {
   field?: string;
   searchTerm?: string;
 }
+interface DashboardStats {
+  totalDiamonds: number;
+  newlyAddedDiamonds: number;
+}
 
 interface ApiResponse<T> {
   success: boolean;
@@ -581,6 +585,25 @@ export const diamondApi = {
       throw error;
     }
   },
+getDashboardStats: async (): Promise<ApiResponse<DashboardStats> | null> => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        console.error("No auth token found for dashboard stats");
+        return null;
+      }
+
+      const response = await apiClient.get<ApiResponse<DashboardStats>>(
+        "/api/diamonds/dashboard"
+      );
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      return null;
+    }
+  },
+  
 };
 
 export const cartApi = {
@@ -1109,7 +1132,7 @@ export const healthCheck = () => api.get<{ status: string }>("/health");
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 
 // Export types
-export type { FilterOptions, Diamond, User, CartItem, Quotation };
+export type { FilterOptions, Diamond, User, CartItem, Quotation,DashboardStats };
 
 // Export API object
 const apiExport = {
