@@ -49,6 +49,50 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
     console.log("Remove diamond:", id);
   };
 
+  // Helper function to get row styling based on index
+  const getRowStyle = (index: number) => {
+    if (index === 0) {
+      return { bg: "#060c3c", color: "#ffffff" }; // Stage row - dark blue
+    }
+    return index % 2 === 1 
+      ? { bg: "#faf6eb", color: "#060c3c" } // Light cream/beige
+      : { bg: "#ffffff", color: "#060c3c" }; // White
+  };
+
+  // Define all table rows
+  const tableRows = [
+    { label: "Stage", key: "STAGE", index: 0 },
+    { label: "Packet No", key: "STONE_NO", index: 1 },
+    { label: "Location", key: "LOCATION", index: 2 },
+    { label: "Report No", key: "REPORT_NO", index: 3 },
+    { label: "Lab", key: "LAB", index: 4 },
+    { label: "Shape", key: "SHAPE", index: 5 },
+    { label: "Wgt", key: "CARATS", index: 6 },
+    { label: "Col", key: "COLOR", index: 7 },
+    { label: "Clarity", key: "CLARITY", index: 8 },
+    { label: "Cut", key: "CUT", index: 9 },
+    { label: "Pol", key: "POL", index: 10 },
+    { label: "Sym", key: "SYM", index: 11 },
+    { label: "Fls", key: "FLOUR", index: 12 },
+    { label: "Rap.($)", key: "RAP_PRICE", index: 13 },
+    { label: "Length", key: "MEASUREMENTS", index: 14, transform: (val: string) => val?.split("x")[0]?.trim() },
+    { label: "Width", key: "MEASUREMENTS", index: 15, transform: (val: string) => val?.split("x")[1]?.trim() },
+    { label: "Depth", key: "MEASUREMENTS", index: 16, transform: (val: string) => val?.split("x")[2]?.trim() },
+    { label: "Depth %", key: "DEPTH_PER", index: 17 },
+    { label: "Table %", key: "TABLE_PER", index: 18 },
+    { label: "Disc %", key: "DISC_PER", index: 19 },
+    { label: "Net Rate", key: "NET_RATE", index: 20 },
+    { label: "Net Value", key: "NET_VALUE", index: 21 },
+    { label: "C/A", key: "CROWN_ANGLE", index: 22 },
+    { label: "C/H", key: "CROWN_HEIGHT", index: 23 },
+    { label: "P/A", key: "PAVILLION_ANGLE", index: 24 },
+    { label: "P/H", key: "PAVILLION_HEIGHT", index: 25 },
+    { label: "Key To Symbols", key: "KEY_TO_SYMBOLS", index: 26 },
+    { label: "Report Comments", key: "REPORT_COMMENTS", index: 27 },
+    { label: "Comments 1", key: "COMMENTS_1", index: 28 },
+    { label: "Heart & Arrow", key: "HA", index: 29 },
+  ];
+
   return (
     <div 
       className="fixed inset-0 top-35 bg-white z-50 overflow-auto scrollbar-hide"
@@ -59,8 +103,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
     >
       {/* Header */}
       <div
-        className="bg-[#050C3A] text-white px-6 py-4 sticky top-0 z-50 border-b"
-        style={{ borderColor: "#F1E9DC" }}
+        className="bg-[#060c3c] text-white px-6 py-4 sticky top-0 z-50"
+        style={{ borderBottom: "1px solid #F9E8CD" }}
       >
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <button
@@ -79,38 +123,38 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
       <div className="max-w-7xl mx-auto p-6">
         <div
           className="bg-white rounded-lg shadow-sm overflow-hidden"
-          style={{ border: "1px solid #F1E9DC" }}
+          style={{ border: "1px solid #F9E8CD" }}
         >
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead className="sticky top-[73px] z-40">
                 <tr>
                   <th
-                    className="p-4 text-left text-sm font-semibold text-gray-800 sticky left-0 z-50 min-w-[150px]"
+                    className="p-4 text-left text-sm font-semibold sticky left-0 z-50 min-w-[150px]"
                     style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
+                      borderRight: "1px solid #F9E8CD",
+                      borderBottom: "1px solid #F9E8CD",
                       backgroundColor: "#ffffff",
+                      color: "#060c3c",
                     }}
                   >
                   </th>
                   {diamonds.map((diamond, index) => (
                     <td
                       key={diamond._id}
-                      className="bg-gray-50 p-4 text-center relative min-w-[220px]"
+                      className="p-4 text-center relative min-w-[220px]"
                       style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
+                        borderRight: index < diamonds.length - 1 ? "1px solid #F9E8CD" : "none",
+                        borderBottom: "1px solid #F9E8CD",
+                        backgroundColor: "#ffffff",
+                        color: "#060c3c",
                       }}
                     >
                       <button
                         onClick={() => removeDiamond(diamond._id)}
                         className="absolute top-2 right-2 p-1 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-sm"
                         style={{
-                          border: "1px solid #F1E9DC",
+                          border: "1px solid #F9E8CD",
                         }}
                       >
                         <X className="w-4 h-4 text-gray-600" />
@@ -119,7 +163,7 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                         <div
                           className="relative w-32 h-32 bg-white rounded-lg overflow-hidden"
                           style={{
-                            border: "1px solid #F1E9DC",
+                            border: "1px solid #F9E8CD",
                           }}
                         >
                           {diamond.REAL_IMAGE ? (
@@ -141,818 +185,48 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Stage
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      <span className="inline-block bg-[#050C3A] text-white px-4 py-1.5 rounded text-sm font-semibold">
-                        {diamond.STAGE || "N/A"}
-                      </span>
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Packet No
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.STONE_NO || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Location
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.LOCATION || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Report No
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.REPORT_NO || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Lab
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.LAB || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Shape
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.SHAPE || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Wgt
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.CARATS || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Col
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.COLOR || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Clarity
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.CLARITY || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Cut
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.CUT || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Pol
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.POL || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Sym
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.SYM || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Fls
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.FLOUR || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Rap.($)
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.RAP_PRICE || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Length
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.MEASUREMENTS?.split("x")[0]?.trim() || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Width
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.MEASUREMENTS?.split("x")[1]?.trim() || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Depth
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.MEASUREMENTS?.split("x")[2]?.trim() || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Depth %
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.DEPTH_PER || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Table %
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.TABLE_PER || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Disc %
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.DISC_PER || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Net Rate
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.NET_RATE || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Net Value
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.NET_VALUE || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    C/A
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.CROWN_ANGLE || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    C/H
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.CROWN_HEIGHT || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    P/A
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.PAVILLION_ANGLE || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    P/H
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.PAVILLION_HEIGHT || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Key To Symbols
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.KEY_TO_SYMBOLS || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Report Comments
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.REPORT_COMMENTS || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#f9fafb",
-                    }}
-                  >
-                    Comments 1
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-gray-50"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.COMMENTS_1 || "N/A"}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <th
-                    className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
-                    style={{
-                      borderRight: "1px solid #F1E9DC",
-                      borderBottom: "1px solid #F1E9DC",
-                      backgroundColor: "#ffffff",
-                    }}
-                  >
-                    Heart & Arrow
-                  </th>
-                  {diamonds.map((diamond, index) => (
-                    <td
-                      key={diamond._id}
-                      className="p-3 text-center text-sm bg-white"
-                      style={{
-                        borderRight:
-                          index < diamonds.length - 1
-                            ? "1px solid #F1E9DC"
-                            : "none",
-                        borderBottom: "1px solid #F1E9DC",
-                      }}
-                    >
-                      {diamond.HA || "N/A"}
-                    </td>
-                  ))}
-                </tr>
+                {tableRows.map((row) => {
+                  const style = getRowStyle(row.index);
+                  return (
+                    <tr key={row.label}>
+                      <th
+                        className="p-3 text-left text-sm font-medium sticky left-0 z-10"
+                        style={{
+                          borderRight: "1px solid #F9E8CD",
+                          borderBottom: "1px solid #F9E8CD",
+                          backgroundColor: style.bg,
+                          color: style.color,
+                        }}
+                      >
+                        {row.label}
+                      </th>
+                      {diamonds.map((diamond, index) => {
+                        let value = diamond[row.key as keyof DiamondData] || "N/A";
+                        if (row.transform && typeof value === 'string') {
+                          value = row.transform(value) || "N/A";
+                        }
+                        
+                        return (
+                          <td
+                            key={diamond._id}
+                            className="p-3 text-center text-sm"
+                            style={{
+                              borderRight:
+                                index < diamonds.length - 1
+                                  ? "1px solid #F9E8CD"
+                                  : "none",
+                              borderBottom: "1px solid #F9E8CD",
+                              backgroundColor: style.bg,
+                              color: style.color,
+                            }}
+                          >
+                            {value}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
