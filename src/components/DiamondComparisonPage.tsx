@@ -50,7 +50,13 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 top-35 bg-white z-50 overflow-auto">
+    <div 
+      className="fixed inset-0 top-35 bg-white z-50 overflow-auto scrollbar-hide"
+      style={{
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+      }}
+    >
       {/* Header */}
       <div
         className="bg-[#050C3A] text-white px-6 py-4 sticky top-0 z-50 border-b"
@@ -87,7 +93,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                       backgroundColor: "#ffffff",
                     }}
                   >
-                    {/* Empty header cell */}
                   </th>
                   {diamonds.map((diamond, index) => (
                     <td
@@ -136,7 +141,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {/* Stage Row */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -166,8 +170,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Packet No */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -195,8 +197,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Location */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -224,8 +224,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Report No */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -253,8 +251,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Lab */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -282,8 +278,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Shape */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -311,8 +305,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Wgt (Carat) */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -340,8 +332,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Col (Color) */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -369,8 +359,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Clarity */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -398,8 +386,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Cut */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -427,8 +413,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Pol (Polish) */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -456,8 +440,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Sym (Symmetry) */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -485,8 +467,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Fls (Fluorescence) */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -514,8 +494,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Rap ($) */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -543,8 +521,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Length */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -572,8 +548,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Width */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -601,8 +575,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Depth */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -630,8 +602,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Depth % */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -659,8 +629,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Table % */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -688,8 +656,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Disc % */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -717,8 +683,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Net Rate */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -746,8 +710,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Net Value */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -775,8 +737,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* C/A */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -804,8 +764,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* C/H */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -833,8 +791,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* P/A */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -862,8 +818,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* P/H */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -891,8 +845,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Key To Symbols */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -920,8 +872,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Report Comments */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -949,8 +899,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Comments 1 */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
@@ -978,8 +926,6 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                     </td>
                   ))}
                 </tr>
-
-                {/* Heart & Arrow */}
                 <tr>
                   <th
                     className="p-3 text-left text-xs font-semibold text-gray-800 sticky left-0 z-10"
