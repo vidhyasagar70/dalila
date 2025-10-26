@@ -18,7 +18,7 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const adminpanelPage = pathname === "/adminpanel";
+
   const inventoryPage = pathname === "/inventory";
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
@@ -254,7 +254,6 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled ||
-        adminpanelPage ||
         inventoryPage ||
         offerenquiryPage ||
         memberPage ||
