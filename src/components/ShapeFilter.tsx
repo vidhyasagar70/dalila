@@ -2,14 +2,12 @@
 import React from "react";
 import Image from "next/image";
 import { Maven_Pro } from "next/font/google";
-
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
-
 const STATIC_SHAPE_OPTIONS = [
   { value: "ROUND", label: "Round", image: "/shapefilter/round.png" },
   { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
@@ -32,19 +30,16 @@ const STATIC_SHAPE_OPTIONS = [
   { value: "MARQUISE", label: "Marquise", image: "/shapefilter/marque.png" },
   { value: "OTHER", label: "Other", image: "/shapefilter/others.png" },
 ];
-
 interface ShapeFilterProps {
   selectedShape: string[]; // Changed to array
   onShapeChange: (shapes: string[]) => void; // Changed to array
 }
-
 export default function ShapeFilter({
   selectedShape,
   onShapeChange,
 }: ShapeFilterProps) {
   const handleShapeClick = (shape: string) => {
     const currentShapes = Array.isArray(selectedShape) ? selectedShape : [];
-
     if (currentShapes.includes(shape)) {
       // Remove shape if already selected
       onShapeChange(currentShapes.filter((s) => s !== shape));
@@ -53,11 +48,9 @@ export default function ShapeFilter({
       onShapeChange([...currentShapes, shape]);
     }
   };
-
   const isSelected = (shape: string) => {
     return Array.isArray(selectedShape) && selectedShape.includes(shape);
   };
-
   return (
     <div className={`${mavenPro.className} mb-1.5 mt-0.5`}>
       <div
@@ -73,7 +66,6 @@ export default function ShapeFilter({
         />
         <span className="text-base font-semibold text-white">Shape</span>
       </div>
-
       <div
         className="p-2.5 bg-white"
         style={{
@@ -89,14 +81,14 @@ export default function ShapeFilter({
               onClick={() => handleShapeClick(option.value)}
               className={`flex flex-col items-center justify-center gap-1 px-2 py-2 transition-colors ${
                 isSelected(option.value)
-                  ? "text-blue-600 bg-blue-50"
+                  ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 minWidth: "72px",
                 minHeight: "82px",
                 border: isSelected(option.value)
-                  ? "0.25px solid #2563eb"
+                  ? "0.25px solid #FAF6EB"
                   : "0.25px solid #f9e8cd",
               }}
             >

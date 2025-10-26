@@ -10,7 +10,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [userStatus, setUserStatus] = useState<string | null>(null); // NEW: Track user status
+  const [userStatus, setUserStatus] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [cartCount, setCartCount] = useState(0);
@@ -28,7 +28,7 @@ export default function Header() {
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
 
-  // NEW: Check if inventory is accessible (Admin or APPROVED status)
+  // Check if inventory is accessible (Admin or APPROVED status)
   const isInventoryAccessible =
     isLoggedIn && (userRole === "ADMIN" || userStatus === "APPROVED");
 
@@ -91,18 +91,18 @@ export default function Header() {
           try {
             const user = JSON.parse(userStr);
             setUserRole(user.role || null);
-            setUserStatus(user.status || null); // NEW: Set user status
+            setUserStatus(user.status || null);
             setIsLoggedIn(true);
             console.log("User role:", user.role);
-            console.log("User status:", user.status); // NEW: Log status
+            console.log("User status:", user.status);
           } catch {
             setUserRole(null);
-            setUserStatus(null); // NEW: Reset status
+            setUserStatus(null);
             setIsLoggedIn(false);
           }
         } else {
           setUserRole(null);
-          setUserStatus(null); // NEW: Reset status
+          setUserStatus(null);
           setIsLoggedIn(false);
         }
 
@@ -177,7 +177,7 @@ export default function Header() {
     } finally {
       setIsLoggedIn(false);
       setUserRole(null);
-      setUserStatus(null); // NEW: Reset status
+      setUserStatus(null);
       setCartCount(0);
 
       if (typeof window !== "undefined") {
@@ -201,7 +201,6 @@ export default function Header() {
     }
   };
 
-  // NEW: Updated handler for inventory access
   const handleInventoryClick = (e: React.MouseEvent) => {
     if (!isLoggedIn) {
       e.preventDefault();
@@ -351,7 +350,17 @@ export default function Header() {
               </>
             ) : (
               <div className="flex gap-3">
-                {/* NEW: Updated INVENTORY button with access control */}
+                {/* DASHBOARD - Available only for regular users, NOT for admin */}
+                {!isAdmin && (
+                  <button
+                    onClick={() => router.push("/dashboard")}
+                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  >
+                    DASHBOARD
+                  </button>
+                )}
+
+                {/* INVENTORY - Available for Admin or APPROVED users */}
                 <button
                   onClick={(e) => {
                     if (isInventoryAccessible) {
@@ -378,6 +387,7 @@ export default function Header() {
                   INVENTORY
                 </button>
 
+                {/* ADMIN PANEL - Only for admins */}
                 {isAdmin && (
                   <div className="relative group">
                     <button
@@ -395,14 +405,8 @@ export default function Header() {
                         className="absolute top-full left-0 mt-0 w-full bg-[#050c3a] border border-[#c89e3a] rounded shadow-lg z-50"
                       >
                         <Link
-                          href="/dashboard"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-[#c89e3a]/30"
-                        >
-                          Dashboard
-                        </Link>
-                        <Link
                           href="/member"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-[#c89e3a]/30"
+                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors"
                         >
                           Members
                         </Link>
@@ -410,6 +414,7 @@ export default function Header() {
                     )}
                   </div>
                 )}
+
                 <button
                   onClick={handleLogout}
                   className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
@@ -525,7 +530,20 @@ export default function Header() {
                 </Link>
               ))}
 
-              {/* NEW: Inventory in mobile menu with access control */}
+              {/* Dashboard - Available only for regular users, NOT for admin */}
+              {isLoggedIn && !isAdmin && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/dashboard");
+                  }}
+                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                >
+                  Dashboard
+                </button>
+              )}
+
+              {/* Inventory - Available for Admin or APPROVED users */}
               {isLoggedIn && (
                 <button
                   onClick={(e) => {
@@ -550,6 +568,20 @@ export default function Header() {
                 </button>
               )}
 
+              {/* Admin Panel - Only for admins */}
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    router.push("/member");
+                  }}
+                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                >
+                  Admin Panel
+                </button>
+              )}
+
+              {/* Cart */}
               {isLoggedIn && (
                 <button
                   onClick={() => {

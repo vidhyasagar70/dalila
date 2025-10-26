@@ -81,15 +81,15 @@ export default function ColorFilter({
           <button
             key={option.value}
             onClick={() => handleColorClick(option.value)}
-            className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+           className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
               isSelected(option.value)
-                ? "text-blue-600 bg-blue-50"
+                ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
               minWidth: 44,
               border: isSelected(option.value)
-                ? "0.25px solid #2563eb"
+                ? "0.25px solid #FAF6EB"
                 : "0.25px solid #f9e8cd",
               minHeight: "41px",
             }}

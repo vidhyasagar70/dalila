@@ -26,9 +26,6 @@ const STATIC_CLARITY_OPTIONS = [
 ];
 
 const STATIC_SPECIAL_OPTIONS = ["3EX", "EX-", "VG+", "VG-"];
-const STATIC_CUT_OPTIONS = ["EX", "VG", "GD", "FR"];
-const STATIC_POLISH_OPTIONS = ["EX", "VG", "GD", "FR"];
-const STATIC_SYMMETRY_OPTIONS = ["EX", "VG", "GD", "FR"];
 
 // Mapping of special grades to their corresponding Cut/Polish/Symmetry combinations
 const SPECIAL_GRADE_MAPPING: Record<
@@ -146,19 +143,19 @@ export default function ClarityFilter({
         }}
       >
         {/* Clarity Options */}
-        <div className="grid grid-cols-6 gap-1 mb-4 mt-4">
+        <div className="grid grid-cols-6 gap-2 mb-4 mt-4">
           {STATIC_CLARITY_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => handleClarityClick(option)}
               className={`px-1 py-0.5 rounded text-xs font-medium transition-colors ${
                 selectedClarity.includes(option)
-                  ? "text-blue-600 bg-blue-50"
+                  ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border: selectedClarity.includes(option)
-                  ? "0.25px solid #2563eb"
+                  ? "0.25px solid #FAF6EB"
                   : "0.25px solid #f9e8cd",
                 minHeight: "28px",
                 minWidth: "48px",
@@ -169,13 +166,14 @@ export default function ClarityFilter({
           ))}
         </div>
 
-        {/* Special Options (3EX, EX-, VG+, VG-) */}
-        <div className="grid grid-cols-4 gap-1 mb-3 mt-3">
+        {/* Special Options (3EX, EX-, VG+, VG-) - Smaller size with reduced width */}
+        <div className="grid grid-cols-5 gap-1 mb-3 mt-3 items-center">
+          <div style={{ minWidth: "35px" }}></div>
           {STATIC_SPECIAL_OPTIONS.map((option) => (
             <button
               key={option}
               onClick={() => handleSpecialClick(option)}
-              className={`px-1.5 py-1 rounded text-xs font-semibold transition-colors ${
+              className={`px-1 py-0.5 rounded transition-colors ${
                 selectedSpecial === option
                   ? "text-white"
                   : "text-white hover:opacity-80"
@@ -184,7 +182,10 @@ export default function ClarityFilter({
                 backgroundColor:
                   selectedSpecial === option ? "#00003390" : "#000033",
                 border: "none",
-                minHeight: "32px",
+                minHeight: "25px",
+                fontSize: "10px",
+                fontWeight: "600",
+                maxWidth: "55px",
               }}
             >
               {option}
@@ -192,117 +193,264 @@ export default function ClarityFilter({
           ))}
         </div>
 
-        {/* Cut Options */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <div
-            className="px-1.5 py-1 rounded text-xs font-semibold text-white"
-            style={{
-              backgroundColor: "#000033",
-              minWidth: "35px",
-              minHeight: "26px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            Cut :
+        {/* Cut, Polish, Symmetry - Row layout with labels on left */}
+        <div className="flex flex-col gap-4">
+          {/* Cut Row */}
+          <div className="grid grid-cols-5 gap-1 items-center">
+            <div
+              className="px-1.5 py-0.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              style={{
+                backgroundColor: "#000033",
+                minHeight: "24px",
+                minWidth: "35px",
+              }}
+            >
+              Cut
+            </div>
+            <button
+              onClick={() => handleCutClick("EX")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedCut === "EX"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedCut === "EX"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              EX
+            </button>
+            <button
+              onClick={() => handleCutClick("VG")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedCut === "VG"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedCut === "VG"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              VG
+            </button>
+            <button
+              onClick={() => handleCutClick("GD")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedCut === "GD"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedCut === "GD"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              GD
+            </button>
+            <button
+              onClick={() => handleCutClick("FR")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedCut === "FR"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedCut === "FR"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              FR
+            </button>
           </div>
-          <div className="flex gap-1.5 flex-1">
-            {STATIC_CUT_OPTIONS.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleCutClick(option)}
-                className={`px-1.5 py-1 rounded text-xs font-medium transition-colors flex-1 ${
-                  selectedCut === option
-                    ? "text-blue-600 bg-blue-50"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
-                style={{
-                  border:
-                    selectedCut === option
-                      ? "0.25px solid #2563eb"
-                      : "0.25px solid #f9e8cd",
-                  minHeight: "26px",
-                }}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        {/* Polish Options */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <div
-            className="px-1.5 py-1 rounded text-xs font-semibold text-white"
-            style={{
-              backgroundColor: "#000033",
-              minWidth: "35px",
-              minHeight: "26px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            Pol :
+          {/* Polish Row */}
+          <div className="grid grid-cols-5 gap-1 items-center">
+            <div
+              className="px-1.5 py-0.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              style={{
+                backgroundColor: "#000033",
+                minHeight: "24px",
+                minWidth: "35px",
+              }}
+            >
+              Pol
+            </div>
+            <button
+              onClick={() => handlePolishClick("EX")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedPolish === "EX"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedPolish === "EX"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              EX
+            </button>
+            <button
+              onClick={() => handlePolishClick("VG")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedPolish === "VG"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedPolish === "VG"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              VG
+            </button>
+            <button
+              onClick={() => handlePolishClick("GD")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedPolish === "GD"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedPolish === "GD"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              GD
+            </button>
+            <button
+              onClick={() => handlePolishClick("FR")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedPolish === "FR"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedPolish === "FR"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              FR
+            </button>
           </div>
-          <div className="flex gap-1.5 flex-1">
-            {STATIC_POLISH_OPTIONS.map((option) => (
-              <button
-                key={option}
-                onClick={() => handlePolishClick(option)}
-                className={`px-1.5 py-1 rounded text-xs font-medium transition-colors flex-1 ${
-                  selectedPolish === option
-                    ? "text-blue-600 bg-blue-50"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
-                style={{
-                  border:
-                    selectedPolish === option
-                      ? "0.25px solid #2563eb"
-                      : "0.25px solid #f9e8cd",
-                  minHeight: "26px",
-                }}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        {/* Symmetry Options */}
-        <div className="flex items-center gap-1.5">
-          <div
-            className="px-1.5 py-1 rounded text-xs font-semibold text-white"
-            style={{
-              backgroundColor: "#000033",
-              minWidth: "35px",
-              minHeight: "26px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            Sym :
-          </div>
-          <div className="flex gap-1.5 flex-1">
-            {STATIC_SYMMETRY_OPTIONS.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleSymmetryClick(option)}
-                className={`px-1.5 py-1 rounded text-xs font-medium transition-colors flex-1 ${
-                  selectedSymmetry === option
-                    ? "text-blue-600 bg-blue-50"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                }`}
-                style={{
-                  border:
-                    selectedSymmetry === option
-                      ? "0.25px solid #2563eb"
-                      : "0.25px solid #f9e8cd",
-                  minHeight: "26px",
-                }}
-              >
-                {option}
-              </button>
-            ))}
+          {/* Symmetry Row */}
+          <div className="grid grid-cols-5 gap-1 items-center">
+            <div
+              className="px-1.5 py-0.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              style={{
+                backgroundColor: "#000033",
+                minHeight: "24px",
+                minWidth: "35px",
+              }}
+            >
+              Sym
+            </div>
+            <button
+              onClick={() => handleSymmetryClick("EX")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedSymmetry === "EX"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedSymmetry === "EX"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              EX
+            </button>
+            <button
+              onClick={() => handleSymmetryClick("VG")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedSymmetry === "VG"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedSymmetry === "VG"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              VG
+            </button>
+            <button
+              onClick={() => handleSymmetryClick("GD")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedSymmetry === "GD"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedSymmetry === "GD"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              GD
+            </button>
+            <button
+              onClick={() => handleSymmetryClick("FR")}
+              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                selectedSymmetry === "FR"
+                  ? "text-gray-800 bg-[#FAF6EB]"
+                  : "bg-white text-gray-700 hover:bg-gray-50"
+              }`}
+              style={{
+                border:
+                  selectedSymmetry === "FR"
+                    ? "0.25px solid #FAF6EB"
+                    : "0.25px solid #f9e8cd",
+                minHeight: "24px",
+                maxWidth: "55px",
+              }}
+            >
+              FR
+            </button>
           </div>
         </div>
       </div>

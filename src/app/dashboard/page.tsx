@@ -8,7 +8,7 @@ export default function DashboardPage() {
     <ProtectedRoute
       requireAuth={true}
       redirectTo="/login"
-      allowedRoles={["ADMIN"]}
+      
     >
       <main className="relative">
         <Dashboard />

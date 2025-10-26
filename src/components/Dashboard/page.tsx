@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import { 
   Package, 
-  FileText, 
-  DollarSign, 
+  FileText,  
   ShoppingCart, 
   Loader2,
   RefreshCw,
@@ -16,12 +15,13 @@ import {
   List
 } from 'lucide-react';
 import Image from 'next/image';
-import { diamondApi } from '@/lib/api';
+import { diamondApi, cartApi } from '@/lib/api';
 
 export default function AdminDashboard() {
 
   const [totalDiamonds, setTotalDiamonds] = useState(0);
   const [newlyAddedDiamonds, setNewlyAddedDiamonds] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -30,9 +30,8 @@ export default function AdminDashboard() {
   const mockStats = {
     newArrival: 25,
     priceRevised: 1234,
-    cart: 123,
     holdStone: 0,
-    upcomingList: 127
+    upcomingList: 0
   };
 
   // Mock diamond data for carousel
@@ -45,7 +44,33 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchDashboardData();
+    fetchCartCount();
+
+    // Listen for cart updates
+    const handleCartUpdate = () => {
+      fetchCartCount();
+    };
+
+    window.addEventListener('cart-updated', handleCartUpdate);
+    return () => {
+      window.removeEventListener('cart-updated', handleCartUpdate);
+    };
   }, []);
+
+  const fetchCartCount = async () => {
+    try {
+      const response = await cartApi.get();
+      console.log("Dashboard - Cart response:", response);
+
+      if (response?.success && response.data?.cart?.items) {
+        setCartCount(response.data.cart.items.length);
+      } else {
+        setCartCount(0);
+      }
+    } catch {
+      setCartCount(0);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -66,6 +91,11 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRefresh = () => {
+    fetchDashboardData();
+    fetchCartCount();
   };
 
   const nextSlide = () => {
@@ -104,7 +134,7 @@ export default function AdminDashboard() {
               />
             </div>
             <button
-              onClick={fetchDashboardData}
+              onClick={handleRefresh}
               style={{ borderColor: '#FAE9D0' }}
               className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors"
             >
@@ -130,9 +160,9 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <Gem className="w-8 h-8" />
-              <span className="text-sm opacity-80">Inventory</span>
+              <span className="text-lg opacity-80">Inventory</span>
             </div>
-            <div className="text-4xl font-bold">{totalDiamonds}</div>
+            <div className="text-4xl font-bold text-center">{totalDiamonds}</div>
           </div>
 
           {/* New Arrival Card */}
@@ -144,9 +174,9 @@ export default function AdminDashboard() {
               <div className="bg-gray-100 p-2 rounded-lg">
                 <FileText className="w-6 h-6 text-gray-600" />
               </div>
-              <span className="text-sm text-gray-600">New Arrival</span>
+              <span className="text-lg  font-semibold text-gray-900">New Arrival</span>
             </div>
-            <div className="text-4xl font-bold text-gray-900">{newlyAddedDiamonds}</div>
+            <div className="text-5xl font-bold text-gray-900 text-center">{newlyAddedDiamonds}</div>
           </div>
 
           {/* Price Revised Card */}
@@ -156,14 +186,14 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2 rounded-lg">
-                <DollarSign className="w-6 h-6 text-gray-600" />
+                
               </div>
-              <span className="text-sm text-gray-600">Price Revised</span>
+              <span className="text-lg font-semibold text-gray-900">Price Revised</span>
             </div>
-            <div className="text-4xl font-bold text-gray-900">${mockStats.priceRevised}</div>
+            <div className="text-5xl font-bold text-gray-900 text-center">0</div>
           </div>
 
-          {/* Cart Card */}
+          {/* Cart Card - Now showing real count */}
           <div 
             style={{ borderColor: '#FAE9D0' }}
             className="bg-white rounded-xl p-6 shadow-md border"
@@ -172,9 +202,9 @@ export default function AdminDashboard() {
               <div className="bg-gray-100 p-2 rounded-lg">
                 <ShoppingCart className="w-6 h-6 text-gray-600" />
               </div>
-              <span className="text-sm text-gray-600">Cart</span>
+              <span className="text-lg font-semibold text-gray-900">Cart</span>
             </div>
-            <div className="text-4xl font-bold text-gray-900">{mockStats.cart}</div>
+            <div className="text-5xl font-bold text-gray-900 text-center">{cartCount}</div>
           </div>
         </div>
 
@@ -189,9 +219,9 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <button
                   onClick={prevSlide}
-                  className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition-colors"
+                  className="p-2 rounded-full bg-[#FAE9D0]  transition-colors"
                 >
-                  <ChevronLeft className="w-6 h-6 text-yellow-600" />
+                  <ChevronLeft className="w-6 h-6 text-white" />
                 </button>
                 
                 <div className="flex gap-4 flex-1 justify-center">
@@ -203,13 +233,13 @@ export default function AdminDashboard() {
                     >
                       <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
                         <Image
-  src='/dalila_img/cut-shaps/cushion-cut-diamond.png'
-  alt="Diamond"
-  width={128}
-  height={128}
-  className="w-32 h-32"
-  unoptimized
-/>
+                          src='/dalila_img/cut-shaps/cushion-cut-diamond.png'
+                          alt="Diamond"
+                          width={128}
+                          height={128}
+                          className="w-32 h-32"
+                          unoptimized
+                        />
                       </div>
                       <div className="text-center space-y-1">
                         <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
@@ -231,9 +261,9 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition-colors"
+                  className="p-2 rounded-full  bg-[#FAE9D0]  transition-colors"
                 >
-                  <ChevronRight className="w-6 h-6 text-yellow-600" />
+                  <ChevronRight className="w-6 h-6 text-white" />
                 </button>
               </div>
             </div>
@@ -252,7 +282,7 @@ export default function AdminDashboard() {
                 </div>
                 <span className="text-lg font-semibold text-gray-900">Hold Stone</span>
               </div>
-              <div className="text-5xl font-bold text-gray-900">{mockStats.holdStone}</div>
+              <div className="text-5xl font-bold text-gray-900  text-center">{mockStats.holdStone}</div>
             </div>
 
             {/* Upcoming List Card */}
@@ -266,7 +296,7 @@ export default function AdminDashboard() {
                 </div>
                 <span className="text-lg font-semibold text-gray-900">Upcoming List</span>
               </div>
-              <div className="text-5xl font-bold text-gray-900">{mockStats.upcomingList}</div>
+              <div className="text-5xl font-bold text-gray-900  text-center">{mockStats.upcomingList}</div>
             </div>
           </div>
         </div>

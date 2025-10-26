@@ -70,13 +70,13 @@ export default function FluorFilter({
             onClick={() => handleFluorClick(option)}
             className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
               isSelected(option)
-                ? "text-blue-600 bg-blue-50"
+                ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
             style={{
               minWidth: 44,
               border: isSelected(option)
-                ? "0.25px solid #2563eb"
+                ? "0.25px solid #FAF6EB"
                 : "0.25px solid #f9e8cd",
               minHeight: "41px",
             }}

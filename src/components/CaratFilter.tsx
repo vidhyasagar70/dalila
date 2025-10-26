@@ -142,7 +142,7 @@ export default function CaratFilter({
                 onClick={() => handleRangeClick(range)}
                 className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
                   isSelected
-                    ? "text-blue-600 bg-blue-50 border border-blue-500"
+                    ? "text-gray-800 bg-[#FAF6EB] border border-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-[#f9e8cd]"
                 } min-h-[36px] min-w-[90px]`}
               >
