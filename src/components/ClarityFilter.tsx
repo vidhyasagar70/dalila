@@ -27,15 +27,15 @@ const STATIC_CLARITY_OPTIONS = [
 
 const STATIC_SPECIAL_OPTIONS = ["3EX", "EX-", "VG+", "VG-"];
 
-// Mapping of special grades to their corresponding Cut/Polish/Symmetry combinations
+// Updated mapping for special grades with arrays to support multiple values
 const SPECIAL_GRADE_MAPPING: Record<
   string,
-  { cut: string; polish: string; symmetry: string }
+  { cut: string[]; polish: string[]; symmetry: string[] }
 > = {
-  "3EX": { cut: "EX", polish: "EX", symmetry: "EX" },
-  "EX-": { cut: "EX", polish: "EX", symmetry: "VG" },
-  "VG+": { cut: "VG", polish: "VG", symmetry: "VG" },
-  "VG-": { cut: "VG", polish: "GD", symmetry: "GD" },
+  "3EX": { cut: ["EX"], polish: ["EX"], symmetry: ["EX"] },
+  "EX-": { cut: ["EX"], polish: ["EX", "VG"], symmetry: ["EX", "VG"] },
+  "VG+": { cut: ["VG"], polish: ["VG", "EX"], symmetry: ["VG", "EX"] },
+  "VG-": { cut: ["VG"], polish: ["VG", "GD"], symmetry: ["VG", "GD"] },
 };
 
 interface ClarityFilterProps {
@@ -63,6 +63,11 @@ export default function ClarityFilter({
   onPolishChange,
   onSymmetryChange,
 }: ClarityFilterProps) {
+  // Parse comma-separated strings to arrays for internal use
+  const cutArray = selectedCut ? selectedCut.split(',') : [];
+  const polishArray = selectedPolish ? selectedPolish.split(',') : [];
+  const symmetryArray = selectedSymmetry ? selectedSymmetry.split(',') : [];
+
   const handleClarityClick = (value: string) => {
     let newClarity: string[];
     if (selectedClarity.includes(value)) {
@@ -77,12 +82,12 @@ export default function ClarityFilter({
     const newSpecial = selectedSpecial === value ? "" : value;
     onSpecialChange(newSpecial);
 
-    // If a special grade is selected, automatically set Cut, Polish, and Symmetry
+    // If a special grade is selected, automatically set Cut, Polish, and Symmetry as comma-separated strings
     if (newSpecial && SPECIAL_GRADE_MAPPING[newSpecial]) {
       const { cut, polish, symmetry } = SPECIAL_GRADE_MAPPING[newSpecial];
-      onCutChange(cut);
-      onPolishChange(polish);
-      onSymmetryChange(symmetry);
+      onCutChange(cut.join(','));
+      onPolishChange(polish.join(','));
+      onSymmetryChange(symmetry.join(','));
     } else {
       // If deselecting special grade, clear the related filters
       onCutChange("");
@@ -92,8 +97,13 @@ export default function ClarityFilter({
   };
 
   const handleCutClick = (value: string) => {
-    const newCut = selectedCut === value ? "" : value;
-    onCutChange(newCut);
+    let newCutArray: string[];
+    if (cutArray.includes(value)) {
+      newCutArray = cutArray.filter((c) => c !== value);
+    } else {
+      newCutArray = [...cutArray, value];
+    }
+    onCutChange(newCutArray.join(','));
     // Clear special grade when manually changing cut
     if (selectedSpecial) {
       onSpecialChange("");
@@ -101,8 +111,13 @@ export default function ClarityFilter({
   };
 
   const handlePolishClick = (value: string) => {
-    const newPolish = selectedPolish === value ? "" : value;
-    onPolishChange(newPolish);
+    let newPolishArray: string[];
+    if (polishArray.includes(value)) {
+      newPolishArray = polishArray.filter((p) => p !== value);
+    } else {
+      newPolishArray = [...polishArray, value];
+    }
+    onPolishChange(newPolishArray.join(','));
     // Clear special grade when manually changing polish
     if (selectedSpecial) {
       onSpecialChange("");
@@ -110,8 +125,13 @@ export default function ClarityFilter({
   };
 
   const handleSymmetryClick = (value: string) => {
-    const newSymmetry = selectedSymmetry === value ? "" : value;
-    onSymmetryChange(newSymmetry);
+    let newSymmetryArray: string[];
+    if (symmetryArray.includes(value)) {
+      newSymmetryArray = symmetryArray.filter((s) => s !== value);
+    } else {
+      newSymmetryArray = [...symmetryArray, value];
+    }
+    onSymmetryChange(newSymmetryArray.join(','));
     // Clear special grade when manually changing symmetry
     if (selectedSpecial) {
       onSpecialChange("");
@@ -210,13 +230,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleCutClick("EX")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedCut === "EX"
+                cutArray.includes("EX")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedCut === "EX"
+                  cutArray.includes("EX")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -228,13 +248,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleCutClick("VG")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedCut === "VG"
+                cutArray.includes("VG")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedCut === "VG"
+                  cutArray.includes("VG")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -246,13 +266,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleCutClick("GD")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedCut === "GD"
+                cutArray.includes("GD")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedCut === "GD"
+                  cutArray.includes("GD")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -264,13 +284,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleCutClick("FR")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedCut === "FR"
+                cutArray.includes("FR")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedCut === "FR"
+                  cutArray.includes("FR")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -296,13 +316,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handlePolishClick("EX")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedPolish === "EX"
+                polishArray.includes("EX")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedPolish === "EX"
+                  polishArray.includes("EX")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -314,13 +334,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handlePolishClick("VG")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedPolish === "VG"
+                polishArray.includes("VG")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedPolish === "VG"
+                  polishArray.includes("VG")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -332,13 +352,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handlePolishClick("GD")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedPolish === "GD"
+                polishArray.includes("GD")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedPolish === "GD"
+                  polishArray.includes("GD")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -350,13 +370,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handlePolishClick("FR")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedPolish === "FR"
+                polishArray.includes("FR")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedPolish === "FR"
+                  polishArray.includes("FR")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -382,13 +402,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleSymmetryClick("EX")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedSymmetry === "EX"
+                symmetryArray.includes("EX")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedSymmetry === "EX"
+                  symmetryArray.includes("EX")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -400,13 +420,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleSymmetryClick("VG")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedSymmetry === "VG"
+                symmetryArray.includes("VG")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedSymmetry === "VG"
+                  symmetryArray.includes("VG")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -418,13 +438,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleSymmetryClick("GD")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedSymmetry === "GD"
+                symmetryArray.includes("GD")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedSymmetry === "GD"
+                  symmetryArray.includes("GD")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
@@ -436,13 +456,13 @@ export default function ClarityFilter({
             <button
               onClick={() => handleSymmetryClick("FR")}
               className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                selectedSymmetry === "FR"
+                symmetryArray.includes("FR")
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 border:
-                  selectedSymmetry === "FR"
+                  symmetryArray.includes("FR")
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
                 minHeight: "24px",
