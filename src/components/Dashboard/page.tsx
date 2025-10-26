@@ -15,10 +15,11 @@ import {
   Gem,
   List
 } from 'lucide-react';
+import Image from 'next/image';
 import { diamondApi } from '@/lib/api';
 
 export default function AdminDashboard() {
-  // Real data from API
+
   const [totalDiamonds, setTotalDiamonds] = useState(0);
   const [newlyAddedDiamonds, setNewlyAddedDiamonds] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -98,12 +99,14 @@ export default function AdminDashboard() {
               <input
                 type="text"
                 placeholder="Search"
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-96 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ borderColor: '#FAE9D0' }}
+                className="pl-10 pr-4 py-2 border rounded-lg w-96 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <button
               onClick={fetchDashboardData}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              style={{ borderColor: '#FAE9D0' }}
+              className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors"
             >
               <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
               <span className="font-medium">Refresh</span>
@@ -118,57 +121,72 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-12 gap-6">
-          {/* Left Section - Stats Cards */}
-          <div className="col-span-9">
-            {/* Top Row - 4 Cards */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
-              {/* Inventory Card - Dark Navy */}
-              <div className="bg-gradient-to-br from-blue-900 to-blue-950 rounded-xl p-6 text-white shadow-lg">
-                <div className="flex items-center justify-between mb-4">
-                  <Gem className="w-8 h-8" />
-                  <span className="text-sm opacity-80">Inventory</span>
-                </div>
-                <div className="text-4xl font-bold">{totalDiamonds}</div>
-              </div>
-
-              {/* New Arrival Card */}
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gray-100 p-2 rounded-lg">
-                    <FileText className="w-6 h-6 text-gray-600" />
-                  </div>
-                  <span className="text-sm text-gray-600">New Arrival</span>
-                </div>
-                <div className="text-4xl font-bold text-gray-900">{newlyAddedDiamonds}</div>
-              </div>
-
-              {/* Price Revised Card */}
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gray-100 p-2 rounded-lg">
-                    <DollarSign className="w-6 h-6 text-gray-600" />
-                  </div>
-                  <span className="text-sm text-gray-600">Price Revised</span>
-                </div>
-                <div className="text-4xl font-bold text-gray-900">${mockStats.priceRevised}</div>
-              </div>
-
-              {/* Cart Card */}
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-gray-100 p-2 rounded-lg">
-                    <ShoppingCart className="w-6 h-6 text-gray-600" />
-                  </div>
-                  <span className="text-sm text-gray-600">Cart</span>
-                </div>
-                <div className="text-4xl font-bold text-gray-900">{mockStats.cart}</div>
-              </div>
+        {/* First Row - 4 Stats Cards */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {/* Inventory Card - Dark Navy */}
+          <div 
+            style={{ borderColor: '#FAE9D0', backgroundColor: '#050C3A' }}
+            className="rounded-xl p-6 text-white shadow-lg border"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Gem className="w-8 h-8" />
+              <span className="text-sm opacity-80">Inventory</span>
             </div>
+            <div className="text-4xl font-bold">{totalDiamonds}</div>
+          </div>
 
-            {/* Diamond Carousel */}
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
-              <div className="flex items-center justify-between mb-4">
+          {/* New Arrival Card */}
+          <div 
+            style={{ borderColor: '#FAE9D0' }}
+            className="bg-white rounded-xl p-6 shadow-md border"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-gray-100 p-2 rounded-lg">
+                <FileText className="w-6 h-6 text-gray-600" />
+              </div>
+              <span className="text-sm text-gray-600">New Arrival</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900">{newlyAddedDiamonds}</div>
+          </div>
+
+          {/* Price Revised Card */}
+          <div 
+            style={{ borderColor: '#FAE9D0' }}
+            className="bg-white rounded-xl p-6 shadow-md border"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-gray-100 p-2 rounded-lg">
+                <DollarSign className="w-6 h-6 text-gray-600" />
+              </div>
+              <span className="text-sm text-gray-600">Price Revised</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900">${mockStats.priceRevised}</div>
+          </div>
+
+          {/* Cart Card */}
+          <div 
+            style={{ borderColor: '#FAE9D0' }}
+            className="bg-white rounded-xl p-6 shadow-md border"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-gray-100 p-2 rounded-lg">
+                <ShoppingCart className="w-6 h-6 text-gray-600" />
+              </div>
+              <span className="text-sm text-gray-600">Cart</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900">{mockStats.cart}</div>
+          </div>
+        </div>
+
+        {/* Second Row - Diamond Carousel and Right Cards */}
+        <div className="grid grid-cols-12 gap-6">
+          {/* Diamond Carousel - Left Side */}
+          <div className="col-span-9">
+            <div 
+              style={{ borderColor: '#FAE9D0' }}
+              className="bg-white rounded-xl p-6 shadow-md border"
+            >
+              <div className="flex items-center justify-between">
                 <button
                   onClick={prevSlide}
                   className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition-colors"
@@ -178,13 +196,20 @@ export default function AdminDashboard() {
                 
                 <div className="flex gap-4 flex-1 justify-center">
                   {mockDiamonds.slice(currentSlide, currentSlide + 3).map((diamond, index) => (
-                    <div key={index} className="bg-white border border-gray-200 rounded-xl p-4 w-64">
+                    <div 
+                      key={index} 
+                      style={{ borderColor: '#FAE9D0' }}
+                      className="bg-white border rounded-xl p-4 w-64"
+                    >
                       <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
-                        <img
-                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='diamondGrad'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,255,255);stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:rgb(230,240,255);stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:rgb(200,220,240);stop-opacity:1' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cpolygon points='100,20 160,80 100,180 40,80' fill='url(%23diamondGrad)' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E"
-                          alt="Diamond"
-                          className="w-32 h-32"
-                        />
+                        <Image
+  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='diamondGrad'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,255,255);stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:rgb(230,240,255);stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:rgb(200,220,240);stop-opacity:1' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cpolygon points='100,20 160,80 100,180 40,80' fill='url(%23diamondGrad)' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E"
+  alt="Diamond"
+  width={128}
+  height={128}
+  className="w-32 h-32"
+  unoptimized
+/>
                       </div>
                       <div className="text-center space-y-1">
                         <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
@@ -217,7 +242,10 @@ export default function AdminDashboard() {
           {/* Right Section - Hold Stone & Upcoming List */}
           <div className="col-span-3 space-y-6">
             {/* Hold Stone Card */}
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+            <div 
+              style={{ borderColor: '#FAE9D0' }}
+              className="bg-white rounded-xl p-6 shadow-md border"
+            >
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <Package className="w-6 h-6 text-gray-600" />
@@ -228,7 +256,10 @@ export default function AdminDashboard() {
             </div>
 
             {/* Upcoming List Card */}
-            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200">
+            <div 
+              style={{ borderColor: '#FAE9D0' }}
+              className="bg-white rounded-xl p-6 shadow-md border"
+            >
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <List className="w-6 h-6 text-gray-600" />

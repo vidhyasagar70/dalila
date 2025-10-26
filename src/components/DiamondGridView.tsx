@@ -3,8 +3,6 @@ import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
-  ChevronUp,
   Loader2,
 } from "lucide-react";
 import { diamondApi } from "@/lib/api";

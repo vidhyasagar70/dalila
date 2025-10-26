@@ -1,5 +1,5 @@
 // @/types/Diamondtable.ts
-// Complete TypeScript types for Diamond application
+
 
 export interface DiamondData {
   _id: string;
@@ -7,6 +7,8 @@ export interface DiamondData {
   SHAPE: string;
   CARATS: number;
   COLOR: string;
+  MP4?: string; 
+  HA?: string;
   CLARITY: string;
   CUT?: string;
   POL?: string;
@@ -98,5 +100,7 @@ export interface DiamondApiResponse {
 export interface CartApiResponse {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: {
+    [key: string]: unknown;
+  };
 }
