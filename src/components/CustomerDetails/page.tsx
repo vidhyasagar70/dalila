@@ -86,23 +86,24 @@ function CustomerDetailsContent() {
       try {
         // Get user from localStorage
         const userString = localStorage.getItem("user");
-        
+
         if (userString) {
           const user = JSON.parse(userString);
-          
+
           console.log("🔍 Checking customer data status...");
           console.log("User data:", user);
           console.log("Customer data exists:", !!user.customerData);
           console.log("KYC Status:", user.kycStatus);
-          
+
           // Check if customer data already exists and is complete
-          if (user.customerData && 
-              user.customerData.firstName && 
-              user.customerData.businessInfo &&
-              user.customerData.address) {
-            
+          if (
+            user.customerData &&
+            user.customerData.firstName &&
+            user.customerData.businessInfo &&
+            user.customerData.address
+          ) {
             console.log("✅ Customer data already submitted");
-            
+
             // Check KYC status
             if (user.kycStatus === "approved") {
               console.log("✅ Already approved - redirecting to home");
@@ -112,13 +113,17 @@ function CustomerDetailsContent() {
               }, 2000);
             } else if (user.kycStatus === "pending") {
               console.log("⏳ Pending approval - showing message");
-              setError("Your customer details are pending approval. Please wait for admin verification.");
+              setError(
+                "Your customer details are pending approval. Please wait for admin verification.",
+              );
               setTimeout(() => {
                 router.push("/");
               }, 3000);
             } else if (user.kycStatus === "rejected") {
               console.log("❌ Rejected - showing message");
-              setError("Your application was rejected. Please contact support.");
+              setError(
+                "Your application was rejected. Please contact support.",
+              );
               setTimeout(() => {
                 router.push("/");
               }, 3000);
@@ -136,7 +141,7 @@ function CustomerDetailsContent() {
           }
         } else {
           console.log("ℹ️ No user in localStorage - checking for email param");
-          
+
           // If no user but has email param, allow access (coming from OTP verification)
           const emailParam = searchParams.get("email");
           if (!emailParam) {
@@ -229,7 +234,8 @@ function CustomerDetailsContent() {
 
     // Website URL validation (optional, but if provided must be valid)
     if (websiteUrl.trim()) {
-      const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+      const urlRegex =
+        /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       if (!urlRegex.test(websiteUrl)) {
         setError("Please enter a valid website URL");
         return false;
@@ -255,9 +261,10 @@ function CustomerDetailsContent() {
 
       // Get email from URL params or sessionStorage
       const urlEmail = searchParams.get("email");
-      const storedEmail = typeof window !== "undefined" 
-        ? sessionStorage.getItem("pendingEmail") 
-        : null;
+      const storedEmail =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("pendingEmail")
+          : null;
       const userEmail = urlEmail || storedEmail;
 
       console.log("📧 Email for submission:", userEmail);
@@ -303,7 +310,7 @@ function CustomerDetailsContent() {
         }
 
         setSuccess(
-          "Customer details submitted successfully! Your account is pending approval. You can now login, but full access will be granted after admin approval."
+          "Customer details submitted successfully! Your account is pending approval. You can now login, but full access will be granted after admin approval.",
         );
 
         // Clear form
@@ -327,7 +334,7 @@ function CustomerDetailsContent() {
       } else {
         setError(
           response?.message ||
-            "Failed to submit customer details. Please try again."
+            "Failed to submit customer details. Please try again.",
         );
       }
     } catch (err: unknown) {
@@ -338,15 +345,20 @@ function CustomerDetailsContent() {
 
         if (errorMessage.includes("already submitted")) {
           setError(
-            "Customer details already submitted. Redirecting to login..."
+            "Customer details already submitted. Redirecting to login...",
           );
           setTimeout(() => router.push("/login"), 2000);
-        } else if (errorMessage.includes("unauthorized") || errorMessage.includes("Unauthorized")) {
+        } else if (
+          errorMessage.includes("unauthorized") ||
+          errorMessage.includes("Unauthorized")
+        ) {
           setError("Session expired. Please verify your email again.");
           setTimeout(() => {
             const emailParam = searchParams.get("email");
             if (emailParam) {
-              router.push(`/verify-otp?email=${encodeURIComponent(emailParam)}`);
+              router.push(
+                `/verify-otp?email=${encodeURIComponent(emailParam)}`,
+              );
             } else {
               router.push("/register");
             }
@@ -356,14 +368,14 @@ function CustomerDetailsContent() {
           errorMessage.includes("fetch")
         ) {
           setError(
-            "Unable to connect to server. Please check your internet connection."
+            "Unable to connect to server. Please check your internet connection.",
           );
         } else {
           setError(errorMessage || "Failed to submit. Please try again.");
         }
       } else {
         setError(
-          "Unable to connect to server. Please check your internet connection and try again."
+          "Unable to connect to server. Please check your internet connection and try again.",
         );
       }
     } finally {
@@ -453,7 +465,9 @@ function CustomerDetailsContent() {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-[#FFD166] mt-0.5 flex-shrink-0" />
-                    <span>You&apos;ll receive approval notification via email</span>
+                    <span>
+                      You&apos;ll receive approval notification via email
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle className="w-4 h-4 text-[#FFD166] mt-0.5 flex-shrink-0" />
@@ -712,8 +726,8 @@ function CustomerDetailsContent() {
                 <p className="text-xs text-blue-200 flex items-start gap-2">
                   <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>
-                    All information will be reviewed by our team. You&apos;ll receive
-                    an email notification once your account is approved.
+                    All information will be reviewed by our team. You&apos;ll
+                    receive an email notification once your account is approved.
                   </span>
                 </p>
               </div>

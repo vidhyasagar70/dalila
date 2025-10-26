@@ -1,11 +1,11 @@
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import {Maven_Pro } from "next/font/google";
+import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
-  subsets: ["latin"],  
-  weight: ["400", "500", "600", "700", "800"],  
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 

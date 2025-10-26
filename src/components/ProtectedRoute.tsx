@@ -40,7 +40,7 @@ export default function ProtectedRoute({
       if (!userStr || !token) {
         const cookies = document.cookie.split(";");
         const tokenCookie = cookies.find((c) =>
-          c.trim().startsWith("authToken=")
+          c.trim().startsWith("authToken="),
         );
         const userCookie = cookies.find((c) => c.trim().startsWith("user="));
 
@@ -66,7 +66,9 @@ export default function ProtectedRoute({
         try {
           const user = JSON.parse(userStr);
           userRole = user.role || null;
-          hasCustomerData = !!(user.customerData && Object.keys(user.customerData).length > 0);
+          hasCustomerData = !!(
+            user.customerData && Object.keys(user.customerData).length > 0
+          );
           kycStatus = user.kycStatus || null;
           userStatus = user.status || null; // NEW: Extract status
         } catch (e) {
@@ -99,7 +101,7 @@ export default function ProtectedRoute({
       if (redirectIfAuth && isLoggedIn) {
         setIsAuthorized(false);
         setIsChecking(false);
-        
+
         // If admin, go to dashboard
         if (userRole === "ADMIN") {
           router.push("/");
@@ -117,7 +119,12 @@ export default function ProtectedRoute({
 
       // Case 3: Route requires customer data but user hasn't submitted it
       // (Except for admin users who don't need customer data)
-      if (requireAuth && requireCustomerData && userRole !== "ADMIN" && !hasCustomerData) {
+      if (
+        requireAuth &&
+        requireCustomerData &&
+        userRole !== "ADMIN" &&
+        !hasCustomerData
+      ) {
         setIsAuthorized(false);
         setIsChecking(false);
         router.push("/customer-details");
@@ -130,7 +137,7 @@ export default function ProtectedRoute({
         if (kycStatus !== "approved") {
           setIsAuthorized(false);
           setIsChecking(false);
-          
+
           if (kycStatus === "pending") {
             router.push("/pending-approval");
           } else if (kycStatus === "rejected") {
@@ -187,7 +194,17 @@ export default function ProtectedRoute({
       window.removeEventListener("user-logged-in", handleAuthChange);
       window.removeEventListener("user-logged-out", handleAuthChange);
     };
-  }, [pathname, requireAuth, redirectIfAuth, redirectTo, allowedRoles, requireCustomerData, requireKycApproval, requireApprovedStatus, router]);
+  }, [
+    pathname,
+    requireAuth,
+    redirectIfAuth,
+    redirectTo,
+    allowedRoles,
+    requireCustomerData,
+    requireKycApproval,
+    requireApprovedStatus,
+    router,
+  ]);
 
   if (isChecking) {
     return (

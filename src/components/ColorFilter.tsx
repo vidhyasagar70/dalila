@@ -1,98 +1,103 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import {Maven_Pro } from "next/font/google";
+import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
-  subsets: ["latin"],  
-  weight: ["400", "500", "600", "700", "800"],  
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
 const STATIC_COLOR_OPTIONS = [
-    { label: "All", value: "ALL" },
-    { label: "D", value: "D" },
-    { label: "E", value: "E" },
-    { label: "F", value: "F" },
-    { label: "G", value: "G" },
-    { label: "H", value: "H" },
-    { label: "I", value: "I" },
-    { label: "J", value: "J" },
-    { label: "K", value: "K" },
-    { label: "L", value: "L" },
-    { label: "M", value: "M" },
-    { label: "N", value: "N" },
-    { label: "N-Z", value: "N-Z" },
-    { label: "Fancy", value: "FANCY" },
+  { label: "D", value: "D" },
+  { label: "E", value: "E" },
+  { label: "F", value: "F" },
+  { label: "G", value: "G" },
+  { label: "H", value: "H" },
+  { label: "I", value: "I" },
+  { label: "J", value: "J" },
+  { label: "K", value: "K" },
+  { label: "L", value: "L" },
+  { label: "M", value: "M" },
+  { label: "N", value: "N" },
+  { label: "N-Z", value: "N-Z" },
+  { label: "Fancy", value: "FANCY" },
 ];
 
 interface ColorFilterProps {
-    selectedColor: string;
-    onColorChange: (color: string) => void;
+  selectedColor: string[]; // Changed to array
+  onColorChange: (color: string[]) => void; // Changed to array
 }
 
 export default function ColorFilter({
-    selectedColor,
-    onColorChange,
+  selectedColor,
+  onColorChange,
 }: ColorFilterProps) {
-    const handleColorClick = (color: string) => {
-        if (selectedColor === color) {
-            onColorChange("");
-        } else {
-            onColorChange(color);
-        }
-    };
+  const handleColorClick = (color: string) => {
+    const currentColors = Array.isArray(selectedColor) ? selectedColor : [];
 
-    return (
-        <div className="">
-            <div
-                className="flex items-center gap-1.5 px-2.5 py-1.5"
-                style={{ backgroundColor: "#000033" }}
-            >
-                <Image
-                    src="/filtersicon/color.png"
-                    alt="Color"
-                    width={18}
-                    height={18}
-                    className="w-4.5 h-4.5"
-                />
-                <span
-                    className={`${mavenPro.className} text-base font-semibold text-white`}
-                >
-                    Color
-                </span>
-            </div>
+    if (currentColors.includes(color)) {
+      // Remove color if already selected
+      onColorChange(currentColors.filter((c) => c !== color));
+    } else {
+      // Add color to selection
+      onColorChange([...currentColors, color]);
+    }
+  };
 
-            <div
-                className="grid grid-cols-5 gap-1 p-1.5 bg-white"
-                style={{
-                    border: "0.25px solid #f9e8cd",
-                    borderTop: "none",
-                }}
-            >
-                {STATIC_COLOR_OPTIONS.map((option) => (
-                    <button
-                        key={option.value}
-                        onClick={() => handleColorClick(option.value)}
-                        className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
-                            selectedColor === option.value
-                                ? "text-blue-600 bg-blue-50"
-                                : "bg-white text-gray-700 hover:bg-gray-50"
-                        }`}
-                        style={{
-                            minWidth: 44,
-                            border:
-                                selectedColor === option.value
-                                    ? "0.25px solid #2563eb"
-                                    : "0.25px solid #f9e8cd",
-                            minHeight: "41px",
-                        }}
-                    >
-                        {option.label}
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
+  const isSelected = (color: string) => {
+    return Array.isArray(selectedColor) && selectedColor.includes(color);
+  };
+
+  return (
+    <div className="">
+      <div
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
+        style={{ backgroundColor: "#000033" }}
+      >
+        <Image
+          src="/filtersicon/color.png"
+          alt="Color"
+          width={18}
+          height={18}
+          className="w-4.5 h-4.5"
+        />
+        <span
+          className={`${mavenPro.className} text-base font-semibold text-white`}
+        >
+          Color
+        </span>
+      </div>
+      <div
+        className="grid grid-cols-5 gap-1 p-1.5 bg-white"
+        style={{
+          border: "0.25px solid #f9e8cd",
+          borderTop: "none",
+        }}
+      >
+        {STATIC_COLOR_OPTIONS.map((option) => (
+          <button
+            key={option.value}
+            onClick={() => handleColorClick(option.value)}
+            className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+              isSelected(option.value)
+                ? "text-blue-600 bg-blue-50"
+                : "bg-white text-gray-700 hover:bg-gray-50"
+            }`}
+            style={{
+              minWidth: 44,
+              border: isSelected(option.value)
+                ? "0.25px solid #2563eb"
+                : "0.25px solid #f9e8cd",
+              minHeight: "41px",
+            }}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }

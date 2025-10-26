@@ -3,16 +3,16 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DiamondStockTableWithFilter from "@/components/DiamondStockTableWithFilter";
 
 export default function Inventory() {
-    return (
-        <ProtectedRoute
-            requireAuth={true}
-            redirectTo="/login"
-            allowedRoles={["USER", "ADMIN"]}
-            requireApprovedStatus={true} 
-        >
-            <main className="relative">
-                <DiamondStockTableWithFilter />
-            </main>
-        </ProtectedRoute>
-    );
+  return (
+    <ProtectedRoute
+      requireAuth={true}
+      redirectTo="/login"
+      allowedRoles={["USER", "ADMIN"]}
+      requireApprovedStatus={true}
+    >
+      <main className="relative">
+        <DiamondStockTableWithFilter />
+      </main>
+    </ProtectedRoute>
+  );
 }

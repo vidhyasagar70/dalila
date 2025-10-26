@@ -11,11 +11,11 @@ type AnimationProps = {
 
 const getAnimationProperties = (
   direction: string,
-  distance: number
+  distance: number,
 ): [AnimationProps, AnimationProps] => {
   let initial: AnimationProps = {};
   let animate: AnimationProps = {};
-  
+
   // New variables for scale-related initial values
   const scaleFactorIn = 1 - distance / 100; // e.g., if distance=20, scaleFactorIn=0.8
   const scaleFactorOut = 1 + distance / 100; // e.g., if distance=20, scaleFactorOut=1.2

@@ -1,23 +1,37 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+} from "lucide-react";
 import { diamondApi } from "@/lib/api";
 import type {
   DiamondData,
-  TableProps,
+  GridViewProps,
   FilterParams,
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
+import { Maven_Pro } from "next/font/google";
 
-const DiamondGridView: React.FC<TableProps> = ({
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const DiamondGridView: React.FC<GridViewProps> = ({
   pageSize = 20,
   onRowClick,
   searchTerm = "",
-  selectedShape = "",
-  selectedColor = "",
+  selectedShape = [],
+  selectedColor = [],
   selectedMinCarat = "",
   selectedMaxCarat = "",
-  selectedFluor = "",
+  selectedFluor = [],
   selectedClarity = [],
   selectedCut = "",
   selectedPolish = "",
@@ -28,6 +42,9 @@ const DiamondGridView: React.FC<TableProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
+
+  // Calculate items per page based on grid layout (5 columns)
+  const itemsPerPage = rowsPerPage;
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
     null,
   );
@@ -40,14 +57,14 @@ const DiamondGridView: React.FC<TableProps> = ({
 
         const hasSearchTerm = searchTerm && searchTerm.trim();
         const hasShapeFilter =
-          selectedShape && selectedShape.trim() && selectedShape !== "ALL";
+          Array.isArray(selectedShape) && selectedShape.length > 0;
         const hasColorFilter =
-          selectedColor && selectedColor.trim() && selectedColor !== "ALL";
+          Array.isArray(selectedColor) && selectedColor.length > 0;
         const hasCaratFilter =
           (selectedMinCarat && selectedMinCarat.trim()) ||
           (selectedMaxCarat && selectedMaxCarat.trim());
         const hasFluorFilter =
-          selectedFluor && selectedFluor.trim() && selectedFluor !== "ALL";
+          Array.isArray(selectedFluor) && selectedFluor.length > 0;
         const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
         const hasCutFilter = selectedCut && selectedCut.trim();
         const hasPolishFilter = selectedPolish && selectedPolish.trim();
@@ -66,9 +83,15 @@ const DiamondGridView: React.FC<TableProps> = ({
 
         let response;
         if (hasAnyFilter) {
-          const filters: FilterParams = {};
-          if (hasShapeFilter) filters.shape = selectedShape.trim();
-          if (hasColorFilter) filters.color = selectedColor.trim();
+          const filters: FilterParams = {
+            page: 1,
+            limit: 10000,
+          };
+
+          if (hasShapeFilter) {
+            filters.shape = selectedShape.join(",");
+          }
+          if (hasColorFilter) filters.color = selectedColor.join(",");
           if (hasCaratFilter) {
             if (selectedMinCarat && selectedMinCarat.trim()) {
               filters.minCarats = parseFloat(selectedMinCarat);
@@ -77,15 +100,18 @@ const DiamondGridView: React.FC<TableProps> = ({
               filters.maxCarats = parseFloat(selectedMaxCarat);
             }
           }
-          if (hasFluorFilter) filters.fluorescence = selectedFluor.trim();
+          if (hasFluorFilter) filters.fluorescence = selectedFluor.join(",");
           if (hasClarityFilter) filters.clarity = selectedClarity.join(",");
           if (hasCutFilter) filters.cut = selectedCut.trim();
           if (hasPolishFilter) filters.polish = selectedPolish.trim();
           if (hasSymmetryFilter) filters.symmetry = selectedSymmetry.trim();
           if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
 
+          console.log("Calling API with filters:", filters);
           response = await diamondApi.search(filters);
+          console.log("API response:", response);
         } else {
+          console.log("Fetching all diamonds (no filters)");
           response = await diamondApi.getAllNoPagination();
         }
 
@@ -101,9 +127,11 @@ const DiamondGridView: React.FC<TableProps> = ({
           } else {
             diamonds = [];
           }
+          console.log(`Fetched ${diamonds.length} diamonds`);
           setData(diamonds);
           setCurrentPage(1);
         } else {
+          console.log("No data received from API");
           setData([]);
         }
       } catch (err) {
@@ -131,10 +159,10 @@ const DiamondGridView: React.FC<TableProps> = ({
     selectedSymmetry,
   ]);
 
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   const paginatedData = data.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
   );
 
   // Loading state
@@ -144,7 +172,8 @@ const DiamondGridView: React.FC<TableProps> = ({
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#050c3a] mx-auto mb-4" />
           <p className="text-gray-600">
-            {searchTerm || selectedShape
+            {searchTerm ||
+            (Array.isArray(selectedShape) && selectedShape.length > 0)
               ? `Searching diamonds...`
               : "Loading diamonds..."}
           </p>
@@ -173,18 +202,53 @@ const DiamondGridView: React.FC<TableProps> = ({
         <div className="text-center">
           <p className="text-gray-600 text-lg mb-3">
             {searchTerm ||
-            selectedShape ||
-            selectedColor ||
+            (Array.isArray(selectedShape) && selectedShape.length > 0) ||
+            (Array.isArray(selectedColor) && selectedColor.length > 0) ||
             selectedClarity.length > 0 ||
             selectedCut ||
             selectedPolish ||
             selectedSymmetry ||
-            selectedFluor ||
+            (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
             selectedMinCarat ||
             selectedMaxCarat
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
+          {((Array.isArray(selectedShape) && selectedShape.length > 0) ||
+            (Array.isArray(selectedColor) && selectedColor.length > 0) ||
+            selectedClarity.length > 0 ||
+            selectedCut ||
+            selectedPolish ||
+            selectedSymmetry ||
+            (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
+            selectedMinCarat ||
+            selectedMaxCarat ||
+            searchTerm) && (
+            <div className="text-sm text-gray-500 mt-2 space-y-1">
+              {Array.isArray(selectedShape) && selectedShape.length > 0 && (
+                <p>Shape: {selectedShape.join(", ")}</p>
+              )}
+              {Array.isArray(selectedColor) && selectedColor.length > 0 && (
+                <p>Color: {selectedColor.join(", ")}</p>
+              )}
+              {selectedClarity.length > 0 && (
+                <p>Clarity: {selectedClarity.join(", ")}</p>
+              )}
+              {selectedCut && <p>Cut: {selectedCut}</p>}
+              {selectedPolish && <p>Polish: {selectedPolish}</p>}
+              {selectedSymmetry && <p>Symmetry: {selectedSymmetry}</p>}
+              {Array.isArray(selectedFluor) && selectedFluor.length > 0 && (
+                <p>Fluorescence: {selectedFluor.join(", ")}</p>
+              )}
+              {(selectedMinCarat || selectedMaxCarat) && (
+                <p>
+                  Carat Range: {selectedMinCarat || "0"} -{" "}
+                  {selectedMaxCarat || "∞"}
+                </p>
+              )}
+              {searchTerm && <p>Search: &quot;{searchTerm}&quot;</p>}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -192,30 +256,33 @@ const DiamondGridView: React.FC<TableProps> = ({
 
   return (
     <>
-      <div className="w-full flex flex-col bg-white p-6">
+      <div
+        className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
+      >
         {/* Active Filters Display */}
         {(searchTerm ||
-          selectedShape ||
-          selectedColor ||
+          (Array.isArray(selectedShape) && selectedShape.length > 0) ||
+          (Array.isArray(selectedColor) && selectedColor.length > 0) ||
           selectedClarity.length > 0 ||
           selectedCut ||
           selectedPolish ||
           selectedSymmetry ||
-          selectedFluor ||
+          (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
           selectedMinCarat ||
           selectedMaxCarat) && (
-          <div className="mb-4 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
+          <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
             <span className="font-medium">Active Filters:</span>
-            {selectedShape && selectedShape !== "ALL" && (
+            {Array.isArray(selectedShape) && selectedShape.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Shape: {selectedShape}
+                Shape: {selectedShape.join(", ")}
               </span>
             )}
-            {selectedColor && selectedColor !== "ALL" && (
+            {Array.isArray(selectedColor) && selectedColor.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Color: {selectedColor}
+                Color: {selectedColor.join(", ")}
               </span>
             )}
+
             {selectedClarity.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Clarity: {selectedClarity.join(", ")}
@@ -236,9 +303,9 @@ const DiamondGridView: React.FC<TableProps> = ({
                 Symmetry: {selectedSymmetry}
               </span>
             )}
-            {selectedFluor && selectedFluor !== "ALL" && (
+            {Array.isArray(selectedFluor) && selectedFluor.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Fluorescence: {selectedFluor}
+                Fluorescence: {selectedFluor.join(", ")}
               </span>
             )}
             {(selectedMinCarat || selectedMaxCarat) && (
@@ -254,194 +321,253 @@ const DiamondGridView: React.FC<TableProps> = ({
           </div>
         )}
 
-        {/* Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 mb-6">
-          {paginatedData.map((diamond) => (
-            <div
-              key={diamond._id}
-              className="bg-white rounded-lg hover:shadow-lg transition-all duration-300 overflow-hidden relative"
-              style={{ border: "1px solid #f9e8cd" }}
-            >
-              {/* Heart Icon */}
-              <button className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white rounded-full transition-colors">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#666"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+        <div className="bg-white shadow-sm flex flex-col rounded-lg">
+          {/* Grid Container */}
+          <div className="p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              {paginatedData.map((diamond) => (
+                <div
+                  key={diamond._id}
+                  className="bg-white rounded-lg hover:shadow-lg transition-all duration-300 overflow-hidden relative border border-[#f9e8cd]"
                 >
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-
-              {/* Image Container */}
-              <div className="relative w-full h-40 bg-gray-50 p-3">
-                {diamond.REAL_IMAGE ? (
-                  <Image
-                    src={diamond.REAL_IMAGE}
-                    alt={diamond.STONE_NO}
-                    fill
-                    className="object-contain p-2"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23f3f4f6' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                    No Image
-                  </div>
-                )}
-              </div>
-
-              {/* Diamond Info */}
-              <div className="px-4 pb-4 pt-2 space-y-1 bg-white">
-                {/* Shape */}
-                <div className="text-sm">
-                  <span className="font-semibold text-gray-900">Shape: </span>
-                  <span className="text-gray-700">{diamond.SHAPE}</span>
-                </div>
-
-                {/* Carat */}
-                <div className="text-sm">
-                  <span className="font-semibold text-gray-900">Carat: </span>
-                  <span className="text-gray-700">
-                    {diamond.CARATS || diamond.SIZE}
-                  </span>
-                </div>
-
-                {/* Color */}
-                <div className="text-sm">
-                  <span className="font-semibold text-gray-900">Color: </span>
-                  <span className="text-gray-700">{diamond.COLOR}</span>
-                </div>
-
-                {/* Clarity */}
-                <div className="text-sm mb-3">
-                  <span className="font-semibold text-gray-900">Clarity: </span>
-                  <span className="text-gray-700">{diamond.CLARITY}</span>
-                </div>
-
-                {/* View Details Button */}
-                <div className="flex justify-center">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (onRowClick) {
-                        onRowClick(diamond);
-                      } else {
-                        setSelectedDiamond(diamond);
-                      }
-                    }}
-                    className="mt-2 px-4 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 rounded"
-                    style={{ border: "1px solid #d1d5db" }}
-                  >
-                    View Details
+                  {/* Heart Icon */}
+                  <button className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white rounded-full transition-colors">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#666"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
                   </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
 
-        {/* Footer/Pagination */}
-        <div
-          className="px-6 py-4 bg-white rounded-lg shadow-sm flex items-center justify-between"
-          style={{
-            background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
-            border: "0.5px solid #f9e8cd",
-          }}
-        >
-          <div className="text-sm text-gray-700 font-medium">
-            Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
-            {Math.min(currentPage * rowsPerPage, data.length)} of {data.length}{" "}
-            diamonds
+                  {/* Image Container */}
+                  <div className="relative w-full h-40 bg-gray-50 p-3">
+                    {diamond.REAL_IMAGE ? (
+                      <Image
+                        src={diamond.REAL_IMAGE}
+                        alt={diamond.STONE_NO}
+                        fill
+                        className="object-contain p-2"
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23f3f4f6' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Diamond Info */}
+                  <div className="px-4 pb-4 pt-2 space-y-1 bg-white">
+                    <div className="text-sm">
+                      <span className="font-semibold text-gray-900">
+                        Shape:{" "}
+                      </span>
+                      <span className="text-gray-700">{diamond.SHAPE}</span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold text-gray-900">
+                        Carat:{" "}
+                      </span>
+                      <span className="text-gray-700">{diamond.CARATS}</span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="font-semibold text-gray-900">
+                        Color:{" "}
+                      </span>
+                      <span className="text-gray-700">{diamond.COLOR}</span>
+                    </div>
+                    <div className="text-sm mb-3">
+                      <span className="font-semibold text-gray-900">
+                        Clarity:{" "}
+                      </span>
+                      <span className="text-gray-700">{diamond.CLARITY}</span>
+                    </div>
+
+                    <div className="flex justify-center">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onRowClick) {
+                            onRowClick(diamond);
+                          } else {
+                            setSelectedDiamond(diamond);
+                          }
+                        }}
+                        className="mt-2 px-4 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 rounded border border-gray-300"
+                      >
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-700 font-medium">
-                Items per page
-              </span>
-              <select
-                className="border rounded px-3 py-2 text-sm text-gray-800 bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#070b3a]"
-                style={{ border: "0.5px solid #f9e8cd" }}
-                value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-              >
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="30">30</option>
-                <option value="50">50</option>
-              </select>
+          {/* Pagination Footer - Same as DiamondStockTable */}
+          <div
+            className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
+            style={{
+              background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
+            }}
+          >
+            {/* Left side - Results count */}
+            <div className="text-sm text-gray-700 font-medium">
+              Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+              {Math.min(currentPage * itemsPerPage, data.length)} of{" "}
+              {data.length} diamonds
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="p-2 rounded hover:bg-white/50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                style={{ border: "0.5px solid #f9e8cd" }}
-              >
-                <ChevronLeft size={18} className="text-[#070b3a]" />
-              </button>
+            {/* Right side - Pagination controls */}
+            <div className="flex items-center gap-4">
+              {/* Rows per page selector */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-700 font-medium">
+                  Items per page
+                </span>
+                <select
+                  className="border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all"
+                  value={rowsPerPage}
+                  onChange={(e) => {
+                    setRowsPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
 
-              <span className="text-sm text-gray-700 font-medium px-3">
-                Page {currentPage} of {totalPages}
-              </span>
+              {/* Page navigation */}
+              <div className="flex items-center gap-2">
+                {/* Previous button */}
+                <button
+                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                  title="Previous page"
+                >
+                  <ChevronLeft size={16} className="text-[#070b3a]" />
+                </button>
 
-              {[...Array(Math.min(5, totalPages))].map((_, i) => {
-                const page = i + 1;
-                return (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-                      currentPage === page
-                        ? "bg-[#070b3a] text-white"
-                        : "text-gray-700 hover:bg-white/50"
-                    }`}
-                    style={{ border: "0.5px solid #f9e8cd" }}
-                  >
-                    {page}
-                  </button>
-                );
-              })}
+                {/* Page info */}
+                <span className="text-sm text-gray-700 font-medium px-2">
+                  Page {currentPage} of {totalPages}
+                </span>
 
-              {totalPages > 5 && (
-                <>
-                  <span className="text-sm text-gray-600 px-1">...</span>
-                  <button
-                    onClick={() => setCurrentPage(totalPages)}
-                    className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-                      currentPage === totalPages
-                        ? "bg-[#070b3a] text-white"
-                        : "text-gray-700 hover:bg-white/50"
-                    }`}
-                    style={{ border: "0.5px solid #f9e8cd" }}
-                  >
-                    {totalPages}
-                  </button>
-                </>
-              )}
+                {/* Dynamic page numbers */}
+                {(() => {
+                  const pageNumbers = [];
+                  const maxVisiblePages = 5;
 
-              <button
-                onClick={() =>
-                  setCurrentPage(Math.min(totalPages, currentPage + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="p-2 rounded hover:bg-white/50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                style={{ border: "0.5px solid #f9e8cd" }}
-              >
-                <ChevronRight size={18} className="text-[#070b3a]" />
-              </button>
+                  if (totalPages <= maxVisiblePages + 2) {
+                    for (let i = 1; i <= totalPages; i++) {
+                      pageNumbers.push(i);
+                    }
+                  } else {
+                    pageNumbers.push(1);
+
+                    let startPage = Math.max(2, currentPage - 1);
+                    let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+                    if (currentPage <= 3) {
+                      startPage = 2;
+                      endPage = maxVisiblePages;
+                    }
+
+                    if (currentPage >= totalPages - 2) {
+                      startPage = totalPages - maxVisiblePages + 1;
+                      endPage = totalPages - 1;
+                    }
+
+                    if (startPage > 2) {
+                      pageNumbers.push("start-ellipsis");
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                      pageNumbers.push(i);
+                    }
+
+                    if (endPage < totalPages - 1) {
+                      pageNumbers.push("end-ellipsis");
+                    }
+
+                    pageNumbers.push(totalPages);
+                  }
+
+                  return pageNumbers.map((page) => {
+                    if (page === "start-ellipsis") {
+                      return (
+                        <button
+                          key="start-ellipsis"
+                          onClick={() =>
+                            setCurrentPage(Math.max(1, currentPage - 5))
+                          }
+                          className="w-7 h-7 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                          title="Jump back 5 pages"
+                        >
+                          ...
+                        </button>
+                      );
+                    }
+                    if (page === "end-ellipsis") {
+                      return (
+                        <button
+                          key="end-ellipsis"
+                          onClick={() =>
+                            setCurrentPage(
+                              Math.min(totalPages, currentPage + 5),
+                            )
+                          }
+                          className="w-7 h-7 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                          title="Jump forward 5 pages"
+                        >
+                          ...
+                        </button>
+                      );
+                    }
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page as number)}
+                        className={`w-7 h-7 rounded text-sm font-medium transition-colors ${
+                          currentPage === page
+                            ? "bg-[#070b3a] text-white shadow-sm"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        title={`Go to page ${page}`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  });
+                })()}
+
+                {/* Next button */}
+                <button
+                  onClick={() =>
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                  title="Next page"
+                >
+                  <ChevronRight size={16} className="text-[#070b3a]" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

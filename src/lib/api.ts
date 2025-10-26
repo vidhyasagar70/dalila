@@ -415,36 +415,129 @@ export const diamondApi = {
     fluorescence?: string;
     searchTerm?: string;
   }) => {
-    const mappedFilters: Record<string, string | number | boolean> = {};
+    // Build query parameters manually to handle arrays properly
+    const queryParams = new URLSearchParams();
 
-    if (filters.shape) mappedFilters.SHAPE = filters.shape;
-    if (filters.color) mappedFilters.COLOR = filters.color;
-    if (filters.clarity) mappedFilters.CLARITY = filters.clarity;
-    if (filters.cut) mappedFilters.CUT = filters.cut;
-    if (filters.polish) mappedFilters.POL = filters.polish;
-    if (filters.symmetry) mappedFilters.SYM = filters.symmetry;
+    // Handle SHAPE as multiple parameters if it contains comma-separated values
+    if (filters.shape) {
+      const shapes = filters.shape
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      shapes.forEach((shape) => {
+        queryParams.append("SHAPE", shape);
+      });
+    }
 
-    if (filters.minCarats !== undefined)
-      mappedFilters.CARATS_MIN = filters.minCarats;
-    if (filters.maxCarats !== undefined)
-      mappedFilters.CARATS_MAX = filters.maxCarats;
+    // Handle COLOR
+    if (filters.color) {
+      const colors = filters.color
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+      colors.forEach((color) => {
+        queryParams.append("COLOR", color);
+      });
+    }
 
-    if (filters.minPrice) mappedFilters.MIN_PRICE = filters.minPrice;
-    if (filters.maxPrice) mappedFilters.MAX_PRICE = filters.maxPrice;
-    if (filters.lab) mappedFilters.LAB = filters.lab;
-    if (filters.location) mappedFilters.LOCATION = filters.location;
-    if (filters.stage) mappedFilters.STAGE = filters.stage;
-    if (filters.page) mappedFilters.page = filters.page;
-    if (filters.fluorescence) mappedFilters.FLOUR = filters.fluorescence;
-    if (filters.limit) mappedFilters.limit = filters.limit;
-    if (filters.searchTerm) mappedFilters.searchTerm = filters.searchTerm;
+    // Handle CLARITY as multiple parameters if it contains comma-separated values
+    if (filters.clarity) {
+      const clarities = filters.clarity
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+      clarities.forEach((clarity) => {
+        queryParams.append("CLARITY", clarity);
+      });
+    }
 
-    console.log("Search API called with filters:", mappedFilters);
+    // Handle CUT
+    if (filters.cut) {
+      queryParams.append("CUT", filters.cut);
+    }
 
-    return api.get<PaginationData<Diamond>>(
-      "/api/diamonds/search",
-      mappedFilters as FetchParams,
-    );
+    // Handle POLISH
+    if (filters.polish) {
+      queryParams.append("POL", filters.polish);
+    }
+
+    // Handle SYMMETRY
+    if (filters.symmetry) {
+      queryParams.append("SYM", filters.symmetry);
+    }
+
+    // Handle FLUORESCENCE
+    if (filters.fluorescence) {
+      const fluorescences = filters.fluorescence
+        .split(",")
+        .map((f) => f.trim())
+        .filter(Boolean);
+      fluorescences.forEach((fluor) => {
+        queryParams.append("FLOUR", fluor);
+      });
+    }
+
+    // Handle CARAT RANGE
+    if (filters.minCarats !== undefined) {
+      queryParams.append("CARATS_MIN", filters.minCarats.toString());
+    }
+    if (filters.maxCarats !== undefined) {
+      queryParams.append("CARATS_MAX", filters.maxCarats.toString());
+    }
+
+    // Handle PRICE RANGE
+    if (filters.minPrice !== undefined) {
+      queryParams.append("MIN_PRICE", filters.minPrice.toString());
+    }
+    if (filters.maxPrice !== undefined) {
+      queryParams.append("MAX_PRICE", filters.maxPrice.toString());
+    }
+
+    // Handle LAB
+    if (filters.lab) {
+      queryParams.append("LAB", filters.lab);
+    }
+
+    // Handle LOCATION
+    if (filters.location) {
+      queryParams.append("LOCATION", filters.location);
+    }
+
+    // Handle STAGE
+    if (filters.stage) {
+      queryParams.append("STAGE", filters.stage);
+    }
+
+    // Handle SEARCH TERM
+    if (filters.searchTerm) {
+      queryParams.append("searchTerm", filters.searchTerm);
+    }
+
+    // Handle PAGINATION
+    if (filters.page !== undefined) {
+      queryParams.append("page", filters.page.toString());
+    }
+    if (filters.limit !== undefined) {
+      queryParams.append("limit", filters.limit.toString());
+    }
+
+    // Build the final URL
+    const queryString = queryParams.toString();
+    const endpoint = queryString
+      ? `/api/diamonds/search?${queryString}`
+      : "/api/diamonds/search";
+
+    console.log("Search API called with URL:", endpoint);
+    console.log("Query params:", queryString);
+
+    // Use axios directly instead of api.get to have full control
+    return apiClient
+      .get<ApiResponse<PaginationData<Diamond>>>(endpoint)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Search error:", error);
+        throw error;
+      });
   },
 
   // Get filter options
@@ -754,8 +847,6 @@ export const userApi = {
     }
   },
 
-
-
   updateEmail: (newEmail: string) =>
     api.put<{ message: string }>("/api/users", "update-email", { newEmail }),
 
@@ -763,89 +854,91 @@ export const userApi = {
     api.put<{ message: string }>("/api/users", "update-password", data),
 
   submitCustomerData: async (data: {
-  email?: string; // Add email parameter
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  countryCode: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-  businessInfo: {
-    companyName: string;
-    businessType: string;
-    vatNumber: string;
-    websiteUrl?: string;
-  };
-}) => {
-  try {
-    // Try to get token
-    const token = getAuthToken();
-    console.log("🔑 Token check:", token ? "EXISTS" : "MISSING");
-    
-    // Prepare headers
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json'
+    email?: string; // Add email parameter
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    countryCode: string;
+    address: {
+      street: string;
+      city: string;
+      state: string;
+      postalCode: string;
+      country: string;
     };
-    
-    if (token && token.trim() !== "") {
-      headers['Authorization'] = `Bearer ${token}`;
-      console.log("✅ Adding Authorization header");
-    } else {
-      console.warn("⚠️ No token found, proceeding without auth header");
-    }
+    businessInfo: {
+      companyName: string;
+      businessType: string;
+      vatNumber: string;
+      websiteUrl?: string;
+    };
+  }) => {
+    try {
+      // Try to get token
+      const token = getAuthToken();
+      console.log("🔑 Token check:", token ? "EXISTS" : "MISSING");
 
-    console.log("📤 Submitting customer data:");
-    console.log(JSON.stringify(data, null, 2));
-
-    const response = await apiClient.post<ApiResponse<{
-      message: string;
-      user: User;
-    }>>("/api/users/customer-data", data, { headers });
-
-    console.log("✅ Response:", response.data);
-    return response.data;
-  } catch (error: unknown) {
-    console.error("❌ Submit error:", error);
-    
-    if (error && typeof error === "object" && "response" in error) {
-      const axiosError = error as {
-        response?: { 
-          data?: { error?: string; message?: string };
-          status?: number;
-        };
+      // Prepare headers
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
       };
-      
-      console.error("Status:", axiosError.response?.status);
-      console.error("Error data:", axiosError.response?.data);
-      
-      // Provide more detailed error message
-      const errorMessage = axiosError.response?.data?.error || 
-                          axiosError.response?.data?.message ||
-                          "Failed to submit customer data";
-      
-      console.error("Error message:", errorMessage);
-      throw new Error(errorMessage);
-    }
-    throw error;
-  }
-},
 
-getProfile: async () => {
-  try {
-    const response = await apiClient.get<ApiResponse<{ user: User }>>(
-      "/api/users/profile"
-    );
-    return response.data;
-  } catch (error: unknown) {
-    console.error("Get profile error:", error);
-    throw error;
-  }
-},
+      if (token && token.trim() !== "") {
+        headers["Authorization"] = `Bearer ${token}`;
+        console.log("✅ Adding Authorization header");
+      } else {
+        console.warn("⚠️ No token found, proceeding without auth header");
+      }
+
+      console.log("📤 Submitting customer data:");
+      console.log(JSON.stringify(data, null, 2));
+
+      const response = await apiClient.post<
+        ApiResponse<{
+          message: string;
+          user: User;
+        }>
+      >("/api/users/customer-data", data, { headers });
+
+      console.log("✅ Response:", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("❌ Submit error:", error);
+
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: {
+            data?: { error?: string; message?: string };
+            status?: number;
+          };
+        };
+
+        console.error("Status:", axiosError.response?.status);
+        console.error("Error data:", axiosError.response?.data);
+
+        // Provide more detailed error message
+        const errorMessage =
+          axiosError.response?.data?.error ||
+          axiosError.response?.data?.message ||
+          "Failed to submit customer data";
+
+        console.error("Error message:", errorMessage);
+        throw new Error(errorMessage);
+      }
+      throw error;
+    }
+  },
+
+  getProfile: async () => {
+    try {
+      const response =
+        await apiClient.get<ApiResponse<{ user: User }>>("/api/users/profile");
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Get profile error:", error);
+      throw error;
+    }
+  },
 
   // Admin endpoints
   getAllUsers: (params?: FetchParams) =>

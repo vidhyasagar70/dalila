@@ -1,9 +1,11 @@
-// types.ts
+// @/types/Diamondtable.ts
+// Complete TypeScript types for Diamond application
+
 export interface DiamondData {
   _id: string;
   STONE_NO: string;
   SHAPE: string;
-  CARATS: string;
+  CARATS: number;
   COLOR: string;
   CLARITY: string;
   CUT?: string;
@@ -12,68 +14,89 @@ export interface DiamondData {
   FLOUR?: string;
   LAB: string;
   REPORT_NO: string;
-  RAP_PRICE: string;
-  DISC_PER: string;
-  NET_RATE: string;
-  NET_VALUE: string;
+  REPORT_DATE?: string;
   MEASUREMENTS?: string;
+  TABLE_PER?: number;
+  DEPTH_PER?: number;
+  CROWN_ANGLE?: number;
+  CROWN_HEIGHT?: number;
+  PAVILLION_ANGLE?: number;
+  PAVILLION_HEIGHT?: number;
+  RAP_PRICE: number;
+  DISC_PER: number;
+  NET_RATE: number;
+  NET_VALUE: number;
   LOCATION: string;
   STAGE: string;
-  REAL_IMAGE?: string;
-  MP4?: string;
-  CERTI_PDF?: string;
-  DNA?: string;
-  TABLE_PER?: string;
-  DEPTH_PER?: string;
-  CROWN_ANGLE?: string;
-  CROWN_HEIGHT?: string;
-  PAVILLION_ANGLE?: string;
-  PAVILLION_HEIGHT?: string;
+  TINGE?: string;
+  CN?: string;
+  CW?: string;
+  SN?: string;
+  SW?: string;
+  KEY_TO_SYMBOLS?: string;
   COMMENTS_1?: string;
   REPORT_COMMENTS?: string;
-  TINGE?: string;
-  KEY_TO_SYMBOLS?: string;
-  REPORT_DATE?: string;
-  SW?: string;
-  SN?: string;
-  CW?: string;
-  CN?: string;
-  BRANCH?: string;
-  HEART_IMAGE?: string;
-  ARROW_IMAGE?: string;
-  HA?: string;
-  CLARITY_CHARACTERISTICS?: string;
-  SIZE?: number;
-}
-
-export interface TableProps {
-  pageSize?: number;
-  onRowClick?: (row: DiamondData) => void;
-  searchTerm?: string;
-  selectedShape?: string;
-  selectedColor?: string;
-  selectedMinCarat?: string;
-  selectedMaxCarat?: string;
-  selectedFluor?: string;
-  selectedClarity?: string[];
-  selectedCut?: string;
-  selectedPolish?: string;
-  selectedSymmetry?: string;
-  onSelectionChange?: (
-    selectedIds: string[],
-    selectedDiamonds: DiamondData[],
-  ) => void;
+  REAL_IMAGE?: string;
+  SIZE?: number; // Alternative for CARATS in some components
 }
 
 export interface FilterParams {
-  shape?: string;
+  shape?: string; // Comma-separated string: "ROUND,PEAR,OVAL"
   color?: string;
+  limit?: number;
+  page?: number;
   minCarats?: number;
   maxCarats?: number;
   fluorescence?: string;
-  clarity?: string;
+  clarity?: string; // Comma-separated string
   cut?: string;
   polish?: string;
   symmetry?: string;
   searchTerm?: string;
+}
+
+// For DiamondStockTable component
+export interface TableProps {
+  pageSize?: number;
+  onRowClick?: (diamond: DiamondData) => void;
+  searchTerm?: string;
+  selectedShape?: string[];
+  selectedColor?: string[];
+  selectedMinCarat?: string;
+  selectedMaxCarat?: string;
+  selectedFluor?: string[];
+  selectedClarity?: string[];
+  selectedCut?: string;
+  selectedPolish?: string;
+  selectedSymmetry?: string;
+  onSelectionChange?: (selectedIds: string[], diamonds: DiamondData[]) => void;
+}
+
+// For DiamondGridView component
+export interface GridViewProps {
+  pageSize?: number;
+  onRowClick?: (diamond: DiamondData) => void;
+  searchTerm?: string;
+  selectedShape?: string[];
+  selectedColor?: string[];
+  selectedMinCarat?: string;
+  selectedMaxCarat?: string;
+  selectedFluor?: string[];
+  selectedClarity?: string[];
+  selectedCut?: string;
+  selectedPolish?: string;
+  selectedSymmetry?: string;
+}
+
+// API Response types
+export interface DiamondApiResponse {
+  success: boolean;
+  data?: DiamondData[] | { diamonds: DiamondData[] };
+  message?: string;
+}
+
+export interface CartApiResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
 }

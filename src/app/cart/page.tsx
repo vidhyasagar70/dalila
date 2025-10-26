@@ -104,37 +104,39 @@ export default function CartPage() {
     fetchCartItems();
   }, []);
 
- const fetchCartItems = async () => {
-  try {
-    setIsLoading(true);
-    setError(null);
+  const fetchCartItems = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    const response = await cartApi.get();
+      const response = await cartApi.get();
 
-    if (response?.success && response.data?.cart?.items) {
-      const items = (response.data.cart.items as ApiCartItem[]).map((item) => ({
-        stoneNo: item.stoneNo,
-        addedAt: item.addedAt,
-        _id: item._id,
-        diamond: {
-          _id: item.diamond._id || item._id || item.stoneNo,
-          STONE_NO: item.diamond.STONE_NO || item.stoneNo,
-          ...item.diamond,
-        } as CartDiamondData,
-      }));
-      
-      setCartItems(items);
-    } else {
+      if (response?.success && response.data?.cart?.items) {
+        const items = (response.data.cart.items as ApiCartItem[]).map(
+          (item) => ({
+            stoneNo: item.stoneNo,
+            addedAt: item.addedAt,
+            _id: item._id,
+            diamond: {
+              _id: item.diamond._id || item._id || item.stoneNo,
+              STONE_NO: item.diamond.STONE_NO || item.stoneNo,
+              ...item.diamond,
+            } as CartDiamondData,
+          }),
+        );
+
+        setCartItems(items);
+      } else {
+        setCartItems([]);
+      }
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+      setError("Failed to load cart items. Please try again.");
       setCartItems([]);
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err) {
-    console.error("Error fetching cart:", err);
-    setError("Failed to load cart items. Please try again.");
-    setCartItems([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const handleRemoveSelected = async () => {
     if (selectedItems.size === 0) return;
@@ -378,17 +380,6 @@ export default function CartPage() {
     router.push("/inventory");
   };
 
-  // const handlePlaceOrder = () => {
-  //   if (selectedItems.size === 0) {
-  //     setError("Please select at least one item to place order");
-  //     setTimeout(() => setError(null), 3000);
-  //     return;
-  //   }
-
-  //   const selectedStoneNumbers = Array.from(selectedItems);
-  //   router.push(`/quotation?stones=${selectedStoneNumbers.join(",")}`);
-  // };
-
   // Pagination
   const totalPages = Math.ceil(cartItems.length / itemsPerPage);
   const paginatedItems = cartItems.slice(
@@ -421,11 +412,13 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf6eb] pt-32 pb-16">
+      <div className="min-h-screen bg-[#faf6eb] dark:bg-[#faf6eb] pt-32 pb-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-12 h-12 text-[#c89e3a] animate-spin mb-4" />
-            <p className="text-[#060c3c] text-lg">Loading your cart...</p>
+            <p className="text-[#060c3c] dark:text-[#060c3c] text-lg">
+              Loading your cart...
+            </p>
           </div>
         </div>
       </div>
@@ -434,11 +427,15 @@ export default function CartPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-[#faf6eb] pt-32 pb-16">
+      <div className="min-h-screen bg-[#faf6eb] dark:bg-[#faf6eb] pt-32 pb-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center py-20">
-            <h1 className="text-3xl font-bold text-[#060c3c] mb-4">My Cart</h1>
-            <p className="text-[#060c3c]/60 mb-6">Your cart is empty</p>
+            <h1 className="text-3xl font-bold text-[#060c3c] dark:text-[#060c3c] mb-4">
+              My Cart
+            </h1>
+            <p className="text-[#060c3c]/60 dark:text-[#060c3c]/60 mb-6">
+              Your cart is empty
+            </p>
             <button
               onClick={handleAddItem}
               className="px-6 py-3 bg-[#c89e3a] text-white rounded-lg hover:bg-[#b08830] transition-colors"
@@ -452,23 +449,25 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen  pt-32 pb-16 mt-10">
+    <div className="min-h-screen bg-white dark:bg-white pt-32 pb-16 mt-10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#060c3c] mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#060c3c] dark:text-[#060c3c] mb-2">
             My Cart
           </h1>
         </div>
 
         {/* Success Message */}
         {successMessage && (
-          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
-            <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
-            <p className="text-green-700">{successMessage}</p>
+          <div className="mb-6 p-4 bg-green-500/10 dark:bg-green-500/10 border border-green-500/30 dark:border-green-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
+            <Check className="w-5 h-5 text-green-600 dark:text-green-600 flex-shrink-0" />
+            <p className="text-green-700 dark:text-green-700">
+              {successMessage}
+            </p>
             <button
               onClick={() => setSuccessMessage(null)}
-              className="ml-auto text-green-600 hover:text-green-700"
+              className="ml-auto text-green-600 dark:text-green-600 hover:text-green-700 dark:hover:text-green-700"
             >
               <X className="w-5 h-5" />
             </button>
@@ -477,12 +476,12 @@ export default function CartPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-            <p className="text-red-700">{error}</p>
+          <div className="mb-6 p-4 bg-red-500/10 dark:bg-red-500/10 border border-red-500/30 dark:border-red-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-600 flex-shrink-0" />
+            <p className="text-red-700 dark:text-red-700">{error}</p>
             <button
               onClick={() => setError(null)}
-              className="ml-auto text-red-600 hover:text-red-700"
+              className="ml-auto text-red-600 dark:text-red-600 hover:text-red-700 dark:hover:text-red-700"
             >
               <X className="w-5 h-5" />
             </button>
@@ -490,11 +489,11 @@ export default function CartPage() {
         )}
 
         {/* Action Buttons */}
-        <div className="mb-4 flex flex-wrap items-center gap-0">
+        <div className="mb-4 flex flex-wrap items-center gap-0 bg-white dark:bg-white">
           <button
             onClick={handleRemoveSelected}
             disabled={selectedItems.size === 0 || isRemoving !== null}
-            className="flex items-center gap-2 px-4 py-2.5 text-[#151C48] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+            className="flex items-center gap-2 px-4 py-2.5 text-[#151C48] dark:text-[#151C48] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200 dark:border-gray-200"
           >
             <Trash2 className="w-4 h-4" />
             <span className="text-sm font-medium">Remove from cart</span>
@@ -502,7 +501,7 @@ export default function CartPage() {
           <button
             onClick={handleExportToExcel}
             disabled={selectedItems.size === 0}
-            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200 dark:border-gray-200"
           >
             <Download className="w-4 h-4" />
             <span className="text-sm font-medium">Export to excel</span>
@@ -510,7 +509,7 @@ export default function CartPage() {
           <button
             onClick={handleCompare}
             disabled={selectedItems.size === 0}
-            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200 dark:border-gray-200"
           >
             <GitCompare className="w-4 h-4" />
             <span className="text-sm font-medium">Compare stone</span>
@@ -518,7 +517,7 @@ export default function CartPage() {
           <button
             onClick={handleEnquire}
             disabled={selectedItems.size === 0 || isEmailSending}
-            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isEmailSending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -530,11 +529,11 @@ export default function CartPage() {
             </span>
           </button>
 
-          <div className="ml-auto flex items-center gap-0 border-l border-gray-200">
+          <div className="ml-auto flex items-center gap-0 border-l border-gray-200 dark:border-gray-200">
             <button
               onClick={handleExportToExcel}
               disabled={selectedItems.size === 0}
-              className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200"
+              className="p-2.5 px-4 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200 dark:border-gray-200"
               title="Export to excel"
             >
               <Download className="w-5 h-5" />
@@ -542,7 +541,7 @@ export default function CartPage() {
             <button
               onClick={handleEnquire}
               disabled={selectedItems.size === 0 || isEmailSending}
-              className="p-2.5 px-4 text-[#050C3A] hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="p-2.5 px-4 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               title="Enquire"
             >
               {isEmailSending ? (
@@ -555,12 +554,12 @@ export default function CartPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white border border-[#060c3c]/10 rounded-lg overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-white border border-[#060c3c]/10 dark:border-[#060c3c]/10 rounded-lg overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#060c3c] text-white">
+              <thead className="bg-[#060c3c] dark:bg-[#060c3c] text-white dark:text-white">
                 <tr>
-                  <th className="px-4 py-3 text-left border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     <input
                       type="checkbox"
                       checked={
@@ -575,52 +574,52 @@ export default function CartPage() {
                       }}
                     />
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Image
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Pct No
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Location
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Report No
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Lab
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Shape
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Carat
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Color
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Purty
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Cut
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Pol
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Rap.($)
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Length
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Width
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     Depth
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD]">
+                  <th className="px-4 py-3 text-left text-sm font-medium border-b border-[#F9E8CD] dark:border-[#F9E8CD]">
                     $/Total
                   </th>
                 </tr>
@@ -629,7 +628,7 @@ export default function CartPage() {
                 {paginatedItems.map((item, idx) => (
                   <tr
                     key={item._id}
-                    className={`${idx % 2 === 0 ? "bg-white" : "bg-[#faf6eb]"} hover:bg-[#060c3c]/5 transition-colors border-b border-[#F9E8CD]`}
+                    className={`${idx % 2 === 0 ? "bg-white dark:bg-white" : "bg-[#faf6eb] dark:bg-[#faf6eb]"} hover:bg-[#060c3c]/5 dark:hover:bg-[#060c3c]/5 transition-colors border-b border-[#F9E8CD] dark:border-[#F9E8CD]`}
                   >
                     <td className="px-4 py-3">
                       <input
@@ -644,7 +643,7 @@ export default function CartPage() {
                       />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="w-12 h-12 bg-[#060c3c]/10 rounded overflow-hidden">
+                      <div className="w-12 h-12 bg-[#060c3c]/10 dark:bg-[#060c3c]/10 rounded overflow-hidden">
                         {item.diamond.REAL_IMAGE ? (
                           <Image
                             src={item.diamond.REAL_IMAGE}
@@ -658,55 +657,55 @@ export default function CartPage() {
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[#060c3c]/50 text-xs">
+                          <div className="w-full h-full flex items-center justify-center text-[#060c3c]/50 dark:text-[#060c3c]/50 text-xs">
                             No img
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.stoneNo}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.LOCATION || "BE"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.REPORT_NO || "N/A"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.LAB || "GIA"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.SHAPE || "ROUND"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.CARATS || "0.00"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.COLOR || "F"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.CLARITY || "N/A"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.CUT || "N/A"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.POL || "N/A"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {formatCurrency(item.diamond.RAP_PRICE)}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {getMeasurement(item.diamond.MEASUREMENTS, 0)}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {getMeasurement(item.diamond.MEASUREMENTS, 1)}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c]">
+                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
                       {item.diamond.DEPTH_PER || "N/A"}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#c89e3a] font-semibold">
+                    <td className="px-4 py-3 text-sm text-[#c89e3a] dark:text-[#c89e3a] font-semibold">
                       {formatCurrency(item.diamond.NET_VALUE)}
                     </td>
                   </tr>
@@ -716,12 +715,12 @@ export default function CartPage() {
           </div>
 
           {/* Pagination Footer */}
-          <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-[#F9E8CD]">
+          <div className="bg-white dark:bg-white px-6 py-4 flex items-center justify-between border-t border-[#F9E8CD] dark:border-[#F9E8CD]">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="w-7 h-7 flex items-center justify-center text-[#060c3c] dark:text-[#060c3c] hover:bg-[#060c3c]/5 dark:hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -736,8 +735,8 @@ export default function CartPage() {
                     onClick={() => setCurrentPage(page)}
                     className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
                       currentPage === page
-                        ? "bg-[#060c3c] text-white"
-                        : "text-[#060c3c] hover:bg-[#060c3c]/5"
+                        ? "bg-[#060c3c] dark:bg-[#060c3c] text-white dark:text-white"
+                        : "text-[#060c3c] dark:text-[#060c3c] hover:bg-[#060c3c]/5 dark:hover:bg-[#060c3c]/5"
                     }`}
                   >
                     {page}
@@ -746,13 +745,15 @@ export default function CartPage() {
 
                 {totalPages > 10 && (
                   <>
-                    <span className="text-[#060c3c]/50 px-2 text-xs">...</span>
+                    <span className="text-[#060c3c]/50 dark:text-[#060c3c]/50 px-2 text-xs">
+                      ...
+                    </span>
                     <button
                       onClick={() => setCurrentPage(totalPages)}
                       className={`min-w-[28px] h-7 px-2 flex items-center justify-center rounded text-xs font-medium transition-colors ${
                         currentPage === totalPages
-                          ? "bg-[#060c3c] text-white"
-                          : "text-[#060c3c] hover:bg-[#060c3c]/5"
+                          ? "bg-[#060c3c] dark:bg-[#060c3c] text-white dark:text-white"
+                          : "text-[#060c3c] dark:text-[#060c3c] hover:bg-[#060c3c]/5 dark:hover:bg-[#060c3c]/5"
                       }`}
                     >
                       {totalPages}
@@ -766,40 +767,28 @@ export default function CartPage() {
                   setCurrentPage(Math.min(totalPages, currentPage + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="w-7 h-7 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="w-7 h-7 flex items-center justify-center text-[#060c3c] dark:text-[#060c3c] hover:bg-[#060c3c]/5 dark:hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* <button
-                onClick={handleAddItem}
-                className="px-6 py-2 bg-white border border-[#060c3c]/20 text-[#060c3c] rounded hover:bg-[#060c3c]/5 transition-colors font-medium"
-              >
-                ADD ITEM
-              </button>
-              <button
-                onClick={handlePlaceOrder}
-                disabled={selectedItems.size === 0}
-                className="px-6 py-2 bg-[#050C3A] text-white rounded hover:bg-[#050C3A]/90 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                PLACE ORDER
-              </button> */}
+              {/* Placeholder for future buttons */}
             </div>
           </div>
         </div>
 
         {/* Selected Total */}
         {selectedItems.size > 0 && (
-          <div className="mt-6 p-4 bg-white border border-[#060c3c]/10 rounded-lg flex items-center justify-between shadow-sm">
-            <span className="text-[#060c3c] text-lg">
+          <div className="mt-6 p-4 bg-white dark:bg-white border border-[#060c3c]/10 dark:border-[#060c3c]/10 rounded-lg flex items-center justify-between shadow-sm">
+            <span className="text-[#060c3c] dark:text-[#060c3c] text-lg">
               Selected Items:{" "}
-              <span className="font-semibold text-[#c89e3a]">
+              <span className="font-semibold text-[#c89e3a] dark:text-[#c89e3a]">
                 {selectedItems.size}
               </span>
             </span>
-            <span className="text-[#c89e3a] text-xl font-bold">
+            <span className="text-[#c89e3a] dark:text-[#c89e3a] text-xl font-bold">
               Total: {formatCurrency(calculateTotal().toString())}
             </span>
           </div>
@@ -808,14 +797,11 @@ export default function CartPage() {
 
       {/* Comparison Modal */}
       {showComparison && (
-  <DiamondComparisonPage
-    diamonds={selectedDiamondsForComparison}
-    onClose={() => setShowComparison(false)}
-  />
-)}
+        <DiamondComparisonPage
+          diamonds={selectedDiamondsForComparison}
+          onClose={() => setShowComparison(false)}
+        />
+      )}
     </div>
   );
 }
-
-
-
