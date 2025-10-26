@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                     >
                       <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
                         <Image
-  src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='diamondGrad'%3E%3Cstop offset='0%25' style='stop-color:rgb(255,255,255);stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:rgb(230,240,255);stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:rgb(200,220,240);stop-opacity:1' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cpolygon points='100,20 160,80 100,180 40,80' fill='url(%23diamondGrad)' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E"
+  src='/dalila_img/cut-shaps/cushion-cut-diamond.png'
   alt="Diamond"
   width={128}
   height={128}
