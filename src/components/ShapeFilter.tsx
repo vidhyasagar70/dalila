@@ -10,24 +10,31 @@ const mavenPro = Maven_Pro({
 });
 const STATIC_SHAPE_OPTIONS = [
   { value: "ROUND", label: "Round", image: "/shapefilter/round.png" },
-  { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
-  { value: "PEAR", label: "Pear", image: "/shapefilter/pear.png" },
-  { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
-  { value: "EMERALD", label: "Emerald", image: "/shapefilter/emerald.png" },
   { value: "OVAL", label: "Oval", image: "/shapefilter/oval.png" },
-  { value: "CUSHION", label: "Cushion", image: "/shapefilter/cushion.png" },
-  {
-    value: "TRILLIANT",
-    label: "Trilliant",
-    image: "/shapefilter/trilliant.png",
-  },
+  { value: "PEAR", label: "Pear", image: "/shapefilter/pear.png" },
+  { value: "EMERALD", label: "Emerald", image: "/shapefilter/emerald.png" },
   { value: "HEART", label: "Heart", image: "/shapefilter/Vector-heart.png" },
-  {
+ 
+  
+
+  
+  { value: "CUSHION", label: "Cushion", image: "/shapefilter/cushion.png" },
+   { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
+   { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
+   {
     value: "PRINCESS",
     label: "Princess",
     image: "/shapefilter/princess.png",
   },
   { value: "MARQUISE", label: "Marquise", image: "/shapefilter/marque.png" },
+  
+  {
+    value: "TRILLIANT",
+    label: "Trilliant",
+    image: "/shapefilter/trilliant.png",
+  },
+  
+  
   { value: "OTHER", label: "Other", image: "/shapefilter/others.png" },
 ];
 interface ShapeFilterProps {

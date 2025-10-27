@@ -51,6 +51,8 @@ export default function CaratFilter({
 
   const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    // Prevent negative values
+    if (value && parseFloat(value) < 0) return;
     setFromValue(value);
     if (value && toValue) onCaratChange(value, toValue);
     else if (!value && !toValue) onCaratChange("", "");
@@ -58,6 +60,8 @@ export default function CaratFilter({
 
   const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+    // Prevent negative values
+    if (value && parseFloat(value) < 0) return;
     setToValue(value);
     if (fromValue && value) onCaratChange(fromValue, value);
     else if (!fromValue && !value) onCaratChange("", "");
@@ -111,20 +115,24 @@ export default function CaratFilter({
             <input
               type="number"
               step="0.01"
+              min="0"
               value={fromValue}
               onChange={handleFromChange}
-              className="w-full px-2 py-1.5 text-xs rounded border border-[#f9e8cd] min-h-[36px]"
+              className="w-full px-2 py-1.5 text-xs text-gray-900 rounded border border-[#f9e8cd] min-h-[36px] focus:outline-none focus:border-[#d4b896]"
               placeholder="From"
+              style={{ color: '#111827' }}
             />
           </div>
           <div className="relative flex-1">
             <input
               type="number"
               step="0.01"
+              min="0"
               value={toValue}
               onChange={handleToChange}
-              className="w-full px-2 py-1.5 text-xs rounded border border-[#f9e8cd] min-h-[36px]"
+              className="w-full px-2 py-1.5 text-xs text-gray-900 rounded border border-[#f9e8cd] min-h-[36px] focus:outline-none focus:border-[#d4b896]"
               placeholder="To"
+              style={{ color: '#111827' }}
             />
           </div>
         </div>

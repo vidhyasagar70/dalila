@@ -68,6 +68,13 @@ export default function ClarityFilter({
   const polishArray = selectedPolish ? selectedPolish.split(',') : [];
   const symmetryArray = selectedSymmetry ? selectedSymmetry.split(',') : [];
 
+  // Prevent negative values in number inputs
+  const handleNumberInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+      e.preventDefault();
+    }
+  };
+
   const handleClarityClick = (value: string) => {
     let newClarity: string[];
     if (selectedClarity.includes(value)) {

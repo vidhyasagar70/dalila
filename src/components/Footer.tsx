@@ -23,11 +23,11 @@ export default function Footer() {
   }, []);
 
   const quickLinks = [
-    { name: "Home", href: "#" },
-    { name: "About", href: "#about" },
-    { name: "Diamond Knowledge", href: "#knowledge" },
-    { name: "Sell", href: "#sell" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/" },
+    // { name: "About", href: "/about" },
+    { name: "Diamond Knowledge", href: "/diamondKnowledge" },
+    { name: "Sell", href: "/weBuy" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const socialLinks = [
@@ -68,7 +68,7 @@ export default function Footer() {
             <div>
               <div className="mb-6">
                 <Image
-                  src="/images/logo2.png"
+                  src="/dalila_img/DalilaLogo.png"
                   alt="Dalila Diamonds Logo"
                   width={160}
                   height={64}
@@ -120,8 +120,8 @@ export default function Footer() {
             <div>
               <h4 className="text-lg font-medium mb-6">Contact Us</h4>
               <div className="space-y-3 text-white/70">
-                <p>T. +123456789</p>
-                <p>M. contact@gmail.com</p>
+                <p>+1 234 567 890</p>
+                <p>contact@dalila.com</p>
               </div>
             </div>
           </div>

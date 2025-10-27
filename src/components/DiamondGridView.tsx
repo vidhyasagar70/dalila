@@ -47,116 +47,140 @@ const DiamondGridView: React.FC<GridViewProps> = ({
     null,
   );
 
-  useEffect(() => {
-    const fetchDiamonds = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+ useEffect(() => {
+  const fetchDiamonds = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const hasSearchTerm = searchTerm && searchTerm.trim();
-        const hasShapeFilter =
-          Array.isArray(selectedShape) && selectedShape.length > 0;
-        const hasColorFilter =
-          Array.isArray(selectedColor) && selectedColor.length > 0;
-        const hasCaratFilter =
-          (selectedMinCarat && selectedMinCarat.trim()) ||
-          (selectedMaxCarat && selectedMaxCarat.trim());
-        const hasFluorFilter =
-          Array.isArray(selectedFluor) && selectedFluor.length > 0;
-        const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-        const hasCutFilter = selectedCut && selectedCut.trim();
-        const hasPolishFilter = selectedPolish && selectedPolish.trim();
-        const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+      const hasSearchTerm = searchTerm && searchTerm.trim();
+      const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
+      const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
+      const hasCaratFilter =
+        (selectedMinCarat && selectedMinCarat.trim()) ||
+        (selectedMaxCarat && selectedMaxCarat.trim());
+      const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
+      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
+      const hasCutFilter = selectedCut && selectedCut.trim();
+      const hasPolishFilter = selectedPolish && selectedPolish.trim();
+      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
 
-        const hasAnyFilter =
-          hasShapeFilter ||
-          hasColorFilter ||
-          hasSearchTerm ||
-          hasCaratFilter ||
-          hasFluorFilter ||
-          hasClarityFilter ||
-          hasCutFilter ||
-          hasPolishFilter ||
-          hasSymmetryFilter;
+      const hasAnyFilter =
+        hasShapeFilter ||
+        hasColorFilter ||
+        hasSearchTerm ||
+        hasCaratFilter ||
+        hasFluorFilter ||
+        hasClarityFilter ||
+        hasCutFilter ||
+        hasPolishFilter ||
+        hasSymmetryFilter;
 
-        let response;
-        if (hasAnyFilter) {
-          const filters: FilterParams = {
-            page: 1,
-            limit: 10000,
-          };
+      console.log("🔍 Grid View - Filter check:", {
+        hasShapeFilter,
+        hasColorFilter,
+        hasCaratFilter,
+        hasFluorFilter,
+        hasClarityFilter,
+        hasCutFilter,
+        hasPolishFilter,
+        hasSymmetryFilter,
+        fluorValues: selectedFluor,
+      });
 
-          if (hasShapeFilter) {
-            filters.shape = selectedShape.join(",");
+      let response;
+      if (hasAnyFilter) {
+        const filters: FilterParams = {
+          page: 1,
+          limit: 10000,
+        };
+
+        if (hasShapeFilter) {
+          filters.shape = selectedShape.join(",");
+        }
+        if (hasColorFilter) {
+          filters.color = selectedColor.join(",");
+        }
+        if (hasCaratFilter) {
+          if (selectedMinCarat && selectedMinCarat.trim()) {
+            filters.minCarats = parseFloat(selectedMinCarat);
           }
-          if (hasColorFilter) filters.color = selectedColor.join(",");
-          if (hasCaratFilter) {
-            if (selectedMinCarat && selectedMinCarat.trim()) {
-              filters.minCarats = parseFloat(selectedMinCarat);
-            }
-            if (selectedMaxCarat && selectedMaxCarat.trim()) {
-              filters.maxCarats = parseFloat(selectedMaxCarat);
-            }
+          if (selectedMaxCarat && selectedMaxCarat.trim()) {
+            filters.maxCarats = parseFloat(selectedMaxCarat);
           }
-          if (hasFluorFilter) filters.fluorescence = selectedFluor.join(",");
-          if (hasClarityFilter) filters.clarity = selectedClarity.join(",");
-          if (hasCutFilter) filters.cut = selectedCut.trim();
-          if (hasPolishFilter) filters.polish = selectedPolish.trim();
-          if (hasSymmetryFilter) filters.symmetry = selectedSymmetry.trim();
-          if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
-
-          console.log("Calling API with filters:", filters);
-          response = await diamondApi.search(filters);
-          console.log("API response:", response);
-        } else {
-          console.log("Fetching all diamonds (no filters)");
-          response = await diamondApi.getAllNoPagination();
+        }
+        if (hasFluorFilter) {
+          // Make sure we're passing it correctly
+          filters.fluorescence = selectedFluor.join(",");
+          console.log("Grid View - Adding fluorescence filter:", filters.fluorescence);
+        }
+        if (hasClarityFilter) {
+          filters.clarity = selectedClarity.join(",");
+        }
+        if (hasCutFilter) {
+          filters.cut = selectedCut.trim();
+        }
+        if (hasPolishFilter) {
+          filters.polish = selectedPolish.trim();
+        }
+        if (hasSymmetryFilter) {
+          filters.symmetry = selectedSymmetry.trim();
+        }
+        if (hasSearchTerm) {
+          filters.searchTerm = searchTerm.trim();
         }
 
-        if (response?.success && response.data) {
-          let diamonds: DiamondData[];
-          if (Array.isArray(response.data)) {
-            diamonds = response.data as unknown as DiamondData[];
-          } else if (
-            response.data.diamonds &&
-            Array.isArray(response.data.diamonds)
-          ) {
-            diamonds = response.data.diamonds as unknown as DiamondData[];
-          } else {
-            diamonds = [];
-          }
-          console.log(`Fetched ${diamonds.length} diamonds`);
-          setData(diamonds);
-          setCurrentPage(1);
-        } else {
-          console.log("No data received from API");
-          setData([]);
-        }
-      } catch (err) {
-        console.error("Error fetching diamonds:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch diamonds",
-        );
-        setData([]);
-      } finally {
-        setLoading(false);
+        console.log("Grid View - Calling API with filters:", filters);
+        response = await diamondApi.search(filters);
+        console.log("Grid View - API response:", response);
+      } else {
+        console.log("Grid View - Fetching all diamonds (no filters)");
+        response = await diamondApi.getAllNoPagination();
       }
-    };
 
-    fetchDiamonds();
-  }, [
-    searchTerm,
-    selectedShape,
-    selectedColor,
-    selectedMinCarat,
-    selectedMaxCarat,
-    selectedFluor,
-    selectedClarity,
-    selectedCut,
-    selectedPolish,
-    selectedSymmetry,
-  ]);
+      if (response?.success && response.data) {
+        let diamonds: DiamondData[];
+        if (Array.isArray(response.data)) {
+          diamonds = response.data as unknown as DiamondData[];
+        } else if (
+          response.data.diamonds &&
+          Array.isArray(response.data.diamonds)
+        ) {
+          diamonds = response.data.diamonds as unknown as DiamondData[];
+        } else {
+          diamonds = [];
+        }
+        console.log(`Grid View - Fetched ${diamonds.length} diamonds`);
+        setData(diamonds);
+        setCurrentPage(1);
+      } else {
+        console.log(" Grid View - No data received from API");
+        setData([]);
+      }
+    } catch (err) {
+      console.error("Grid View - Error fetching diamonds:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch diamonds"
+      );
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  fetchDiamonds();
+}, [
+  searchTerm,
+  selectedShape,
+  selectedColor,
+  selectedMinCarat,
+  selectedMaxCarat,
+  selectedFluor, 
+  selectedClarity,
+  selectedCut,
+  selectedPolish,
+  selectedSymmetry,
+]);
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const paginatedData = data.slice(
     (currentPage - 1) * itemsPerPage,

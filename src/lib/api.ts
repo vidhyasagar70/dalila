@@ -401,149 +401,139 @@ export const diamondApi = {
     api.get<{ diamonds: Diamond[] }>("/api/diamonds/all"),
 
   search: (filters: {
-    color?: string;
-    clarity?: string;
-    cut?: string;
-    shape?: string;
-    polish?: string;
-    symmetry?: string;
-    minCarats?: number;
-    maxCarats?: number;
-    minPrice?: number;
-    maxPrice?: number;
-    lab?: string;
-    location?: string;
-    stage?: string;
-    page?: number;
-    limit?: number;
-    fluorescence?: string;
-    searchTerm?: string;
-  }) => {
-    // Build query parameters manually to handle arrays properly
-    const queryParams = new URLSearchParams();
+  color?: string;
+  clarity?: string;
+  cut?: string;
+  shape?: string;
+  polish?: string;
+  symmetry?: string;
+  minCarats?: number;
+  maxCarats?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  lab?: string;
+  location?: string;
+  stage?: string;
+  page?: number;
+  limit?: number;
+  fluorescence?: string;
+  searchTerm?: string;
+}) => {
+  // Build query parameters manually to handle arrays properly with OR logic
+  const queryParams = new URLSearchParams();
 
-    // Handle SHAPE as multiple parameters if it contains comma-separated values
-    if (filters.shape) {
-      const shapes = filters.shape
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      shapes.forEach((shape) => {
-        queryParams.append("SHAPE", shape);
-      });
-    }
+  // Helper function to add multiple values as separate query parameters
+  const addMultipleParams = (paramName: string, value: string) => {
+    if (!value) return;
+    
+    const values = value
+      .split(",")
+      .map((v) => v.trim())
+      .filter(Boolean);
+    
+    // Add each value as a separate query parameter for OR logic
+    values.forEach((val) => {
+      queryParams.append(paramName, val);
+    });
+  };
 
-    // Handle COLOR
-    if (filters.color) {
-      const colors = filters.color
-        .split(",")
-        .map((c) => c.trim())
-        .filter(Boolean);
-      colors.forEach((color) => {
-        queryParams.append("COLOR", color);
-      });
-    }
+  // Handle SHAPE - multiple values = OR logic
+  if (filters.shape) {
+    addMultipleParams("SHAPE", filters.shape);
+  }
 
-    // Handle CLARITY as multiple parameters if it contains comma-separated values
-    if (filters.clarity) {
-      const clarities = filters.clarity
-        .split(",")
-        .map((c) => c.trim())
-        .filter(Boolean);
-      clarities.forEach((clarity) => {
-        queryParams.append("CLARITY", clarity);
-      });
-    }
+  // Handle COLOR - multiple values = OR logic
+  if (filters.color) {
+    addMultipleParams("COLOR", filters.color);
+  }
 
-    // Handle CUT
-    if (filters.cut) {
-      queryParams.append("CUT", filters.cut);
-    }
+  // Handle CLARITY - multiple values = OR logic
+  if (filters.clarity) {
+    addMultipleParams("CLARITY", filters.clarity);
+  }
 
-    // Handle POLISH
-    if (filters.polish) {
-      queryParams.append("POL", filters.polish);
-    }
+  // Handle CUT - multiple values = OR logic
+  if (filters.cut) {
+    addMultipleParams("CUT", filters.cut);
+  }
 
-    // Handle SYMMETRY
-    if (filters.symmetry) {
-      queryParams.append("SYM", filters.symmetry);
-    }
+  // Handle POLISH - multiple values = OR logic
+  if (filters.polish) {
+    addMultipleParams("POL", filters.polish);
+  }
 
-    // Handle FLUORESCENCE
-    if (filters.fluorescence) {
-      const fluorescences = filters.fluorescence
-        .split(",")
-        .map((f) => f.trim())
-        .filter(Boolean);
-      fluorescences.forEach((fluor) => {
-        queryParams.append("FLOUR", fluor);
-      });
-    }
+  // Handle SYMMETRY - multiple values = OR logic
+  if (filters.symmetry) {
+    addMultipleParams("SYM", filters.symmetry);
+  }
 
-    // Handle CARAT RANGE
-    if (filters.minCarats !== undefined) {
-      queryParams.append("CARATS_MIN", filters.minCarats.toString());
-    }
-    if (filters.maxCarats !== undefined) {
-      queryParams.append("CARATS_MAX", filters.maxCarats.toString());
-    }
+  // Handle FLUORESCENCE - multiple values = OR logic
+  if (filters.fluorescence) {
+    addMultipleParams("FLOUR", filters.fluorescence);
+  }
 
-    // Handle PRICE RANGE
-    if (filters.minPrice !== undefined) {
-      queryParams.append("MIN_PRICE", filters.minPrice.toString());
-    }
-    if (filters.maxPrice !== undefined) {
-      queryParams.append("MAX_PRICE", filters.maxPrice.toString());
-    }
+  // Handle CARAT RANGE
+  if (filters.minCarats !== undefined) {
+    queryParams.append("CARATS_MIN", filters.minCarats.toString());
+  }
+  if (filters.maxCarats !== undefined) {
+    queryParams.append("CARATS_MAX", filters.maxCarats.toString());
+  }
 
-    // Handle LAB
-    if (filters.lab) {
-      queryParams.append("LAB", filters.lab);
-    }
+  // Handle PRICE RANGE
+  if (filters.minPrice !== undefined) {
+    queryParams.append("MIN_PRICE", filters.minPrice.toString());
+  }
+  if (filters.maxPrice !== undefined) {
+    queryParams.append("MAX_PRICE", filters.maxPrice.toString());
+  }
 
-    // Handle LOCATION
-    if (filters.location) {
-      queryParams.append("LOCATION", filters.location);
-    }
+  // Handle LAB
+  if (filters.lab) {
+    addMultipleParams("LAB", filters.lab);
+  }
 
-    // Handle STAGE
-    if (filters.stage) {
-      queryParams.append("STAGE", filters.stage);
-    }
+  // Handle LOCATION
+  if (filters.location) {
+    addMultipleParams("LOCATION", filters.location);
+  }
 
-    // Handle SEARCH TERM
-    if (filters.searchTerm) {
-      queryParams.append("searchTerm", filters.searchTerm);
-    }
+  // Handle STAGE
+  if (filters.stage) {
+    addMultipleParams("STAGE", filters.stage);
+  }
 
-    // Handle PAGINATION
-    if (filters.page !== undefined) {
-      queryParams.append("page", filters.page.toString());
-    }
-    if (filters.limit !== undefined) {
-      queryParams.append("limit", filters.limit.toString());
-    }
+  // Handle SEARCH TERM
+  if (filters.searchTerm) {
+    queryParams.append("searchTerm", filters.searchTerm);
+  }
 
-    // Build the final URL
-    const queryString = queryParams.toString();
-    const endpoint = queryString
-      ? `/api/diamonds/search?${queryString}`
-      : "/api/diamonds/search";
+  // Handle PAGINATION
+  if (filters.page !== undefined) {
+    queryParams.append("page", filters.page.toString());
+  }
+  if (filters.limit !== undefined) {
+    queryParams.append("limit", filters.limit.toString());
+  }
 
-    console.log("Search API called with URL:", endpoint);
-    console.log("Query params:", queryString);
+  // Build the final URL
+  const queryString = queryParams.toString();
+  const endpoint = queryString
+    ? `/api/diamonds/search?${queryString}`
+    : "/api/diamonds/search";
 
-    // Use axios directly instead of api.get to have full control
-    return apiClient
-      .get<ApiResponse<PaginationData<Diamond>>>(endpoint)
-      .then((response) => response.data)
-      .catch((error) => {
-        console.error("Search error:", error);
-        throw error;
-      });
-  },
+  console.log("Search API called with URL:", endpoint);
+  console.log("Query params:", queryString);
 
+  // Use axios directly instead of api.get to have full control
+  return apiClient
+    .get<ApiResponse<PaginationData<Diamond>>>(endpoint)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Search error:", error);
+      throw error;
+    });
+},
   // Get filter options
   getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
     try {
@@ -685,7 +675,7 @@ export const userApi = {
         console.log("Extracted user:", user);
 
         if (token) {
-          console.log("✅ Token found, storing...");
+          console.log(" Token found, storing...");
           setAuthToken(token);
 
           const storedToken = getAuthToken();
@@ -694,16 +684,16 @@ export const userApi = {
             storedToken ? "EXISTS" : "MISSING",
           );
         } else {
-          console.warn("⚠️ No token found in response");
+          console.warn(" No token found in response");
         }
 
         if (user) {
-          console.log("✅ User data found:", user);
-          console.log("✅ User role:", user.role);
+          console.log(" User data found:", user);
+          console.log(" User role:", user.role);
 
           if (typeof window !== "undefined") {
             localStorage.setItem("user", JSON.stringify(user));
-            console.log("✅ User stored in localStorage");
+            console.log(" User stored in localStorage");
 
             const storedUser = localStorage.getItem("user");
             console.log(
@@ -721,11 +711,11 @@ export const userApi = {
               document.cookie = `authToken=${token}; path=/; max-age=86400; SameSite=Lax`;
             }
             document.cookie = `user=${cookieUser}; path=/; max-age=86400; SameSite=Lax`;
-            console.log("✅ Cookies set");
+            console.log("Cookies set");
             console.log("All cookies:", document.cookie);
           }
         } else {
-          console.error("❌ No user data in response");
+          console.error("No user data in response");
         }
 
         if (token) {
@@ -747,7 +737,7 @@ export const userApi = {
             ) {
               const profileUser = profileResponse.data.data.user;
               console.log(
-                "✅ Profile fetched, updating stored user with complete data",
+                " Profile fetched, updating stored user with complete data",
               );
 
               if (typeof window !== "undefined") {
@@ -763,18 +753,18 @@ export const userApi = {
             }
           } catch (profileError) {
             console.warn(
-              "⚠️ Could not fetch profile (not critical):",
+              " Could not fetch profile (not critical):",
               profileError,
             );
           }
         }
       } else {
-        console.error("❌ Login response not successful");
+        console.error(" Login response not successful");
       }
 
       return response;
     } catch (error: unknown) {
-      console.error("❌ Login error:", error);
+      console.error(" Login error:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { data?: { error?: string } };
@@ -908,9 +898,9 @@ export const userApi = {
 
       if (token && token.trim() !== "") {
         headers["Authorization"] = `Bearer ${token}`;
-        console.log("✅ Adding Authorization header");
+        console.log(" Adding Authorization header");
       } else {
-        console.warn("⚠️ No token found, proceeding without auth header");
+        console.warn(" No token found, proceeding without auth header");
       }
 
       console.log("📤 Submitting customer data:");
@@ -923,10 +913,10 @@ export const userApi = {
         }>
       >("/api/users/customer-data", data, { headers });
 
-      console.log("✅ Response:", response.data);
+      console.log(" Response:", response.data);
       return response.data;
     } catch (error: unknown) {
-      console.error("❌ Submit error:", error);
+      console.error(" Submit error:", error);
 
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {

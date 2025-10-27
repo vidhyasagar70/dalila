@@ -62,118 +62,140 @@ const DiamondStockTable: React.FC<TableProps> = ({
     text: string;
   } | null>(null);
 
-  useEffect(() => {
-    const fetchDiamonds = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+ useEffect(() => {
+  const fetchDiamonds = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const hasSearchTerm = searchTerm && searchTerm.trim();
-        const hasShapeFilter =
-          Array.isArray(selectedShape) && selectedShape.length > 0;
-        const hasColorFilter =
-          Array.isArray(selectedColor) && selectedColor.length > 0;
-        const hasCaratFilter =
-          (selectedMinCarat && selectedMinCarat.trim()) ||
-          (selectedMaxCarat && selectedMaxCarat.trim());
-        const hasFluorFilter =
-          Array.isArray(selectedFluor) && selectedFluor.length > 0;
-        const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-        const hasCutFilter = selectedCut && selectedCut.trim();
-        const hasPolishFilter = selectedPolish && selectedPolish.trim();
-        const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+      const hasSearchTerm = searchTerm && searchTerm.trim();
+      const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
+      const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
+      const hasCaratFilter =
+        (selectedMinCarat && selectedMinCarat.trim()) ||
+        (selectedMaxCarat && selectedMaxCarat.trim());
+      const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
+      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
+      const hasCutFilter = selectedCut && selectedCut.trim();
+      const hasPolishFilter = selectedPolish && selectedPolish.trim();
+      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
 
-        const hasAnyFilter =
-          hasShapeFilter ||
-          hasColorFilter ||
-          hasSearchTerm ||
-          hasCaratFilter ||
-          hasFluorFilter ||
-          hasClarityFilter ||
-          hasCutFilter ||
-          hasPolishFilter ||
-          hasSymmetryFilter;
+      const hasAnyFilter =
+        hasShapeFilter ||
+        hasColorFilter ||
+        hasSearchTerm ||
+        hasCaratFilter ||
+        hasFluorFilter ||
+        hasClarityFilter ||
+        hasCutFilter ||
+        hasPolishFilter ||
+        hasSymmetryFilter;
 
-        let response;
-        if (hasAnyFilter) {
-          const filters: FilterParams = {
-            page: 1,
-            limit: 10000,
-          };
+      console.log("🔍 Filter check:", {
+        hasShapeFilter,
+        hasColorFilter,
+        hasCaratFilter,
+        hasFluorFilter,
+        hasClarityFilter,
+        hasCutFilter,
+        hasPolishFilter,
+        hasSymmetryFilter,
+        fluorValues: selectedFluor,
+      });
 
-          if (hasShapeFilter) {
-            filters.shape = selectedShape.join(",");
+      let response;
+      if (hasAnyFilter) {
+        const filters: FilterParams = {
+          page: 1,
+          limit: 10000,
+        };
+
+        if (hasShapeFilter) {
+          filters.shape = selectedShape.join(",");
+        }
+        if (hasColorFilter) {
+          filters.color = selectedColor.join(",");
+        }
+        if (hasCaratFilter) {
+          if (selectedMinCarat && selectedMinCarat.trim()) {
+            filters.minCarats = parseFloat(selectedMinCarat);
           }
-          if (hasColorFilter) filters.color = selectedColor.join(",");
-          if (hasCaratFilter) {
-            if (selectedMinCarat && selectedMinCarat.trim()) {
-              filters.minCarats = parseFloat(selectedMinCarat);
-            }
-            if (selectedMaxCarat && selectedMaxCarat.trim()) {
-              filters.maxCarats = parseFloat(selectedMaxCarat);
-            }
+          if (selectedMaxCarat && selectedMaxCarat.trim()) {
+            filters.maxCarats = parseFloat(selectedMaxCarat);
           }
-          if (hasFluorFilter) {
-            filters.fluorescence = selectedFluor.join(",");
-          }
-          if (hasClarityFilter) filters.clarity = selectedClarity.join(",");
-          if (hasCutFilter) filters.cut = selectedCut.trim();
-          if (hasPolishFilter) filters.polish = selectedPolish.trim();
-          if (hasSymmetryFilter) filters.symmetry = selectedSymmetry.trim();
-          if (hasSearchTerm) filters.searchTerm = searchTerm.trim();
-
-          console.log("Calling API with filters:", filters);
-          response = await diamondApi.search(filters);
-          console.log("API response:", response);
-        } else {
-          console.log("Fetching all diamonds (no filters)");
-          response = await diamondApi.getAllNoPagination();
+        }
+        if (hasFluorFilter) {
+          // Make sure we're passing it correctly
+          filters.fluorescence = selectedFluor.join(",");
+          console.log("✅ Adding fluorescence filter:", filters.fluorescence);
+        }
+        if (hasClarityFilter) {
+          filters.clarity = selectedClarity.join(",");
+        }
+        if (hasCutFilter) {
+          filters.cut = selectedCut.trim();
+        }
+        if (hasPolishFilter) {
+          filters.polish = selectedPolish.trim();
+        }
+        if (hasSymmetryFilter) {
+          filters.symmetry = selectedSymmetry.trim();
+        }
+        if (hasSearchTerm) {
+          filters.searchTerm = searchTerm.trim();
         }
 
-        if (response?.success && response.data) {
-          let diamonds: DiamondData[];
-          if (Array.isArray(response.data)) {
-            diamonds = response.data as unknown as DiamondData[];
-          } else if (
-            response.data.diamonds &&
-            Array.isArray(response.data.diamonds)
-          ) {
-            diamonds = response.data.diamonds as unknown as DiamondData[];
-          } else {
-            diamonds = [];
-          }
-          console.log(`Fetched ${diamonds.length} diamonds`);
-          setData(diamonds);
-          setCurrentPage(1);
-        } else {
-          console.log("No data received from API");
-          setData([]);
-        }
-      } catch (err) {
-        console.error("Error fetching diamonds:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch diamonds",
-        );
-        setData([]);
-      } finally {
-        setLoading(false);
+        console.log("🔍 Calling API with filters:", filters);
+        response = await diamondApi.search(filters);
+        console.log("✅ API response:", response);
+      } else {
+        console.log("📋 Fetching all diamonds (no filters)");
+        response = await diamondApi.getAllNoPagination();
       }
-    };
 
-    fetchDiamonds();
-  }, [
-    searchTerm,
-    selectedShape,
-    selectedColor,
-    selectedMinCarat,
-    selectedMaxCarat,
-    selectedFluor,
-    selectedClarity,
-    selectedCut,
-    selectedPolish,
-    selectedSymmetry,
-  ]);
+      if (response?.success && response.data) {
+        let diamonds: DiamondData[];
+        if (Array.isArray(response.data)) {
+          diamonds = response.data as unknown as DiamondData[];
+        } else if (
+          response.data.diamonds &&
+          Array.isArray(response.data.diamonds)
+        ) {
+          diamonds = response.data.diamonds as unknown as DiamondData[];
+        } else {
+          diamonds = [];
+        }
+        console.log(`✅ Fetched ${diamonds.length} diamonds`);
+        setData(diamonds);
+        setCurrentPage(1);
+      } else {
+        console.log("⚠️ No data received from API");
+        setData([]);
+      }
+    } catch (err) {
+      console.error("❌ Error fetching diamonds:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch diamonds"
+      );
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  fetchDiamonds();
+}, [
+  searchTerm,
+  selectedShape,
+  selectedColor,
+  selectedMinCarat,
+  selectedMaxCarat,
+  selectedFluor, 
+  selectedClarity,
+  selectedCut,
+  selectedPolish,
+  selectedSymmetry,
+]);
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (
@@ -186,7 +208,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
     setSortConfig({ key, direction });
   };
 
-  // Sorted data
   const sortedData = useMemo(() => {
     if (!sortConfig || data.length === 0) return data;
 
@@ -314,7 +335,16 @@ const DiamondStockTable: React.FC<TableProps> = ({
     }
   };
 
-  // Loading state
+  // Handler for Stock ID click
+  const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
+    e.stopPropagation();
+    if (onRowClick) {
+      onRowClick(row);
+    } else {
+      setSelectedDiamond(row);
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
@@ -331,7 +361,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
@@ -344,7 +373,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
     );
   }
 
-  // CHANGED: Updated no data state check for array
   if (data.length === 0) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
@@ -363,7 +391,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
-          {/* CHANGED: Updated active filter display for shape array */}
           {((Array.isArray(selectedShape) && selectedShape.length > 0) ||
             (Array.isArray(selectedColor) && selectedColor.length > 0) ||
             selectedClarity.length > 0 ||
@@ -380,7 +407,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
               {Array.isArray(selectedColor) && selectedColor.length > 0 && (
                 <p>Color: {selectedColor.join(", ")}</p>
               )}
-
               {selectedClarity.length > 0 && (
                 <p>Clarity: {selectedClarity.join(", ")}</p>
               )}
@@ -390,7 +416,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
               {Array.isArray(selectedFluor) && selectedFluor.length > 0 && (
                 <p>Fluorescence: {selectedFluor.join(", ")}</p>
               )}
-
               {(selectedMinCarat || selectedMaxCarat) && (
                 <p>
                   Carat Range: {selectedMinCarat || "0"} -{" "}
@@ -410,7 +435,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
       <div
         className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
       >
-        {/* Cart Message Alert */}
         {cartMessage && (
           <div
             className={`mb-4 p-4 rounded-lg flex items-center justify-between animate-fade-in ${
@@ -444,7 +468,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
           </div>
         )}
 
-        {/* Add to Cart Button - Appears when items are selected */}
         {selectedDiamonds.length > 0 && (
           <div className="mb-4 p-4 bg-white rounded-lg shadow-sm flex items-center justify-between border border-gray-200">
             <div className="text-sm font-medium text-gray-700">
@@ -486,7 +509,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
           </div>
         )}
 
-        {/* CHANGED: Updated Active Filters Display for shape array */}
         {(searchTerm ||
           (Array.isArray(selectedShape) && selectedShape.length > 0) ||
           (Array.isArray(selectedColor) && selectedColor.length > 0) ||
@@ -509,7 +531,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 Color: {selectedColor.join(", ")}
               </span>
             )}
-
             {selectedClarity.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Clarity: {selectedClarity.join(", ")}
@@ -535,7 +556,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 Fluorescence: {selectedFluor.join(", ")}
               </span>
             )}
-
             {(selectedMinCarat || selectedMaxCarat) && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Carat: {selectedMinCarat || "0"} - {selectedMaxCarat || "∞"}
@@ -550,10 +570,8 @@ const DiamondStockTable: React.FC<TableProps> = ({
         )}
 
         <div className="bg-white shadow-sm flex flex-col rounded-lg">
-          {/* Table Container */}
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
-              {/* Header - keeping the same as before */}
               <thead
                 className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}
               >
@@ -612,7 +630,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
                       </div>
                     </button>
                   </th>
-                  {/* Rest of the headers remain the same - I'll continue with body */}
                   <th className="w-20 px-2 py-3 text-left text-[12px] font-medium">
                     Shape
                   </th>
@@ -712,25 +729,17 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 </tr>
               </thead>
 
-              {/* Body - keeping the same */}
               <tbody>
                 {paginatedData.map((row, idx) => (
                   <tr
                     key={row._id}
-                    onClick={() => {
-                      if (onRowClick) {
-                        onRowClick(row);
-                      } else {
-                        setSelectedDiamond(row);
-                      }
-                    }}
                     style={{
                       background:
                         idx % 2 === 1
                           ? "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)"
                           : "white",
                     }}
-                    className="hover:opacity-80 cursor-pointer transition-opacity"
+                    className="transition-opacity"
                   >
                     <td className="px-2 py-1 text-center">
                       <input
@@ -774,7 +783,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
                         </div>
                       </div>
                     </td>
-                    <td className="px-2 py-1 text-[12px] text-gray-700 font-medium truncate">
+                    <td 
+                      className="px-2 py-1 text-[12px] text-gray-700 font-medium truncate cursor-pointer hover:text-blue-600 hover:underline"
+                      onClick={(e) => handleStockIdClick(e, row)}
+                    >
                       {row.STONE_NO}
                     </td>
                     <td className="px-2 py-1 text-[12px] text-gray-700 truncate">
@@ -895,16 +907,13 @@ const DiamondStockTable: React.FC<TableProps> = ({
               background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
             }}
           >
-            {/* Left side - Results count */}
             <div className="text-sm text-gray-700 font-medium">
               Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
               {Math.min(currentPage * rowsPerPage, sortedData.length)} of{" "}
               {sortedData.length} diamonds
             </div>
 
-            {/* Right side - Pagination controls */}
             <div className="flex items-center gap-4">
-              {/* Rows per page selector */}
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-700 font-medium">
                   Rows per page
@@ -925,9 +934,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 </select>
               </div>
 
-              {/* Page navigation */}
               <div className="flex items-center gap-2">
-                {/* Previous button */}
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
@@ -937,56 +944,46 @@ const DiamondStockTable: React.FC<TableProps> = ({
                   <ChevronLeft size={16} className="text-[#070b3a]" />
                 </button>
 
-                {/* Page info */}
                 <span className="text-sm text-gray-700 font-medium px-2">
                   Page {currentPage} of {totalPages}
                 </span>
 
-                {/* Dynamic page numbers */}
                 {(() => {
                   const pageNumbers = [];
                   const maxVisiblePages = 5;
 
                   if (totalPages <= maxVisiblePages + 2) {
-                    // Show all pages if total is small
                     for (let i = 1; i <= totalPages; i++) {
                       pageNumbers.push(i);
                     }
                   } else {
-                    // Always show first page
                     pageNumbers.push(1);
 
                     let startPage = Math.max(2, currentPage - 1);
                     let endPage = Math.min(totalPages - 1, currentPage + 1);
 
-                    // Adjust if we're near the start
                     if (currentPage <= 3) {
                       startPage = 2;
                       endPage = maxVisiblePages;
                     }
 
-                    // Adjust if we're near the end
                     if (currentPage >= totalPages - 2) {
                       startPage = totalPages - maxVisiblePages + 1;
                       endPage = totalPages - 1;
                     }
 
-                    // Add ellipsis after first page if needed
                     if (startPage > 2) {
                       pageNumbers.push("start-ellipsis");
                     }
 
-                    // Add middle pages
                     for (let i = startPage; i <= endPage; i++) {
                       pageNumbers.push(i);
                     }
 
-                    // Add ellipsis before last page if needed
                     if (endPage < totalPages - 1) {
                       pageNumbers.push("end-ellipsis");
                     }
 
-                    // Always show last page
                     pageNumbers.push(totalPages);
                   }
 
@@ -1038,7 +1035,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
                   });
                 })()}
 
-                {/* Next button */}
                 <button
                   onClick={() =>
                     setCurrentPage(Math.min(totalPages, currentPage + 1))
@@ -1054,7 +1050,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
           </div>
         </div>
       </div>
-      {/* Detail Modal */}
       {selectedDiamond && (
         <DiamondDetailView
           diamond={selectedDiamond}
