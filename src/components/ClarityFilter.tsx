@@ -82,9 +82,9 @@ export default function ClarityFilter({
 
     if (newSpecial && SPECIAL_GRADE_MAPPING[newSpecial]) {
       const { cut, polish, symmetry } = SPECIAL_GRADE_MAPPING[newSpecial];
-      onCutChange(cut.join(","));
-      onPolishChange(polish.join(","));
-      onSymmetryChange(symmetry.join(","));
+      onCutChange(cut);
+      onPolishChange(polish);
+      onSymmetryChange(symmetry);
     } else {
       onCutChange("");
       onPolishChange("");

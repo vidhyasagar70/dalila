@@ -153,15 +153,11 @@ export default function DiamondStockTableWithFilter() {
     );
   };
 
- const handleAddToCart = () => {
-  // Clear selection after adding to cart
-  setSelectedDiamonds([]);
-  // Force the table to clear its selection
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent("clear-selection"));
-  }
-  console.log("Diamonds added to cart successfully, selection cleared");
-};
+  const handleAddToCart = () => {
+    // Clear selection after adding to cart
+    setSelectedDiamonds([]);
+    console.log("Diamonds added to cart successfully, selection cleared");
+  };
 
   const handleResetFilters = () => {
     setSelectedColor([]);

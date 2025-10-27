@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { ShoppingCart, Loader2 } from "lucide-react";
-import { cartApi } from "@/lib/api";
+import { ShoppingCart, Loader2, X } from "lucide-react";
+import { cartApi, getAuthToken } from "@/lib/api";
 
 interface AddToCartButtonProps {
   selectedCount: number;
@@ -20,7 +20,25 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   } | null>(null);
 
   const handleAddToCart = async () => {
-    if (selectedStoneNumbers.length === 0) return;
+    // Check authentication first
+    const token = getAuthToken();
+    if (!token || token.trim() === "") {
+      setMessage({
+        type: "error",
+        text: "Please login to add items to cart",
+      });
+      setTimeout(() => setMessage(null), 3000);
+      return;
+    }
+
+    if (selectedStoneNumbers.length === 0) {
+      setMessage({
+        type: "error",
+        text: "Please select at least one diamond",
+      });
+      setTimeout(() => setMessage(null), 3000);
+      return;
+    }
 
     try {
       setIsAdding(true);
@@ -28,12 +46,14 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
 
       console.log("Adding stones to cart:", selectedStoneNumbers);
 
+      // Add all selected diamonds to cart
       const results = await Promise.allSettled(
         selectedStoneNumbers.map((stoneNo) => cartApi.add(stoneNo))
       );
 
       console.log("Cart API results:", results);
 
+      // Count successful and failed additions
       const successful = results.filter(
         (r) => r.status === "fulfilled" && (r.value as { success?: boolean })?.success
       );
@@ -42,21 +62,21 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       if (successful.length > 0) {
         setMessage({
           type: "success",
-          text: `${successful.length} diamond(s) added to cart!${failed > 0 ? ` (${failed} failed)` : ""}`,
+          text: `${successful.length} diamond${successful.length > 1 ? 's' : ''} added to cart successfully!${failed > 0 ? ` (${failed} failed)` : ""}`,
         });
 
-        // Dispatch cart updated event
+        // Dispatch cart updated event to update cart count in header
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("cart-updated"));
         }
 
-        // Call the optional callback
+        // Call the optional callback to clear selection
         if (onAddToCart) {
           onAddToCart();
         }
 
-        // Clear message after 3 seconds
-        setTimeout(() => setMessage(null), 3000);
+        // Clear message after 4 seconds
+        setTimeout(() => setMessage(null), 4000);
       } else {
         setMessage({
           type: "error",
@@ -66,10 +86,27 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      setMessage({
-        type: "error",
-        text: "An error occurred while adding to cart.",
-      });
+      
+      // Check if it's an authentication error
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { status?: number } };
+        if (axiosError.response?.status === 401) {
+          setMessage({
+            type: "error",
+            text: "Session expired. Please login again.",
+          });
+        } else {
+          setMessage({
+            type: "error",
+            text: "An error occurred while adding to cart.",
+          });
+        }
+      } else {
+        setMessage({
+          type: "error",
+          text: "An error occurred while adding to cart.",
+        });
+      }
       setTimeout(() => setMessage(null), 3000);
     } finally {
       setIsAdding(false);
@@ -84,8 +121,9 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded shadow-sm transition-colors ${
           selectedCount === 0 || isAdding
             ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#000033]"
+            : "bg-[#000033] hover:bg-[#000055]"
         }`}
+        title={selectedCount === 0 ? "Select diamonds to add to cart" : `Add ${selectedCount} diamond${selectedCount > 1 ? 's' : ''} to cart`}
       >
         {isAdding ? (
           <>
@@ -95,7 +133,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         ) : (
           <>
             <ShoppingCart className="h-4 w-4" />
-            Add to Cart
+            Add to Cart {selectedCount > 0 && `(${selectedCount})`}
           </>
         )}
       </button>
@@ -103,14 +141,26 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       {/* Success/Error Message Popup */}
       {message && (
         <div
-          className={`absolute top-full mt-2 left-0 px-4 py-2.5 rounded shadow-sm text-sm font-medium z-50 ${
+          className={`absolute top-full mt-2 right-0 px-4 py-2.5 rounded shadow-lg text-sm font-medium z-50 min-w-[250px] animate-fade-in flex items-center justify-between ${
             message.type === "success"
-              ? "bg-[#FAF6EB] text-[#000033]"
-              : "bg-[#FAF6EB] text-[#000033]"
+              ? "bg-green-500/10 border border-green-500/30 text-green-700"
+              : "bg-red-500/10 border border-red-500/30 text-red-700"
           }`}
-          style={{ minWidth: 'max-content' }}
         >
-          {message.text}
+          <div className="flex items-center gap-2">
+            {message.type === "success" ? (
+              <span className="text-#FAF6EB">✓</span>
+            ) : (
+              <span className="text-red-500">✕</span>
+            )}
+            <span>{message.text}</span>
+          </div>
+          <button
+            onClick={() => setMessage(null)}
+            className="ml-2 hover:opacity-70"
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
     </div>

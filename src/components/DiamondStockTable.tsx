@@ -6,10 +6,8 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
-  ShoppingCart,
-  X,
 } from "lucide-react";
-import { diamondApi, cartApi } from "@/lib/api";
+import { diamondApi } from "@/lib/api";
 import type {
   DiamondData,
   TableProps,
@@ -56,146 +54,123 @@ const DiamondStockTable: React.FC<TableProps> = ({
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [cartMessage, setCartMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
 
- useEffect(() => {
-  const fetchDiamonds = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  useEffect(() => {
+    const fetchDiamonds = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const hasSearchTerm = searchTerm && searchTerm.trim();
-      const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
-      const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
-      const hasCaratFilter =
-        (selectedMinCarat && selectedMinCarat.trim()) ||
-        (selectedMaxCarat && selectedMaxCarat.trim());
-      const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
-      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-      const hasCutFilter = selectedCut && selectedCut.trim();
-      const hasPolishFilter = selectedPolish && selectedPolish.trim();
-      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+        const hasSearchTerm = searchTerm && searchTerm.trim();
+        const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
+        const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
+        const hasCaratFilter =
+          (selectedMinCarat && selectedMinCarat.trim()) ||
+          (selectedMaxCarat && selectedMaxCarat.trim());
+        const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
+        const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
+        const hasCutFilter = selectedCut && selectedCut.trim();
+        const hasPolishFilter = selectedPolish && selectedPolish.trim();
+        const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
 
-      const hasAnyFilter =
-        hasShapeFilter ||
-        hasColorFilter ||
-        hasSearchTerm ||
-        hasCaratFilter ||
-        hasFluorFilter ||
-        hasClarityFilter ||
-        hasCutFilter ||
-        hasPolishFilter ||
-        hasSymmetryFilter;
+        const hasAnyFilter =
+          hasShapeFilter ||
+          hasColorFilter ||
+          hasSearchTerm ||
+          hasCaratFilter ||
+          hasFluorFilter ||
+          hasClarityFilter ||
+          hasCutFilter ||
+          hasPolishFilter ||
+          hasSymmetryFilter;
 
-      console.log("🔍 Filter check:", {
-        hasShapeFilter,
-        hasColorFilter,
-        hasCaratFilter,
-        hasFluorFilter,
-        hasClarityFilter,
-        hasCutFilter,
-        hasPolishFilter,
-        hasSymmetryFilter,
-        fluorValues: selectedFluor,
-      });
+        let response;
+        if (hasAnyFilter) {
+          const filters: FilterParams = {
+            page: 1,
+            limit: 10000,
+          };
 
-      let response;
-      if (hasAnyFilter) {
-        const filters: FilterParams = {
-          page: 1,
-          limit: 10000,
-        };
-
-        if (hasShapeFilter) {
-          filters.shape = selectedShape.join(",");
-        }
-        if (hasColorFilter) {
-          filters.color = selectedColor.join(",");
-        }
-        if (hasCaratFilter) {
-          if (selectedMinCarat && selectedMinCarat.trim()) {
-            filters.minCarats = parseFloat(selectedMinCarat);
+          if (hasShapeFilter) {
+            filters.shape = selectedShape.join(",");
           }
-          if (selectedMaxCarat && selectedMaxCarat.trim()) {
-            filters.maxCarats = parseFloat(selectedMaxCarat);
+          if (hasColorFilter) {
+            filters.color = selectedColor.join(",");
           }
-        }
-        if (hasFluorFilter) {
-          // Make sure we're passing it correctly
-          filters.fluorescence = selectedFluor.join(",");
-          console.log("✅ Adding fluorescence filter:", filters.fluorescence);
-        }
-        if (hasClarityFilter) {
-          filters.clarity = selectedClarity.join(",");
-        }
-        if (hasCutFilter) {
-          filters.cut = selectedCut.trim();
-        }
-        if (hasPolishFilter) {
-          filters.polish = selectedPolish.trim();
-        }
-        if (hasSymmetryFilter) {
-          filters.symmetry = selectedSymmetry.trim();
-        }
-        if (hasSearchTerm) {
-          filters.searchTerm = searchTerm.trim();
-        }
+          if (hasCaratFilter) {
+            if (selectedMinCarat && selectedMinCarat.trim()) {
+              filters.minCarats = parseFloat(selectedMinCarat);
+            }
+            if (selectedMaxCarat && selectedMaxCarat.trim()) {
+              filters.maxCarats = parseFloat(selectedMaxCarat);
+            }
+          }
+          if (hasFluorFilter) {
+            filters.fluorescence = selectedFluor.join(",");
+          }
+          if (hasClarityFilter) {
+            filters.clarity = selectedClarity.join(",");
+          }
+          if (hasCutFilter) {
+            filters.cut = selectedCut.trim();
+          }
+          if (hasPolishFilter) {
+            filters.polish = selectedPolish.trim();
+          }
+          if (hasSymmetryFilter) {
+            filters.symmetry = selectedSymmetry.trim();
+          }
+          if (hasSearchTerm) {
+            filters.searchTerm = searchTerm.trim();
+          }
 
-        console.log("🔍 Calling API with filters:", filters);
-        response = await diamondApi.search(filters);
-        console.log("✅ API response:", response);
-      } else {
-        console.log("📋 Fetching all diamonds (no filters)");
-        response = await diamondApi.getAllNoPagination();
-      }
-
-      if (response?.success && response.data) {
-        let diamonds: DiamondData[];
-        if (Array.isArray(response.data)) {
-          diamonds = response.data as unknown as DiamondData[];
-        } else if (
-          response.data.diamonds &&
-          Array.isArray(response.data.diamonds)
-        ) {
-          diamonds = response.data.diamonds as unknown as DiamondData[];
+          response = await diamondApi.search(filters);
         } else {
-          diamonds = [];
+          response = await diamondApi.getAllNoPagination();
         }
-        console.log(`✅ Fetched ${diamonds.length} diamonds`);
-        setData(diamonds);
-        setCurrentPage(1);
-      } else {
-        console.log("⚠️ No data received from API");
-        setData([]);
-      }
-    } catch (err) {
-      console.error("❌ Error fetching diamonds:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch diamonds"
-      );
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  fetchDiamonds();
-}, [
-  searchTerm,
-  selectedShape,
-  selectedColor,
-  selectedMinCarat,
-  selectedMaxCarat,
-  selectedFluor, 
-  selectedClarity,
-  selectedCut,
-  selectedPolish,
-  selectedSymmetry,
-]);
+        if (response?.success && response.data) {
+          let diamonds: DiamondData[];
+          if (Array.isArray(response.data)) {
+            diamonds = response.data as unknown as DiamondData[];
+          } else if (
+            response.data.diamonds &&
+            Array.isArray(response.data.diamonds)
+          ) {
+            diamonds = response.data.diamonds as unknown as DiamondData[];
+          } else {
+            diamonds = [];
+          }
+          setData(diamonds);
+          setCurrentPage(1);
+        } else {
+          setData([]);
+        }
+      } catch (err) {
+        console.error("❌ Error fetching diamonds:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch diamonds"
+        );
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDiamonds();
+  }, [
+    searchTerm,
+    selectedShape,
+    selectedColor,
+    selectedMinCarat,
+    selectedMaxCarat,
+    selectedFluor,
+    selectedClarity,
+    selectedCut,
+    selectedPolish,
+    selectedSymmetry,
+  ]);
+
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (
@@ -285,57 +260,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
     }
   };
 
-  const handleAddSelectedToCart = async () => {
-    if (selectedDiamonds.length === 0) return;
-
-    try {
-      setIsAddingToCart(true);
-      setCartMessage(null);
-
-      const results = await Promise.allSettled(
-        selectedDiamonds.map((diamond) => cartApi.add(diamond.STONE_NO)),
-      );
-
-      const successful = results.filter(
-        (r) =>
-          r.status === "fulfilled" &&
-          (r.value as { success?: boolean })?.success,
-      );
-      const failed = results.length - successful.length;
-
-      if (successful.length > 0) {
-        setCartMessage({
-          type: "success",
-          text: `${successful.length} diamond(s) added to cart successfully!${failed > 0 ? ` (${failed} failed)` : ""}`,
-        });
-
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("cart-updated"));
-        }
-
-        setSelectedRows(new Set());
-        setSelectAll(false);
-        setSelectedDiamonds([]);
-
-        setTimeout(() => setCartMessage(null), 4000);
-      } else {
-        setCartMessage({
-          type: "error",
-          text: "Failed to add diamonds to cart. Please try again.",
-        });
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      setCartMessage({
-        type: "error",
-        text: "An error occurred while adding to cart.",
-      });
-    } finally {
-      setIsAddingToCart(false);
-    }
-  };
-
-  // Handler for Stock ID click
   const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
     e.stopPropagation();
     if (onRowClick) {
@@ -349,7 +273,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-#FAF6EB mx-auto mb-4" />
           <p className="text-gray-600">
             {searchTerm ||
             (Array.isArray(selectedShape) && selectedShape.length > 0)
@@ -391,40 +315,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
-          {((Array.isArray(selectedShape) && selectedShape.length > 0) ||
-            (Array.isArray(selectedColor) && selectedColor.length > 0) ||
-            selectedClarity.length > 0 ||
-            selectedCut ||
-            selectedPolish ||
-            selectedSymmetry ||
-            (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
-            selectedMinCarat ||
-            selectedMaxCarat) && (
-            <div className="text-sm text-gray-500 mt-2 space-y-1">
-              {Array.isArray(selectedShape) && selectedShape.length > 0 && (
-                <p>Shape: {selectedShape.join(", ")}</p>
-              )}
-              {Array.isArray(selectedColor) && selectedColor.length > 0 && (
-                <p>Color: {selectedColor.join(", ")}</p>
-              )}
-              {selectedClarity.length > 0 && (
-                <p>Clarity: {selectedClarity.join(", ")}</p>
-              )}
-              {selectedCut && <p>Cut: {selectedCut}</p>}
-              {selectedPolish && <p>Polish: {selectedPolish}</p>}
-              {selectedSymmetry && <p>Symmetry: {selectedSymmetry}</p>}
-              {Array.isArray(selectedFluor) && selectedFluor.length > 0 && (
-                <p>Fluorescence: {selectedFluor.join(", ")}</p>
-              )}
-              {(selectedMinCarat || selectedMaxCarat) && (
-                <p>
-                  Carat Range: {selectedMinCarat || "0"} -{" "}
-                  {selectedMaxCarat || "∞"}
-                </p>
-              )}
-              {searchTerm && <p>Search: &quot;{searchTerm}&quot;</p>}
-            </div>
-          )}
         </div>
       </div>
     );
@@ -435,80 +325,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
       <div
         className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
       >
-        {cartMessage && (
-          <div
-            className={`mb-4 p-4 rounded-lg flex items-center justify-between animate-fade-in ${
-              cartMessage.type === "success"
-                ? "bg-green-500/10 border border-green-500/30"
-                : "bg-red-500/10 border border-red-500/30"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              {cartMessage.type === "success" ? (
-                <div className="text-green-400">✓</div>
-              ) : (
-                <div className="text-red-400">✕</div>
-              )}
-              <p
-                className={
-                  cartMessage.type === "success"
-                    ? "text-green-400"
-                    : "text-red-400"
-                }
-              >
-                {cartMessage.text}
-              </p>
-            </div>
-            <button
-              onClick={() => setCartMessage(null)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X size={18} />
-            </button>
-          </div>
-        )}
-
-        {selectedDiamonds.length > 0 && (
-          <div className="mb-4 p-4 bg-white rounded-lg shadow-sm flex items-center justify-between border border-gray-200">
-            <div className="text-sm font-medium text-gray-700">
-              {selectedDiamonds.length} diamond
-              {selectedDiamonds.length !== 1 ? "s" : ""} selected
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => {
-                  setSelectedRows(new Set());
-                  setSelectAll(false);
-                  setSelectedDiamonds([]);
-                  if (onSelectionChange) {
-                    onSelectionChange([], []);
-                  }
-                }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-              >
-                Clear Selection
-              </button>
-              <button
-                onClick={handleAddSelectedToCart}
-                disabled={isAddingToCart}
-                className="px-6 py-2 text-sm font-medium text-white bg-[#050C3A] rounded hover:bg-[#030822] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-              >
-                {isAddingToCart ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Adding...
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="w-4 h-4" />
-                    Add to Cart ({selectedDiamonds.length})
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-
         {(searchTerm ||
           (Array.isArray(selectedShape) && selectedShape.length > 0) ||
           (Array.isArray(selectedColor) && selectedColor.length > 0) ||
@@ -783,7 +599,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                         </div>
                       </div>
                     </td>
-                    <td 
+                    <td
                       className="px-2 py-1 text-[12px] text-gray-700 font-medium truncate cursor-pointer hover:text-blue-600 hover:underline"
                       onClick={(e) => handleStockIdClick(e, row)}
                     >
