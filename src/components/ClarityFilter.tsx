@@ -27,7 +27,6 @@ const STATIC_CLARITY_OPTIONS = [
 
 const STATIC_SPECIAL_OPTIONS = ["3EX", "EX-", "VG+", "VG-"];
 
-// Updated mapping for special grades with arrays to support multiple values
 const SPECIAL_GRADE_MAPPING: Record<
   string,
   { cut: string[]; polish: string[]; symmetry: string[] }
@@ -63,17 +62,9 @@ export default function ClarityFilter({
   onPolishChange,
   onSymmetryChange,
 }: ClarityFilterProps) {
-  // Parse comma-separated strings to arrays for internal use
-  const cutArray = selectedCut ? selectedCut.split(',') : [];
-  const polishArray = selectedPolish ? selectedPolish.split(',') : [];
-  const symmetryArray = selectedSymmetry ? selectedSymmetry.split(',') : [];
-
-  // Prevent negative values in number inputs
-  const handleNumberInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-      e.preventDefault();
-    }
-  };
+  const cutArray = selectedCut ? selectedCut.split(",") : [];
+  const polishArray = selectedPolish ? selectedPolish.split(",") : [];
+  const symmetryArray = selectedSymmetry ? selectedSymmetry.split(",") : [];
 
   const handleClarityClick = (value: string) => {
     let newClarity: string[];
@@ -89,14 +80,12 @@ export default function ClarityFilter({
     const newSpecial = selectedSpecial === value ? "" : value;
     onSpecialChange(newSpecial);
 
-    // If a special grade is selected, automatically set Cut, Polish, and Symmetry as comma-separated strings
     if (newSpecial && SPECIAL_GRADE_MAPPING[newSpecial]) {
       const { cut, polish, symmetry } = SPECIAL_GRADE_MAPPING[newSpecial];
-      onCutChange(cut.join(','));
-      onPolishChange(polish.join(','));
-      onSymmetryChange(symmetry.join(','));
+      onCutChange(cut.join(","));
+      onPolishChange(polish.join(","));
+      onSymmetryChange(symmetry.join(","));
     } else {
-      // If deselecting special grade, clear the related filters
       onCutChange("");
       onPolishChange("");
       onSymmetryChange("");
@@ -110,8 +99,7 @@ export default function ClarityFilter({
     } else {
       newCutArray = [...cutArray, value];
     }
-    onCutChange(newCutArray.join(','));
-    // Clear special grade when manually changing cut
+    onCutChange(newCutArray.join(","));
     if (selectedSpecial) {
       onSpecialChange("");
     }
@@ -124,8 +112,7 @@ export default function ClarityFilter({
     } else {
       newPolishArray = [...polishArray, value];
     }
-    onPolishChange(newPolishArray.join(','));
-    // Clear special grade when manually changing polish
+    onPolishChange(newPolishArray.join(","));
     if (selectedSpecial) {
       onSpecialChange("");
     }
@@ -138,8 +125,7 @@ export default function ClarityFilter({
     } else {
       newSymmetryArray = [...symmetryArray, value];
     }
-    onSymmetryChange(newSymmetryArray.join(','));
-    // Clear special grade when manually changing symmetry
+    onSymmetryChange(newSymmetryArray.join(","));
     if (selectedSpecial) {
       onSpecialChange("");
     }
@@ -193,7 +179,7 @@ export default function ClarityFilter({
           ))}
         </div>
 
-        {/* Special Options (3EX, EX-, VG+, VG-) - Smaller size with reduced width */}
+        {/* Special Options */}
         <div className="grid grid-cols-5 gap-1 mb-3 mt-3 items-center">
           <div style={{ minWidth: "35px" }}></div>
           {STATIC_SPECIAL_OPTIONS.map((option) => (
@@ -220,7 +206,7 @@ export default function ClarityFilter({
           ))}
         </div>
 
-        {/* Cut, Polish, Symmetry - Row layout with labels on left */}
+        {/* Cut, Polish, Symmetry */}
         <div className="flex flex-col gap-4">
           {/* Cut Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
@@ -234,78 +220,26 @@ export default function ClarityFilter({
             >
               Cut
             </div>
-            <button
-              onClick={() => handleCutClick("EX")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                cutArray.includes("EX")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  cutArray.includes("EX")
+            {["EX", "VG", "GD", "FR"].map((cut) => (
+              <button
+                key={cut}
+                onClick={() => handleCutClick(cut)}
+                className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                  cutArray.includes(cut)
+                    ? "text-gray-800 bg-[#FAF6EB]"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+                style={{
+                  border: cutArray.includes(cut)
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              EX
-            </button>
-            <button
-              onClick={() => handleCutClick("VG")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                cutArray.includes("VG")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  cutArray.includes("VG")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              VG
-            </button>
-            <button
-              onClick={() => handleCutClick("GD")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                cutArray.includes("GD")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  cutArray.includes("GD")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              GD
-            </button>
-            <button
-              onClick={() => handleCutClick("FR")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                cutArray.includes("FR")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  cutArray.includes("FR")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              FR
-            </button>
+                  minHeight: "24px",
+                  maxWidth: "55px",
+                }}
+              >
+                {cut}
+              </button>
+            ))}
           </div>
 
           {/* Polish Row */}
@@ -320,78 +254,26 @@ export default function ClarityFilter({
             >
               Pol
             </div>
-            <button
-              onClick={() => handlePolishClick("EX")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                polishArray.includes("EX")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  polishArray.includes("EX")
+            {["EX", "VG", "GD", "FR"].map((polish) => (
+              <button
+                key={polish}
+                onClick={() => handlePolishClick(polish)}
+                className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                  polishArray.includes(polish)
+                    ? "text-gray-800 bg-[#FAF6EB]"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+                style={{
+                  border: polishArray.includes(polish)
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              EX
-            </button>
-            <button
-              onClick={() => handlePolishClick("VG")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                polishArray.includes("VG")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  polishArray.includes("VG")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              VG
-            </button>
-            <button
-              onClick={() => handlePolishClick("GD")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                polishArray.includes("GD")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  polishArray.includes("GD")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              GD
-            </button>
-            <button
-              onClick={() => handlePolishClick("FR")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                polishArray.includes("FR")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  polishArray.includes("FR")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              FR
-            </button>
+                  minHeight: "24px",
+                  maxWidth: "55px",
+                }}
+              >
+                {polish}
+              </button>
+            ))}
           </div>
 
           {/* Symmetry Row */}
@@ -406,78 +288,26 @@ export default function ClarityFilter({
             >
               Sym
             </div>
-            <button
-              onClick={() => handleSymmetryClick("EX")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                symmetryArray.includes("EX")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  symmetryArray.includes("EX")
+            {["EX", "VG", "GD", "FR"].map((symmetry) => (
+              <button
+                key={symmetry}
+                onClick={() => handleSymmetryClick(symmetry)}
+                className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                  symmetryArray.includes(symmetry)
+                    ? "text-gray-800 bg-[#FAF6EB]"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+                style={{
+                  border: symmetryArray.includes(symmetry)
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              EX
-            </button>
-            <button
-              onClick={() => handleSymmetryClick("VG")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                symmetryArray.includes("VG")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  symmetryArray.includes("VG")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              VG
-            </button>
-            <button
-              onClick={() => handleSymmetryClick("GD")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                symmetryArray.includes("GD")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  symmetryArray.includes("GD")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              GD
-            </button>
-            <button
-              onClick={() => handleSymmetryClick("FR")}
-              className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
-                symmetryArray.includes("FR")
-                  ? "text-gray-800 bg-[#FAF6EB]"
-                  : "bg-white text-gray-700 hover:bg-gray-50"
-              }`}
-              style={{
-                border:
-                  symmetryArray.includes("FR")
-                    ? "0.25px solid #FAF6EB"
-                    : "0.25px solid #f9e8cd",
-                minHeight: "24px",
-                maxWidth: "55px",
-              }}
-            >
-              FR
-            </button>
+                  minHeight: "24px",
+                  maxWidth: "55px",
+                }}
+              >
+                {symmetry}
+              </button>
+            ))}
           </div>
         </div>
       </div>

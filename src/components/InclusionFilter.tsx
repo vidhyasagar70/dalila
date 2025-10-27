@@ -37,9 +37,18 @@ interface InclusionFilterProps {
   onInclusionChange: (inclusions: InclusionFilters) => void;
 }
 
+// Type for diamond data with inclusion properties
+interface DiamondWithInclusions {
+  CN?: string | number;
+  CW?: string | number;
+  SN?: string | number;
+  SW?: string | number;
+  [key: string]: unknown;
+}
+
 // Helper function to check if inclusion filters match a diamond
 export const matchesInclusionFilters = (
-  diamond: any,
+  diamond: DiamondWithInclusions,
   filters: InclusionFilters
 ): boolean => {
   const hasAnyFilter = 
@@ -136,9 +145,9 @@ export default function InclusionFilter({
                         option,
                       )
                     }
-                    className={`${mavenPro.className} px-2 py-1 text-xs font-normal transition-colors ${
+                    className={`${mavenPro.className} px-2 py-1 text-xs font-medium transition-colors ${
                       isSelected(type.key as keyof InclusionFilters, option)
-                        ? "text-blue-600 bg-blue-50"
+                        ? "text-gray-800 bg-[#FAF6EB]"
                         : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                     style={{
@@ -148,8 +157,8 @@ export default function InclusionFilter({
                         type.key as keyof InclusionFilters,
                         option,
                       )
-                        ? "1px solid #2563eb"
-                        : "1px solid #f9e8cd",
+                        ? "0.25px solid #FAF6EB"
+                        : "0.25px solid #f9e8cd",
                     }}
                   >
                     {option}

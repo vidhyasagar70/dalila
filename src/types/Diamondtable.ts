@@ -1,6 +1,6 @@
 // @/types/Diamondtable.ts
-import { matchesInclusionFilters, type InclusionFilters } from "../components/InclusionFilter";
-
+import { type InclusionFilters } from "../components/InclusionFilter";
+import {type PriceLocationFilters } from "../components/Priceandloction";
 export interface DiamondData {
   _id: string;
   STONE_NO: string;
@@ -39,22 +39,26 @@ export interface DiamondData {
   COMMENTS_1?: string;
   REPORT_COMMENTS?: string;
   REAL_IMAGE?: string;
-  SIZE?: number; // Alternative for CARATS in some components
+  SIZE?: number; 
+  [key: string]: any;
 }
 
 export interface FilterParams {
-  shape?: string; // Comma-separated string: "ROUND,PEAR,OVAL"
+  shape?: string;
   color?: string;
   limit?: number;
   page?: number;
   minCarats?: number;
   maxCarats?: number;
   fluorescence?: string;
-  clarity?: string; // Comma-separated string
+  clarity?: string; 
   cut?: string;
   polish?: string;
   symmetry?: string;
   searchTerm?: string;
+   lab?: string;        
+  location?: string;   
+  priceLocationFilters?:string;
 }
 
 // For DiamondStockTable component
@@ -73,6 +77,7 @@ export interface TableProps {
   selectedSymmetry?: string;
   onSelectionChange?: (selectedIds: string[], diamonds: DiamondData[]) => void;
   inclusions?: InclusionFilters;
+  priceLocationFilters?: PriceLocationFilters;
 }
 
 // For DiamondGridView component
@@ -89,6 +94,7 @@ export interface GridViewProps {
   selectedCut?: string;
   selectedPolish?: string;
   selectedSymmetry?: string;
+  inclusions?: InclusionFilters
 }
 
 // API Response types

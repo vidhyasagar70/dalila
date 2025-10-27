@@ -1,13 +1,5 @@
 import React from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { Maven_Pro } from "next/font/google";
-
-const mavenPro = Maven_Pro({
-  variable: "--font-maven-pro",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
 
 export interface PriceRange {
   from: string;
@@ -27,9 +19,81 @@ interface PriceLocationFilterProps {
   onFiltersChange: (filters: PriceLocationFilters) => void;
 }
 
-// Static options
-const STATIC_LOCATION_OPTIONS = ["MUM", "BEL", "DUB", "HK", "NYC"];
-const STATIC_LAB_OPTIONS = ["GIA", "IGI", "HRD", "OTHER"];
+// Diamond interface for type safety
+interface Diamond {
+  NET_RATE?: string | number;
+  DISC_PER?: string | number;
+  NET_VALUE?: string | number;
+  [key: string]: unknown;
+}
+
+// Static options - these match the API mappings
+const LOCATION_OPTIONS = [
+  { label: "MUM", value: "MUM", apiValue: "MU" },
+  { label: "BEL", value: "BEL", apiValue: "BE" },
+  { label: "DUB", value: "DUB", apiValue: "DU" },
+  { label: "HK", value: "HK", apiValue: "HK" },
+  { label: "NYC", value: "NYC", apiValue: "NY" }
+];
+
+const LAB_OPTIONS = [
+  { label: "GIA", value: "GIA" },
+  { label: "IGI", value: "IGI" },
+  { label: "HRD", value: "HRD" },
+  { label: "OTHER", value: "OTHER" }
+];
+
+// Helper function to match ONLY price filters (frontend filtering)
+export const matchesPriceFilters = (
+  diamond: Diamond,
+  filters: PriceLocationFilters
+): boolean => {
+  // Price per carat filter
+  const pricePerCaratFrom = parseFloat(filters.pricePerCarat?.from || "0");
+  const pricePerCaratTo = parseFloat(filters.pricePerCarat?.to || "999999");
+  const diamondPricePerCarat = parseFloat(String(diamond.NET_RATE || "0"));
+  
+  if (pricePerCaratFrom > 0 && diamondPricePerCarat < pricePerCaratFrom) {
+    return false;
+  }
+  if (pricePerCaratTo > 0 && pricePerCaratTo !== 999999 && diamondPricePerCarat > pricePerCaratTo) {
+    return false;
+  }
+
+  // Discount filter
+  const discountFrom = parseFloat(filters.discount?.from || "-999");
+  const discountTo = parseFloat(filters.discount?.to || "999");
+  const diamondDiscount = parseFloat(String(diamond.DISC_PER || "0"));
+  
+  if (discountFrom !== -999 && diamondDiscount < discountFrom) {
+    return false;
+  }
+  if (discountTo !== 999 && diamondDiscount > discountTo) {
+    return false;
+  }
+
+  // Total price filter
+  const totalPriceFrom = parseFloat(filters.totalPrice?.from || "0");
+  const totalPriceTo = parseFloat(filters.totalPrice?.to || "999999");
+  const diamondTotalPrice = parseFloat(String(diamond.NET_VALUE || "0"));
+  
+  if (totalPriceFrom > 0 && diamondTotalPrice < totalPriceFrom) {
+    return false;
+  }
+  if (totalPriceTo > 0 && totalPriceTo !== 999999 && diamondTotalPrice > totalPriceTo) {
+    return false;
+  }
+
+  return true;
+};
+
+// Helper function to get API values for locations
+export const getLocationApiValues = (selectedLocations: string[]): string[] => {
+  return selectedLocations.map(location => {
+    const option = LOCATION_OPTIONS.find(opt => opt.value === location);
+    return option?.apiValue || location;
+  });
+};
 
 export default function PriceLocationFilter({
   filters,
@@ -53,7 +117,7 @@ export default function PriceLocationFilter({
     field: "pricePerCarat" | "discount" | "totalPrice",
     type: "from" | "to",
   ) => {
-    const currentValue = parseFloat(filters[field]?.[type] || "0.50");
+    const currentValue = parseFloat(filters[field]?.[type] || "0");
     const newValue = (currentValue + 0.01).toFixed(2);
     handlePriceChange(field, type, newValue);
   };
@@ -62,8 +126,8 @@ export default function PriceLocationFilter({
     field: "pricePerCarat" | "discount" | "totalPrice",
     type: "from" | "to",
   ) => {
-    const currentValue = parseFloat(filters[field]?.[type] || "0.50");
-    const newValue = Math.max(0, currentValue - 0.01).toFixed(2);
+    const currentValue = parseFloat(filters[field]?.[type] || "0");
+    const newValue = Math.max(field === "discount" ? -999 : 0, currentValue - 0.01).toFixed(2);
     handlePriceChange(field, type, newValue);
   };
 
@@ -100,10 +164,7 @@ export default function PriceLocationFilter({
   };
 
   return (
-    <div
-      className={`${mavenPro.className} mb-2 mt-1`}
-      style={{ width: "fit-content" }}
-    >
+    <div className="mb-2 mt-1" style={{ width: "fit-content", fontFamily: "Maven Pro, sans-serif" }}>
       {/* Price Section */}
       <div
         className="flex items-center gap-1.5 px-2 py-1.5"
@@ -132,10 +193,11 @@ export default function PriceLocationFilter({
               <input
                 type="number"
                 step="0.01"
-                value={filters.pricePerCarat?.from || "0.50"}
+                value={filters.pricePerCarat?.from || ""}
                 onChange={(e) =>
                   handlePriceChange("pricePerCarat", "from", e.target.value)
                 }
+                placeholder="0"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -168,10 +230,11 @@ export default function PriceLocationFilter({
               <input
                 type="number"
                 step="0.01"
-                value={filters.pricePerCarat?.to || "0.50"}
+                value={filters.pricePerCarat?.to || ""}
                 onChange={(e) =>
                   handlePriceChange("pricePerCarat", "to", e.target.value)
                 }
+                placeholder="∞"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -212,10 +275,11 @@ export default function PriceLocationFilter({
               <input
                 type="number"
                 step="0.01"
-                value={filters.discount?.from || "0.50"}
+                value={filters.discount?.from || ""}
                 onChange={(e) =>
                   handlePriceChange("discount", "from", e.target.value)
                 }
+                placeholder="-∞"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -248,10 +312,11 @@ export default function PriceLocationFilter({
               <input
                 type="number"
                 step="0.01"
-                value={filters.discount?.to || "0.50"}
+                value={filters.discount?.to || ""}
                 onChange={(e) =>
                   handlePriceChange("discount", "to", e.target.value)
                 }
+                placeholder="∞"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -292,10 +357,11 @@ export default function PriceLocationFilter({
               <input
                 type="number"
                 step="0.01"
-                value={filters.totalPrice?.from || "0.50"}
+                value={filters.totalPrice?.from || ""}
                 onChange={(e) =>
                   handlePriceChange("totalPrice", "from", e.target.value)
                 }
+                placeholder="0"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -328,10 +394,11 @@ export default function PriceLocationFilter({
               <input
                 type="number"
                 step="0.01"
-                value={filters.totalPrice?.to || "0.50"}
+                value={filters.totalPrice?.to || ""}
                 onChange={(e) =>
                   handlePriceChange("totalPrice", "to", e.target.value)
                 }
+                placeholder="∞"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -370,25 +437,25 @@ export default function PriceLocationFilter({
         style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
       >
         <div className="grid grid-cols-5 gap-1.5">
-          {STATIC_LOCATION_OPTIONS.map((location) => (
+          {LOCATION_OPTIONS.map((location) => (
             <button
-              key={location}
-              onClick={() => toggleLocation(location)}
+              key={location.value}
+              onClick={() => toggleLocation(location.value)}
               className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                isLocationSelected(location)
-                  ? "text-blue-600 bg-blue-50"
+                isLocationSelected(location.value)
+                  ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 minWidth: "50px",
                 minHeight: "28px",
                 fontFamily: "inherit",
-                border: isLocationSelected(location)
-                  ? "1px solid #2563eb"
+                border: isLocationSelected(location.value)
+                  ? "0.25px solid #FAF6EB"
                   : "1px solid #f9e8cd",
               }}
             >
-              {location}
+              {location.label}
             </button>
           ))}
         </div>
@@ -406,25 +473,25 @@ export default function PriceLocationFilter({
         style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
       >
         <div className="grid grid-cols-4 gap-1.5">
-          {STATIC_LAB_OPTIONS.map((lab) => (
+          {LAB_OPTIONS.map((lab) => (
             <button
-              key={lab}
-              onClick={() => toggleLab(lab)}
+              key={lab.value}
+              onClick={() => toggleLab(lab.value)}
               className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                isLabSelected(lab)
-                  ? "text-blue-600 bg-blue-50"
+                isLabSelected(lab.value)
+                  ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               }`}
               style={{
                 minWidth: "55px",
                 minHeight: "28px",
                 fontFamily: "inherit",
-                border: isLabSelected(lab)
-                  ? "1px solid #2563eb"
+                border: isLabSelected(lab.value)
+                  ? "0.25px solid #FAF6EB"
                   : "1px solid #f9e8cd",
               }}
             >
-              {lab}
+              {lab.label}
             </button>
           ))}
         </div>

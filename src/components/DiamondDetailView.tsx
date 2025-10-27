@@ -82,26 +82,26 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     }
   };
 
-  const InfoItem = ({
-    icon,
-    label,
-    value,
-    description,
-  }: {
-    icon: React.ReactNode;
-    label: string;
-    value: string;
-    description: string;
-  }) => (
-    <div className="space-y-1">
-      <div className="flex items-center gap-2 text-gray-600">
-        {icon}
-        <span className="text-xs font-medium">{label}</span>
-      </div>
-      <p className="text-base font-semibold text-gray-900">{value}</p>
-      {description && <p className="text-xs text-gray-500">{description}</p>}
+ const InfoItem = ({
+  icon,
+  label,
+  value,
+  description,
+}: {
+  icon?: React.ReactNode;
+  label: string;
+  value: string;
+  description: string;
+}) => (
+  <div className="space-y-1">
+    <div className="flex items-center gap-2 text-gray-600">
+      {icon}
+      <span className="text-xs font-medium">{label}</span>
     </div>
-  );
+    <p className="text-base font-semibold text-gray-900">{value}</p>
+    {description && <p className="text-xs text-gray-500">{description}</p>}
+  </div>
+);
 
   const DetailTable = ({
     title,
@@ -110,7 +110,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     title: string;
     data: [string, string | number][];
   }) => (
-    <div className="bg-white rounded overflow-hidden border-2 border-[#F9F1E3]">
+    <div className="bg-white overflow-hidden border border-[#F9F1E3]">
       <div className="bg-[#050C3A] text-white px-4 py-2.5">
         <h3 className="font-semibold text-sm">{title}</h3>
       </div>
@@ -134,8 +134,8 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       className="fixed left-0 top-27 w-full h-full flex items-center justify-center z-50"
       onClick={onClose}
     >
-      <div
-        className="bg-white rounded-lg shadow-xl w-full my-8 max-h-[90vh] overflow-y-scroll scrollbar-hide"
+     <div
+  className="bg-white shadow-xl w-full my-8 max-h-[90vh] overflow-y-scroll scrollbar-hide"
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
@@ -216,7 +216,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               </div>
 
               {/* Main Display Area */}
-              <div className="relative bg-gray-100 rounded-md border border-gray-200 p-6">
+              <div className="relative bg-gray-100  border border-gray-200 p-6">
                 <div className="absolute top-3 right-3 flex gap-2 z-10">
                 </div>
 
@@ -288,83 +288,35 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 </div>
               </div>
 
+             
               {/* Basic Information */}
-              <div className="bg-white rounded-md border-t-2 border-[#F9F1E3] p-4">
-                <h3 className="text-base font-bold text-gray-900 mb-4">
-                  Basic Information
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <InfoItem
-                    icon={
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5" />
-                      </svg>
-                    }
-                    label="Shape"
-                    value={diamond.SHAPE}
-                    description="Classic cut known for maximum sparkle."
-                  />
-                  <InfoItem
-                    icon={
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                      </svg>
-                    }
-                    label="Carat"
-                    value={String(diamond.CARATS || diamond.SIZE)}
-                    description="Measures a diamond's size and weight."
-                  />
-                  <InfoItem
-                    icon={
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                      </svg>
-                    }
-                    label="Color"
-                    value={diamond.COLOR}
-                    description="Grades a diamond's whiteness and purity."
-                  />
-                  <InfoItem
-                    icon={
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                      </svg>
-                    }
-                    label="Clarity"
-                    value={diamond.CLARITY}
-                    description="Indicates a diamond's internal and external flaws."
-                  />
-                </div>
-              </div>
+<div className="bg-white  border-t-2 border-[#F9F1E3] p-4">
+  <h3 className="text-base font-bold text-gray-900 mb-4">
+    Basic Information
+  </h3>
+  <div className="grid grid-cols-2 gap-4">
+    <InfoItem
+      label="Shape"
+      value={diamond.SHAPE}
+      description="Classic cut known for maximum sparkle."
+    />
+    <InfoItem
+      label="Carat"
+      value={String(diamond.CARATS || diamond.SIZE)}
+      description="Measures a diamond's size and weight."
+    />
+    <InfoItem
+      label="Color"
+      value={diamond.COLOR}
+      description="Grades a diamond's whiteness and purity."
+    />
+    <InfoItem
+      label="Clarity"
+      value={diamond.CLARITY}
+      description="Indicates a diamond's internal and external flaws."
+    />
+  </div>
+</div>
 
               {/* Quantity and Add to Cart - Same Row */}
               <div className="border-t-2 border-[#F9F1E3] pt-4">

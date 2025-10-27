@@ -211,98 +211,101 @@ export default function DiamondStockTableWithFilter() {
       </div>
 
       {/* SEARCH AND NAVIGATION ROW - All in Single Row */}
-      <div
-        className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
-      >
-        {/* View Mode Toggle - Icon Only */}
-        <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
-          <button
-            onClick={() => setViewMode("list")}
-            className={`p-2 rounded transition-colors ${
-              viewMode === "list"
-                ? "bg-[#000033] text-white"
-                : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
-            }`}
-            title="Table View"
-          >
-            <List className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`p-2 rounded transition-colors ${
-              viewMode === "grid"
-                ? "bg-[#000033] text-white"
-                : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
-            }`}
-            title="Grid View"
-          >
-            <Grid3x3 className="w-5 h-5" />
-          </button>
-        </div>
+     <div
+  className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
+>
+  {/* View Mode Toggle - Icon Only */}
+  <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
+    <button
+      onClick={() => setViewMode("list")}
+      className={`p-2 rounded transition-colors ${
+        viewMode === "list"
+          ? "bg-[#000033] text-white"
+          : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
+      }`}
+      title="Table View"
+    >
+      <List className="w-5 h-5" />
+    </button>
+    <button
+      onClick={() => setViewMode("grid")}
+      className={`p-2 rounded transition-colors ${
+        viewMode === "grid"
+          ? "bg-[#000033] text-white"
+          : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
+      }`}
+      title="Grid View"
+    >
+      <Grid3x3 className="w-5 h-5" />
+    </button>
+  </div>
 
-        {/* Search Bar */}
-        <SearchBar onSearch={handleSearch} />
+  {/* Search Bar */}
+  <SearchBar onSearch={handleSearch} />
 
-        {/* Add to Cart Button */}
-        <AddToCartButton
-          selectedCount={selectedDiamonds.length}
-          selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
-          onAddToCart={handleAddToCart}
-        />
+  {/* Spacer */}
+  <div className="flex-1"></div>
 
-        {/* Compare Button */}
-        <CompareButton
-          selectedCount={selectedDiamonds.length}
-          onCompare={handleCompare}
-          disabled={selectedDiamonds.length === 0}
-        />
+  {/* Action Buttons Group - Right Side */}
+  <div className="flex items-center gap-2">
+    {/* Add to Cart Button */}
+    <AddToCartButton
+      selectedCount={selectedDiamonds.length}
+      selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+      onAddToCart={handleAddToCart}
+    />
 
-        {/* Email Button */}
-        <EmailButton
-          selectedCount={selectedDiamonds.length}
-          selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
-          onEmail={handleEmail}
-        />
+    {/* Compare Button */}
+    <CompareButton
+      selectedCount={selectedDiamonds.length}
+      onCompare={handleCompare}
+      disabled={selectedDiamonds.length === 0}
+    />
 
-        {/* Spacer */}
-        <div className="flex-1"></div>
+    {/* Email Button */}
+    <EmailButton
+      selectedCount={selectedDiamonds.length}
+      selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+      onEmail={handleEmail}
+    />
 
-        {/* Advanced Filters Button */}
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
-        >
-          <Image
-            src="/filtersicon/filter-add.png"
-            alt="Filter"
-            width={16}
-            height={16}
-            className="w-4 h-4"
-          />
-          <span className="text-sm font-medium">Advanced Filters</span>
-          {showFilters ? (
-            <ChevronUp className="w-4 h-4" />
-          ) : (
-            <ChevronDown className="w-4 h-4" />
-          )}
-        </button>
+    {/* Advanced Filters Button */}
+    <button
+      onClick={() => setShowFilters(!showFilters)}
+      className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
+    >
+      <Image
+        src="/filtersicon/filter-add.png"
+        alt="Filter"
+        width={16}
+        height={16}
+        className="w-4 h-4"
+      />
+      <span className="text-sm font-medium">Advanced Filters</span>
+      {showFilters ? (
+        <ChevronUp className="w-4 h-4" />
+      ) : (
+        <ChevronDown className="w-4 h-4" />
+      )}
+    </button>
 
-        {/* Reset Filters Button */}
-        <button
-          onClick={handleResetFilters}
-          className="flex items-center gap-2 px-4 py-2 bg-[#000033]  text-white transition-colors shadow-sm rounded  whitespace-nowrap"
-          title="Reset All Filters"
-        >
-          <Image
-            src="/filtersicon/filter-remove.png"
-            alt="Reset"
-            width={18}
-            height={18}
-            className="w-4.5 h-4.5"
-          />
-          <span className="text-sm font-medium">Reset Filters</span>
-        </button>
-      </div>
+    {/* Reset Filters Button */}
+    <button
+      onClick={handleResetFilters}
+      className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
+      title="Reset All Filters"
+    >
+      <Image
+        src="/filtersicon/filter-remove.png"
+        alt="Reset"
+        width={18}
+        height={18}
+        className="w-4.5 h-4.5"
+      />
+      <span className="text-sm font-medium">Reset Filters</span>
+    </button>
+  </div>
+</div>
 
       {/* Advanced Filters Section */}
       {showFilters && (
@@ -346,6 +349,7 @@ export default function DiamondStockTableWithFilter() {
           selectedPolish={selectedPolish}
           selectedSymmetry={selectedSymmetry}
           onSelectionChange={handleSelectionChange}
+          priceLocationFilters={priceLocationFilters}
           pageSize={10}
         />
       ) : (

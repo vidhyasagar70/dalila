@@ -7,8 +7,8 @@ import {
   ChevronUp,
   Loader2,
 } from "lucide-react";
-import { matchesInclusionFilters, type InclusionFilters } from "./InclusionFilter";
-import { diamondApi, cartApi } from "@/lib/api";
+import { matchesInclusionFilters} from "./InclusionFilter";
+import { diamondApi} from "@/lib/api";
 import type {
   DiamondData,
   TableProps,

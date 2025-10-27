@@ -94,7 +94,7 @@ export default function AdvancedFilters({
         {/* Show Advanced Filters Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white text-sm font-medium rounded shadow-sm hover:bg-[#000044] transition-colors"
+          className="flex items-center gap-2 px-4 py-1.5 bg-[#000033] text-white text-sm font-medium rounded shadow-sm"
         >
           <Image
             src="/filtersicon/filter-add.png"
@@ -112,7 +112,7 @@ export default function AdvancedFilters({
         {/* Reset Filters Button */}
         <button
           onClick={handleResetFilters}
-          className="flex items-center gap-2 px-4 py-1.5 bg-white text-[#D4A574] text-sm font-medium rounded shadow-sm border border-[#D4A574] hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-1.5 bg-white text-[#D4A574] text-sm font-medium rounded shadow-sm border border-[#D4A574]"
         >
           <Image
             src="/filtersicon/filter-remove.png"
@@ -147,7 +147,7 @@ export default function AdvancedFilters({
                   <select
                     value={filters[key]}
                     onChange={(e) => handleFilterChange(key, e.target.value)}
-                    className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer hover:border-gray-400 transition-colors text-gray-700 text-sm"
+                    className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded outline-none appearance-none cursor-pointer text-gray-700 text-sm"
                   >
                     {options.map((option) => (
                       <option key={option} value={option}>
