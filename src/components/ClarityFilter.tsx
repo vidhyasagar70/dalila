@@ -29,12 +29,12 @@ const STATIC_SPECIAL_OPTIONS = ["3EX", "EX-", "VG+", "VG-"];
 
 const SPECIAL_GRADE_MAPPING: Record<
   string,
-  { cut: string[]; polish: string[]; symmetry: string[] }
+  { cut: string; polish: string; symmetry: string }
 > = {
-  "3EX": { cut: ["EX"], polish: ["EX"], symmetry: ["EX"] },
-  "EX-": { cut: ["EX"], polish: ["EX", "VG"], symmetry: ["EX", "VG"] },
-  "VG+": { cut: ["VG"], polish: ["VG", "EX"], symmetry: ["VG", "EX"] },
-  "VG-": { cut: ["VG"], polish: ["VG", "GD"], symmetry: ["VG", "GD"] },
+  "3EX": { cut: "EX", polish: "EX", symmetry: "EX" },
+  "EX-": { cut: "EX", polish: "EX", symmetry: "VG" },
+  "VG+": { cut: "VG", polish: "VG", symmetry: "VG" },
+  "VG-": { cut: "VG", polish: "GD", symmetry: "GD" },
 };
 
 interface ClarityFilterProps {
