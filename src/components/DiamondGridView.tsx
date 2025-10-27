@@ -22,7 +22,7 @@ const mavenPro = Maven_Pro({
 });
 
 const DiamondGridView: React.FC<GridViewProps> = ({
-  pageSize = 20,
+
   onRowClick,
   searchTerm = "",
   selectedShape = [],
@@ -39,10 +39,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(pageSize);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // Calculate items per page based on grid layout (5 columns)
-  const itemsPerPage = rowsPerPage;
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
     null,
   );
@@ -110,7 +108,6 @@ const DiamondGridView: React.FC<GridViewProps> = ({
           }
         }
         if (hasFluorFilter) {
-          // Make sure we're passing it correctly
           filters.fluorescence = selectedFluor.join(",");
           console.log("Grid View - Adding fluorescence filter:", filters.fluorescence);
         }
@@ -181,10 +178,12 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   selectedPolish,
   selectedSymmetry,
 ]);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  // Calculate pagination with rowsPerPage
+  const totalPages = Math.ceil(data.length / rowsPerPage);
   const paginatedData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage,
   );
 
   // Loading state
@@ -192,7 +191,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-[#050c3a] mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
+
           <p className="text-gray-600">
             {searchTerm ||
             (Array.isArray(selectedShape) && selectedShape.length > 0)
@@ -436,7 +436,7 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             </div>
           </div>
 
-          {/* Pagination Footer - Same as DiamondStockTable */}
+          {/* Pagination Footer */}
           <div
             className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
             style={{
@@ -445,8 +445,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
           >
             {/* Left side - Results count */}
             <div className="text-sm text-gray-700 font-medium">
-              Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-              {Math.min(currentPage * itemsPerPage, data.length)} of{" "}
+              Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
+              {Math.min(currentPage * rowsPerPage, data.length)} of{" "}
               {data.length} diamonds
             </div>
 

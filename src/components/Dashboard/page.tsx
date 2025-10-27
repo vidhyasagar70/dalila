@@ -110,7 +110,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto" />
+          <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto" />
           <p className="mt-4 text-gray-600 font-medium">Loading dashboard...</p>
         </div>
       </div>

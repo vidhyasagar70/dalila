@@ -40,7 +40,7 @@ export interface DiamondData {
   REPORT_COMMENTS?: string;
   REAL_IMAGE?: string;
   SIZE?: number; 
-  [key: string]: any;
+
 }
 
 export interface FilterParams {

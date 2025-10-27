@@ -21,7 +21,7 @@ import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
 import CompareButton from "./CompareButton";
 import EmailButton from "./EmailButton";
-import AddToCartButton from "../components/cart/AddToCartButton"; 
+import AddToCartButton from "../components/cart/AddToCartButton";
 import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({
@@ -129,7 +129,6 @@ export default function DiamondStockTableWithFilter() {
   };
 
   const handleCaratChange = (min: string, max: string) => {
-    console.log("Carat changed - min:", min, "max:", max);
     setSelectedMinCarat(min);
     setSelectedMaxCarat(max);
   };
@@ -154,11 +153,15 @@ export default function DiamondStockTableWithFilter() {
     );
   };
 
-  const handleAddToCart = () => {
-    // Optional: Clear selection after adding to cart
-    setSelectedDiamonds([]);
-    console.log("Diamonds added to cart successfully");
-  };
+ const handleAddToCart = () => {
+  // Clear selection after adding to cart
+  setSelectedDiamonds([]);
+  // Force the table to clear its selection
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("clear-selection"));
+  }
+  console.log("Diamonds added to cart successfully, selection cleared");
+};
 
   const handleResetFilters = () => {
     setSelectedColor([]);
@@ -175,7 +178,7 @@ export default function DiamondStockTableWithFilter() {
 
   return (
     <div className="w-full px-4 py-4 bg-[#F5F7FA] mt-35">
-      {/* TOP ROW: Shapes, Carat, Clarity (3 cols) + Fluor/Color stack (1 col) */}
+      {/* TOP ROW: Shapes, Carat, Clarity + Fluor/Color stack */}
       <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0.5">
         <ShapeFilter
           selectedShape={selectedShape}
@@ -198,7 +201,7 @@ export default function DiamondStockTableWithFilter() {
           onPolishChange={handlePolishChange}
           onSymmetryChange={handleSymmetryChange}
         />
-        <div className="flex flex-col justify-between py-1 ">
+        <div className="flex flex-col justify-between py-1">
           <FluorFilter
             selectedFluor={selectedFluor}
             onFluorChange={handleFluorChange}
@@ -210,102 +213,102 @@ export default function DiamondStockTableWithFilter() {
         </div>
       </div>
 
-      {/* SEARCH AND NAVIGATION ROW - All in Single Row */}
-     <div
-  className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
->
-  {/* View Mode Toggle - Icon Only */}
-  <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
-    <button
-      onClick={() => setViewMode("list")}
-      className={`p-2 rounded transition-colors ${
-        viewMode === "list"
-          ? "bg-[#000033] text-white"
-          : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
-      }`}
-      title="Table View"
-    >
-      <List className="w-5 h-5" />
-    </button>
-    <button
-      onClick={() => setViewMode("grid")}
-      className={`p-2 rounded transition-colors ${
-        viewMode === "grid"
-          ? "bg-[#000033] text-white"
-          : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
-      }`}
-      title="Grid View"
-    >
-      <Grid3x3 className="w-5 h-5" />
-    </button>
-  </div>
+      {/* SEARCH AND NAVIGATION ROW */}
+      <div
+        className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
+      >
+        {/* View Mode Toggle */}
+        <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
+          <button
+            onClick={() => setViewMode("list")}
+            className={`p-2 rounded transition-colors ${
+              viewMode === "list"
+                ? "bg-[#000033] text-white"
+                : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
+            }`}
+            title="Table View"
+          >
+            <List className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`p-2 rounded transition-colors ${
+              viewMode === "grid"
+                ? "bg-[#000033] text-white"
+                : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
+            }`}
+            title="Grid View"
+          >
+            <Grid3x3 className="w-5 h-5" />
+          </button>
+        </div>
 
-  {/* Search Bar */}
-  <SearchBar onSearch={handleSearch} />
+        {/* Search Bar */}
+        <SearchBar onSearch={handleSearch} />
 
-  {/* Spacer */}
-  <div className="flex-1"></div>
+        {/* Spacer */}
+        <div className="flex-1"></div>
 
-  {/* Action Buttons Group - Right Side */}
-  <div className="flex items-center gap-2">
-    {/* Add to Cart Button */}
-    <AddToCartButton
-      selectedCount={selectedDiamonds.length}
-      selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
-      onAddToCart={handleAddToCart}
-    />
+        {/* Action Buttons Group */}
+        <div className="flex items-center gap-2">
+          {/* Add to Cart Button */}
+          <AddToCartButton
+            selectedCount={selectedDiamonds.length}
+            selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+            onAddToCart={handleAddToCart}
+          />
 
-    {/* Compare Button */}
-    <CompareButton
-      selectedCount={selectedDiamonds.length}
-      onCompare={handleCompare}
-      disabled={selectedDiamonds.length === 0}
-    />
+          {/* Compare Button */}
+          <CompareButton
+            selectedCount={selectedDiamonds.length}
+            onCompare={handleCompare}
+            disabled={selectedDiamonds.length === 0}
+          />
 
-    {/* Email Button */}
-    <EmailButton
-      selectedCount={selectedDiamonds.length}
-      selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
-      onEmail={handleEmail}
-    />
+          {/* Email Button */}
+          <EmailButton
+            selectedCount={selectedDiamonds.length}
+            selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+            onEmail={handleEmail}
+          />
 
-    {/* Advanced Filters Button */}
-    <button
-      onClick={() => setShowFilters(!showFilters)}
-      className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
-    >
-      <Image
-        src="/filtersicon/filter-add.png"
-        alt="Filter"
-        width={16}
-        height={16}
-        className="w-4 h-4"
-      />
-      <span className="text-sm font-medium">Advanced Filters</span>
-      {showFilters ? (
-        <ChevronUp className="w-4 h-4" />
-      ) : (
-        <ChevronDown className="w-4 h-4" />
-      )}
-    </button>
+          {/* Advanced Filters Button */}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
+          >
+            <Image
+              src="/filtersicon/filter-add.png"
+              alt="Filter"
+              width={16}
+              height={16}
+              className="w-4 h-4"
+            />
+            <span className="text-sm font-medium">Advanced Filters</span>
+            {showFilters ? (
+              <ChevronUp className="w-4 h-4" />
+            ) : (
+              <ChevronDown className="w-4 h-4" />
+            )}
+          </button>
 
-    {/* Reset Filters Button */}
-    <button
-      onClick={handleResetFilters}
-      className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
-      title="Reset All Filters"
-    >
-      <Image
-        src="/filtersicon/filter-remove.png"
-        alt="Reset"
-        width={18}
-        height={18}
-        className="w-4.5 h-4.5"
-      />
-      <span className="text-sm font-medium">Reset Filters</span>
-    </button>
-  </div>
-</div>
+          {/* Reset Filters Button */}
+          <button
+            onClick={handleResetFilters}
+            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
+            title="Reset All Filters"
+          >
+            <Image
+              src="/filtersicon/filter-remove.png"
+              alt="Reset"
+              width={18}
+              height={18}
+              className="w-4.5 h-4.5"
+            />
+            <span className="text-sm font-medium">Reset Filters</span>
+          </button>
+        </div>
+      </div>
 
       {/* Advanced Filters Section */}
       {showFilters && (

@@ -330,7 +330,7 @@ export default function Header() {
 
             {isCheckingAuth ? (
               <div className="py-1 px-3 flex items-center justify-center">
-                <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
+                <Loader2 className="w-5 h-5 text-[#FAF6EB]] animate-spin" />
               </div>
             ) : !isLoggedIn ? (
               <>
