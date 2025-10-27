@@ -6,9 +6,8 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
-  ShoppingCart,
-  X,
 } from "lucide-react";
+import { matchesInclusionFilters, type InclusionFilters } from "./InclusionFilter";
 import { diamondApi, cartApi } from "@/lib/api";
 import type {
   DiamondData,
@@ -39,6 +38,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedPolish = "",
   selectedSymmetry = "",
   onSelectionChange,
+  inclusions,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,12 +56,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
   const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [cartMessage, setCartMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
-
+  
  useEffect(() => {
   const fetchDiamonds = async () => {
     try {
@@ -208,10 +203,19 @@ const DiamondStockTable: React.FC<TableProps> = ({
     setSortConfig({ key, direction });
   };
 
-  const sortedData = useMemo(() => {
-    if (!sortConfig || data.length === 0) return data;
+ const sortedData = useMemo(() => {
+    let filtered = data;
 
-    const sorted = [...data].sort((a, b) => {
+    // Apply inclusion filters (frontend filtering)
+    if (inclusions) {
+      filtered = filtered.filter((diamond) => 
+        matchesInclusionFilters(diamond, inclusions)
+      );
+    }
+
+    if (!sortConfig || filtered.length === 0) return filtered;
+
+    const sorted = [...filtered].sort((a, b) => {
       const aValue = a[sortConfig.key as keyof DiamondData];
       const bValue = b[sortConfig.key as keyof DiamondData];
 
@@ -229,8 +233,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     });
 
     return sorted;
-  }, [data, sortConfig]);
-
+  }, [data, sortConfig, inclusions]);
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
@@ -285,56 +288,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     }
   };
 
-  const handleAddSelectedToCart = async () => {
-    if (selectedDiamonds.length === 0) return;
-
-    try {
-      setIsAddingToCart(true);
-      setCartMessage(null);
-
-      const results = await Promise.allSettled(
-        selectedDiamonds.map((diamond) => cartApi.add(diamond.STONE_NO)),
-      );
-
-      const successful = results.filter(
-        (r) =>
-          r.status === "fulfilled" &&
-          (r.value as { success?: boolean })?.success,
-      );
-      const failed = results.length - successful.length;
-
-      if (successful.length > 0) {
-        setCartMessage({
-          type: "success",
-          text: `${successful.length} diamond(s) added to cart successfully!${failed > 0 ? ` (${failed} failed)` : ""}`,
-        });
-
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("cart-updated"));
-        }
-
-        setSelectedRows(new Set());
-        setSelectAll(false);
-        setSelectedDiamonds([]);
-
-        setTimeout(() => setCartMessage(null), 4000);
-      } else {
-        setCartMessage({
-          type: "error",
-          text: "Failed to add diamonds to cart. Please try again.",
-        });
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      setCartMessage({
-        type: "error",
-        text: "An error occurred while adding to cart.",
-      });
-    } finally {
-      setIsAddingToCart(false);
-    }
-  };
-
+  
   // Handler for Stock ID click
   const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
     e.stopPropagation();
@@ -435,79 +389,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
       <div
         className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
       >
-        {cartMessage && (
-          <div
-            className={`mb-4 p-4 rounded-lg flex items-center justify-between animate-fade-in ${
-              cartMessage.type === "success"
-                ? "bg-green-500/10 border border-green-500/30"
-                : "bg-red-500/10 border border-red-500/30"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              {cartMessage.type === "success" ? (
-                <div className="text-green-400">✓</div>
-              ) : (
-                <div className="text-red-400">✕</div>
-              )}
-              <p
-                className={
-                  cartMessage.type === "success"
-                    ? "text-green-400"
-                    : "text-red-400"
-                }
-              >
-                {cartMessage.text}
-              </p>
-            </div>
-            <button
-              onClick={() => setCartMessage(null)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X size={18} />
-            </button>
-          </div>
-        )}
+       
 
-        {selectedDiamonds.length > 0 && (
-          <div className="mb-4 p-4 bg-white rounded-lg shadow-sm flex items-center justify-between border border-gray-200">
-            <div className="text-sm font-medium text-gray-700">
-              {selectedDiamonds.length} diamond
-              {selectedDiamonds.length !== 1 ? "s" : ""} selected
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => {
-                  setSelectedRows(new Set());
-                  setSelectAll(false);
-                  setSelectedDiamonds([]);
-                  if (onSelectionChange) {
-                    onSelectionChange([], []);
-                  }
-                }}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-              >
-                Clear Selection
-              </button>
-              <button
-                onClick={handleAddSelectedToCart}
-                disabled={isAddingToCart}
-                className="px-6 py-2 text-sm font-medium text-white bg-[#050C3A] rounded hover:bg-[#030822] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-              >
-                {isAddingToCart ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Adding...
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="w-4 h-4" />
-                    Add to Cart ({selectedDiamonds.length})
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
+      
 
         {(searchTerm ||
           (Array.isArray(selectedShape) && selectedShape.length > 0) ||

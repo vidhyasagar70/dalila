@@ -1,5 +1,5 @@
 // @/types/Diamondtable.ts
-
+import { matchesInclusionFilters, type InclusionFilters } from "../components/InclusionFilter";
 
 export interface DiamondData {
   _id: string;
@@ -72,6 +72,7 @@ export interface TableProps {
   selectedPolish?: string;
   selectedSymmetry?: string;
   onSelectionChange?: (selectedIds: string[], diamonds: DiamondData[]) => void;
+  inclusions?: InclusionFilters;
 }
 
 // For DiamondGridView component

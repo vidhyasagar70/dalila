@@ -4,7 +4,6 @@ import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { DiamondData } from "@/types/Diamondtable";
 import DiamondComparisonPage from "./DiamondComparisonPage";
-
 import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
 import ShapeFilter from "./ShapeFilter";
@@ -22,6 +21,7 @@ import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
 import CompareButton from "./CompareButton";
 import EmailButton from "./EmailButton";
+import AddToCartButton from "../components/cart/AddToCartButton"; 
 import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({
@@ -91,7 +91,6 @@ export default function DiamondStockTableWithFilter() {
     setSelectedColor(colors);
   };
 
-  // CHANGED: Updated to handle string[] instead of string
   const handleShapeChange = (shapes: string[]) => {
     setSelectedShape(shapes);
   };
@@ -155,10 +154,15 @@ export default function DiamondStockTableWithFilter() {
     );
   };
 
-  // CHANGED: Reset shape filter to empty array
+  const handleAddToCart = () => {
+    // Optional: Clear selection after adding to cart
+    setSelectedDiamonds([]);
+    console.log("Diamonds added to cart successfully");
+  };
+
   const handleResetFilters = () => {
     setSelectedColor([]);
-    setSelectedShape([]); // CHANGED: from "" to []
+    setSelectedShape([]);
     setSelectedClarity([]);
     setSelectedSpecial("");
     setSelectedCut("");
@@ -206,93 +210,98 @@ export default function DiamondStockTableWithFilter() {
         </div>
       </div>
 
-      {/* SEARCH AND NAVIGATION ROW */}
+      {/* SEARCH AND NAVIGATION ROW - All in Single Row */}
       <div
-        className={`flex flex-wrap items-center gap-3 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
+        className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
       >
-        {/* View Mode Toggle - Left Side */}
+        {/* View Mode Toggle - Icon Only */}
         <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
           <button
             onClick={() => setViewMode("list")}
-            className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
+            className={`p-2 rounded transition-colors ${
               viewMode === "list"
                 ? "bg-[#000033] text-white"
-                : "bg-[#faf6eb] text-gray-600"
+                : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
             }`}
             title="Table View"
           >
-            <List className="w-4 h-4" />
-            <span className="text-sm font-medium">Table View</span>
+            <List className="w-5 h-5" />
           </button>
           <button
             onClick={() => setViewMode("grid")}
-            className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
+            className={`p-2 rounded transition-colors ${
               viewMode === "grid"
                 ? "bg-[#000033] text-white"
-                : "bg-[#faf6eb] text-gray-600"
+                : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
             }`}
             title="Grid View"
           >
-            <Grid3x3 className="w-4 h-4" />
-            <span className="text-sm font-medium">Grid View</span>
+            <Grid3x3 className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Spacer to push items to the right */}
+        {/* Search Bar */}
+        <SearchBar onSearch={handleSearch} />
+
+        {/* Add to Cart Button */}
+        <AddToCartButton
+          selectedCount={selectedDiamonds.length}
+          selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+          onAddToCart={handleAddToCart}
+        />
+
+        {/* Compare Button */}
+        <CompareButton
+          selectedCount={selectedDiamonds.length}
+          onCompare={handleCompare}
+          disabled={selectedDiamonds.length === 0}
+        />
+
+        {/* Email Button */}
+        <EmailButton
+          selectedCount={selectedDiamonds.length}
+          selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+          onEmail={handleEmail}
+        />
+
+        {/* Spacer */}
         <div className="flex-1"></div>
 
-        {/* Search Bar and Action Buttons - Right Side */}
-        <div
-          className={`flex flex-wrap items-center gap-2 ${mavenPro.className}`}
+        {/* Advanced Filters Button */}
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
         >
-          <SearchBar onSearch={handleSearch} />
-
-          <CompareButton
-            selectedCount={selectedDiamonds.length}
-            onCompare={handleCompare}
-            disabled={selectedDiamonds.length === 0}
+          <Image
+            src="/filtersicon/filter-add.png"
+            alt="Filter"
+            width={16}
+            height={16}
+            className="w-4 h-4"
           />
+          <span className="text-sm font-medium">Advanced Filters</span>
+          {showFilters ? (
+            <ChevronUp className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+        </button>
 
-          <EmailButton
-            selectedCount={selectedDiamonds.length}
-            selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
-            onEmail={handleEmail}
+        {/* Reset Filters Button */}
+        <button
+          onClick={handleResetFilters}
+          className="flex items-center gap-2 px-4 py-2 bg-[#000033]  text-white transition-colors shadow-sm rounded  whitespace-nowrap"
+          title="Reset All Filters"
+        >
+          <Image
+            src="/filtersicon/filter-remove.png"
+            alt="Reset"
+            width={18}
+            height={18}
+            className="w-4.5 h-4.5"
           />
-
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded"
-          >
-            <Image
-              src="/filtersicon/filter-add.png"
-              alt="Filter"
-              width={16}
-              height={16}
-              className="w-4 h-4"
-            />
-            <span className="text-sm font-medium">Show Advanced Filters</span>
-            {showFilters ? (
-              <ChevronUp className="w-4 h-4" />
-            ) : (
-              <ChevronDown className="w-4 h-4" />
-            )}
-          </button>
-
-          <button
-            onClick={handleResetFilters}
-            className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-[#D4A574] text-[#D4A574] transition-colors shadow-sm rounded"
-            title="Reset All Filters"
-          >
-            <Image
-              src="/filtersicon/filter-remove.png"
-              alt="Reset"
-              width={18}
-              height={18}
-              className="w-4.5 h-4.5"
-            />
-            <span className="text-sm font-medium">Reset Filters</span>
-          </button>
-        </div>
+          <span className="text-sm font-medium">Reset Filters</span>
+        </button>
       </div>
 
       {/* Advanced Filters Section */}
