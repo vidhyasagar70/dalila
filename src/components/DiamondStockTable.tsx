@@ -51,13 +51,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
-    null,
-  );
+  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
 
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
-  const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
 
   useEffect(() => {
     const fetchDiamonds = async () => {
@@ -135,7 +132,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
             const apiLocationValues = getLocationApiValues(selectedLocations);
             filters.location = apiLocationValues.join(",");
           }
-          
           if (hasLabFilter) {
             const apiLabValues = getLabApiValues(selectedLabs);
             filters.lab = apiLabValues.join(",");
@@ -190,36 +186,31 @@ const DiamondStockTable: React.FC<TableProps> = ({
     selectedLabs,
   ]);
 
-  // Helper function to check if a diamond matches Key Symbol filters
   const matchesKeySymbolFilters = useCallback((diamond: DiamondData): boolean => {
     if (!keySymbolFilters) return true;
 
     const { keyToSymbol, eyCln, hAndA } = keySymbolFilters;
 
-    // Check Key To Symbol filter
     if (keyToSymbol && keyToSymbol.length > 0) {
       const diamondKeySymbols = diamond.KEY_TO_SYMBOLS || "";
-      
-      // If "ALL" is selected, skip this filter
+
       if (!keyToSymbol.includes("ALL")) {
         const hasMatch = keyToSymbol.some(filter => {
           if (filter === "ALL") return true;
-          // Case-insensitive match
           return diamondKeySymbols.toLowerCase().includes(filter.toLowerCase());
         });
-        
+
         if (!hasMatch) return false;
       }
     }
 
-    // Check Ey.Cln filter (Eye Clean percentage)
     if (eyCln && eyCln.length > 0) {
       const comments = (diamond.COMMENTS_1 || "").toLowerCase();
       const eyClnField = (diamond.EY_CLN || "").toLowerCase();
-      
+
       const hasEyeClean = eyCln.some(percentage => {
         if (percentage === "100%") {
-          return comments.includes("100% eye clean") || 
+          return comments.includes("100% eye clean") ||
                  comments.includes("eye clean") ||
                  comments.includes("eyeclean") ||
                  eyClnField.includes("100");
@@ -227,16 +218,15 @@ const DiamondStockTable: React.FC<TableProps> = ({
         return comments.includes(percentage.toLowerCase() + " eye clean") ||
                eyClnField.includes(percentage.replace("%", ""));
       });
-      
+
       if (!hasEyeClean) return false;
     }
 
-    // Check H&A filter (Hearts & Arrows)
     if (hAndA && hAndA.length > 0) {
       const ha = (diamond.HA || "").toLowerCase();
       const hAndAField = (diamond.H_AND_A || "").toLowerCase();
       const comments = (diamond.COMMENTS_1 || "").toLowerCase();
-      
+
       const hasHA = hAndA.some(percentage => {
         const match = ha.includes(percentage.toLowerCase()) ||
                      hAndAField.includes(percentage.replace("%", "")) ||
@@ -245,7 +235,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                      comments.includes("hearts & arrows");
         return match;
       });
-      
+
       if (!hasHA) return false;
     }
 
@@ -267,10 +257,8 @@ const DiamondStockTable: React.FC<TableProps> = ({
   const sortedData = useMemo(() => {
     if (data.length === 0) return data;
 
-    // Apply Key Symbol filters first
-    let filtered = data.filter(matchesKeySymbolFilters);
+    const filtered = data.filter(matchesKeySymbolFilters);
 
-    // Then apply sorting
     if (!sortConfig) return filtered;
 
     const sorted = [...filtered].sort((a, b) => {
@@ -319,14 +307,12 @@ const DiamondStockTable: React.FC<TableProps> = ({
       if (onSelectionChange) {
         onSelectionChange(Array.from(allIds), paginatedData);
       }
-      setSelectedDiamonds(paginatedData);
     } else {
       setSelectedRows(new Set());
       setSelectAll(false);
       if (onSelectionChange) {
         onSelectionChange([], []);
       }
-      setSelectedDiamonds([]);
     }
   };
 
@@ -341,7 +327,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
     setSelectedRows(newSelected);
 
     const selected = data.filter((d) => newSelected.has(d._id));
-    setSelectedDiamonds(selected);
     if (onSelectionChange) {
       onSelectionChange(Array.from(newSelected), selected);
     }
@@ -360,7 +345,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-#FAF6EB mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
           <p className="text-gray-600">
             {searchTerm ||
             (Array.isArray(selectedShape) && selectedShape.length > 0)
@@ -414,9 +399,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
 
   return (
     <>
-      <div
-        className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
-      >
+      <div className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}>
         {(searchTerm ||
           (Array.isArray(selectedShape) && selectedShape.length > 0) ||
           (Array.isArray(selectedColor) && selectedColor.length > 0) ||
@@ -455,7 +438,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
               </span>
             )}
             {selectedPolish && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+              <span className="px-2 py-1 bg-blue-700 rounded">
                 Polish: {selectedPolish}
               </span>
             )}
