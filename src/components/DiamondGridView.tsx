@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import {
   ChevronLeft,
@@ -14,6 +14,7 @@ import type {
 import DiamondDetailView from "./DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
 import { getLocationApiValues, getLabApiValues } from "./Priceandloction";
+
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
   subsets: ["latin"],
@@ -22,7 +23,6 @@ const mavenPro = Maven_Pro({
 });
 
 const DiamondGridView: React.FC<GridViewProps> = ({
-
   onRowClick,
   searchTerm = "",
   selectedShape = [],
@@ -33,7 +33,7 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   selectedClarity = [],
   selectedCut = "",
   selectedPolish = "",
-   selectedLocations = [],
+  selectedLocations = [],
   selectedLabs = [],
   selectedSymmetry = "",
 }) => {
@@ -42,149 +42,157 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
     null,
   );
 
- useEffect(() => {
-  const fetchDiamonds = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Memoize filter strings to prevent unnecessary re-renders
+  const filterKey = useMemo(() => {
+    return JSON.stringify({
+      searchTerm,
+      selectedShape: Array.isArray(selectedShape) ? selectedShape.sort().join(',') : '',
+      selectedColor: Array.isArray(selectedColor) ? selectedColor.sort().join(',') : '',
+      selectedMinCarat,
+      selectedMaxCarat,
+      selectedFluor: Array.isArray(selectedFluor) ? selectedFluor.sort().join(',') : '',
+      selectedClarity: Array.isArray(selectedClarity) ? selectedClarity.sort().join(',') : '',
+      selectedCut,
+      selectedPolish,
+      selectedSymmetry,
+      selectedLocations: Array.isArray(selectedLocations) ? selectedLocations.sort().join(',') : '',
+      selectedLabs: Array.isArray(selectedLabs) ? selectedLabs.sort().join(',') : '',
+    });
+  }, [
+    searchTerm,
+    selectedShape,
+    selectedColor,
+    selectedMinCarat,
+    selectedMaxCarat,
+    selectedFluor,
+    selectedClarity,
+    selectedCut,
+    selectedPolish,
+    selectedSymmetry,
+    selectedLocations,
+    selectedLabs,
+  ]);
 
-      const hasSearchTerm = searchTerm && searchTerm.trim();
-      const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
-      const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
-      const hasCaratFilter =
-        (selectedMinCarat && selectedMinCarat.trim()) ||
-        (selectedMaxCarat && selectedMaxCarat.trim());
-      const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
-      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-      const hasCutFilter = selectedCut && selectedCut.trim();
-      const hasPolishFilter = selectedPolish && selectedPolish.trim();
-      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+  useEffect(() => {
+    const fetchDiamonds = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const hasSearchTerm = searchTerm && searchTerm.trim();
+        const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
+        const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
+        const hasCaratFilter =
+          (selectedMinCarat && selectedMinCarat.trim()) ||
+          (selectedMaxCarat && selectedMaxCarat.trim());
+        const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
+        const hasClarityFilter = Array.isArray(selectedClarity) && selectedClarity.length > 0;
+        const hasCutFilter = selectedCut && selectedCut.trim();
+        const hasPolishFilter = selectedPolish && selectedPolish.trim();
+        const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
         const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
         const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
-      const hasAnyFilter =
-        hasShapeFilter ||
-        hasColorFilter ||
-        hasSearchTerm ||
-        hasCaratFilter ||
-        hasFluorFilter ||
-        hasClarityFilter ||
-        hasCutFilter ||
-        hasPolishFilter ||
-        hasLocationFilter ||
+
+        const hasAnyFilter =
+          hasShapeFilter ||
+          hasColorFilter ||
+          hasSearchTerm ||
+          hasCaratFilter ||
+          hasFluorFilter ||
+          hasClarityFilter ||
+          hasCutFilter ||
+          hasPolishFilter ||
+          hasSymmetryFilter ||
+          hasLocationFilter ||
           hasLabFilter;
-        hasSymmetryFilter;
 
-      console.log("🔍 Grid View - Filter check:", {
-        hasShapeFilter,
-        hasColorFilter,
-        hasCaratFilter,
-        hasFluorFilter,
-        hasClarityFilter,
-        hasCutFilter,
-        hasPolishFilter,
-        hasSymmetryFilter,
-        fluorValues: selectedFluor,
-      });
+        let response;
+        if (hasAnyFilter) {
+          const filters: FilterParams = {
+            page: 1,
+            limit: 10000,
+          };
 
-      let response;
-      if (hasAnyFilter) {
-        const filters: FilterParams = {
-          page: 1,
-          limit: 10000,
-        };
-
-        if (hasShapeFilter) {
-          filters.shape = selectedShape.join(",");
-        }
-        if (hasColorFilter) {
-          filters.color = selectedColor.join(",");
-        }
-        if (hasCaratFilter) {
-          if (selectedMinCarat && selectedMinCarat.trim()) {
-            filters.minCarats = parseFloat(selectedMinCarat);
+          if (hasShapeFilter) {
+            filters.shape = selectedShape.join(",");
           }
-          if (selectedMaxCarat && selectedMaxCarat.trim()) {
-            filters.maxCarats = parseFloat(selectedMaxCarat);
+          if (hasColorFilter) {
+            filters.color = selectedColor.join(",");
           }
-        }
-        if (hasFluorFilter) {
-          filters.fluorescence = selectedFluor.join(",");
-          console.log("Grid View - Adding fluorescence filter:", filters.fluorescence);
-        }
-        if (hasClarityFilter) {
-          filters.clarity = selectedClarity.join(",");
-        }
-        if (hasCutFilter) {
-          filters.cut = selectedCut.trim();
-        }
-        if (hasPolishFilter) {
-          filters.polish = selectedPolish.trim();
-        }
-        if (hasSymmetryFilter) {
-          filters.symmetry = selectedSymmetry.trim();
-        }
-        if (hasSearchTerm) {
-          filters.searchTerm = searchTerm.trim();
-        }
+          if (hasCaratFilter) {
+            if (selectedMinCarat && selectedMinCarat.trim()) {
+              filters.minCarats = parseFloat(selectedMinCarat);
+            }
+            if (selectedMaxCarat && selectedMaxCarat.trim()) {
+              filters.maxCarats = parseFloat(selectedMaxCarat);
+            }
+          }
+          if (hasFluorFilter) {
+            filters.fluorescence = selectedFluor.join(",");
+          }
+          if (hasClarityFilter) {
+            filters.clarity = selectedClarity.join(",");
+          }
+          if (hasCutFilter) {
+            filters.cut = selectedCut.trim();
+          }
+          if (hasPolishFilter) {
+            filters.polish = selectedPolish.trim();
+          }
+          if (hasSymmetryFilter) {
+            filters.symmetry = selectedSymmetry.trim();
+          }
+          if (hasSearchTerm) {
+            filters.searchTerm = searchTerm.trim();
+          }
+          if (hasLocationFilter) {
+            const apiLocationValues = getLocationApiValues(selectedLocations);
+            filters.location = apiLocationValues.join(",");
+          }
+          if (hasLabFilter) {
+            const apiLabValues = getLabApiValues(selectedLabs);
+            filters.lab = apiLabValues.join(",");
+          }
 
-        console.log("Grid View - Calling API with filters:", filters);
-        response = await diamondApi.search(filters);
-        console.log("Grid View - API response:", response);
-      } else {
-        console.log("Grid View - Fetching all diamonds (no filters)");
-        response = await diamondApi.getAllNoPagination();
-      }
-
-      if (response?.success && response.data) {
-        let diamonds: DiamondData[];
-        if (Array.isArray(response.data)) {
-          diamonds = response.data as unknown as DiamondData[];
-        } else if (
-          response.data.diamonds &&
-          Array.isArray(response.data.diamonds)
-        ) {
-          diamonds = response.data.diamonds as unknown as DiamondData[];
+          response = await diamondApi.search(filters);
         } else {
-          diamonds = [];
+          response = await diamondApi.getAllNoPagination();
         }
-        console.log(`Grid View - Fetched ${diamonds.length} diamonds`);
-        setData(diamonds);
-        setCurrentPage(1);
-      } else {
-        console.log(" Grid View - No data received from API");
-        setData([]);
-      }
-    } catch (err) {
-      console.error("Grid View - Error fetching diamonds:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch diamonds"
-      );
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  fetchDiamonds();
-}, [
-  searchTerm,
-  selectedShape,
-  selectedColor,
-  selectedMinCarat,
-  selectedMaxCarat,
-  selectedFluor, 
-  selectedClarity,
-  selectedCut,
-  selectedPolish,
-  selectedSymmetry,
-  selectedLocations,
-    selectedLabs,
-]);
+        if (response?.success && response.data) {
+          let diamonds: DiamondData[];
+          if (Array.isArray(response.data)) {
+            diamonds = response.data as unknown as DiamondData[];
+          } else if (
+            response.data.diamonds &&
+            Array.isArray(response.data.diamonds)
+          ) {
+            diamonds = response.data.diamonds as unknown as DiamondData[];
+          } else {
+            diamonds = [];
+          }
+          setData(diamonds);
+          setCurrentPage(1);
+        } else {
+          setData([]);
+        }
+      } catch (err) {
+        console.error("Grid View - Error fetching diamonds:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch diamonds"
+        );
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDiamonds();
+  }, [filterKey]); // Use memoized filter key instead of individual dependencies
 
   // Calculate pagination with rowsPerPage
   const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -199,7 +207,6 @@ const DiamondGridView: React.FC<GridViewProps> = ({
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
-
           <p className="text-gray-600">
             {searchTerm ||
             (Array.isArray(selectedShape) && selectedShape.length > 0)
@@ -233,14 +240,13 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             {searchTerm ||
             (Array.isArray(selectedShape) && selectedShape.length > 0) ||
             (Array.isArray(selectedColor) && selectedColor.length > 0) ||
-            selectedClarity.length > 0 ||
+            (Array.isArray(selectedClarity) && selectedClarity.length > 0) ||
             selectedCut ||
             selectedPolish ||
             selectedSymmetry ||
             (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
             selectedMinCarat ||
-            
-            selectedMaxCarat||
+            selectedMaxCarat ||
             (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
             (Array.isArray(selectedLabs) && selectedLabs.length > 0)
               ? `No diamonds found matching your filters`
@@ -248,13 +254,15 @@ const DiamondGridView: React.FC<GridViewProps> = ({
           </p>
           {((Array.isArray(selectedShape) && selectedShape.length > 0) ||
             (Array.isArray(selectedColor) && selectedColor.length > 0) ||
-            selectedClarity.length > 0 ||
+            (Array.isArray(selectedClarity) && selectedClarity.length > 0) ||
             selectedCut ||
             selectedPolish ||
             selectedSymmetry ||
             (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
             selectedMinCarat ||
             selectedMaxCarat ||
+            (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+            (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
             searchTerm) && (
             <div className="text-sm text-gray-500 mt-2 space-y-1">
               {Array.isArray(selectedShape) && selectedShape.length > 0 && (
@@ -263,7 +271,7 @@ const DiamondGridView: React.FC<GridViewProps> = ({
               {Array.isArray(selectedColor) && selectedColor.length > 0 && (
                 <p>Color: {selectedColor.join(", ")}</p>
               )}
-              {selectedClarity.length > 0 && (
+              {Array.isArray(selectedClarity) && selectedClarity.length > 0 && (
                 <p>Clarity: {selectedClarity.join(", ")}</p>
               )}
               {selectedCut && <p>Cut: {selectedCut}</p>}
@@ -279,15 +287,11 @@ const DiamondGridView: React.FC<GridViewProps> = ({
                 </p>
               )}
               {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Location: {selectedLocations.join(", ")}
-              </span>
-            )}
-            {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Lab: {selectedLabs.join(", ")}
-              </span>
-            )}
+                <p>Location: {selectedLocations.join(", ")}</p>
+              )}
+              {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
+                <p>Lab: {selectedLabs.join(", ")}</p>
+              )}
               {searchTerm && <p>Search: &quot;{searchTerm}&quot;</p>}
             </div>
           )}
@@ -305,13 +309,15 @@ const DiamondGridView: React.FC<GridViewProps> = ({
         {(searchTerm ||
           (Array.isArray(selectedShape) && selectedShape.length > 0) ||
           (Array.isArray(selectedColor) && selectedColor.length > 0) ||
-          selectedClarity.length > 0 ||
+          (Array.isArray(selectedClarity) && selectedClarity.length > 0) ||
           selectedCut ||
           selectedPolish ||
           selectedSymmetry ||
           (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
           selectedMinCarat ||
-          selectedMaxCarat) && (
+          selectedMaxCarat ||
+          (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+          (Array.isArray(selectedLabs) && selectedLabs.length > 0)) && (
           <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
             <span className="font-medium">Active Filters:</span>
             {Array.isArray(selectedShape) && selectedShape.length > 0 && (
@@ -324,8 +330,7 @@ const DiamondGridView: React.FC<GridViewProps> = ({
                 Color: {selectedColor.join(", ")}
               </span>
             )}
-
-            {selectedClarity.length > 0 && (
+            {Array.isArray(selectedClarity) && selectedClarity.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Clarity: {selectedClarity.join(", ")}
               </span>
@@ -353,6 +358,16 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             {(selectedMinCarat || selectedMaxCarat) && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Carat: {selectedMinCarat || "0"} - {selectedMaxCarat || "∞"}
+              </span>
+            )}
+            {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Location: {selectedLocations.join(", ")}
+              </span>
+            )}
+            {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Lab: {selectedLabs.join(", ")}
               </span>
             )}
             {searchTerm && (
