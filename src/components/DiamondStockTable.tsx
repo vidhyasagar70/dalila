@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import {
@@ -15,6 +16,7 @@ import type {
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
+import { getLocationApiValues, getLabApiValues } from "./Priceandloction";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -36,6 +38,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedCut = "",
   selectedPolish = "",
   selectedSymmetry = "",
+  selectedLocations = [],
+  selectedLabs = [],
+  keySymbolFilters,
   onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
@@ -72,6 +77,8 @@ const DiamondStockTable: React.FC<TableProps> = ({
         const hasCutFilter = selectedCut && selectedCut.trim();
         const hasPolishFilter = selectedPolish && selectedPolish.trim();
         const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+        const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
+        const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
 
         const hasAnyFilter =
           hasShapeFilter ||
@@ -82,7 +89,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
           hasClarityFilter ||
           hasCutFilter ||
           hasPolishFilter ||
-          hasSymmetryFilter;
+          hasSymmetryFilter ||
+          hasLocationFilter ||
+          hasLabFilter;
 
         let response;
         if (hasAnyFilter) {
@@ -122,6 +131,15 @@ const DiamondStockTable: React.FC<TableProps> = ({
           }
           if (hasSearchTerm) {
             filters.searchTerm = searchTerm.trim();
+          }
+          if (hasLocationFilter) {
+            const apiLocationValues = getLocationApiValues(selectedLocations);
+            filters.location = apiLocationValues.join(",");
+          }
+          
+          if (hasLabFilter) {
+            const apiLabValues = getLabApiValues(selectedLabs);
+            filters.lab = apiLabValues.join(",");
           }
 
           response = await diamondApi.search(filters);
@@ -169,6 +187,8 @@ const DiamondStockTable: React.FC<TableProps> = ({
     selectedCut,
     selectedPolish,
     selectedSymmetry,
+    selectedLocations,
+    selectedLabs,
   ]);
 
   const handleSort = (key: string) => {
@@ -283,7 +303,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
         </div>
       </div>
     );
-  }
+  };
 
   if (error) {
     return (
@@ -311,7 +331,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
             selectedSymmetry ||
             selectedFluor ||
             selectedMinCarat ||
-            selectedMaxCarat
+            selectedMaxCarat ||
+            (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+            (Array.isArray(selectedLabs) && selectedLabs.length > 0)
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
@@ -334,7 +356,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
           selectedSymmetry ||
           (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
           selectedMinCarat ||
-          selectedMaxCarat) && (
+          selectedMaxCarat ||
+          (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+          (Array.isArray(selectedLabs) && selectedLabs.length > 0)) && (
           <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
             <span className="font-medium">Active Filters:</span>
             {Array.isArray(selectedShape) && selectedShape.length > 0 && (
@@ -375,6 +399,16 @@ const DiamondStockTable: React.FC<TableProps> = ({
             {(selectedMinCarat || selectedMaxCarat) && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Carat: {selectedMinCarat || "0"} - {selectedMaxCarat || "∞"}
+              </span>
+            )}
+            {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Location: {selectedLocations.join(", ")}
+              </span>
+            )}
+            {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Lab: {selectedLabs.join(", ")}
               </span>
             )}
             {searchTerm && (

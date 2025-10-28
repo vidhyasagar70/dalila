@@ -37,10 +37,10 @@ const LOCATION_OPTIONS = [
 ];
 
 const LAB_OPTIONS = [
-  { label: "GIA", value: "GIA" },
-  { label: "IGI", value: "IGI" },
-  { label: "HRD", value: "HRD" },
-  { label: "OTHER", value: "OTHER" }
+  { label: "GIA", value: "GIA", apiValue: "GIA" },
+  { label: "IGI", value: "IGI", apiValue: "IGI" },
+  { label: "HRD", value: "HRD", apiValue: "HRD" },
+  { label: "OTHERS", value: "OTHERS", apiValue: "OTHERS" }
 ];
 
 // Helper function to match ONLY price filters (frontend filtering)
@@ -89,10 +89,22 @@ export const matchesPriceFilters = (
 
 // Helper function to get API values for locations
 export const getLocationApiValues = (selectedLocations: string[]): string[] => {
-  return selectedLocations.map(location => {
-    const option = LOCATION_OPTIONS.find(opt => opt.value === location);
-    return option?.apiValue || location;
-  });
+  return selectedLocations
+    .map(location => {
+      const option = LOCATION_OPTIONS.find(opt => opt.value === location);
+      return option?.apiValue || location;
+    })
+    .filter(Boolean);
+};
+
+// Helper function to get API values for labs
+export const getLabApiValues = (selectedLabs: string[]): string[] => {
+  return selectedLabs
+    .map(lab => {
+      const option = LAB_OPTIONS.find(opt => opt.value === lab);
+      return option?.apiValue || lab;
+    })
+    .filter(Boolean);
 };
 
 export default function PriceLocationFilter({

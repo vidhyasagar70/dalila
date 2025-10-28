@@ -1,6 +1,7 @@
 // @/types/Diamondtable.ts
 import { type InclusionFilters } from "../components/InclusionFilter";
 import {type PriceLocationFilters } from "../components/Priceandloction";
+import type { KeySymbolFilters } from "../components/KeyToSymbolFilter";
 export interface DiamondData {
   _id: string;
   STONE_NO: string;
@@ -40,6 +41,9 @@ export interface DiamondData {
   REPORT_COMMENTS?: string;
   REAL_IMAGE?: string;
   SIZE?: number; 
+  EY_CLN?:string;
+  H_AND_A?:string;
+  
 
 }
 
@@ -78,6 +82,9 @@ export interface TableProps {
   onSelectionChange?: (selectedIds: string[], diamonds: DiamondData[]) => void;
   inclusions?: InclusionFilters;
   priceLocationFilters?: PriceLocationFilters;
+   selectedLocations?: string[];  // NEW
+  selectedLabs?: string[]; 
+  keySymbolFilters?: KeySymbolFilters;      // NEW
 }
 
 // For DiamondGridView component
@@ -95,6 +102,8 @@ export interface GridViewProps {
   selectedPolish?: string;
   selectedSymmetry?: string;
   inclusions?: InclusionFilters
+  selectedLocations?: string[];  // NEW
+  selectedLabs?: string[];       // NEW
 }
 
 // API Response types

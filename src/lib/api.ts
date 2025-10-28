@@ -400,7 +400,9 @@ export const diamondApi = {
   getAllNoPagination: () =>
     api.get<{ diamonds: Diamond[] }>("/api/diamonds/all"),
 
-  search: (filters: {
+ // In your api.ts file, update the diamondApi.search method:
+
+search: (filters: {
   color?: string;
   clarity?: string;
   cut?: string;
@@ -419,7 +421,6 @@ export const diamondApi = {
   fluorescence?: string;
   searchTerm?: string;
 }) => {
-  // Build query parameters manually to handle arrays properly with OR logic
   const queryParams = new URLSearchParams();
 
   // Helper function to add multiple values as separate query parameters
@@ -437,39 +438,49 @@ export const diamondApi = {
     });
   };
 
-  // Handle SHAPE - multiple values = OR logic
+  // Handle SHAPE
   if (filters.shape) {
     addMultipleParams("SHAPE", filters.shape);
   }
 
-  // Handle COLOR - multiple values = OR logic
+  // Handle COLOR
   if (filters.color) {
     addMultipleParams("COLOR", filters.color);
   }
 
-  // Handle CLARITY - multiple values = OR logic
+  // Handle CLARITY
   if (filters.clarity) {
     addMultipleParams("CLARITY", filters.clarity);
   }
 
-  // Handle CUT - multiple values = OR logic
+  // Handle CUT
   if (filters.cut) {
     addMultipleParams("CUT", filters.cut);
   }
 
-  // Handle POLISH - multiple values = OR logic
+  // Handle POLISH
   if (filters.polish) {
     addMultipleParams("POL", filters.polish);
   }
 
-  // Handle SYMMETRY - multiple values = OR logic
+  // Handle SYMMETRY
   if (filters.symmetry) {
     addMultipleParams("SYM", filters.symmetry);
   }
 
-  // Handle FLUORESCENCE - multiple values = OR logic
+  // Handle FLUORESCENCE
   if (filters.fluorescence) {
     addMultipleParams("FLOUR", filters.fluorescence);
+  }
+
+  // Handle LOCATION - NEW
+  if (filters.location) {
+    addMultipleParams("LOCATION", filters.location);
+  }
+
+  // Handle LAB - NEW
+  if (filters.lab) {
+    addMultipleParams("LAB", filters.lab);
   }
 
   // Handle CARAT RANGE
@@ -486,16 +497,6 @@ export const diamondApi = {
   }
   if (filters.maxPrice !== undefined) {
     queryParams.append("MAX_PRICE", filters.maxPrice.toString());
-  }
-
-  // Handle LAB
-  if (filters.lab) {
-    addMultipleParams("LAB", filters.lab);
-  }
-
-  // Handle LOCATION
-  if (filters.location) {
-    addMultipleParams("LOCATION", filters.location);
   }
 
   // Handle STAGE
@@ -516,16 +517,13 @@ export const diamondApi = {
     queryParams.append("limit", filters.limit.toString());
   }
 
-  // Build the final URL
   const queryString = queryParams.toString();
   const endpoint = queryString
     ? `/api/diamonds/search?${queryString}`
     : "/api/diamonds/search";
 
   console.log("Search API called with URL:", endpoint);
-  console.log("Query params:", queryString);
 
-  // Use axios directly instead of api.get to have full control
   return apiClient
     .get<ApiResponse<PaginationData<Diamond>>>(endpoint)
     .then((response) => response.data)

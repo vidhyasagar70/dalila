@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ShoppingCart, Loader2, X } from "lucide-react";
 import { cartApi, getAuthToken } from "@/lib/api";
@@ -20,14 +21,23 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   } | null>(null);
 
   const handleAddToCart = async () => {
-    // Check authentication first
+    // Check authentication first - now with better error handling
     const token = getAuthToken();
+    console.log("🔍 Token check:", token ? "EXISTS" : "MISSING");
+    
     if (!token || token.trim() === "") {
+      console.error("❌ No authentication token found");
       setMessage({
         type: "error",
-        text: "Please login to add items to cart",
+        text: "Please login to add items to cart. Your session may have expired.",
       });
-      setTimeout(() => setMessage(null), 3000);
+      
+      // Dispatch unauthorized event to trigger login redirect
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("unauthorized_access"));
+      }
+      
+      setTimeout(() => setMessage(null), 4000);
       return;
     }
 
@@ -44,20 +54,62 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       setIsAdding(true);
       setMessage(null);
 
-      console.log("Adding stones to cart:", selectedStoneNumbers);
+      console.log("📦 Adding stones to cart:", selectedStoneNumbers);
+      console.log("🔑 Using token:", token.substring(0, 20) + "...");
 
-      // Add all selected diamonds to cart
+      // Add all selected diamonds to cart with better error handling
       const results = await Promise.allSettled(
-        selectedStoneNumbers.map((stoneNo) => cartApi.add(stoneNo))
+        selectedStoneNumbers.map((stoneNo) => {
+          console.log(`  ➕ Attempting to add: ${stoneNo}`);
+          return cartApi.add(stoneNo);
+        })
       );
 
-      console.log("Cart API results:", results);
+      console.log("📊 Cart API results:", results);
 
-      // Count successful and failed additions
-      const successful = results.filter(
-        (r) => r.status === "fulfilled" && (r.value as { success?: boolean })?.success
-      );
+      // Analyze results with detailed logging
+      const successful = results.filter((r) => {
+        if (r.status === "fulfilled") {
+          const value = r.value as { success?: boolean; error?: string };
+          console.log("  ✅ Fulfilled:", value);
+          return value?.success === true;
+        }
+        console.log("  ❌ Rejected:", r.reason);
+        return false;
+      });
+
       const failed = results.length - successful.length;
+
+      // Check if any failures were due to authentication
+      const authErrors = results.filter((r) => {
+        if (r.status === "rejected") {
+          const error = r.reason;
+          return (
+            error?.response?.status === 401 ||
+            error?.message?.includes("Invalid token") ||
+            error?.message?.includes("Unauthorized")
+          );
+        }
+        return false;
+      });
+
+      if (authErrors.length > 0) {
+        console.error("🚫 Authentication errors detected");
+        setMessage({
+          type: "error",
+          text: "Session expired. Please login again.",
+        });
+        
+        // Clear potentially invalid token
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("authToken");
+          // Dispatch unauthorized event
+          window.dispatchEvent(new CustomEvent("unauthorized_access"));
+        }
+        
+        setTimeout(() => setMessage(null), 4000);
+        return;
+      }
 
       if (successful.length > 0) {
         setMessage({
@@ -85,36 +137,64 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         setTimeout(() => setMessage(null), 3000);
       }
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.error("💥 Error adding to cart:", error);
       
-      // Check if it's an authentication error
+      // Enhanced error handling
       if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { status?: number } };
+        const axiosError = error as { 
+          response?: { 
+            status?: number;
+            data?: { error?: string; message?: string };
+          } 
+        };
+        
+        console.error("📡 Response status:", axiosError.response?.status);
+        console.error("📡 Response data:", axiosError.response?.data);
+        
         if (axiosError.response?.status === 401) {
           setMessage({
             type: "error",
             text: "Session expired. Please login again.",
           });
+          
+          // Clear token and dispatch event
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("authToken");
+            window.dispatchEvent(new CustomEvent("unauthorized_access"));
+          }
+        } else if (axiosError.response?.data?.error?.includes("Invalid token")) {
+          setMessage({
+            type: "error",
+            text: "Invalid session. Please login again.",
+          });
+          
+          // Clear token and dispatch event
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("authToken");
+            window.dispatchEvent(new CustomEvent("unauthorized_access"));
+          }
         } else {
           setMessage({
             type: "error",
-            text: "An error occurred while adding to cart.",
+            text: axiosError.response?.data?.error || 
+                  axiosError.response?.data?.message || 
+                  "An error occurred while adding to cart.",
           });
         }
       } else {
         setMessage({
           type: "error",
-          text: "An error occurred while adding to cart.",
+          text: "Network error. Please check your connection.",
         });
       }
-      setTimeout(() => setMessage(null), 3000);
+      setTimeout(() => setMessage(null), 4000);
     } finally {
       setIsAdding(false);
     }
   };
 
   return (
-    <div className="relative inline-block">
+    <>
       <button
         onClick={handleAddToCart}
         disabled={selectedCount === 0 || isAdding}
@@ -138,32 +218,48 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         )}
       </button>
 
-      {/* Success/Error Message Popup */}
+      {/* Toast Message at Bottom Right */}
       {message && (
         <div
-          className={`absolute top-full mt-2 right-0 px-4 py-2.5 rounded shadow-lg text-sm font-medium z-50 min-w-[250px] animate-fade-in flex items-center justify-between ${
+          className={`fixed bottom-6 right-6 px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 min-w-[300px] max-w-[500px] flex items-center justify-between bg-[#FAF6EB] transition-all duration-300 ease-in-out ${
             message.type === "success"
-              ? "bg-green-500/10 border border-green-500/30 text-green-700"
-              : "bg-red-500/10 border border-red-500/30 text-red-700"
+              ? "border border-green-500/30 text-green-700"
+              : "border border-red-500/30 text-red-700"
           }`}
+          style={{
+            animation: "slideUp 0.3s ease-out"
+          }}
         >
           <div className="flex items-center gap-2">
             {message.type === "success" ? (
-              <span className="text-#FAF6EB">✓</span>
+              <span className="text-green-600 text-lg">✓</span>
             ) : (
-              <span className="text-red-500">✕</span>
+              <span className="text-red-600 text-lg">✕</span>
             )}
             <span>{message.text}</span>
           </div>
           <button
             onClick={() => setMessage(null)}
-            className="ml-2 hover:opacity-70"
+            className="ml-3 hover:opacity-70 transition-opacity"
           >
             <X size={16} />
           </button>
         </div>
       )}
-    </div>
+
+      <style>{`
+        @keyframes slideUp {
+          from {
+            transform: translateY(100px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
+    </>
   );
 };
 

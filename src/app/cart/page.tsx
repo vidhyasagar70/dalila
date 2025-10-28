@@ -70,6 +70,12 @@ interface CartItemWithDetails {
   diamond: CartDiamondData;
 }
 
+interface Toast {
+  id: string;
+  type: "success" | "error";
+  message: string;
+}
+
 // Helper function to get cookie value
 const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
@@ -91,13 +97,26 @@ export default function CartPage() {
   const [isRemoving, setIsRemoving] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<Toast[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const [showComparison, setShowComparison] = useState(false);
   const [selectedDiamondsForComparison, setSelectedDiamondsForComparison] =
     useState<Array<CartDiamondData & { _id: string }>>([]);
   const [isEmailSending, setIsEmailSending] = useState(false);
+
+  // Toast management
+  const addToast = (type: "success" | "error", message: string) => {
+    const id = Date.now().toString();
+    setToasts((prev) => [...prev, { id, type, message }]);
+    setTimeout(() => {
+      removeToast(id);
+    }, 5000);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
 
   // Fetch cart items on mount
   useEffect(() => {
@@ -154,7 +173,7 @@ export default function CartPage() {
       setSelectedItems(new Set());
     } catch (err) {
       console.error("Error removing selected items:", err);
-      setError("Failed to remove some items");
+      addToast("error", "Failed to remove some items");
     }
   };
 
@@ -173,16 +192,16 @@ export default function CartPage() {
           return newSet;
         });
 
-        setSuccessMessage(`${stoneNo} removed from cart`);
-        setTimeout(() => setSuccessMessage(null), 3000);
+        addToast("success", `${stoneNo} removed from cart`);
 
         window.dispatchEvent(new CustomEvent("cart-updated"));
       } else {
-        setError(response?.message || "Failed to remove item");
+        addToast("error", response?.message || "Failed to remove item");
       }
     } catch (err) {
       console.error("Error removing item:", err);
-      setError(
+      addToast(
+        "error",
         err instanceof Error ? err.message : "Failed to remove item from cart",
       );
     } finally {
@@ -212,12 +231,10 @@ export default function CartPage() {
 
   const handleExportToExcel = () => {
     if (selectedItems.size === 0) {
-      setError("Please select at least one item to export");
-      setTimeout(() => setError(null), 3000);
+      addToast("error", "Please select at least one item to export");
       return;
     }
 
-    // Create CSV content
     const selectedCartItems = cartItems.filter((item) =>
       selectedItems.has(item.stoneNo),
     );
@@ -262,22 +279,21 @@ export default function CartPage() {
     a.download = "cart-items.csv";
     a.click();
     window.URL.revokeObjectURL(url);
+    
+    addToast("success", "Cart items exported successfully");
   };
 
   const handleCompare = () => {
     if (selectedItems.size === 0) {
-      setError("Please select at least one item to compare");
-      setTimeout(() => setError(null), 3000);
+      addToast("error", "Please select at least one item to compare");
       return;
     }
 
-    // Get the selected diamonds data
     const selectedCartItems = cartItems.filter((item) =>
       selectedItems.has(item.stoneNo),
     );
     const diamondsToCompare = selectedCartItems
       .map((item) => {
-        // Ensure _id is present
         const diamondId = item._id || item.diamond._id || item.stoneNo;
         if (!diamondId) return null;
 
@@ -297,8 +313,7 @@ export default function CartPage() {
 
   const handleEnquire = async () => {
     if (selectedItems.size === 0) {
-      setError("Please select at least one item to enquire");
-      setTimeout(() => setError(null), 3000);
+      addToast("error", "Please select at least one item to enquire");
       return;
     }
 
@@ -306,17 +321,15 @@ export default function CartPage() {
     setError(null);
 
     try {
-      // Get auth token from cookies
       const authToken =
         getCookie("authToken") || localStorage.getItem("authToken");
 
       if (!authToken) {
-        setError("Authentication token not found. Please log in again.");
+        addToast("error", "Authentication token not found. Please log in again.");
         setIsEmailSending(false);
         return;
       }
 
-      // Get user email from cookies or localStorage
       let userEmail = null;
       const userCookie = getCookie("user");
 
@@ -329,7 +342,6 @@ export default function CartPage() {
         }
       }
 
-      // Fallback to localStorage
       if (!userEmail) {
         const userStr = localStorage.getItem("user");
         if (userStr) {
@@ -343,26 +355,25 @@ export default function CartPage() {
       }
 
       if (!userEmail) {
-        setError("User email not found. Please log in again.");
+        addToast("error", "User email not found. Please log in again.");
         setIsEmailSending(false);
         return;
       }
 
       const selectedStoneNumbers = Array.from(selectedItems);
 
-      // Call the email API
       const response = await diamondApi.email({
         stoneNumbers: selectedStoneNumbers,
         emails: [userEmail],
       });
 
       if (response.success) {
-        setSuccessMessage(
+        addToast(
+          "success",
           `Successfully emailed ${response.data.totalEmailed} diamond(s) to ${userEmail}`,
         );
-        setTimeout(() => setSuccessMessage(null), 3000);
       } else {
-        setError(response.message || "Failed to send email");
+        addToast("error", response.message || "Failed to send email");
       }
     } catch (err: unknown) {
       console.error("Email error:", err);
@@ -370,7 +381,7 @@ export default function CartPage() {
         err instanceof Error
           ? err.message
           : "Failed to send email. Please try again.";
-      setError(errorMessage);
+      addToast("error", errorMessage);
     } finally {
       setIsEmailSending(false);
     }
@@ -458,23 +469,7 @@ export default function CartPage() {
           </h1>
         </div>
 
-        {/* Success Message */}
-        {successMessage && (
-          <div className="mb-6 p-4 bg-green-500/10 dark:bg-green-500/10 border border-green-500/30 dark:border-green-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
-            <Check className="w-5 h-5 text-green-600 dark:text-green-600 flex-shrink-0" />
-            <p className="text-green-700 dark:text-green-700">
-              {successMessage}
-            </p>
-            <button
-              onClick={() => setSuccessMessage(null)}
-              className="ml-auto text-green-600 dark:text-green-600 hover:text-green-700 dark:hover:text-green-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
-
-        {/* Error Message */}
+        {/* Error Message (top banner) */}
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 dark:bg-red-500/10 border border-red-500/30 dark:border-red-500/30 rounded-lg flex items-center gap-3 animate-fade-in">
             <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-600 flex-shrink-0" />
@@ -802,6 +797,59 @@ export default function CartPage() {
           onClose={() => setShowComparison(false)}
         />
       )}
+
+      {/* Toast Container */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`flex items-center gap-3 p-4 rounded-lg shadow-lg border transform transition-all duration-300 ease-in-out animate-slide-in ${
+              toast.type === "success"
+                ? "bg-[#FAF6EB] border-green-300"
+                : "bg-[#FAF6EB] border-red-300"
+            }`}
+            style={{
+              animation: "slideIn 0.3s ease-out",
+            }}
+          >
+            {toast.type === "success" ? (
+              <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
+            ) : (
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            )}
+            <p
+              className={`text-sm font-medium ${
+                toast.type === "success" ? "text-green-700" : "text-red-700"
+              }`}
+            >
+              {toast.message}
+            </p>
+            <button
+              onClick={() => removeToast(toast.id)}
+              className={`ml-auto ${
+                toast.type === "success"
+                  ? "text-green-600 hover:text-green-700"
+                  : "text-red-600 hover:text-red-700"
+              }`}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }

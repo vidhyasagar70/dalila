@@ -349,6 +349,8 @@ export default function DiamondStockTableWithFilter() {
           selectedSymmetry={selectedSymmetry}
           onSelectionChange={handleSelectionChange}
           priceLocationFilters={priceLocationFilters}
+           selectedLocations={priceLocationFilters.locations}  // NEW
+  selectedLabs={priceLocationFilters.labs}            // NEW
           pageSize={10}
         />
       ) : (

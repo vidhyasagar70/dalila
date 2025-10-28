@@ -13,7 +13,7 @@ import type {
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
-
+import { getLocationApiValues, getLabApiValues } from "./Priceandloction";
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
   subsets: ["latin"],
@@ -33,6 +33,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   selectedClarity = [],
   selectedCut = "",
   selectedPolish = "",
+   selectedLocations = [],
+  selectedLabs = [],
   selectedSymmetry = "",
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
@@ -62,7 +64,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
       const hasCutFilter = selectedCut && selectedCut.trim();
       const hasPolishFilter = selectedPolish && selectedPolish.trim();
       const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
-
+        const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
+        const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
       const hasAnyFilter =
         hasShapeFilter ||
         hasColorFilter ||
@@ -72,6 +75,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
         hasClarityFilter ||
         hasCutFilter ||
         hasPolishFilter ||
+        hasLocationFilter ||
+          hasLabFilter;
         hasSymmetryFilter;
 
       console.log("🔍 Grid View - Filter check:", {
@@ -177,6 +182,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   selectedCut,
   selectedPolish,
   selectedSymmetry,
+  selectedLocations,
+    selectedLabs,
 ]);
 
   // Calculate pagination with rowsPerPage
@@ -232,7 +239,10 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             selectedSymmetry ||
             (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
             selectedMinCarat ||
-            selectedMaxCarat
+            
+            selectedMaxCarat||
+            (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+            (Array.isArray(selectedLabs) && selectedLabs.length > 0)
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
@@ -268,6 +278,16 @@ const DiamondGridView: React.FC<GridViewProps> = ({
                   {selectedMaxCarat || "∞"}
                 </p>
               )}
+              {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Location: {selectedLocations.join(", ")}
+              </span>
+            )}
+            {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Lab: {selectedLabs.join(", ")}
+              </span>
+            )}
               {searchTerm && <p>Search: &quot;{searchTerm}&quot;</p>}
             </div>
           )}
