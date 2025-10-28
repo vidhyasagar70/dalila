@@ -1,7 +1,7 @@
 // @/types/Diamondtable.ts
 import { type InclusionFilters } from "../components/InclusionFilter";
 import {type PriceLocationFilters } from "../components/Priceandloction";
-import type { KeySymbolFilters } from "../components/KeyToSymbolFilter";
+
 export interface DiamondData {
   _id: string;
   STONE_NO: string;
@@ -84,7 +84,13 @@ export interface TableProps {
   priceLocationFilters?: PriceLocationFilters;
    selectedLocations?: string[];  // NEW
   selectedLabs?: string[]; 
-  keySymbolFilters?: KeySymbolFilters;      // NEW
+    keySymbolFilters?: KeySymbolFilters;
+      // NEW
+}
+export interface KeySymbolFilters {
+  keyToSymbol: string[];
+  eyCln: string[];
+  hAndA: string[];
 }
 
 // For DiamondGridView component

@@ -170,6 +170,43 @@ export default function DiamondStockTableWithFilter() {
     setSelectedFluor([]);
     setSelectedMinCarat("");
     setSelectedMaxCarat("");
+    setKeySymbolFilters({  // Add this
+    keyToSymbol: [],
+    eyCln: [],
+    hAndA: [],
+  });
+  setInclusions({  // Add this
+    centerBlack: [],
+    centerWhite: [],
+    sideBlack: [],
+    sideWhite: [],
+  });
+  setShadesFilters({  // Add this
+    shades: [],
+    milky: [],
+    type2Ct: [],
+    brl: [],
+  });
+  setPriceLocationFilters({  // Add this
+    pricePerCarat: { from: "0.50", to: "0.50" },
+    discount: { from: "0.50", to: "0.50" },
+    totalPrice: { from: "0.50", to: "0.50" },
+    locations: [],
+    labs: [],
+  });
+  setMeasurements({  // Add this
+    length: { from: "0.50", to: "0.50" },
+    width: { from: "0.50", to: "0.50" },
+    depth: { from: "0.50", to: "0.50" },
+    table: { from: "0.50", to: "0.50" },
+    depthPercent: { from: "0.50", to: "0.50" },
+    ratio: { from: "0.50", to: "0.50" },
+    crAngle: { from: "0.50", to: "0.50" },
+    pavAngle: { from: "0.50", to: "0.50" },
+    gridle: { from: "0.50", to: "0.50" },
+    crHeight: { from: "0.50", to: "0.50" },
+    pavHeight: { from: "0.50", to: "0.50" },
+  });
   };
 
   return (
@@ -350,7 +387,8 @@ export default function DiamondStockTableWithFilter() {
           onSelectionChange={handleSelectionChange}
           priceLocationFilters={priceLocationFilters}
            selectedLocations={priceLocationFilters.locations}  // NEW
-  selectedLabs={priceLocationFilters.labs}            // NEW
+  selectedLabs={priceLocationFilters.labs}    
+  keySymbolFilters={keySymbolFilters}        // NEW
           pageSize={10}
         />
       ) : (

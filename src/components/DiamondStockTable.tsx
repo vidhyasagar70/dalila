@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Image from "next/image";
 import {
   ChevronLeft,
@@ -40,7 +39,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedSymmetry = "",
   selectedLocations = [],
   selectedLabs = [],
-
+  keySymbolFilters,
   onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
@@ -191,6 +190,68 @@ const DiamondStockTable: React.FC<TableProps> = ({
     selectedLabs,
   ]);
 
+  // Helper function to check if a diamond matches Key Symbol filters
+  const matchesKeySymbolFilters = useCallback((diamond: DiamondData): boolean => {
+    if (!keySymbolFilters) return true;
+
+    const { keyToSymbol, eyCln, hAndA } = keySymbolFilters;
+
+    // Check Key To Symbol filter
+    if (keyToSymbol && keyToSymbol.length > 0) {
+      const diamondKeySymbols = diamond.KEY_TO_SYMBOLS || "";
+      
+      // If "ALL" is selected, skip this filter
+      if (!keyToSymbol.includes("ALL")) {
+        const hasMatch = keyToSymbol.some(filter => {
+          if (filter === "ALL") return true;
+          // Case-insensitive match
+          return diamondKeySymbols.toLowerCase().includes(filter.toLowerCase());
+        });
+        
+        if (!hasMatch) return false;
+      }
+    }
+
+    // Check Ey.Cln filter (Eye Clean percentage)
+    if (eyCln && eyCln.length > 0) {
+      const comments = (diamond.COMMENTS_1 || "").toLowerCase();
+      const eyClnField = (diamond.EY_CLN || "").toLowerCase();
+      
+      const hasEyeClean = eyCln.some(percentage => {
+        if (percentage === "100%") {
+          return comments.includes("100% eye clean") || 
+                 comments.includes("eye clean") ||
+                 comments.includes("eyeclean") ||
+                 eyClnField.includes("100");
+        }
+        return comments.includes(percentage.toLowerCase() + " eye clean") ||
+               eyClnField.includes(percentage.replace("%", ""));
+      });
+      
+      if (!hasEyeClean) return false;
+    }
+
+    // Check H&A filter (Hearts & Arrows)
+    if (hAndA && hAndA.length > 0) {
+      const ha = (diamond.HA || "").toLowerCase();
+      const hAndAField = (diamond.H_AND_A || "").toLowerCase();
+      const comments = (diamond.COMMENTS_1 || "").toLowerCase();
+      
+      const hasHA = hAndA.some(percentage => {
+        const match = ha.includes(percentage.toLowerCase()) ||
+                     hAndAField.includes(percentage.replace("%", "")) ||
+                     comments.includes(percentage.toLowerCase() + " h&a") ||
+                     comments.includes(percentage.toLowerCase() + " hearts") ||
+                     comments.includes("hearts & arrows");
+        return match;
+      });
+      
+      if (!hasHA) return false;
+    }
+
+    return true;
+  }, [keySymbolFilters]);
+
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
     if (
@@ -204,9 +265,15 @@ const DiamondStockTable: React.FC<TableProps> = ({
   };
 
   const sortedData = useMemo(() => {
-    if (!sortConfig || data.length === 0) return data;
+    if (data.length === 0) return data;
 
-    const sorted = [...data].sort((a, b) => {
+    // Apply Key Symbol filters first
+    let filtered = data.filter(matchesKeySymbolFilters);
+
+    // Then apply sorting
+    if (!sortConfig) return filtered;
+
+    const sorted = [...filtered].sort((a, b) => {
       const aValue = a[sortConfig.key as keyof DiamondData];
       const bValue = b[sortConfig.key as keyof DiamondData];
 
@@ -224,7 +291,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     });
 
     return sorted;
-  }, [data, sortConfig]);
+  }, [data, sortConfig, matchesKeySymbolFilters]);
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const paginatedData = sortedData.slice(
@@ -303,7 +370,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
         </div>
       </div>
     );
-  };
+  }
 
   if (error) {
     return (
@@ -333,7 +400,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
             selectedMinCarat ||
             selectedMaxCarat ||
             (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
-            (Array.isArray(selectedLabs) && selectedLabs.length > 0)
+            (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
+            (keySymbolFilters?.keyToSymbol && keySymbolFilters.keyToSymbol.length > 0) ||
+            (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
+            (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0)
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
@@ -358,7 +428,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
           selectedMinCarat ||
           selectedMaxCarat ||
           (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
-          (Array.isArray(selectedLabs) && selectedLabs.length > 0)) && (
+          (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
+          (keySymbolFilters?.keyToSymbol && keySymbolFilters.keyToSymbol.length > 0) ||
+          (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
+          (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0)) && (
           <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
             <span className="font-medium">Active Filters:</span>
             {Array.isArray(selectedShape) && selectedShape.length > 0 && (
@@ -409,6 +482,21 @@ const DiamondStockTable: React.FC<TableProps> = ({
             {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Lab: {selectedLabs.join(", ")}
+              </span>
+            )}
+            {keySymbolFilters?.keyToSymbol && keySymbolFilters.keyToSymbol.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Key Symbols: {keySymbolFilters.keyToSymbol.join(", ")}
+              </span>
+            )}
+            {keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Eye Clean: {keySymbolFilters.eyCln.join(", ")}
+              </span>
+            )}
+            {keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                H&A: {keySymbolFilters.hAndA.join(", ")}
               </span>
             )}
             {searchTerm && (

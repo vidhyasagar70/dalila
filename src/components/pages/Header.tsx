@@ -264,15 +264,15 @@ export default function Header() {
       }`}
     >
       <div className="">
-        <div className="hidden sm:flex justify-center mb-0.5 md:mb-1">
+        <div className="hidden sm:flex justify-center">
           <p className="text-xs md:text-md tracking-wide text-white">
             Where Trust Shines, And Quality Sparkles
           </p>
         </div>
 
-        <div className="hidden sm:block w-full h-[1px] bg-white/30 mb-0"></div>
+        <div className="hidden sm:block w-full h-[1px] bg-white/30"></div>
 
-        <div className="flex container mx-auto px-4 md:px-6 lg:px-8 items-center justify-between">
+        <div className="flex container mx-auto px-4 md:px-6 lg:px-8 items-center justify-between relative">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
@@ -287,7 +287,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={item.requiresAuth ? handleInventoryClick : undefined}
-                className="text-white hover:text-[#c89e3a] transition-colors text-sm xl:text-base whitespace-nowrap"
+                className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
               >
                 {item.label}
               </Link>
@@ -309,6 +309,10 @@ export default function Header() {
               />
             </button>
           </div>
+
+          <div className="hidden sm:block absolute left-0 right-0 top-[76px] sm:top-[90px] md:top-[98px] w-full h-[1px] bg-[#c89e3a]"></div>
+
+ 
 
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
             {isLoggedIn && (
