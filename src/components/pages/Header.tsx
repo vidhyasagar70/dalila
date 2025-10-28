@@ -259,7 +259,7 @@ export default function Header() {
         memberPage ||
         dashboardPage ||
         CartPage
-          ? "bg-[#050c3a] shadow-lg py-2 md:py-2.5"
+          ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
       }`}
     >
