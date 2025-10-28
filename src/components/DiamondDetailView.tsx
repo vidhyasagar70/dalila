@@ -332,7 +332,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   >
                     {isAddingToCart ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
                         Adding...
                       </>
                     ) : (
