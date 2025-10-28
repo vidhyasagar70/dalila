@@ -40,7 +40,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedSymmetry = "",
   selectedLocations = [],
   selectedLabs = [],
-  keySymbolFilters,
+
   onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);

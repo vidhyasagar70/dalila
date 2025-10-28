@@ -12,9 +12,10 @@ import {
   ChevronRight,
   Search,
   Gem,
-  List
+  List,
+  DollarSign
 } from 'lucide-react';
-import Image from 'next/image';
+
 import { diamondApi, cartApi } from '@/lib/api';
 
 export default function AdminDashboard() {
@@ -98,6 +99,10 @@ export default function AdminDashboard() {
     fetchCartCount();
   };
 
+  const handleNavigate = (path: string) => {
+    window.location.href = path;
+  };
+
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % Math.max(1, mockDiamonds.length - 2));
   };
@@ -153,17 +158,18 @@ export default function AdminDashboard() {
 
         {/* First Row - 4 Stats Cards */}
         <div className="grid grid-cols-4 gap-4 mb-6">
-          {/* Inventory Card - Dark Navy */}
-          <div 
+          {/* Inventory Card - Dark Navy - Clickable */}
+          <button
+            onClick={() => handleNavigate('/inventory')}
             style={{ borderColor: '#FAE9D0', backgroundColor: '#050C3A' }}
-            className="rounded-xl p-6 text-white shadow-lg border"
+            className="rounded-xl p-6 text-white shadow-lg border hover:opacity-90 transition-opacity text-left w-full"
           >
             <div className="flex items-center justify-between mb-4">
               <Gem className="w-8 h-8" />
               <span className="text-lg opacity-80">Inventory</span>
             </div>
             <div className="text-4xl font-bold text-center">{totalDiamonds}</div>
-          </div>
+          </button>
 
           {/* New Arrival Card */}
           <div 
@@ -186,17 +192,18 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2 rounded-lg">
-                
+                <DollarSign className="w-6 h-6 text-gray-600" />
               </div>
               <span className="text-lg font-semibold text-gray-900">Price Revised</span>
             </div>
             <div className="text-5xl font-bold text-gray-900 text-center">0</div>
           </div>
 
-          {/* Cart Card - Now showing real count */}
-          <div 
+          {/* Cart Card - Clickable - Now showing real count */}
+          <button
+            onClick={() => handleNavigate('/cart')}
             style={{ borderColor: '#FAE9D0' }}
-            className="bg-white rounded-xl p-6 shadow-md border"
+            className="bg-white rounded-xl p-6 shadow-md border hover:bg-gray-50 transition-colors text-left w-full"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2 rounded-lg">
@@ -205,7 +212,7 @@ export default function AdminDashboard() {
               <span className="text-lg font-semibold text-gray-900">Cart</span>
             </div>
             <div className="text-5xl font-bold text-gray-900 text-center">{cartCount}</div>
-          </div>
+          </button>
         </div>
 
         {/* Second Row - Diamond Carousel and Right Cards */}
@@ -214,41 +221,43 @@ export default function AdminDashboard() {
           <div className="col-span-9">
             <div 
               style={{ borderColor: '#FAE9D0' }}
-              className="bg-white rounded-xl p-6 shadow-md border"
+              className="bg-white rounded-xl p-4 shadow-md border"
             >
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Limited Edition</h2>
               <div className="flex items-center justify-between">
                 <button
                   onClick={prevSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0]  transition-colors"
+                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0"
                 >
-                  <ChevronLeft className="w-6 h-6 text-white" />
+                  <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
                 
-                <div className="flex gap-4 flex-1 justify-center">
+                <div className="flex gap-3 flex-1 justify-center">
                   {mockDiamonds.slice(currentSlide, currentSlide + 3).map((diamond, index) => (
                     <div 
                       key={index} 
                       style={{ borderColor: '#FAE9D0' }}
-                      className="bg-white border rounded-xl p-4 w-64"
+                      className="bg-white border rounded-xl p-3 w-52"
                     >
-                      <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
-                        <Image
-                          src='/dalila_img/cut-shaps/cushion-cut-diamond.png'
-                          alt="Diamond"
-                          width={128}
-                          height={128}
-                          className="w-32 h-32"
-                          unoptimized
-                        />
+                      <div className="bg-gray-50 rounded-lg p-4 mb-3 flex items-center justify-center">
+                        <video
+                          className="w-24 h-24 object-cover rounded"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                        >
+                          <source src="/New-Videos/auth-bg.mp4" type="video/mp4" />
+                        </video>
                       </div>
                       <div className="text-center space-y-1">
-                        <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
+                        <div className="flex justify-center gap-2 text-xs font-medium text-gray-900">
                           <span>{diamond.shape}</span>
                           <span>{diamond.carat}</span>
                           <span>{diamond.color}</span>
                           <span>{diamond.clarity}</span>
                         </div>
-                        <div className="flex justify-center gap-2 text-sm text-gray-600">
+                        <div className="flex justify-center gap-2 text-xs text-gray-600">
                           <span>-{diamond.cut}</span>
                           <span>{diamond.polish}</span>
                           <span>{diamond.symmetry}</span>
@@ -261,9 +270,9 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 rounded-full  bg-[#FAE9D0]  transition-colors"
+                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0"
                 >
-                  <ChevronRight className="w-6 h-6 text-white" />
+                  <ChevronRight className="w-5 h-5 text-white" />
                 </button>
               </div>
             </div>
@@ -276,7 +285,7 @@ export default function AdminDashboard() {
               style={{ borderColor: '#FAE9D0' }}
               className="bg-white rounded-xl p-6 shadow-md border"
             >
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <Package className="w-6 h-6 text-gray-600" />
                 </div>
@@ -290,7 +299,7 @@ export default function AdminDashboard() {
               style={{ borderColor: '#FAE9D0' }}
               className="bg-white rounded-xl p-6 shadow-md border"
             >
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <List className="w-6 h-6 text-gray-600" />
                 </div>
