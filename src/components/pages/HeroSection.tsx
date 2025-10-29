@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
-    { image: "/dalila_img/banners/new/Banner_01.jpg" },
+    { image: "/dalila_img/banners/Banneer-01.jpg" },
     { image: "/dalila_img/banners/new/Banner_02.jpg" },
     { image: "/dalila_img/banners/new/Banner_03.jpg" },
   ];
