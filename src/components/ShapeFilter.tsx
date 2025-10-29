@@ -86,7 +86,7 @@ export default function ShapeFilter({
             <button
               key={option.value}
               onClick={() => handleShapeClick(option.value)}
-              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 transition-colors ${
+              className={`flex flex-col items-center justify-center gap-0.4 px-2 py-2 transition-colors ${
                 isSelected(option.value)
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
@@ -106,7 +106,7 @@ export default function ShapeFilter({
                 height={28}
                 className="object-contain"
               />
-              <span className="text-xs font-medium">{option.label}</span>
+              <span className="text-small font-medium">{option.label}</span>
             </button>
           ))}
         </div>

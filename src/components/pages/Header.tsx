@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Loader2, ShoppingCart } from "lucide-react";
+import { Menu, X, Loader2 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { userApi, cartApi } from "@/lib/api";
+import { userApi } from "@/lib/api";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,7 +13,6 @@ export default function Header() {
   const [userStatus, setUserStatus] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [cartCount, setCartCount] = useState(0);
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -23,7 +22,8 @@ export default function Header() {
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
   const dashboardPage = pathname === "/dashboard";
-  const CartPage = pathname === "/cart";
+  const Homepage =pathname==="/";
+  const CartPage= pathname === "/cart";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -31,27 +31,6 @@ export default function Header() {
   // Check if inventory is accessible (Admin or APPROVED status)
   const isInventoryAccessible =
     isLoggedIn && (userRole === "ADMIN" || userStatus === "APPROVED");
-
-  // Fetch cart count - wrapped in useCallback
-  const fetchCartCount = useCallback(async () => {
-    if (!isLoggedIn) {
-      setCartCount(0);
-      return;
-    }
-
-    try {
-      const response = await cartApi.get();
-      console.log("Header - Cart response:", response);
-
-      if (response?.success && response.data?.cart?.items) {
-        setCartCount(response.data.cart.items.length);
-      } else {
-        setCartCount(0);
-      }
-    } catch {
-      setCartCount(0);
-    }
-  }, [isLoggedIn]);
 
   // Check user authentication and role on mount and when pathname changes
   useEffect(() => {
@@ -133,21 +112,6 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchCartCount();
-
-      const handleCartUpdate = () => {
-        fetchCartCount();
-      };
-
-      window.addEventListener("cart-updated", handleCartUpdate);
-      return () => {
-        window.removeEventListener("cart-updated", handleCartUpdate);
-      };
-    }
-  }, [isLoggedIn, fetchCartCount]);
-
-  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -178,7 +142,6 @@ export default function Header() {
       setIsLoggedIn(false);
       setUserRole(null);
       setUserStatus(null);
-      setCartCount(0);
 
       if (typeof window !== "undefined") {
         localStorage.removeItem("authToken");
@@ -210,14 +173,6 @@ export default function Header() {
       alert(
         "Your account is pending approval. Please wait for admin verification to access the inventory.",
       );
-    }
-  };
-
-  const handleCartClick = () => {
-    if (!isLoggedIn) {
-      router.push("/login");
-    } else {
-      router.push("/cart");
     }
   };
 
@@ -257,18 +212,18 @@ export default function Header() {
         inventoryPage ||
         offerenquiryPage ||
         memberPage ||
-        dashboardPage ||
-        CartPage
+        dashboardPage || Homepage ||CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
       }`}
     >
       <div className="">
-        <div className="hidden sm:flex justify-center">
-          <p className="text-xs md:text-md tracking-wide text-white">
-            Where Trust Shines, And Quality Sparkles
-          </p>
-        </div>
+       <div className="hidden sm:flex justify-center">
+  <p className="text-xs md:text-md tracking-wide text-white">
+    <span>Where Trust Shines,</span>
+    <span className="ml-4">And Quality Sparkles</span>
+  </p>
+</div>
 
         <div className="hidden sm:block w-full h-[1px] bg-white/30"></div>
 
@@ -281,13 +236,13 @@ export default function Header() {
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 flex-1">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 flex-1">
             {navigationItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={item.requiresAuth ? handleInventoryClick : undefined}
-                className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                className="py-3 px-2 xl:px-3 text-xs xl:text-sm text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
               >
                 {item.label}
               </Link>
@@ -295,6 +250,7 @@ export default function Header() {
           </nav>
 
           <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
+
             <button
               onClick={() => router.push("/")}
               className="block w-full h-full focus:outline-none"
@@ -310,28 +266,8 @@ export default function Header() {
             </button>
           </div>
 
-          <div className="hidden sm:block absolute left-0 right-0 top-[76px] sm:top-[90px] md:top-[98px] w-full h-[1px] bg-[#c89e3a]"></div>
-
- 
-
+          
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
-            {isLoggedIn && (
-              <div className="flex gap-15">
-                <button
-                  onClick={handleCartClick}
-                  className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                  aria-label="Shopping cart"
-                >
-                  <ShoppingCart className="w-6 h-6" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                      {cartCount > 99 ? "99+" : cartCount}
-                    </span>
-                  )}
-                </button>
-              </div>
-            )}
-
             {isCheckingAuth ? (
               <div className="py-1 px-3 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#FAF6EB]] animate-spin" />
@@ -430,21 +366,6 @@ export default function Header() {
 
           {/* Tablet Only */}
           <div className="hidden md:flex lg:hidden items-center gap-2">
-            {isLoggedIn && (
-              <button
-                onClick={handleCartClick}
-                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                aria-label="Shopping cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </span>
-                )}
-              </button>
-            )}
-
             {isCheckingAuth ? (
               <div className="py-1 px-3 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
@@ -468,21 +389,6 @@ export default function Header() {
 
           {/* Mobile */}
           <div className="flex md:hidden items-center gap-2">
-            {isLoggedIn && (
-              <button
-                onClick={handleCartClick}
-                className="relative p-2 text-white hover:text-[#c89e3a] transition-colors"
-                aria-label="Shopping cart"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#c89e3a] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-                    {cartCount > 9 ? "9+" : cartCount}
-                  </span>
-                )}
-              </button>
-            )}
-
             {isCheckingAuth ? (
               <div className="py-1 px-4 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#c89e3a] animate-spin" />
@@ -516,7 +422,7 @@ export default function Header() {
               </p>
             </div>
 
-            <nav className="flex flex-col gap-4 mb-8">
+            <nav className="flex flex-col gap-3 mb-8">
               {navigationItems.map((item) => (
                 <Link
                   key={item.href}
@@ -527,7 +433,7 @@ export default function Header() {
                     }
                     setIsMobileMenuOpen(false);
                   }}
-                  className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
                 >
                   {item.label}
                 </Link>
@@ -540,7 +446,7 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                     router.push("/dashboard");
                   }}
-                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
                 >
                   Dashboard
                 </button>
@@ -561,7 +467,7 @@ export default function Header() {
                     }
                   }}
                   disabled={!isInventoryAccessible}
-                  className={`text-left text-lg py-2 border-b border-white/10 transition-colors ${
+                  className={`text-left text-lg py-2 transition-colors ${
                     isInventoryAccessible
                       ? "text-white hover:text-[#c89e3a]"
                       : "text-gray-500 cursor-not-allowed"
@@ -578,27 +484,9 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                     router.push("/member");
                   }}
-                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
+                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
                 >
                   Admin Panel
-                </button>
-              )}
-
-              {/* Cart */}
-              {isLoggedIn && (
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    handleCartClick();
-                  }}
-                  className="flex items-center justify-between text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-b border-white/10"
-                >
-                  <span>Cart</span>
-                  {cartCount > 0 && (
-                    <span className="bg-[#c89e3a] text-white text-sm font-bold rounded-full w-6 h-6 flex items-center justify-center">
-                      {cartCount}
-                    </span>
-                  )}
                 </button>
               )}
             </nav>

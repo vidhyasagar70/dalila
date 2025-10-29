@@ -210,7 +210,7 @@ export default function DiamondStockTableWithFilter() {
   };
 
   return (
-    <div className="w-full px-4 py-4 bg-[#F5F7FA] mt-35">
+    <div className="w-full px-4 py-4 bg-[#F5F7FA] mt-30">
       {/* TOP ROW: Shapes, Carat, Clarity + Fluor/Color stack */}
       <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0.5">
         <ShapeFilter
@@ -234,16 +234,16 @@ export default function DiamondStockTableWithFilter() {
           onPolishChange={handlePolishChange}
           onSymmetryChange={handleSymmetryChange}
         />
-        <div className="flex flex-col justify-between py-1">
-          <FluorFilter
-            selectedFluor={selectedFluor}
-            onFluorChange={handleFluorChange}
-          />
-          <ColorFilter
-            selectedColor={selectedColor}
-            onColorChange={handleColorChange}
-          />
-        </div>
+       <div className="flex flex-col ">
+  <FluorFilter
+    selectedFluor={selectedFluor}
+    onFluorChange={handleFluorChange}
+  />
+  <ColorFilter
+    selectedColor={selectedColor}
+    onColorChange={handleColorChange}
+  />
+</div>
       </div>
 
       {/* SEARCH AND NAVIGATION ROW */}

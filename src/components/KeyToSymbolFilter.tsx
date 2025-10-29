@@ -1,14 +1,6 @@
 "use client";
 
 import React from "react";
-import { Maven_Pro } from "next/font/google";
-
-const mavenPro = Maven_Pro({
-  variable: "--font-maven-pro",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
 
 const KEY_TO_SYMBOL_OPTIONS = [
   "ALL",
@@ -42,12 +34,6 @@ interface KeySymbolFilterProps {
 }
 
 const FILTER_SECTIONS = [
-  {
-    label: "Key To Symbol",
-    key: "keyToSymbol",
-    options: KEY_TO_SYMBOL_OPTIONS,
-    cols: 2,
-  },
   { label: "Ey.Cln", key: "eyCln", options: EY_CLN_OPTIONS, cols: 4 },
   { label: "H&A", key: "hAndA", options: H_AND_A_OPTIONS, cols: 4 },
 ];
@@ -68,75 +54,115 @@ export default function KeySymbolFilter({
     filters[category]?.includes(value) || false;
 
   return (
-    <div
-      className={`${mavenPro.className} mb-2 mt-1`}
-      style={{ width: "fit-content" }}
-    >
-      {/* Header */}
+    <div className="mb-2 mt-1" style={{ width: "fit-content", fontFamily: "'Maven Pro', sans-serif" }}>
+      {/* Main Header with Icon */}
       <div
-        className="flex items-center px-2.5"
-        style={{ backgroundColor: "#000033", height: "32px" }}
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
+        style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-xs font-semibold text-white">KEY TO SYMBOL</span>
+        <span className="text-base font-semibold text-white">
+          Key To Symbol
+        </span>
       </div>
-
-      {/* Filter Sections */}
+      
+      {/* Key To Symbol Options */}
       <div
-        className="bg-white p-1.5"
-        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
+        className="bg-white"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: "6px",
+          padding: "6px",
+          borderLeft: "1px solid #f9e8cd",
+          borderRight: "1px solid #f9e8cd",
+          borderBottom: "1px solid #f9e8cd",
+        }}
       >
-        <div className="space-y-1.5">
-          {FILTER_SECTIONS.map((section) => (
-            <div key={section.key}>
-              {/* Sub-header */}
-              <div
-                className="px-2.5 py-0.5 font-semibold text-white text-xs"
-                style={{ backgroundColor: "#000033" }}
-              >
-                {section.label}
-              </div>
-
-              {/* Options */}
-              <div
-                className={`grid gap-1.5 mt-1.5 mb-1`}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: `repeat(${section.cols}, minmax(0, 1fr))`,
-                  gap: "6px",
-                }}
-              >
-                {section.options.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() =>
-                      toggleFilter(
-                        section.key as keyof KeySymbolFilters,
-                        option,
-                      )
-                    }
-                    className={`px-2 py-1 text-xs font-medium transition-colors ${
-                      isSelected(section.key as keyof KeySymbolFilters, option)
-                        ? "text-gray-800 bg-[#FAF6EB]"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                    style={{
-                      minWidth: "65px",
-                      minHeight: "28px",
-                      border: isSelected(
-                        section.key as keyof KeySymbolFilters,
-                        option,
-                      )
-                        ? "0.25px solid #FAF6EB"
-                        : "0.25px solid #f9e8cd",
-                    }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+        {KEY_TO_SYMBOL_OPTIONS.map((option) => (
+          <button
+            key={option}
+            onClick={() => toggleFilter("keyToSymbol", option)}
+            className={`font-medium transition-colors ${
+              isSelected("keyToSymbol", option)
+                ? "text-gray-800 bg-[#FAF6EB]"
+                : "bg-white text-gray-700 hover:bg-gray-50"
+            }`}
+            style={{
+              minWidth: "65px",
+              height: "28px",
+              fontSize: "12px",
+              padding: "4px 6px",
+              border: isSelected("keyToSymbol", option)
+                ? "0.25px solid #FAF6EB"
+                : "0.25px solid #f9e8cd",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+      
+      {/* Other Filter Sections */}
+      <div style={{ marginTop: "6px" }}>
+        {FILTER_SECTIONS.map((section, index) => (
+          <div key={section.key} style={{ marginBottom: index < FILTER_SECTIONS.length - 1 ? "6px" : "0" }}>
+            {/* Sub-header */}
+            <div
+              className="px-2.5 py-1.5 font-semibold text-white text-sm"
+              style={{ backgroundColor: "#000033" }}
+            >
+              {section.label}
             </div>
-          ))}
-        </div>
+
+            {/* Options */}
+            <div
+              className="bg-white"
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${section.cols}, minmax(0, 1fr))`,
+                gap: "6px",
+                padding: "6px",
+                borderLeft: "1px solid #f9e8cd",
+                borderRight: "1px solid #f9e8cd",
+                borderBottom: "1px solid #f9e8cd",
+              }}
+            >
+              {section.options.map((option) => (
+                <button
+                  key={option}
+                  onClick={() =>
+                    toggleFilter(section.key as keyof KeySymbolFilters, option)
+                  }
+                  className={`font-medium transition-colors ${
+                    isSelected(section.key as keyof KeySymbolFilters, option)
+                      ? "text-gray-800 bg-[#FAF6EB]"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                  style={{
+                    minWidth: "65px",
+                    height: "28px",
+                    fontSize: "12px",
+                    padding: "4px 6px",
+                    border: isSelected(
+                      section.key as keyof KeySymbolFilters,
+                      option,
+                    )
+                      ? "0.25px solid #FAF6EB"
+                      : "0.25px solid #f9e8cd",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

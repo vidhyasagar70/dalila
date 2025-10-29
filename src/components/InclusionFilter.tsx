@@ -108,66 +108,77 @@ export default function InclusionFilter({
     <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
       {/* Header */}
       <div
-        className="flex items-center px-2.5"
-        style={{ backgroundColor: "#000033", height: "32px" }}
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
+        style={{ backgroundColor: "#000033" }}
       >
         <span
-          className={`${mavenPro.className} text-xs font-semibold text-white`}
+          className={`${mavenPro.className} text-base font-semibold text-white`}
         >
           INCLUSION
         </span>
       </div>
 
       {/* Inclusion Filters */}
-      <div
-        className="bg-white p-1.5"
-        style={{ border: "1px solid #f9e8cd", borderTop: "none" }}
-      >
-        <div className="space-y-1.5">
-          {INCLUSION_TYPES.map((type) => (
-            <div key={type.key}>
-              {/* Sub-header */}
-              <div
-                className={`${mavenPro.className} px-2.5 py-0.5 font-semibold text-white text-xs`}
-                style={{ backgroundColor: "#000033" }}
-              >
-                {type.label}
-              </div>
-
-              {/* Options */}
-              <div className="grid grid-cols-3 gap-1.5 mt-1.5 mb-1">
-                {INCLUSION_OPTIONS.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() =>
-                      toggleInclusion(
-                        type.key as keyof InclusionFilters,
-                        option,
-                      )
-                    }
-                    className={`${mavenPro.className} px-2 py-1 text-xs font-medium transition-colors ${
-                      isSelected(type.key as keyof InclusionFilters, option)
-                        ? "text-gray-800 bg-[#FAF6EB]"
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                    style={{
-                      minWidth: "80px",
-                      minHeight: "28px",
-                      border: isSelected(
-                        type.key as keyof InclusionFilters,
-                        option,
-                      )
-                        ? "0.25px solid #FAF6EB"
-                        : "0.25px solid #f9e8cd",
-                    }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+      <div style={{ marginTop: "6px" }}>
+        {INCLUSION_TYPES.map((type, index) => (
+          <div key={type.key} style={{ marginBottom: index < INCLUSION_TYPES.length - 1 ? "6px" : "0" }}>
+            {/* Sub-header */}
+            <div
+              className={`${mavenPro.className} px-2.5 py-1.5 font-semibold text-white text-sm`}
+              style={{ backgroundColor: "#000033" }}
+            >
+              {type.label}
             </div>
-          ))}
-        </div>
+
+            {/* Options */}
+            <div
+              className="bg-white"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: "6px",
+                padding: "6px",
+                borderLeft: "1px solid #f9e8cd",
+                borderRight: "1px solid #f9e8cd",
+                borderBottom: "1px solid #f9e8cd",
+              }}
+            >
+              {INCLUSION_OPTIONS.map((option) => (
+                <button
+                  key={option}
+                  onClick={() =>
+                    toggleInclusion(
+                      type.key as keyof InclusionFilters,
+                      option,
+                    )
+                  }
+                  className={`${mavenPro.className} font-medium transition-colors ${
+                    isSelected(type.key as keyof InclusionFilters, option)
+                      ? "text-gray-800 bg-[#FAF6EB]"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                  style={{
+                    minWidth: "80px",
+                    height: "28px",
+                    fontSize: "12px",
+                    padding: "4px 6px",
+                    border: isSelected(
+                      type.key as keyof InclusionFilters,
+                      option,
+                    )
+                      ? "0.25px solid #FAF6EB"
+                      : "0.25px solid #f9e8cd",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

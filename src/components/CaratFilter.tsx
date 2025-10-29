@@ -95,7 +95,7 @@ export default function CaratFilter({
           alt="Carat"
           width={18}
           height={18}
-          className="w-4.5 h-4.5"
+          className="w-7 h-6"
         />
         <span className="text-base font-semibold text-white">Carat</span>
       </div>
@@ -138,7 +138,7 @@ export default function CaratFilter({
         </div>
 
         {/* Range Buttons */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-1">
           {STATIC_CARAT_RANGES.map((range) => {
             const isSelected =
               selectedMinCarat === range.min.toString() &&
@@ -148,7 +148,7 @@ export default function CaratFilter({
               <button
                 key={range.value}
                 onClick={() => handleRangeClick(range)}
-                className={`px-2 py-1.5 rounded text-xs font-medium transition-colors ${
+                className={`px-2 py-1.5 rounded text-small font-medium transition-colors ${
                   isSelected
                     ? "text-gray-800 bg-[#FAF6EB] border border-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-[#f9e8cd]"

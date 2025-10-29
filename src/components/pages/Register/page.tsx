@@ -31,7 +31,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [agreeToTerms, setAgreeToTerms] = useState<boolean>(false);
+  
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -100,12 +100,7 @@ export default function RegisterPage() {
       return false;
     }
 
-    // Check terms agreement
-    if (!agreeToTerms) {
-      setError("You must agree to the Terms & Conditions");
-      return false;
-    }
-
+   
     return true;
   };
 
@@ -412,29 +407,7 @@ export default function RegisterPage() {
                 </button>
               </div>
 
-              {/* Terms & Conditions */}
-              <div className="flex items-center mb-6 gap-2">
-                <label className="flex items-center text-xs text-white gap-2 cursor-pointer hover:text-[#FFD166] transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={agreeToTerms}
-                    onChange={(e) => setAgreeToTerms(e.target.checked)}
-                    className="accent-[#FFD166] w-4 h-4 cursor-pointer"
-                    disabled={isLoading}
-                  />
-                  <span>I agree to the</span>
-                </label>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert("Terms & Conditions - Coming soon!");
-                  }}
-                  className="text-xs text-[#FFD166] hover:text-yellow-400 hover:underline transition-colors"
-                >
-                  Terms & Conditions
-                </a>
-              </div>
+             
 
               {/* Submit Button */}
               <button

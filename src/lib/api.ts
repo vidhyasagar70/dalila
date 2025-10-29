@@ -166,7 +166,7 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // This is already there, which is good!
+  withCredentials: true, 
 });
 
 // Request interceptor
@@ -400,7 +400,6 @@ export const diamondApi = {
   getAllNoPagination: () =>
     api.get<{ diamonds: Diamond[] }>("/api/diamonds/all"),
 
- // In your api.ts file, update the diamondApi.search method:
 
 search: (filters: {
   color?: string;
@@ -545,7 +544,7 @@ search: (filters: {
     }
   },
 
-  // Sync diamonds from HRC
+
   sync: (credentials: { username: string; password: string }) =>
     api.post<{ message: string }>("/api/diamonds/sync", credentials),
 
@@ -887,7 +886,7 @@ export const userApi = {
     try {
       // Try to get token
       const token = getAuthToken();
-      console.log("🔑 Token check:", token ? "EXISTS" : "MISSING");
+      console.log("Token check:", token ? "EXISTS" : "MISSING");
 
       // Prepare headers
       const headers: Record<string, string> = {
@@ -901,7 +900,7 @@ export const userApi = {
         console.warn(" No token found, proceeding without auth header");
       }
 
-      console.log("📤 Submitting customer data:");
+      console.log(" Submitting customer data:");
       console.log(JSON.stringify(data, null, 2));
 
       const response = await apiClient.post<

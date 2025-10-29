@@ -79,7 +79,7 @@ export default function LoginPage() {
       if (response && response.success && response.data) {
         const { token, user } = response.data;
 
-        console.log("✅ Login successful!");
+        console.log(" Login successful!");
         console.log("User data:", user);
 
         if (typeof window !== "undefined") {
@@ -125,14 +125,14 @@ export default function LoginPage() {
         if (user) {
           let redirectUrl = "/";
 
-          console.log("👤 User role:", user.role);
-          console.log("📋 Customer data exists:", !!user.customerData);
-          console.log("📋 Customer data:", user.customerData);
-          console.log("✅ KYC Status:", user.kycStatus);
+          console.log(" User role:", user.role);
+          console.log(" Customer data exists:", !!user.customerData);
+          console.log(" Customer data:", user.customerData);
+          console.log(" KYC Status:", user.kycStatus);
 
           // Check if user is admin
           if (user.role === "ADMIN") {
-            console.log("✅ Admin user - redirecting to dashboard");
+            console.log(" Admin user - redirecting to dashboard");
             redirectUrl = searchParams.get("redirect") || "/";
             setError("");
           }
@@ -165,7 +165,7 @@ export default function LoginPage() {
             setIsLoading(false);
             return;
           } else if (user.kycStatus === "approved") {
-            console.log("✅ KYC approved - redirecting to app");
+            console.log(" KYC approved - redirecting to app");
             redirectUrl = searchParams.get("redirect") || "/";
             setError("");
           }
@@ -183,7 +183,7 @@ export default function LoginPage() {
               user.customerData.businessInfo;
 
             if (hasCompleteData) {
-              console.log("✅ Customer data complete - setting pending status");
+              console.log(" Customer data complete - setting pending status");
               redirectUrl = searchParams.get("redirect") || "/";
               setError("");
             } else {
@@ -391,17 +391,8 @@ export default function LoginPage() {
               </div>
 
               {/* Remember Me & Forgot Password */}
-              <div className="flex justify-between items-center mb-6">
-                <label className="flex ml-5 items-center text-xs text-white gap-2 cursor-pointer hover:text-[#FFD166] transition-colors">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="accent-[#FFD166] w-4 h-4 cursor-pointer"
-                    disabled={isLoading}
-                  />
-                  <span>Remember me</span>
-                </label>
+              <div className="flex justify-between items-center mb-6 ml-100">
+                
                 <a
                   href="#"
                   onClick={handleForgotPassword}

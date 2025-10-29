@@ -32,9 +32,9 @@ const SPECIAL_GRADE_MAPPING: Record<
   { cut: string; polish: string; symmetry: string }
 > = {
   "3EX": { cut: "EX", polish: "EX", symmetry: "EX" },
-  "EX-": { cut: "EX", polish: "EX", symmetry: "VG" },
-  "VG+": { cut: "VG", polish: "VG", symmetry: "VG" },
-  "VG-": { cut: "VG", polish: "GD", symmetry: "GD" },
+  "EX-": { cut: "EX", polish: "EX,VG", symmetry: "EX,VG" },
+  "VG+": { cut: "VG", polish: "EX,VG", symmetry: "EX,VG" },
+  "VG-": { cut: "VG", polish: "VG,GD", symmetry: "VG,GD" },
 };
 
 interface ClarityFilterProps {
@@ -142,7 +142,7 @@ export default function ClarityFilter({
           alt="Clarity"
           width={18}
           height={18}
-          className="w-5 h-5"
+          className="w-7 h-6"
         />
         <span className="text-base font-semibold text-white">Clarity</span>
       </div>
@@ -161,7 +161,7 @@ export default function ClarityFilter({
             <button
               key={option}
               onClick={() => handleClarityClick(option)}
-              className={`px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+              className={`px-1 py-0.5 rounded text-small font-medium transition-colors ${
                 selectedClarity.includes(option)
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
@@ -195,8 +195,8 @@ export default function ClarityFilter({
                 backgroundColor:
                   selectedSpecial === option ? "#00003390" : "#000033",
                 border: "none",
-                minHeight: "25px",
-                fontSize: "10px",
+                minHeight: "30px",
+                fontSize: "14px",
                 fontWeight: "600",
                 maxWidth: "55px",
               }}
@@ -211,20 +211,20 @@ export default function ClarityFilter({
           {/* Cut Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
             <div
-              className="px-1.5 py-0.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              className="px-1.5 py-1.5 rounded text-xs font-semibold text-white flex items-center justify-center"
               style={{
                 backgroundColor: "#000033",
                 minHeight: "24px",
                 minWidth: "35px",
               }}
             >
-              Cut
+              Cut :
             </div>
             {["EX", "VG", "GD", "FR"].map((cut) => (
               <button
                 key={cut}
                 onClick={() => handleCutClick(cut)}
-                className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                className={`px-1.5 py-0.5 rounded text-small font-medium transition-colors ${
                   cutArray.includes(cut)
                     ? "text-gray-800 bg-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -245,20 +245,20 @@ export default function ClarityFilter({
           {/* Polish Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
             <div
-              className="px-1.5 py-0.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              className="px-1.5 py-1.5 rounded text-xs font-semibold text-white flex items-center justify-center"
               style={{
                 backgroundColor: "#000033",
                 minHeight: "24px",
                 minWidth: "35px",
               }}
             >
-              Pol
+              Pol :
             </div>
             {["EX", "VG", "GD", "FR"].map((polish) => (
               <button
                 key={polish}
                 onClick={() => handlePolishClick(polish)}
-                className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                className={`px-1.5 py-0.5 rounded text-small font-medium transition-colors ${
                   polishArray.includes(polish)
                     ? "text-gray-800 bg-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -279,20 +279,20 @@ export default function ClarityFilter({
           {/* Symmetry Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
             <div
-              className="px-1.5 py-0.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              className="px-1.5 py-1.5 rounded text-xs font-semibold text-white flex items-center justify-center"
               style={{
                 backgroundColor: "#000033",
                 minHeight: "24px",
                 minWidth: "35px",
               }}
             >
-              Sym
+              Sym :
             </div>
             {["EX", "VG", "GD", "FR"].map((symmetry) => (
               <button
                 key={symmetry}
                 onClick={() => handleSymmetryClick(symmetry)}
-                className={`px-1.5 py-0.5 rounded text-xs font-medium transition-colors ${
+                className={`px-1.5 py-0.5 rounded text-small font-medium transition-colors ${
                   symmetryArray.includes(symmetry)
                     ? "text-gray-800 bg-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50"

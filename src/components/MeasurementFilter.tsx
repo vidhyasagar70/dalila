@@ -75,10 +75,10 @@ export default function MeasurementFilter({
       style={{ width: "fit-content" }}
     >
       <div
-        className="flex items-center gap-1.5 px-2 py-1.5"
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-sm font-semibold text-white">Measurement</span>
+        <span className="text-base font-semibold text-white">Measurement</span>
       </div>
       <div
         className="bg-white p-2"
@@ -88,7 +88,7 @@ export default function MeasurementFilter({
           {MEASUREMENT_FIELDS.map((field) => (
             <div key={field.key} className="flex items-center gap-1.5">
               <div
-                className="px-2 py-1 font-medium text-white rounded text-xs"
+                className="px-2 py-2 font-medium text-white rounded text-xs"
                 style={{ backgroundColor: "#000033", minWidth: "80px" }}
               >
                 {field.label}

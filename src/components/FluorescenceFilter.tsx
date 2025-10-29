@@ -40,7 +40,7 @@ export default function FluorFilter({
   return (
     <div>
       <div
-        className="flex items-center gap-1.5 px-2.5 py-1.5"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 mt-0.5"
         style={{ backgroundColor: "#000033" }}
       >
         <Image
@@ -48,7 +48,7 @@ export default function FluorFilter({
           alt="Fluor"
           width={18}
           height={18}
-          className="w-4.5 h-4.5"
+          className="w-7 h-6"
         />
         <span
           className={`${mavenPro.className} text-base font-semibold text-white`}
@@ -68,7 +68,7 @@ export default function FluorFilter({
           <button
             key={option}
             onClick={() => handleFluorClick(option)}
-            className={`${mavenPro.className} px-1 py-0.5 rounded text-xs font-medium transition-colors ${
+            className={`${mavenPro.className} px-1 py-0.5 rounded text-small font-medium transition-colors ${
               isSelected(option)
                 ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"

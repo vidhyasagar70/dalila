@@ -6,20 +6,25 @@ import {
   FileText,  
   ShoppingCart, 
   Loader2,
-  RefreshCw,
   AlertCircle,
   ChevronLeft,
   ChevronRight,
-  Search,
   Gem,
   List,
   DollarSign
 } from 'lucide-react';
 
 import { diamondApi, cartApi } from '@/lib/api';
+import { Maven_Pro } from "next/font/google";
+
+const mavenPro = Maven_Pro({
+  variable: "--font-maven-pro",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export default function AdminDashboard() {
-
   const [totalDiamonds, setTotalDiamonds] = useState(0);
   const [newlyAddedDiamonds, setNewlyAddedDiamonds] = useState(0);
   const [cartCount, setCartCount] = useState(0);
@@ -94,11 +99,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleRefresh = () => {
-    fetchDashboardData();
-    fetchCartCount();
-  };
-
   const handleNavigate = (path: string) => {
     window.location.href = path;
   };
@@ -125,30 +125,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 mt-35">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search"
-                style={{ borderColor: '#FAE9D0' }}
-                className="pl-10 pr-4 py-2 border rounded-lg w-96 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <button
-              onClick={handleRefresh}
-              style={{ borderColor: '#FAE9D0' }}
-              className="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-              <span className="font-medium">Refresh</span>
-            </button>
-          </div>
-        </div>
-
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-red-600" />
@@ -166,9 +142,9 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-4">
               <Gem className="w-8 h-8" />
-              <span className="text-lg opacity-80">Inventory</span>
+              <span className={`text-lg opacity-80 ${mavenPro.className}`}>Inventory</span>
             </div>
-            <div className="text-4xl font-bold text-center">{totalDiamonds}</div>
+            <div className={`text-5xl font-bold text-white text-center ${mavenPro.className}`}>{totalDiamonds}</div>
           </button>
 
           {/* New Arrival Card */}
@@ -180,9 +156,9 @@ export default function AdminDashboard() {
               <div className="bg-gray-100 p-2 rounded-lg">
                 <FileText className="w-6 h-6 text-gray-600" />
               </div>
-              <span className="text-lg  font-semibold text-gray-900">New Arrival</span>
+              <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>New Arrival</span>
             </div>
-            <div className="text-5xl font-bold text-gray-900 text-center">{newlyAddedDiamonds}</div>
+            <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{newlyAddedDiamonds}</div>
           </div>
 
           {/* Price Revised Card */}
@@ -194,9 +170,9 @@ export default function AdminDashboard() {
               <div className="bg-gray-100 p-2 rounded-lg">
                 <DollarSign className="w-6 h-6 text-gray-600" />
               </div>
-              <span className="text-lg font-semibold text-gray-900">Price Revised</span>
+              <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Price Revised</span>
             </div>
-            <div className="text-5xl font-bold text-gray-900 text-center">0</div>
+            <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>0</div>
           </div>
 
           {/* Cart Card - Clickable - Now showing real count */}
@@ -209,39 +185,39 @@ export default function AdminDashboard() {
               <div className="bg-gray-100 p-2 rounded-lg">
                 <ShoppingCart className="w-6 h-6 text-gray-600" />
               </div>
-              <span className="text-lg font-semibold text-gray-900">Cart</span>
+              <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Cart</span>
             </div>
-            <div className="text-5xl font-bold text-gray-900 text-center">{cartCount}</div>
+            <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{cartCount}</div>
           </button>
         </div>
 
         {/* Second Row - Diamond Carousel and Right Cards */}
         <div className="grid grid-cols-12 gap-6">
           {/* Diamond Carousel - Left Side */}
-          <div className="col-span-9">
+          <div className="col-span-9 flex">
             <div 
               style={{ borderColor: '#FAE9D0' }}
-              className="bg-white rounded-xl p-4 shadow-md border"
+              className="bg-white rounded-xl p-6 shadow-md border w-full flex flex-col"
             >
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Limited Edition</h2>
-              <div className="flex items-center justify-between">
+              <h2 className={`text-2xl font-bold text-gray-900 mb-6 ${mavenPro.className}`}>Limited Edition</h2>
+              <div className="flex items-center justify-between flex-1">
                 <button
                   onClick={prevSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0"
+                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0 self-center"
                 >
                   <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
                 
-                <div className="flex gap-3 flex-1 justify-center">
+                <div className="flex gap-4 flex-1 justify-center items-center">
                   {mockDiamonds.slice(currentSlide, currentSlide + 3).map((diamond, index) => (
                     <div 
                       key={index} 
                       style={{ borderColor: '#FAE9D0' }}
-                      className="bg-white border rounded-xl p-3 w-52"
+                      className="bg-white border rounded-xl p-4 w-56"
                     >
-                      <div className="bg-gray-50 rounded-lg p-4 mb-3 flex items-center justify-center">
+                      <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
                         <video
-                          className="w-24 h-24 object-cover rounded"
+                          className="w-32 h-32 object-cover rounded"
                           autoPlay
                           loop
                           muted
@@ -250,14 +226,14 @@ export default function AdminDashboard() {
                           <source src="/New-Videos/auth-bg.mp4" type="video/mp4" />
                         </video>
                       </div>
-                      <div className="text-center space-y-1">
-                        <div className="flex justify-center gap-2 text-xs font-medium text-gray-900">
+                      <div className="text-center space-y-2">
+                        <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
                           <span>{diamond.shape}</span>
                           <span>{diamond.carat}</span>
                           <span>{diamond.color}</span>
                           <span>{diamond.clarity}</span>
                         </div>
-                        <div className="flex justify-center gap-2 text-xs text-gray-600">
+                        <div className="flex justify-center gap-2 text-sm text-gray-600">
                           <span>-{diamond.cut}</span>
                           <span>{diamond.polish}</span>
                           <span>{diamond.symmetry}</span>
@@ -270,7 +246,7 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0"
+                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0 self-center"
                 >
                   <ChevronRight className="w-5 h-5 text-white" />
                 </button>
@@ -279,33 +255,33 @@ export default function AdminDashboard() {
           </div>
 
           {/* Right Section - Hold Stone & Upcoming List */}
-          <div className="col-span-3 space-y-6">
+          <div className="col-span-3 flex flex-col gap-6">
             {/* Hold Stone Card */}
             <div 
               style={{ borderColor: '#FAE9D0' }}
-              className="bg-white rounded-xl p-6 shadow-md border"
+              className="bg-white rounded-xl p-6 shadow-md border flex-1 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <Package className="w-6 h-6 text-gray-600" />
                 </div>
-                <span className="text-lg font-semibold text-gray-900">Hold Stone</span>
+                <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Hold Stone</span>
               </div>
-              <div className="text-5xl font-bold text-gray-900  text-center">{mockStats.holdStone}</div>
+              <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{mockStats.holdStone}</div>
             </div>
 
             {/* Upcoming List Card */}
             <div 
               style={{ borderColor: '#FAE9D0' }}
-              className="bg-white rounded-xl p-6 shadow-md border"
+              className="bg-white rounded-xl p-6 shadow-md border flex-1 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <List className="w-6 h-6 text-gray-600" />
                 </div>
-                <span className="text-lg font-semibold text-gray-900">Upcoming List</span>
+                <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Upcoming List</span>
               </div>
-              <div className="text-5xl font-bold text-gray-900  text-center">{mockStats.upcomingList}</div>
+              <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{mockStats.upcomingList}</div>
             </div>
           </div>
         </div>

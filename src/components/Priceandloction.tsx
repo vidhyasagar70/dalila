@@ -179,10 +179,10 @@ export default function PriceLocationFilter({
     <div className="mb-2 mt-1" style={{ width: "fit-content", fontFamily: "Maven Pro, sans-serif" }}>
       {/* Price Section */}
       <div
-        className="flex items-center gap-1.5 px-2 py-1.5"
+        className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-sm font-semibold text-white">Price</span>
+        <span className="text-base font-semibold text-white">Price</span>
       </div>
       <div
         className="bg-white p-2"
@@ -192,7 +192,7 @@ export default function PriceLocationFilter({
           {/* $/ct */}
           <div className="flex items-center gap-1.5">
             <div
-              className="px-2 py-1 font-medium text-white rounded text-xs"
+              className="px-2 py-2 font-medium text-white rounded text-xs"
               style={{ backgroundColor: "#000033", minWidth: "65px" }}
             >
               $/ct
@@ -274,7 +274,7 @@ export default function PriceLocationFilter({
           {/* Disc% */}
           <div className="flex items-center gap-1.5">
             <div
-              className="px-2 py-1 font-medium text-white rounded text-xs"
+              className="px-2 py-2 font-medium text-white rounded text-xs"
               style={{ backgroundColor: "#000033", minWidth: "65px" }}
             >
               Disc%
@@ -356,7 +356,7 @@ export default function PriceLocationFilter({
           {/* Total $ */}
           <div className="flex items-center gap-1.5">
             <div
-              className="px-2 py-1 font-medium text-white rounded text-xs"
+              className="px-2 py-2 font-medium text-white rounded text-xs"
               style={{ backgroundColor: "#000033", minWidth: "65px" }}
             >
               Total $

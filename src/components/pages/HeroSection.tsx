@@ -28,7 +28,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-[calc(110vh+8rem)] flex items-center overflow-hidden bg-white">
+    <section className="relative h-[calc(90vh+8rem)] flex items-center overflow-hidden bg-white">
       {/* Background Carousel */}
       <div className="absolute inset-0">
         <div
