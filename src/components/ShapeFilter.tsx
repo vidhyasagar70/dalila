@@ -2,45 +2,42 @@
 import React from "react";
 import Image from "next/image";
 import { Maven_Pro } from "next/font/google";
+
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
+
 const STATIC_SHAPE_OPTIONS = [
   { value: "ROUND", label: "Round", image: "/shapefilter/round.png" },
   { value: "OVAL", label: "Oval", image: "/shapefilter/oval.png" },
   { value: "PEAR", label: "Pear", image: "/shapefilter/pear.png" },
   { value: "EMERALD", label: "Emerald", image: "/shapefilter/emerald.png" },
   { value: "HEART", label: "Heart", image: "/shapefilter/Vector-heart.png" },
- 
-  
-
-  
   { value: "CUSHION", label: "Cushion", image: "/shapefilter/cushion.png" },
-   { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
-   { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
-   {
+  { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
+  { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
+  {
     value: "PRINCESS",
     label: "Princess",
     image: "/shapefilter/princess.png",
   },
   { value: "MARQUISE", label: "Marquise", image: "/shapefilter/marque.png" },
-  
   {
     value: "TRILLIANT",
     label: "Trilliant",
     image: "/shapefilter/trilliant.png",
   },
-  
-  
   { value: "OTHER", label: "Other", image: "/shapefilter/others.png" },
 ];
+
 interface ShapeFilterProps {
-  selectedShape: string[]; // Changed to array
-  onShapeChange: (shapes: string[]) => void; // Changed to array
+  selectedShape: string[];
+  onShapeChange: (shapes: string[]) => void;
 }
+
 export default function ShapeFilter({
   selectedShape,
   onShapeChange,
@@ -55,9 +52,11 @@ export default function ShapeFilter({
       onShapeChange([...currentShapes, shape]);
     }
   };
+
   const isSelected = (shape: string) => {
     return Array.isArray(selectedShape) && selectedShape.includes(shape);
   };
+
   return (
     <div className={`${mavenPro.className} mb-1.5 mt-0.5`}>
       <div
@@ -71,7 +70,7 @@ export default function ShapeFilter({
           height={18}
           priority
         />
-        <span className="text-base font-semibold text-white">Shape</span>
+        <span className="text-base font-normal text-white">Shape</span>
       </div>
       <div
         className="p-2.5 bg-white"
@@ -106,7 +105,7 @@ export default function ShapeFilter({
                 height={28}
                 className="object-contain"
               />
-              <span className="text-small font-medium">{option.label}</span>
+              <span className="text-small font-normal">{option.label}</span>
             </button>
           ))}
         </div>

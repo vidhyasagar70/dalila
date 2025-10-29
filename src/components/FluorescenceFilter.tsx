@@ -51,7 +51,7 @@ export default function FluorFilter({
           className="w-7 h-6"
         />
         <span
-          className={`${mavenPro.className} text-base font-semibold text-white`}
+          className={`${mavenPro.className} text-base font-normal text-white`}
         >
           Fluor
         </span>
@@ -68,7 +68,7 @@ export default function FluorFilter({
           <button
             key={option}
             onClick={() => handleFluorClick(option)}
-            className={`${mavenPro.className} px-1 py-0.5 rounded text-small font-medium transition-colors ${
+            className={`${mavenPro.className} px-1 py-0.5 text-small font-normal transition-colors ${
               isSelected(option)
                 ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"
@@ -78,6 +78,7 @@ export default function FluorFilter({
               border: isSelected(option)
                 ? "0.25px solid #FAF6EB"
                 : "0.25px solid #f9e8cd",
+              borderRadius: "0",
               minHeight: "41px",
             }}
           >

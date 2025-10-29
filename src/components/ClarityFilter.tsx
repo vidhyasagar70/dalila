@@ -144,7 +144,7 @@ export default function ClarityFilter({
           height={18}
           className="w-7 h-6"
         />
-        <span className="text-base font-semibold text-white">Clarity</span>
+        <span className="text-base font-normal text-white">Clarity</span>
       </div>
 
       <div
@@ -161,7 +161,7 @@ export default function ClarityFilter({
             <button
               key={option}
               onClick={() => handleClarityClick(option)}
-              className={`px-1 py-0.5 rounded text-small font-medium transition-colors ${
+              className={`px-1 py-0.5 text-small font-normal transition-colors ${
                 selectedClarity.includes(option)
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
@@ -170,6 +170,7 @@ export default function ClarityFilter({
                 border: selectedClarity.includes(option)
                   ? "0.25px solid #FAF6EB"
                   : "0.25px solid #f9e8cd",
+                borderRadius: "0",
                 minHeight: "28px",
                 minWidth: "48px",
               }}
@@ -186,7 +187,7 @@ export default function ClarityFilter({
             <button
               key={option}
               onClick={() => handleSpecialClick(option)}
-              className={`px-1 py-0.5 rounded transition-colors ${
+              className={`px-1 py-0.5 transition-colors ${
                 selectedSpecial === option
                   ? "text-white"
                   : "text-white hover:opacity-80"
@@ -195,9 +196,10 @@ export default function ClarityFilter({
                 backgroundColor:
                   selectedSpecial === option ? "#00003390" : "#000033",
                 border: "none",
+                borderRadius: "0",
                 minHeight: "30px",
                 fontSize: "14px",
-                fontWeight: "600",
+                fontWeight: "400",
                 maxWidth: "55px",
               }}
             >
@@ -211,9 +213,10 @@ export default function ClarityFilter({
           {/* Cut Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
             <div
-              className="px-1.5 py-1.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              className="px-1.5 py-1.5 text-xs font-normal text-white flex items-center justify-center"
               style={{
                 backgroundColor: "#000033",
+                borderRadius: "0",
                 minHeight: "24px",
                 minWidth: "35px",
               }}
@@ -224,7 +227,7 @@ export default function ClarityFilter({
               <button
                 key={cut}
                 onClick={() => handleCutClick(cut)}
-                className={`px-1.5 py-0.5 rounded text-small font-medium transition-colors ${
+                className={`px-1.5 py-0.5 text-small font-normal transition-colors ${
                   cutArray.includes(cut)
                     ? "text-gray-800 bg-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -233,6 +236,7 @@ export default function ClarityFilter({
                   border: cutArray.includes(cut)
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
+                  borderRadius: "0",
                   minHeight: "24px",
                   maxWidth: "55px",
                 }}
@@ -245,9 +249,10 @@ export default function ClarityFilter({
           {/* Polish Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
             <div
-              className="px-1.5 py-1.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              className="px-1.5 py-1.5 text-xs font-normal text-white flex items-center justify-center"
               style={{
                 backgroundColor: "#000033",
+                borderRadius: "0",
                 minHeight: "24px",
                 minWidth: "35px",
               }}
@@ -258,7 +263,7 @@ export default function ClarityFilter({
               <button
                 key={polish}
                 onClick={() => handlePolishClick(polish)}
-                className={`px-1.5 py-0.5 rounded text-small font-medium transition-colors ${
+                className={`px-1.5 py-0.5 text-small font-medium transition-colors ${
                   polishArray.includes(polish)
                     ? "text-gray-800 bg-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -267,6 +272,7 @@ export default function ClarityFilter({
                   border: polishArray.includes(polish)
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
+                  borderRadius: "0",
                   minHeight: "24px",
                   maxWidth: "55px",
                 }}
@@ -279,9 +285,10 @@ export default function ClarityFilter({
           {/* Symmetry Row */}
           <div className="grid grid-cols-5 gap-1 items-center">
             <div
-              className="px-1.5 py-1.5 rounded text-xs font-semibold text-white flex items-center justify-center"
+              className="px-1.5 py-1.5 text-xs font-normal text-white flex items-center justify-center"
               style={{
                 backgroundColor: "#000033",
+                borderRadius: "0",
                 minHeight: "24px",
                 minWidth: "35px",
               }}
@@ -292,7 +299,7 @@ export default function ClarityFilter({
               <button
                 key={symmetry}
                 onClick={() => handleSymmetryClick(symmetry)}
-                className={`px-1.5 py-0.5 rounded text-small font-medium transition-colors ${
+                className={`px-1.5 py-0.5 text-small font-medium transition-colors ${
                   symmetryArray.includes(symmetry)
                     ? "text-gray-800 bg-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50"
@@ -301,6 +308,7 @@ export default function ClarityFilter({
                   border: symmetryArray.includes(symmetry)
                     ? "0.25px solid #FAF6EB"
                     : "0.25px solid #f9e8cd",
+                  borderRadius: "0",
                   minHeight: "24px",
                   maxWidth: "55px",
                 }}

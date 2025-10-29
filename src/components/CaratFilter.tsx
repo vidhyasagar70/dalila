@@ -97,7 +97,7 @@ export default function CaratFilter({
           height={18}
           className="w-7 h-6"
         />
-        <span className="text-base font-semibold text-white">Carat</span>
+        <span className="text-base font-normal text-white">Carat</span>
       </div>
 
       {/* Body */}
@@ -118,9 +118,9 @@ export default function CaratFilter({
               min="0"
               value={fromValue}
               onChange={handleFromChange}
-              className="w-full px-2 py-1.5 text-xs text-gray-900 rounded border border-[#f9e8cd] min-h-[36px] focus:outline-none focus:border-[#d4b896]"
+              className="w-full px-2 py-1.5 text-xs text-gray-900 border border-[#f9e8cd] min-h-[36px] focus:outline-none focus:border-[#d4b896]"
               placeholder="From"
-              style={{ color: '#111827' }}
+              style={{ color: '#111827', borderRadius: '0' }}
             />
           </div>
           <div className="relative flex-1">
@@ -130,9 +130,9 @@ export default function CaratFilter({
               min="0"
               value={toValue}
               onChange={handleToChange}
-              className="w-full px-2 py-1.5 text-xs text-gray-900 rounded border border-[#f9e8cd] min-h-[36px] focus:outline-none focus:border-[#d4b896]"
+              className="w-full px-2 py-1.5 text-xs text-gray-900 border border-[#f9e8cd] min-h-[36px] focus:outline-none focus:border-[#d4b896]"
               placeholder="To"
-              style={{ color: '#111827' }}
+              style={{ color: '#111827', borderRadius: '0' }}
             />
           </div>
         </div>
@@ -148,11 +148,12 @@ export default function CaratFilter({
               <button
                 key={range.value}
                 onClick={() => handleRangeClick(range)}
-                className={`px-2 py-1.5 rounded text-small font-medium transition-colors ${
+                className={`px-2 py-1.5 text-small font-normal transition-colors ${
                   isSelected
                     ? "text-gray-800 bg-[#FAF6EB] border border-[#FAF6EB]"
                     : "bg-white text-gray-700 hover:bg-gray-50 border border-[#f9e8cd]"
                 } min-h-[36px] min-w-[90px]`}
+                style={{ borderRadius: '0' }}
               >
                 {range.label}
               </button>

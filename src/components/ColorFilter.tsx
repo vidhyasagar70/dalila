@@ -65,7 +65,7 @@ export default function ColorFilter({
           className="w-7 h-6"
         />
         <span
-          className={`${mavenPro.className} text-base font-semibold text-white`}
+          className={`${mavenPro.className} text-base font-normal text-white`}
         >
           Color
         </span>
@@ -81,7 +81,7 @@ export default function ColorFilter({
           <button
             key={option.value}
             onClick={() => handleColorClick(option.value)}
-           className={`${mavenPro.className} px-1 py-0.5 rounded text-small font-medium transition-colors ${
+            className={`${mavenPro.className} px-1 py-0.5 text-small font-normal transition-colors ${
               isSelected(option.value)
                 ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"
@@ -91,6 +91,7 @@ export default function ColorFilter({
               border: isSelected(option.value)
                 ? "0.25px solid #FAF6EB"
                 : "0.25px solid #f9e8cd",
+              borderRadius: "0",
               minHeight: "44px",
             }}
           >
