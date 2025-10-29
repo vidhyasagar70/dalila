@@ -860,8 +860,42 @@ export const userApi = {
   updateEmail: (newEmail: string) =>
     api.put<{ message: string }>("/api/users", "update-email", { newEmail }),
 
-  updatePassword: (data: { email: string; newPassword: string }) =>
-    api.put<{ message: string }>("/api/users", "update-password", data),
+  updatePassword: async (data: { 
+  email: string; 
+  newPassword: string;
+  otp: string;
+}) => {
+  try {
+    const response = await apiClient.put<ApiResponse<{ 
+      message: string;
+      user?: User;
+    }>>(
+      "/api/users/update-password",
+      data
+    );
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Update password error:", error);
+    
+    if (error && typeof error === "object" && "response" in error) {
+      const axiosError = error as {
+        response?: { 
+          data?: { error?: string; message?: string };
+          status?: number;
+        };
+      };
+      
+      if (axiosError.response?.data) {
+        throw new Error(
+          axiosError.response.data.error ||
+          axiosError.response.data.message ||
+          "Failed to update password"
+        );
+      }
+    }
+    throw error;
+  }
+},
 
   submitCustomerData: async (data: {
     email?: string; // Add email parameter

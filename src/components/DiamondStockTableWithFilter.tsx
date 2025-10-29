@@ -251,7 +251,7 @@ export default function DiamondStockTableWithFilter() {
         className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
       >
         {/* View Mode Toggle */}
-        <div className="flex items-center gap-1 bg-[#faf6eb] rounded p-0.5">
+        <div className="flex items-center gap-1 bg-[#faf6eb] rounded-none p-0.5">
           <button
             onClick={() => setViewMode("list")}
             className={`p-2 rounded transition-colors ${
@@ -308,7 +308,7 @@ export default function DiamondStockTableWithFilter() {
           {/* Advanced Filters Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
+            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded-none hover:bg-[#000055] whitespace-nowrap"
           >
             <Image
               src="/filtersicon/filter-add.png"
@@ -328,7 +328,7 @@ export default function DiamondStockTableWithFilter() {
           {/* Reset Filters Button */}
           <button
             onClick={handleResetFilters}
-            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded hover:bg-[#000055] whitespace-nowrap"
+            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded-none hover:bg-[#000055] whitespace-nowrap"
             title="Reset All Filters"
           >
             <Image

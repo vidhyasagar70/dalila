@@ -199,11 +199,11 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     <button
       onClick={handleAddToCart}
       disabled={selectedCount === 0 || isAdding}
-      className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded shadow-sm transition-colors ${
-        selectedCount === 0 || isAdding
-          ? "bg-gray-400 cursor-not-allowed"
-          : "bg-[#000033] hover:bg-[#000055]"
-      }`}
+     className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
+  selectedCount === 0 || isAdding
+    ? "bg-gray-400 cursor-not-allowed"
+    : "bg-[#000033] hover:bg-[#000055]"
+}`}
       title={selectedCount === 0 ? "Select diamonds to add to cart" : `Add ${selectedCount} diamond${selectedCount > 1 ? 's' : ''} to cart`}
     >
       {isAdding ? (

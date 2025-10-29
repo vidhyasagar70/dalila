@@ -21,7 +21,7 @@ const playFair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 });
 
-type Step = "email" | "otp" | "password";
+type Step = "email" | "password";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
     }
   }, [countdown]);
 
-  // Step 1: Send OTP to Email using /api/users/otp
+  // Step 1: Send OTP to Email
   const handleSendOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -64,13 +64,12 @@ export default function ForgotPasswordPage() {
     try {
       console.log("Sending OTP to email:", email);
 
-      // Using the /api/users/otp endpoint
       const response = await userApi.sendOtp(email);
 
       if (response && response.success) {
         setSuccess("OTP sent successfully! Please check your email.");
         setCountdown(60);
-        setCurrentStep("otp");
+        setCurrentStep("password");
         setTimeout(() => {
           inputRefs.current[0]?.focus();
         }, 100);
@@ -98,60 +97,17 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  // Step 2: Verify OTP
-  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Step 2: Update Password with email, newPassword, and OTP
+  const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
     const otpString = otp.join("");
     if (otpString.length !== 4) {
       setError("Please enter the complete 4-digit OTP");
       return;
     }
-
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      console.log("Verifying OTP...");
-
-      const response = await userApi.verifyOtp({
-        email: email,
-        otp: otpString,
-      });
-
-      if (response && response.success) {
-        setSuccess("OTP verified successfully! Please set your new password.");
-        setCurrentStep("password");
-      } else {
-        setError(response?.message || "Invalid OTP. Please try again.");
-      }
-    } catch (err: unknown) {
-      console.error("OTP verification error:", err);
-
-      if (err instanceof Error) {
-        const errorMessage = err.message;
-
-        if (errorMessage.includes("expired")) {
-          setError("OTP has expired. Please request a new one.");
-        } else if (errorMessage.includes("invalid") || errorMessage.includes("incorrect")) {
-          setError("Invalid OTP. Please check and try again.");
-        } else {
-          setError(errorMessage || "Verification failed. Please try again.");
-        }
-      } else {
-        setError("Unable to connect to server. Please try again.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Step 3: Update Password
-  const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (newPassword.length < 8) {
       setError("Password must be at least 8 characters long");
@@ -171,6 +127,7 @@ export default function ForgotPasswordPage() {
       const response = await userApi.updatePassword({
         email: email,
         newPassword: newPassword,
+        otp: otpString,
       });
 
       if (response && response.success) {
@@ -186,7 +143,13 @@ export default function ForgotPasswordPage() {
       console.error("Update password error:", err);
 
       if (err instanceof Error) {
-        setError(err.message || "Failed to update password. Please try again.");
+        const errorMessage = err.message;
+        
+        if (errorMessage.includes("Invalid OTP") || errorMessage.includes("expired")) {
+          setError("Invalid or expired OTP. Please request a new OTP.");
+        } else {
+          setError(errorMessage || "Failed to update password. Please try again.");
+        }
       } else {
         setError("Unable to connect to server. Please try again.");
       }
@@ -195,7 +158,7 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  // Resend OTP using /api/users/otp
+  // Resend OTP
   const handleResendOtp = async () => {
     if (countdown > 0) return;
 
@@ -204,7 +167,6 @@ export default function ForgotPasswordPage() {
     setSuccess("");
 
     try {
-      // Using the /api/users/otp endpoint
       const response = await userApi.sendOtp(email);
 
       if (response && response.success) {
@@ -260,14 +222,11 @@ export default function ForgotPasswordPage() {
   const handleBackStep = () => {
     setError("");
     setSuccess("");
-    if (currentStep === "otp") {
-      setCurrentStep("email");
-      setOtp(["", "", "", ""]);
-    } else if (currentStep === "password") {
-      setCurrentStep("otp");
-      setNewPassword("");
-      setConfirmPassword("");
-    }
+    setCurrentStep("email");
+    setOtp(["", "", "", ""]);
+    setNewPassword("");
+    setConfirmPassword("");
+    setCountdown(0);
   };
 
   return (
@@ -305,8 +264,7 @@ export default function ForgotPasswordPage() {
 
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
                 {currentStep === "email" && "Enter your email address and we'll send you a verification code to reset your password."}
-                {currentStep === "otp" && "We've sent a 4-digit verification code to your email. Please enter it below."}
-                {currentStep === "password" && "Create a new secure password for your account."}
+                {currentStep === "password" && "Enter the OTP sent to your email and create a new secure password for your account."}
               </p>
             </div>
 
@@ -319,18 +277,6 @@ export default function ForgotPasswordPage() {
                   }`}
                 >
                   <Mail className="w-5 h-5" />
-                </div>
-                <div className={`w-12 h-0.5 ${currentStep !== "email" ? "bg-[#FFD166]" : "bg-gray-600"}`} />
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                    currentStep === "otp"
-                      ? "bg-[#d4a018] border-[#d4a018] text-white"
-                      : currentStep === "password"
-                        ? "bg-transparent border-[#FFD166] text-[#FFD166]"
-                        : "bg-transparent border-gray-600 text-gray-600"
-                  }`}
-                >
-                  <CheckCircle className="w-5 h-5" />
                 </div>
                 <div className={`w-12 h-0.5 ${currentStep === "password" ? "bg-[#FFD166]" : "bg-gray-600"}`} />
                 <div
@@ -347,7 +293,7 @@ export default function ForgotPasswordPage() {
           {/* Right Panel */}
           <div className="relative flex-1 flex flex-col justify-center items-center bg-black/20 px-4 py-8 md:py-0">
             <div className="absolute top-4 md:top-6 right-4 md:right-6 flex gap-2 z-10">
-              {currentStep !== "email" && (
+              {currentStep === "password" && (
                 <button
                   className="bg-[#101638]/80 rounded-full p-2 shadow-md hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
                   title="Back"
@@ -371,8 +317,7 @@ export default function ForgotPasswordPage() {
             <div className="relative z-10 w-full max-w-[400px]">
               <h2 className={`text-2xl md:text-3xl font-semibold text-white mb-6 text-center ${playFair.className}`}>
                 {currentStep === "email" && "Enter Your Email"}
-                {currentStep === "otp" && "Verify OTP"}
-                {currentStep === "password" && "Create New Password"}
+                {currentStep === "password" && "Reset Your Password"}
               </h2>
 
               {success && (
@@ -421,11 +366,15 @@ export default function ForgotPasswordPage() {
                 </form>
               )}
 
-              {/* Step 2: OTP Form */}
-              {currentStep === "otp" && (
-                <form onSubmit={handleVerifyOtp}>
-                  <div className="mb-8">
-                    <div className="flex justify-center gap-3 md:gap-4">
+              {/* Step 2: Password Reset Form with OTP */}
+              {currentStep === "password" && (
+                <form onSubmit={handleUpdatePassword}>
+                  {/* OTP Input */}
+                  <div className="mb-6">
+                    <label className="block text-white text-sm font-semibold mb-2">
+                      Enter OTP
+                    </label>
+                    <div className="flex justify-center gap-3">
                       {otp.map((digit, index) => (
                         <input
                           key={index}
@@ -440,57 +389,37 @@ export default function ForgotPasswordPage() {
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           onPaste={index === 0 ? handlePaste : undefined}
                           disabled={isLoading}
-                          className="w-14 h-16 md:w-16 md:h-18 text-center text-2xl font-bold rounded-lg bg-white border-2 border-gray-300 focus:border-[#FFD166] text-black focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                          className="w-12 h-14 md:w-14 md:h-16 text-center text-2xl font-bold rounded-lg bg-white border-2 border-gray-300 focus:border-[#FFD166] text-black focus:outline-none focus:ring-2 focus:ring-[#FFD166] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                           autoComplete="off"
                         />
                       ))}
                     </div>
+                    <div className="text-center mt-3">
+                      {countdown > 0 ? (
+                        <p className="text-xs text-gray-400">
+                          Resend code in <span className="text-[#FFD166] font-semibold">{countdown}s</span>
+                        </p>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleResendOtp}
+                          disabled={isResending}
+                          className="text-xs text-[#FFD166] hover:text-yellow-400 hover:underline transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
+                        >
+                          {isResending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>Sending...</span>
+                            </>
+                          ) : (
+                            <span>Resend OTP</span>
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isLoading || otp.join("").length !== 4}
-                    className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] mb-4"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>VERIFYING...</span>
-                      </>
-                    ) : (
-                      <span>VERIFY OTP</span>
-                    )}
-                  </button>
-
-                  <div className="text-center">
-                    {countdown > 0 ? (
-                      <p className="text-sm text-gray-400">
-                        Resend code in <span className="text-[#FFD166] font-semibold">{countdown}s</span>
-                      </p>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={handleResendOtp}
-                        disabled={isResending}
-                        className="text-sm text-[#FFD166] hover:text-yellow-400 hover:underline transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
-                      >
-                        {isResending ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>Sending...</span>
-                          </>
-                        ) : (
-                          <span>Resend Verification Code</span>
-                        )}
-                      </button>
-                    )}
-                  </div>
-                </form>
-              )}
-
-              {/* Step 3: Password Form */}
-              {currentStep === "password" && (
-                <form onSubmit={handleUpdatePassword}>
+                  {/* New Password */}
                   <div className="mb-4 relative">
                     <input
                       type={showPassword ? "text" : "password"}
@@ -512,6 +441,7 @@ export default function ForgotPasswordPage() {
                     </button>
                   </div>
 
+                  {/* Confirm Password */}
                   <div className="mb-6 relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}

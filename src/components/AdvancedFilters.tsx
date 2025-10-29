@@ -112,7 +112,7 @@ export default function AdvancedFilters({
         {/* Reset Filters Button */}
         <button
           onClick={handleResetFilters}
-          className="flex items-center gap-2 px-4 py-1.5 bg-white text-[#D4A574] text-sm font-medium rounded shadow-sm border border-[#D4A574]"
+          className="flex items-center gap-2 px-4 py-1.5 bg-white text-[#D4A574] text-sm font-medium rounded-none shadow-sm border border-[#D4A574]"
         >
           <Image
             src="/filtersicon/filter-remove.png"
