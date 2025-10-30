@@ -345,7 +345,7 @@ export default function DiamondStockTableWithFilter() {
 
       {/* Advanced Filters Section */}
       {showFilters && (
-        <div className="grid grid-cols-5 gap-4 mt-4">
+        <div className="grid grid-cols-5 gap-0.5  mt-1">
           <InclusionFilter
             inclusions={inclusions}
             onInclusionChange={setInclusions}
@@ -358,7 +358,7 @@ export default function DiamondStockTableWithFilter() {
             filters={keySymbolFilters}
             onFiltersChange={setKeySymbolFilters}
           />
-          <div className="flex flex-col gap-2">
+          <div >
             <PriceLocationFilter
               filters={priceLocationFilters}
               onFiltersChange={setPriceLocationFilters}

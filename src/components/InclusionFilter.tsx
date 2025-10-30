@@ -105,14 +105,14 @@ export default function InclusionFilter({
   };
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
+    <div className="mt-1" style={{ width: "100%" }}>
       {/* Header */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
         <span
-          className={`${mavenPro.className} text-base font-semibold text-white`}
+          className={`${mavenPro.className} text-base font-normal text-white`}
         >
           INCLUSION
         </span>
@@ -120,11 +120,11 @@ export default function InclusionFilter({
 
       {/* Inclusion Filters */}
       <div style={{ marginTop: "6px" }}>
-        {INCLUSION_TYPES.map((type, index) => (
-          <div key={type.key} style={{ marginBottom: index < INCLUSION_TYPES.length - 1 ? "6px" : "0" }}>
+        {INCLUSION_TYPES.map((type) => (
+          <div key={type.key}>
             {/* Sub-header */}
             <div
-              className={`${mavenPro.className} px-2.5 py-1.5 font-semibold text-white text-sm`}
+              className={`${mavenPro.className} px-2.5 py-1.5 font-normal text-white text-sm`}
               style={{ backgroundColor: "#000033" }}
             >
               {type.label}
@@ -152,7 +152,7 @@ export default function InclusionFilter({
                       option,
                     )
                   }
-                  className={`${mavenPro.className} font-medium transition-colors ${
+                  className={`${mavenPro.className} font-normal transition-colors ${
                     isSelected(type.key as keyof InclusionFilters, option)
                       ? "text-gray-800 bg-[#FAF6EB]"
                       : "bg-white text-gray-700 hover:bg-gray-50"
@@ -160,7 +160,7 @@ export default function InclusionFilter({
                   style={{
                     minWidth: "80px",
                     height: "28px",
-                    fontSize: "12px",
+                    fontSize: "14px",
                     padding: "4px 6px",
                     border: isSelected(
                       type.key as keyof InclusionFilters,

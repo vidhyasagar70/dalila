@@ -176,13 +176,13 @@ export default function PriceLocationFilter({
   };
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content", fontFamily: "Maven Pro, sans-serif" }}>
+    <div className="mb-2 mt-1" style={{ width: "100%", fontFamily: "Maven Pro, sans-serif" }}>
       {/* Price Section */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-semibold text-white">Price</span>
+        <span className="text-base font-normal text-white">Price</span>
       </div>
       <div
         className="bg-white p-2"
@@ -192,14 +192,14 @@ export default function PriceLocationFilter({
           {/* $/ct */}
           <div className="flex items-center gap-1.5">
             <div
-              className="px-2 py-2 font-medium text-white rounded text-xs"
+              className="px-2 py-2 font-normal text-white rounded-none text-xs"
               style={{ backgroundColor: "#000033", minWidth: "65px" }}
             >
               $/ct
             </div>
 
             <div
-              className="flex items-center bg-white rounded"
+              className="flex items-center bg-white rounded-none"
               style={{ border: "1px solid #f9e8cd" }}
             >
               <input
@@ -233,10 +233,10 @@ export default function PriceLocationFilter({
               </div>
             </div>
 
-            <span className="text-gray-500 text-xs font-medium">To</span>
+            <span className="text-gray-500 text-xs font-normal">To</span>
 
             <div
-              className="flex items-center bg-white rounded"
+              className="flex items-center bg-white rounded-none"
               style={{ border: "1px solid #f9e8cd" }}
             >
               <input
@@ -274,14 +274,14 @@ export default function PriceLocationFilter({
           {/* Disc% */}
           <div className="flex items-center gap-1.5">
             <div
-              className="px-2 py-2 font-medium text-white rounded text-xs"
+              className="px-2 py-2 font-normal text-white rounded-none text-xs"
               style={{ backgroundColor: "#000033", minWidth: "65px" }}
             >
               Disc%
             </div>
 
             <div
-              className="flex items-center bg-white rounded"
+              className="flex items-center bg-white rounded-none"
               style={{ border: "1px solid #f9e8cd" }}
             >
               <input
@@ -315,10 +315,10 @@ export default function PriceLocationFilter({
               </div>
             </div>
 
-            <span className="text-gray-500 text-xs font-medium">To</span>
+            <span className="text-gray-500 text-xs font-normal">To</span>
 
             <div
-              className="flex items-center bg-white rounded"
+              className="flex items-center bg-white rounded-none"
               style={{ border: "1px solid #f9e8cd" }}
             >
               <input
@@ -356,14 +356,14 @@ export default function PriceLocationFilter({
           {/* Total $ */}
           <div className="flex items-center gap-1.5">
             <div
-              className="px-2 py-2 font-medium text-white rounded text-xs"
+              className="px-2 py-2 font-normal text-white rounded-none text-xs"
               style={{ backgroundColor: "#000033", minWidth: "65px" }}
             >
               Total $
             </div>
 
             <div
-              className="flex items-center bg-white rounded"
+              className="flex items-center bg-white rounded-none"
               style={{ border: "1px solid #f9e8cd" }}
             >
               <input
@@ -397,10 +397,10 @@ export default function PriceLocationFilter({
               </div>
             </div>
 
-            <span className="text-gray-500 text-xs font-medium">To</span>
+            <span className="text-gray-500 text-xs font-normal">To</span>
 
             <div
-              className="flex items-center bg-white rounded"
+              className="flex items-center bg-white rounded-none"
               style={{ border: "1px solid #f9e8cd" }}
             >
               <input
@@ -439,7 +439,7 @@ export default function PriceLocationFilter({
 
       {/* Location Section */}
       <div
-        className="px-2 py-1.5 font-medium text-white text-sm flex items-center gap-2"
+        className="px-2 py-1.5 font-normal text-white text-sm flex items-center gap-2"
         style={{ backgroundColor: "#000033" }}
       >
         <span>Location</span>
@@ -453,7 +453,7 @@ export default function PriceLocationFilter({
             <button
               key={location.value}
               onClick={() => toggleLocation(location.value)}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+              className={`px-2 py-1 rounded-none text-sm font-normal transition-colors ${
                 isLocationSelected(location.value)
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"
@@ -475,7 +475,7 @@ export default function PriceLocationFilter({
 
       {/* Lab Section */}
       <div
-        className="px-2 py-1.5 font-medium text-white text-sm flex items-center gap-2"
+        className="px-2 py-1.5 font-normal text-white text-sm flex items-center gap-2"
         style={{ backgroundColor: "#000033" }}
       >
         <span>Lab :</span>
@@ -489,7 +489,7 @@ export default function PriceLocationFilter({
             <button
               key={lab.value}
               onClick={() => toggleLab(lab.value)}
-              className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+              className={`px-2 py-1 rounded-none text-sm3 font-normal transition-colors ${
                 isLabSelected(lab.value)
                   ? "text-gray-800 bg-[#FAF6EB]"
                   : "bg-white text-gray-700 hover:bg-gray-50"

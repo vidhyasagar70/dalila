@@ -1,14 +1,6 @@
 "use client";
 
 import React from "react";
-import { Maven_Pro } from "next/font/google";
-
-const mavenPro = Maven_Pro({
-  variable: "--font-maven-pro",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
 
 const SHADES_OPTIONS = [
   "HPHT",
@@ -59,7 +51,7 @@ export default function ShadesFilter({
     filters[category]?.includes(value) || false;
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content" }}>
+    <div className="mb-2 mt-1">
       {/* Main Header with Icon */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
@@ -72,7 +64,7 @@ export default function ShadesFilter({
           height={18}
           className="w-7 h-6"
         />
-        <span className={`${mavenPro.className} text-base font-semibold text-white`}>
+        <span className="text-base font-normal text-white" style={{ fontFamily: 'Maven Pro, sans-serif' }}>
           Shades
         </span>
       </div>
@@ -94,7 +86,7 @@ export default function ShadesFilter({
           <button
             key={option}
             onClick={() => toggleFilter("shades", option)}
-            className={`${mavenPro.className} font-medium transition-colors ${
+            className={`font-normal transition-colors ${
               isSelected("shades", option)
                 ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"
@@ -102,7 +94,7 @@ export default function ShadesFilter({
             style={{
               minWidth: "80px",
               height: "28px",
-              fontSize: "12px",
+              fontSize: "14px",
               padding: "4px 6px",
               border: isSelected("shades", option)
                 ? "0.25px solid #FAF6EB"
@@ -110,6 +102,7 @@ export default function ShadesFilter({
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
+              fontFamily: 'Maven Pro, sans-serif',
             }}
           >
             {option}
@@ -118,15 +111,17 @@ export default function ShadesFilter({
       </div>
       
       {/* Other Filter Sections */}
-      <div style={{ marginTop: "6px" }}>
-        {FILTER_SECTIONS.map((section, index) => (
-          <div key={section.key} style={{ marginBottom: index < FILTER_SECTIONS.length - 1 ? "6px" : "0" }}>
+      <div>
+        {FILTER_SECTIONS.map((section) => (
+          <div key={section.key}>
             {/* Sub-header */}
             <div
-              className={`${mavenPro.className} px-2.5 py-1.5 font-semibold text-white text-sm`}
+              className="flex items-center gap-1.5 px-2.5 py-1.5"
               style={{ backgroundColor: "#000033" }}
             >
-              {section.label}
+              <span className="text-base  text-white" style={{ fontFamily: 'Maven Pro, sans-serif' }}>
+                {section.label}
+              </span>
             </div>
 
             {/* Options */}
@@ -135,7 +130,7 @@ export default function ShadesFilter({
               style={{
                 display: "grid",
                 gridTemplateColumns: `repeat(${section.cols}, minmax(0, 1fr))`,
-                gap: "6px",
+                gap: section.key === "milky" ? "6px" : "3px",
                 padding: "6px",
                 borderLeft: "1px solid #f9e8cd",
                 borderRight: "1px solid #f9e8cd",
@@ -148,15 +143,15 @@ export default function ShadesFilter({
                   onClick={() =>
                     toggleFilter(section.key as keyof ShadesFilters, option)
                   }
-                  className={`${mavenPro.className} font-medium transition-colors ${
+                  className={`font-normal transition-colors ${
                     isSelected(section.key as keyof ShadesFilters, option)
                       ? "text-gray-800 bg-[#FAF6EB]"
                       : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
                   style={{
-                    minWidth: "80px",
+                    minWidth: section.key === "milky" ? "70px" : "80px",
                     height: "28px",
-                    fontSize: "12px",
+                    fontSize: "14px",
                     padding: "4px 6px",
                     border: isSelected(
                       section.key as keyof ShadesFilters,
@@ -167,6 +162,7 @@ export default function ShadesFilter({
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
+                    fontFamily: 'Maven Pro, sans-serif',
                   }}
                 >
                   {option}

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, Loader2, Check, AlertCircle, X, Share2, Download, Play } from "lucide-react";
@@ -28,7 +27,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     type: "success" | "error";
     text: string;
   } | null>(null);
-  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 
   // Use actual certificate and video URLs from backend - no dummy data
   const certificateUrl = (diamond as DiamondData & { CERTI_PDF?: string }).CERTI_PDF || "";
@@ -98,7 +97,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
   const handleVideoClick = () => {
     if (videoUrl) {
-      setShowVideoPlayer(true);
+      setIsPlayingVideo(true);
     }
   };
 
@@ -245,24 +244,47 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               {/* Video Section */}
               {videoUrl ? (
                 <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
-                  <div className="relative flex-1 bg-gray-50 cursor-pointer group min-h-[200px]" onClick={handleVideoClick}>
-                    {videoThumbnail ? (
-                      <Image
-                        src={videoThumbnail}
-                        alt="Diamond Video"
-                        fill
-                        className="object-cover"
-                      />
+                  <div className="relative flex-1 bg-gray-50 min-h-[200px]">
+                    {!isPlayingVideo ? (
+                      <>
+                        <div className="relative w-full h-full cursor-pointer group" onClick={handleVideoClick}>
+                          {videoThumbnail ? (
+                            <Image
+                              src={videoThumbnail}
+                              alt="Diamond Video"
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                              <span className="text-sm text-gray-400">Video Available</span>
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                              <Play size={20} className="text-[#050C3A] ml-1" fill="currentColor" />
+                            </div>
+                          </div>
+                        </div>
+                      </>
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                        <span className="text-sm text-gray-400">Video Available</span>
+                      <div className="relative w-full h-full">
+                        <button
+                          onClick={() => setIsPlayingVideo(false)}
+                          className="absolute top-2 right-2 z-10 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center transition-colors"
+                        >
+                          <X size={16} className="text-white" />
+                        </button>
+                        <video
+                          src={videoUrl}
+                          controls
+                          autoPlay
+                          className="w-full h-full object-cover"
+                        >
+                          Your browser does not support the video tag.
+                        </video>
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Play size={20} className="text-[#050C3A] ml-1" fill="currentColor" />
-                      </div>
-                    </div>
                   </div>
                   <button 
                     onClick={handleVideoClick}
@@ -358,22 +380,22 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   </div>
                   <div className="grid grid-cols-2 gap-3 flex-1">
                     <InfoItem
-                      label="Round Shape"
+                      label="Shape"
                       value={diamond.SHAPE}
                       description="Classic cut known for maximum sparkle."
                     />
                     <InfoItem
-                      label={`${diamond.CARATS || diamond.SIZE} Carat`}
+                      label="Carat"
                       value={String(diamond.CARATS || diamond.SIZE)}
                       description="Measures a diamond's size and weight."
                     />
                     <InfoItem
-                      label={`Color ${diamond.COLOR}`}
+                      label="Color"
                       value={diamond.COLOR}
                       description="Grades a diamond's whiteness and purity."
                     />
                     <InfoItem
-                      label={`Clarity ${diamond.CLARITY}`}
+                      label="Clarity"
                       value={diamond.CLARITY}
                       description="Indicates a diamond's internal and external flaws."
                     />
@@ -394,7 +416,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         Adding...
                       </>
                     ) : (
-                      "ADD TO BAG"
+                      "ADD TO CART"
                     )}
                   </button>
                 </div>
@@ -465,31 +487,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Video Player Modal */}
-      {showVideoPlayer && videoUrl && (
-        <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
-          onClick={() => setShowVideoPlayer(false)}
-        >
-          <div className="relative w-full max-w-4xl mx-4" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setShowVideoPlayer(false)}
-              className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors"
-            >
-              <X size={32} />
-            </button>
-            <video
-              src={videoUrl}
-              controls
-              autoPlay
-              className="w-full rounded-lg shadow-2xl"
-            >
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

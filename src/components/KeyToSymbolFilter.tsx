@@ -54,13 +54,13 @@ export default function KeySymbolFilter({
     filters[category]?.includes(value) || false;
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "fit-content", fontFamily: "'Maven Pro', sans-serif" }}>
+    <div className="mt-1" style={{ width: "100%", fontFamily: "'Maven Pro', sans-serif" }}>
       {/* Main Header with Icon */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-semibold text-white">
+        <span className="text-base font-normal text-white">
           Key To Symbol
         </span>
       </div>
@@ -82,7 +82,7 @@ export default function KeySymbolFilter({
           <button
             key={option}
             onClick={() => toggleFilter("keyToSymbol", option)}
-            className={`font-medium transition-colors ${
+            className={`font-normal transition-colors ${
               isSelected("keyToSymbol", option)
                 ? "text-gray-800 bg-[#FAF6EB]"
                 : "bg-white text-gray-700 hover:bg-gray-50"
@@ -90,7 +90,7 @@ export default function KeySymbolFilter({
             style={{
               minWidth: "65px",
               height: "28px",
-              fontSize: "12px",
+              fontSize: "14px",
               padding: "4px 6px",
               border: isSelected("keyToSymbol", option)
                 ? "0.25px solid #FAF6EB"
@@ -106,12 +106,12 @@ export default function KeySymbolFilter({
       </div>
       
       {/* Other Filter Sections */}
-      <div style={{ marginTop: "6px" }}>
+      <div >
         {FILTER_SECTIONS.map((section, index) => (
-          <div key={section.key} style={{ marginBottom: index < FILTER_SECTIONS.length - 1 ? "6px" : "0" }}>
+          <div key={section.key} >
             {/* Sub-header */}
             <div
-              className="px-2.5 py-1.5 font-semibold text-white text-sm"
+              className="px-2.5 py-1.5 font-normal text-white text-sm"
               style={{ backgroundColor: "#000033" }}
             >
               {section.label}
@@ -136,7 +136,7 @@ export default function KeySymbolFilter({
                   onClick={() =>
                     toggleFilter(section.key as keyof KeySymbolFilters, option)
                   }
-                  className={`font-medium transition-colors ${
+                  className={`font-normal transition-colors ${
                     isSelected(section.key as keyof KeySymbolFilters, option)
                       ? "text-gray-800 bg-[#FAF6EB]"
                       : "bg-white text-gray-700 hover:bg-gray-50"
@@ -144,7 +144,7 @@ export default function KeySymbolFilter({
                   style={{
                     minWidth: "65px",
                     height: "28px",
-                    fontSize: "12px",
+                    fontSize: "14 px",
                     padding: "4px 6px",
                     border: isSelected(
                       section.key as keyof KeySymbolFilters,

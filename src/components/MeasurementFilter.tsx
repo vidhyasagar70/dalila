@@ -78,7 +78,7 @@ export default function MeasurementFilter({
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-semibold text-white">Measurement</span>
+        <span className="text-base font-normal text-white">Measurement</span>
       </div>
       <div
         className="bg-white p-2"
@@ -88,7 +88,7 @@ export default function MeasurementFilter({
           {MEASUREMENT_FIELDS.map((field) => (
             <div key={field.key} className="flex items-center gap-1.5">
               <div
-                className="px-2 py-2 font-medium text-white rounded text-xs"
+                className="px-2 py-2 font-normal text-white rounded-none text-xs"
                 style={{ backgroundColor: "#000033", minWidth: "80px" }}
               >
                 {field.label}
@@ -110,11 +110,11 @@ export default function MeasurementFilter({
                     e.target.value,
                   )
                 }
-                className="w-20 px-2 py-1 text-center text-xs text-gray-900 rounded border border-[#f9e8cd] outline-none focus:border-[#d4b896]"
+                className="w-20 px-2 py-1 text-center text-xs text-gray-900 rounded-none border border-[#f9e8cd] outline-none focus:border-[#d4b896]"
                 style={{ fontFamily: "inherit", color: '#111827' }}
               />
 
-              <span className="text-gray-500 text-xs font-medium">To</span>
+              <span className="text-gray-500 text-xs font-normal">To</span>
 
               {/* To Input */}
               <input
@@ -132,7 +132,7 @@ export default function MeasurementFilter({
                     e.target.value,
                   )
                 }
-                className="w-20 px-2 py-1 text-center text-xs text-gray-900 rounded border border-[#f9e8cd] outline-none focus:border-[#d4b896]"
+                className="w-20 px-2 py-1 text-center text-xs text-gray-900 rounded-none border border-[#f9e8cd] outline-none focus:border-[#d4b896]"
                 style={{ fontFamily: "inherit", color: '#111827' }}
               />
             </div>
