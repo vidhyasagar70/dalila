@@ -333,7 +333,7 @@ export default function Header() {
                     <button
                       onMouseEnter={() => setIsAdminDropdownOpen(true)}
                       onMouseLeave={() => setIsAdminDropdownOpen(false)}
-                      className="py-3 cursor-pointer px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                      className="py-3 px-3 xl:px-3 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap xl:w-27 xl:h-10"
                     >
                       ADMIN PANEL
                     </button>
