@@ -1,6 +1,7 @@
 import WebuyBanner from "@/components/pages/Webuy/Bannersection";
 import Webuyhero from "@/components/pages/Webuy/Herosection";
 import SellDiamondsProcess from "@/components/pages/Webuy/SellDiamond";
+import SellDiamondsForm from "@/components/pages/Webuy/SellDiamondform";
 export default function Webuy() {
   return (
     <>
@@ -8,6 +9,7 @@ export default function Webuy() {
         <WebuyBanner />
         <Webuyhero />
         <SellDiamondsProcess />
+        <SellDiamondsForm/>
       </main>
     </>
   );

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Loader2, Check, AlertCircle, X, Share2, Download, Play } from "lucide-react";
+import { ArrowLeft, Loader2, Share2, Download, Play, X } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
+import toast from "react-hot-toast";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -23,10 +24,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 }) => {
   const [selectedImage] = useState<string>(diamond.REAL_IMAGE || "");
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [cartMessage, setCartMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 
   // Use actual certificate and video URLs from backend - no dummy data
@@ -47,26 +44,17 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   const handleAddToCart = async () => {
     try {
       setIsAddingToCart(true);
-      setCartMessage(null);
 
       const response = await cartApi.add(diamond.STONE_NO);
 
       if (response?.success) {
-        setCartMessage({
-          type: "success",
-          text: `${diamond.STONE_NO} added to cart successfully!`,
-        });
+        toast.success(`${diamond.STONE_NO} added to cart successfully!`);
 
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("cart-updated"));
         }
-
-        setTimeout(() => setCartMessage(null), 3000);
       } else {
-        setCartMessage({
-          type: "error",
-          text: response?.message || "Failed to add to cart",
-        });
+        toast.error(response?.message || "Failed to add to cart");
       }
     } catch (error: unknown) {
       console.error("Error adding to cart:", error);
@@ -86,10 +74,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         }
       }
 
-      setCartMessage({
-        type: "error",
-        text: errorMessage,
-      });
+      toast.error(errorMessage);
     } finally {
       setIsAddingToCart(false);
     }
@@ -170,38 +155,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         </div>
 
         <div className="p-6 pb-20">
-          {/* Cart Message */}
-          {cartMessage && (
-            <div
-              className={`mb-6 p-4 rounded-lg flex items-center gap-3 animate-fade-in ${
-                cartMessage.type === "success"
-                  ? "bg-green-50 border border-green-200"
-                  : "bg-red-50 border border-red-200"
-              }`}
-            >
-              {cartMessage.type === "success" ? (
-                <Check className="w-5 h-5 text-green-600 flex-shrink-0" />
-              ) : (
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-              )}
-              <p
-                className={
-                  cartMessage.type === "success"
-                    ? "text-green-800"
-                    : "text-red-800"
-                }
-              >
-                {cartMessage.text}
-              </p>
-              <button
-                onClick={() => setCartMessage(null)}
-                className={`ml-auto ${cartMessage.type === "success" ? "text-green-600 hover:text-green-700" : "text-red-600 hover:text-red-700"}`}
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-
           {/* Top Section: Certificate, Image, and Info */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
             {/* LEFT - Certificate and Video (3 columns) */}
@@ -307,9 +260,9 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               <div className="relative overflow-hidden flex-1 border border-[#e9e2c6] min-h-[400px]">
                 {/* Action Icons */}
                 <div className="absolute top-4 right-4 flex gap-2 z-10">
-                  <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+                  {/* <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <Share2 size={18} className="text-gray-700" />
-                  </button>
+                  </button> */}
                   <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <Download size={18} className="text-gray-700" />
                   </button>
@@ -347,10 +300,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     <h1 className="text-3xl font-bold text-gray-900">
                       {diamond.SHAPE}
                     </h1>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <div className="flex text-yellow-400 text-sm">★★★★★</div>
                       <span className="text-xs text-gray-600">5.0(258)</span>
-                    </div>
+                    </div> */}
                   </div>
                   <p className="text-xs text-gray-600">
                     Expertly cut for exceptional sparkle and clarity.
