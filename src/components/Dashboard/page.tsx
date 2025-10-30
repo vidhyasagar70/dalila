@@ -123,7 +123,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 mt-35">
+    <div className="min-h-screen bg-gray-50 p-6 mt-30">
       <div className="max-w-7xl mx-auto">
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">

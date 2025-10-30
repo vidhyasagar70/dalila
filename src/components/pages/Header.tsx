@@ -218,16 +218,16 @@ export default function Header() {
       }`}
     >
       <div className="">
-       <div className="hidden sm:flex justify-center">
-  <p className="text-xs md:text-md tracking-wide text-white">
+       <div className="hidden sm:flex justify-center py-2">
+  <p className="text-sm md:text-base tracking-wide text-white">
     <span>Where Trust Shines,</span>
-    <span className="ml-4">And Quality Sparkles</span>
+    <span >And Quality Sparkles</span>
   </p>
 </div>
 
         <div className="hidden sm:block w-full h-[1px] bg-white/30"></div>
 
-        <div className="flex container mx-auto px-4 md:px-6 lg:px-8 items-center justify-between relative">
+        <div className="flex container mx-auto px-4  md:px-6 lg:px-8 items-center justify-between relative h-20">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
@@ -242,14 +242,14 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={item.requiresAuth ? handleInventoryClick : undefined}
-                className="py-3 px-2 xl:px-3 text-xs xl:text-sm text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
+                className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
               >
                 {item.label}
               </Link>
             ))}
           </nav>
 
-          <div className="flex-shrink-0 relative h-20 w-[200px] sm:h-24 sm:w-[240px] md:h-26 md:w-[260px]">
+          <div className="flex-shrink-0 relative h-24 w-[280px] sm:h-28 sm:w-[320px] md:h-32 md:w-[360px]">
 
             <button
               onClick={() => router.push("/")}
@@ -265,6 +265,7 @@ export default function Header() {
               />
             </button>
           </div>
+          
 
           
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
@@ -276,13 +277,13 @@ export default function Header() {
               <>
                 <button
                   onClick={() => router.push("/login")}
-                  className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-5 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                 >
                   LOGIN
                 </button>
                 <button
                   onClick={() => router.push("/register")}
-                  className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-5 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                 >
                   REGISTER
                 </button>
@@ -293,7 +294,7 @@ export default function Header() {
                 {!isAdmin && (
                   <button
                     onClick={() => router.push("/dashboard")}
-                    className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                    className="py-3 px-3 xl:px-3 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap xl:w-27 xl:h-10"
                   >
                     DASHBOARD
                   </button>
@@ -312,7 +313,7 @@ export default function Header() {
                     }
                   }}
                   disabled={!isInventoryAccessible}
-                  className={`py-3 px-3 xl:px-5 text-xs xl:text-sm border border-[#c89e3a] transition-colors whitespace-nowrap ${
+                  className={`py-3 px-3 xl:px-3 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm border border-[#c89e3a] transition-colors whitespace-nowrap ${
                     isInventoryAccessible
                       ? "text-white hover:bg-[#c89e3a] hover:text-white cursor-pointer"
                       : "text-gray-400 bg-gray-700 cursor-not-allowed opacity-60"
@@ -356,7 +357,7 @@ export default function Header() {
 
                 <button
                   onClick={handleLogout}
-                  className="py-3 px-3 xl:px-5 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-3 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                 >
                   LOGOUT
                 </button>
@@ -410,6 +411,9 @@ export default function Header() {
             )}
           </div>
         </div>
+
+        {/* Bottom Golden Line */}
+        <div className="w-full h-[1px] bg-[#C89E3A]"></div>
       </div>
 
       {/* Mobile Menu */}

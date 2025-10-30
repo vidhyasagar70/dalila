@@ -460,7 +460,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-white pt-32 pb-16 mt-10">
+    <div className="min-h-screen bg-white dark:bg-white pt-32 pb-16 mt-5">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
