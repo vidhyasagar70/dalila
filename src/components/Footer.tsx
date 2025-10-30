@@ -68,7 +68,7 @@ export default function Footer() {
             <div>
               <div className="mb-6">
                 <Image
-                  src="/dalila_img/DalilaLogo.png"
+                  src="/dalila_img/Dalila_Logo.png"
                   alt="Dalila Diamonds Logo"
                   width={160}
                   height={64}
