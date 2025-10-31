@@ -22,7 +22,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     console.log("Token check:", token ? "EXISTS" : "MISSING");
     
     if (!token || token.trim() === "") {
-      console.error("❌ No authentication token found");
+      console.error(" No authentication token found");
       toast.error("Please login to add items to cart. Your session may have expired.", {
         duration: 4000,
       });
@@ -62,10 +62,10 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       const successful = results.filter((r) => {
         if (r.status === "fulfilled") {
           const value = r.value as { success?: boolean; error?: string; message?: string };
-          console.log("✅ Fulfilled:", value);
+          console.log(" Fulfilled:", value);
           return value?.success === true;
         }
-        console.log("❌ Rejected:", r.reason);
+        console.log(" Rejected:", r.reason);
         return false;
       });
 
@@ -94,7 +94,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       });
 
       if (authErrors.length > 0) {
-        console.error("🔒 Authentication errors detected");
+        console.error(" Authentication errors detected");
         toast.error("Session expired. Please login again.", {
           duration: 4000,
         });
@@ -144,7 +144,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         });
       }
     } catch (error) {
-      console.error("💥 Error adding to cart:", error);
+      console.error(" Error adding to cart:", error);
       
       // Enhanced error handling
       if (error && typeof error === 'object' && 'response' in error) {
@@ -155,8 +155,8 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           } 
         };
         
-        console.error("📡 Response status:", axiosError.response?.status);
-        console.error("📡 Response data:", axiosError.response?.data);
+        console.error(" Response status:", axiosError.response?.status);
+        console.error(" Response data:", axiosError.response?.data);
         
         if (axiosError.response?.status === 401) {
           toast.error("Session expired. Please login again.", {

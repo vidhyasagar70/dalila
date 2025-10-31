@@ -419,6 +419,10 @@ search: (filters: {
   limit?: number;
   fluorescence?: string;
   searchTerm?: string;
+  CN?: string;
+  CW?: string;
+  SN?: string;
+  SW?: string;
 }) => {
   const queryParams = new URLSearchParams();
 
@@ -481,7 +485,21 @@ search: (filters: {
   if (filters.lab) {
     addMultipleParams("LAB", filters.lab);
   }
+if (filters.CN) {
+    addMultipleParams("CN", filters.CN);
+  }
 
+  if (filters.CW) {
+    addMultipleParams("CW", filters.CW);
+  }
+
+  if (filters.SN) {
+    addMultipleParams("SN", filters.SN);
+  }
+
+  if (filters.SW) {
+    addMultipleParams("SW", filters.SW);
+  }
   // Handle CARAT RANGE
   if (filters.minCarats !== undefined) {
     queryParams.append("CARATS_MIN", filters.minCarats.toString());

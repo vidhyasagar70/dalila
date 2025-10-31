@@ -40,6 +40,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedLocations = [],
   selectedLabs = [],
   keySymbolFilters,
+  inclusionFilters,
   onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
@@ -75,6 +76,12 @@ const DiamondStockTable: React.FC<TableProps> = ({
         const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
         const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
         const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
+        const hasInclusionFilter = 
+          inclusionFilters &&
+          (inclusionFilters.centerBlack.length > 0 ||
+           inclusionFilters.centerWhite.length > 0 ||
+           inclusionFilters.sideBlack.length > 0 ||
+           inclusionFilters.sideWhite.length > 0);
 
         const hasAnyFilter =
           hasShapeFilter ||
@@ -87,7 +94,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
           hasPolishFilter ||
           hasSymmetryFilter ||
           hasLocationFilter ||
-          hasLabFilter;
+          hasLabFilter||hasInclusionFilter;
 
         let response;
         if (hasAnyFilter) {
@@ -136,6 +143,20 @@ const DiamondStockTable: React.FC<TableProps> = ({
             const apiLabValues = getLabApiValues(selectedLabs);
             filters.lab = apiLabValues.join(",");
           }
+          if (hasInclusionFilter && inclusionFilters) {
+            if (inclusionFilters.centerBlack.length > 0) {
+              filters.CN = inclusionFilters.centerBlack.join(",");
+            }
+            if (inclusionFilters.centerWhite.length > 0) {
+              filters.CW = inclusionFilters.centerWhite.join(",");
+            }
+            if (inclusionFilters.sideBlack.length > 0) {
+              filters.SN = inclusionFilters.sideBlack.join(",");
+            }
+            if (inclusionFilters.sideWhite.length > 0) {
+              filters.SW = inclusionFilters.sideWhite.join(",");
+            }
+          }
 
           response = await diamondApi.search(filters);
         } else {
@@ -160,7 +181,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
           setData([]);
         }
       } catch (err) {
-        console.error("❌ Error fetching diamonds:", err);
+        console.error(" Error fetching diamonds:", err);
         setError(
           err instanceof Error ? err.message : "Failed to fetch diamonds"
         );
@@ -183,7 +204,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     selectedPolish,
     selectedSymmetry,
     selectedLocations,
-    selectedLabs,
+    selectedLabs,inclusionFilters,
   ]);
 
   const matchesKeySymbolFilters = useCallback((diamond: DiamondData): boolean => {

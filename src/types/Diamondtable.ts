@@ -63,6 +63,10 @@ export interface FilterParams {
    lab?: string;        
   location?: string;   
   priceLocationFilters?:string;
+  CN?:string,
+  CW?:string,
+  SN?:string,
+  SW?:string
 }
 
 // For DiamondStockTable component
@@ -80,12 +84,12 @@ export interface TableProps {
   selectedPolish?: string;
   selectedSymmetry?: string;
   onSelectionChange?: (selectedIds: string[], diamonds: DiamondData[]) => void;
-  inclusions?: InclusionFilters;
+  inclusionFilters?: InclusionFilters;
   priceLocationFilters?: PriceLocationFilters;
-   selectedLocations?: string[];  // NEW
+   selectedLocations?: string[]; 
   selectedLabs?: string[]; 
     keySymbolFilters?: KeySymbolFilters;
-      // NEW
+
 }
 export interface KeySymbolFilters {
   keyToSymbol: string[];
@@ -108,8 +112,19 @@ export interface GridViewProps {
   selectedPolish?: string;
   selectedSymmetry?: string;
   inclusions?: InclusionFilters
-  selectedLocations?: string[];  // NEW
-  selectedLabs?: string[];       // NEW
+  selectedLocations?: string[];  
+  selectedLabs?: string[];    
+  keySymbolFilters?: {
+  keyToSymbol: string[];
+  eyCln: string[];
+  hAndA: string[];
+};
+inclusionFilters?: {
+  centerBlack: string[];
+  centerWhite: string[];
+  sideBlack: string[];
+  sideWhite: string[];
+};   
 }
 
 // API Response types

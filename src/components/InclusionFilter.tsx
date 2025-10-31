@@ -37,54 +37,6 @@ interface InclusionFilterProps {
   onInclusionChange: (inclusions: InclusionFilters) => void;
 }
 
-// Type for diamond data with inclusion properties
-interface DiamondWithInclusions {
-  CN?: string | number;
-  CW?: string | number;
-  SN?: string | number;
-  SW?: string | number;
-  [key: string]: unknown;
-}
-
-// Helper function to check if inclusion filters match a diamond
-export const matchesInclusionFilters = (
-  diamond: DiamondWithInclusions,
-  filters: InclusionFilters
-): boolean => {
-  const hasAnyFilter = 
-    filters.centerBlack.length > 0 ||
-    filters.centerWhite.length > 0 ||
-    filters.sideBlack.length > 0 ||
-    filters.sideWhite.length > 0;
-
-  if (!hasAnyFilter) return true;
-
-  // Map diamond properties to inclusion filter keys
-  const checks = [
-    { key: 'centerBlack', value: diamond.CN },
-    { key: 'centerWhite', value: diamond.CW },
-    { key: 'sideBlack', value: diamond.SN },
-    { key: 'sideWhite', value: diamond.SW },
-  ];
-
-  // Check each inclusion type
-  for (const check of checks) {
-    const filterKey = check.key as keyof InclusionFilters;
-    const selectedValues = filters[filterKey];
-    
-    if (selectedValues.length > 0) {
-      const diamondValue = check.value?.toString().toUpperCase() || '';
-      
-      // If filter is active but diamond value doesn't match any selected option
-      if (!selectedValues.includes(diamondValue)) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-};
-
 export default function InclusionFilter({
   inclusions,
   onInclusionChange,

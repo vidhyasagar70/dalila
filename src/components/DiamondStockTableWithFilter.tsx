@@ -154,7 +154,6 @@ export default function DiamondStockTableWithFilter() {
   };
 
   const handleAddToCart = () => {
-    // Clear selection after adding to cart
     setSelectedDiamonds([]);
     console.log("Diamonds added to cart successfully, selection cleared");
   };
@@ -170,43 +169,43 @@ export default function DiamondStockTableWithFilter() {
     setSelectedFluor([]);
     setSelectedMinCarat("");
     setSelectedMaxCarat("");
-    setKeySymbolFilters({  // Add this
-    keyToSymbol: [],
-    eyCln: [],
-    hAndA: [],
-  });
-  setInclusions({  // Add this
-    centerBlack: [],
-    centerWhite: [],
-    sideBlack: [],
-    sideWhite: [],
-  });
-  setShadesFilters({  // Add this
-    shades: [],
-    milky: [],
-    type2Ct: [],
-    brl: [],
-  });
-  setPriceLocationFilters({  // Add this
-    pricePerCarat: { from: "0.50", to: "0.50" },
-    discount: { from: "0.50", to: "0.50" },
-    totalPrice: { from: "0.50", to: "0.50" },
-    locations: [],
-    labs: [],
-  });
-  setMeasurements({  // Add this
-    length: { from: "0.50", to: "0.50" },
-    width: { from: "0.50", to: "0.50" },
-    depth: { from: "0.50", to: "0.50" },
-    table: { from: "0.50", to: "0.50" },
-    depthPercent: { from: "0.50", to: "0.50" },
-    ratio: { from: "0.50", to: "0.50" },
-    crAngle: { from: "0.50", to: "0.50" },
-    pavAngle: { from: "0.50", to: "0.50" },
-    gridle: { from: "0.50", to: "0.50" },
-    crHeight: { from: "0.50", to: "0.50" },
-    pavHeight: { from: "0.50", to: "0.50" },
-  });
+    setKeySymbolFilters({
+      keyToSymbol: [],
+      eyCln: [],
+      hAndA: [],
+    });
+    setInclusions({
+      centerBlack: [],
+      centerWhite: [],
+      sideBlack: [],
+      sideWhite: [],
+    });
+    setShadesFilters({
+      shades: [],
+      milky: [],
+      type2Ct: [],
+      brl: [],
+    });
+    setPriceLocationFilters({
+      pricePerCarat: { from: "0.50", to: "0.50" },
+      discount: { from: "0.50", to: "0.50" },
+      totalPrice: { from: "0.50", to: "0.50" },
+      locations: [],
+      labs: [],
+    });
+    setMeasurements({
+      length: { from: "0.50", to: "0.50" },
+      width: { from: "0.50", to: "0.50" },
+      depth: { from: "0.50", to: "0.50" },
+      table: { from: "0.50", to: "0.50" },
+      depthPercent: { from: "0.50", to: "0.50" },
+      ratio: { from: "0.50", to: "0.50" },
+      crAngle: { from: "0.50", to: "0.50" },
+      pavAngle: { from: "0.50", to: "0.50" },
+      gridle: { from: "0.50", to: "0.50" },
+      crHeight: { from: "0.50", to: "0.50" },
+      pavHeight: { from: "0.50", to: "0.50" },
+    });
   };
 
   return (
@@ -234,23 +233,22 @@ export default function DiamondStockTableWithFilter() {
           onPolishChange={handlePolishChange}
           onSymmetryChange={handleSymmetryChange}
         />
-       <div className="flex flex-col ">
-  <FluorFilter
-    selectedFluor={selectedFluor}
-    onFluorChange={handleFluorChange}
-  />
-  <ColorFilter
-    selectedColor={selectedColor}
-    onColorChange={handleColorChange}
-  />
-</div>
+        <div className="flex flex-col ">
+          <FluorFilter
+            selectedFluor={selectedFluor}
+            onFluorChange={handleFluorChange}
+          />
+          <ColorFilter
+            selectedColor={selectedColor}
+            onColorChange={handleColorChange}
+          />
+        </div>
       </div>
 
       {/* SEARCH AND NAVIGATION ROW */}
       <div
         className={`flex items-center gap-2 mt-0.5 bg-[#faf6eb] px-4 py-2 rounded ${mavenPro.className}`}
       >
-        {/* View Mode Toggle */}
         <div className="flex items-center gap-1 bg-[#faf6eb] rounded-none p-0.5">
           <button
             onClick={() => setViewMode("list")}
@@ -276,36 +274,29 @@ export default function DiamondStockTableWithFilter() {
           </button>
         </div>
 
-        {/* Search Bar */}
         <SearchBar onSearch={handleSearch} />
 
-        {/* Spacer */}
         <div className="flex-1"></div>
 
-        {/* Action Buttons Group */}
         <div className="flex items-center gap-2">
-          {/* Add to Cart Button */}
           <AddToCartButton
             selectedCount={selectedDiamonds.length}
             selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
             onAddToCart={handleAddToCart}
           />
 
-          {/* Compare Button */}
           <CompareButton
             selectedCount={selectedDiamonds.length}
             onCompare={handleCompare}
             disabled={selectedDiamonds.length === 0}
           />
 
-          {/* Email Button */}
           <EmailButton
             selectedCount={selectedDiamonds.length}
             selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
             onEmail={handleEmail}
           />
 
-          {/* Advanced Filters Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded-none hover:bg-[#000055] whitespace-nowrap"
@@ -325,7 +316,6 @@ export default function DiamondStockTableWithFilter() {
             )}
           </button>
 
-          {/* Reset Filters Button */}
           <button
             onClick={handleResetFilters}
             className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded-none hover:bg-[#000055] whitespace-nowrap"
@@ -345,7 +335,7 @@ export default function DiamondStockTableWithFilter() {
 
       {/* Advanced Filters Section */}
       {showFilters && (
-        <div className="grid grid-cols-5 gap-0.5  mt-1">
+        <div className="grid grid-cols-5 gap-0.5 mt-1">
           <InclusionFilter
             inclusions={inclusions}
             onInclusionChange={setInclusions}
@@ -358,7 +348,7 @@ export default function DiamondStockTableWithFilter() {
             filters={keySymbolFilters}
             onFiltersChange={setKeySymbolFilters}
           />
-          <div >
+          <div>
             <PriceLocationFilter
               filters={priceLocationFilters}
               onFiltersChange={setPriceLocationFilters}
@@ -386,9 +376,10 @@ export default function DiamondStockTableWithFilter() {
           selectedSymmetry={selectedSymmetry}
           onSelectionChange={handleSelectionChange}
           priceLocationFilters={priceLocationFilters}
-           selectedLocations={priceLocationFilters.locations}  // NEW
-  selectedLabs={priceLocationFilters.labs}    
-  keySymbolFilters={keySymbolFilters}        // NEW
+          selectedLocations={priceLocationFilters.locations}
+          selectedLabs={priceLocationFilters.labs}
+          keySymbolFilters={keySymbolFilters}
+          inclusionFilters={inclusions}
           pageSize={10}
         />
       ) : (
