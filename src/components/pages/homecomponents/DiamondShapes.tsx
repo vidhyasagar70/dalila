@@ -70,16 +70,16 @@ export default function DiamondShapes() {
   } | null>(null);
 
   const shapes = [
-    { name: "Round", image: "/new_products/round.png" },
-    { name: "Princess", image: "/new_products/princess.png" },
-    { name: "Cushion", image: "/new_products/cushion.png" },
-    { name: "Radiant", image: "/new_products/radiant.png" },
-    { name: "Asscher", image: "/new_products/asscher.jpg" },
-    { name: "Heart", image: "/new_products/heart.png" },
-    { name: "Pear", image: "/new_products/pear.png" },
-    { name: "Marquise", image: "/new_products/marquise.png" },
-    { name: "Oval", image: "/new_products/oval.png" },
-    { name: "Emerald", image: "/new_products/Emerald.png" },
+    { name: "Round", image: "/shapephotos/Round.jpg" },
+    { name: "Princess", image: "/shapephotos/Princess.jpg" },
+    { name: "Cushion", image: "/shapephotos/Cushion.jpg" },
+    { name: "Radiant", image: "/shapephotos/Radiant.jpg" },
+    { name: "Asscher", image: "/shapephotos/Asscher.jpg" },
+    { name: "Heart", image: "/shapephotos/Heart.jpg" },
+    { name: "Pear", image: "/shapephotos/Pear.jpg" },
+    { name: "Marquise", image: "/shapephotos/marquise.jpg" },
+    { name: "Oval", image: "/shapephotos/Oval.jpg" },
+    { name: "Emerald", image: "/shapephotos/Emerald.jpg" },
   ];
 
   const handleShapeClick = (shape: { name: string; image: string }) =>

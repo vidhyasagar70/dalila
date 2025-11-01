@@ -105,7 +105,7 @@ export default function SellDiamondsForm() {
           <h1 className={`text-3xl font-bold  text-gray-900 mb-2 ${marcellus.className}`}>
             Sell Your Diamonds
           </h1>
-          <p className={`ext-gray-600 ${jost.className}`}>
+          <p className={`text-gray-600 ${jost.className}`}>
             Complete the form below to get a free valuation for your diamonds. Our process is secure,
             confidential, and designed to get you the best possible price.
           </p>
@@ -344,7 +344,7 @@ export default function SellDiamondsForm() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-yellow-500 hover:bg-[#D4A017] text-white font-semibold py-3 px-6 rounded-none transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+            className="w-full bg-[#D4A017] hover:bg-[#B58900] text-white font-semibold py-3 px-6 rounded-none transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
           >
             Submit
           </button>
