@@ -1,21 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Upload, Calendar, Clock } from 'lucide-react';
-import { Marcellus, Jost } from "next/font/google";
+import { Upload} from 'lucide-react';
 
-const marcellus = Marcellus({
-  variable: "--font-marcellus",
-  subsets: ["latin"],
-  weight: "400",
-});
 
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
+const marcellusStyle = {
+  fontFamily: 'Marcellus, serif'
+};
+
+const jostStyle = {
+  fontFamily: 'Jost, sans-serif'
+};
 
 interface FormData {
   fullName: string;
@@ -94,7 +89,6 @@ export default function SellDiamondsForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Handle form submission logic here
     alert('Form submitted successfully!');
   };
 
@@ -102,16 +96,16 @@ export default function SellDiamondsForm() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-8">
         <div className="text-center mb-8">
-          <h1 className={`text-3xl font-bold  text-gray-900 mb-2 ${marcellus.className}`}>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2" style={marcellusStyle}>
             Sell Your Diamonds
           </h1>
-          <p className={`text-gray-600 ${jost.className}`}>
+          <p className="text-gray-600" style={jostStyle}>
             Complete the form below to get a free valuation for your diamonds. Our process is secure,
             confidential, and designed to get you the best possible price.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className={`space-y-6 ${jost.className} rounded-none`}>
+        <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
           {/* Full Name */}
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -125,7 +119,8 @@ export default function SellDiamondsForm() {
               onChange={handleInputChange}
               placeholder="Full Name"
               required
-             className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
@@ -142,7 +137,8 @@ export default function SellDiamondsForm() {
               onChange={handleInputChange}
               placeholder="Email Address"
               required
-             className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
@@ -159,7 +155,8 @@ export default function SellDiamondsForm() {
               onChange={handleInputChange}
               placeholder="Phone Number"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
@@ -175,7 +172,8 @@ export default function SellDiamondsForm() {
               value={formData.carat}
               onChange={handleInputChange}
               placeholder="Carat (optional)"
-             className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
@@ -190,14 +188,13 @@ export default function SellDiamondsForm() {
               value={formData.condition}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition text-gray-900"
+              style={{ colorScheme: 'light', color: formData.condition ? '#111827' : '#6b7280' }}
             >
-              <option value="">Select Condition</option>
-              <option value="excellent">Excellent</option>
-             
-              <option value="good">Good</option>
-              <option value="fair">Fair</option>
-              
+              <option value="" style={{ color: '#6b7280' }}>Select Condition</option>
+              <option value="excellent" style={{ color: '#111827' }}>Excellent</option>
+              <option value="good" style={{ color: '#111827' }}>Good</option>
+              <option value="fair" style={{ color: '#111827' }}>Fair</option>
             </select>
           </div>
 
@@ -213,7 +210,8 @@ export default function SellDiamondsForm() {
               value={formData.material}
               onChange={handleInputChange}
               placeholder="Material (optional)"
-              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
@@ -230,13 +228,14 @@ export default function SellDiamondsForm() {
               placeholder="Enter Description"
               rows={4}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
           {/* Upload Images */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2 ">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Upload Images
             </label>
             <div
@@ -295,7 +294,8 @@ export default function SellDiamondsForm() {
               placeholder="Full Address"
               rows={3}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+              className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
+              style={{ colorScheme: 'light' }}
             />
           </div>
 
@@ -314,8 +314,8 @@ export default function SellDiamondsForm() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+                  style={{ colorScheme: 'light', color: formData.pickupDate ? '#111827' : '#6b7280' }}
                 />
-                
               </div>
             </div>
 
@@ -329,14 +329,14 @@ export default function SellDiamondsForm() {
                   name="pickupTime"
                   value={formData.pickupTime}
                   onChange={handleInputChange}
-                 className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition text-gray-900"
+                  style={{ colorScheme: 'light', color: formData.pickupTime ? '#111827' : '#6b7280' }}
                 >
-                  <option value="">Select Time</option>
-                  <option value="morning">Morning (9AM - 12PM)</option>
-                  <option value="afternoon">Afternoon (12PM - 5PM)</option>
-                  <option value="evening">Evening (5PM - 8PM)</option>
+                  <option value="" style={{ color: '#6b7280' }}>Select Time</option>
+                  <option value="morning" style={{ color: '#111827' }}>Morning (9AM - 12PM)</option>
+                  <option value="afternoon" style={{ color: '#111827' }}>Afternoon (12PM - 5PM)</option>
+                  <option value="evening" style={{ color: '#111827' }}>Evening (5PM - 8PM)</option>
                 </select>
-                
               </div>
             </div>
           </div>
