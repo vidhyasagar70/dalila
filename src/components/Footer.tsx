@@ -72,7 +72,7 @@ export default function Footer() {
                   alt="Dalila Diamonds Logo"
                   width={160}
                   height={64}
-                  className="h-16 w-auto"
+                  className="h-16 w-auto object-contain"
                   priority
                 />
               </div>

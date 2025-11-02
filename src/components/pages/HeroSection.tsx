@@ -1,30 +1,63 @@
 "use client";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function HeroSection() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  
   const slides = [
     { image: "/dalila_img/banners/Banneer-01.jpg" },
     { image: "/dalila_img/banners/new/Banner_02.jpg" },
     { image: "/dalila_img/banners/new/Banner_03.jpg" },
   ];
 
+  // Create slides with clones at beginning and end for infinite loop
+  const extendedSlides = [slides[slides.length - 1], ...slides, slides[0]];
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+      nextSlide();
+    }, 7000);
+    
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, []);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => prev + 1);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setIsTransitioning(true);
+    setCurrentSlide((prev) => prev - 1);
+  };
+
+  // Handle infinite loop reset
+  useEffect(() => {
+    if (currentSlide === slides.length + 1) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentSlide(1);
+      }, 1000);
+    } else if (currentSlide === 0) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentSlide(slides.length);
+      }, 1000);
+    }
+  }, [currentSlide, slides.length]);
+
+  const goToSlide = (index: number) => {
+    setIsTransitioning(true);
+    setCurrentSlide(index + 1);
+  };
+
+  const getActiveIndex = () => {
+    if (currentSlide === 0) return slides.length - 1;
+    if (currentSlide === slides.length + 1) return 0;
+    return currentSlide - 1;
   };
 
   return (
@@ -32,20 +65,20 @@ export default function HeroSection() {
       {/* Background Carousel */}
       <div className="absolute inset-0">
         <div
-          className="flex h-full transition-transform duration-700 ease-in-out"
+          className={`flex h-full ${isTransitioning ? 'transition-transform duration-1000 ease-out' : ''}`}
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {slides.map((slide, index) => (
+          {extendedSlides.map((slide, index) => (
             <div
               key={index}
               className="relative min-w-full h-full flex-shrink-0"
             >
               <Image
                 src={slide.image}
-                alt={`Dalila Diamonds Banner ${index + 1}`}
+                alt={`Dalila Diamonds Banner ${((index - 1 + slides.length) % slides.length) + 1}`}
                 fill
                 className="object-cover"
-                priority={index === 0}
+                priority={index === 1}
               />
             </div>
           ))}
@@ -56,21 +89,22 @@ export default function HeroSection() {
       <button
         onClick={prevSlide}
         aria-label="Previous slide"
-        className="absolute left-4 md:-left-1 top-1/2 -translate-y-10 z-30  text-slate-900 rounded-full p-2 transition-all "
+        className="absolute left-4 md:-left-1 top-1/2 -translate-y-10 z-30 text-slate-900 rounded-full p-2 transition-all hover:scale-110"
       >
         <IconChevronLeft
           stroke={1}
           className="w-6 h-6 md:w-14 md:h-11 text-[#c89e3a]"
         />
       </button>
+      
       <button
         onClick={nextSlide}
         aria-label="Next slide"
-        className="absolute right-4 md:-right-1 top-1/2 -translate-y-10 z-30  text-slate-900 rounded-full p-2 transition-all "
+        className="absolute right-4 md:-right-1 top-1/2 -translate-y-10 z-30 text-slate-900 rounded-full p-2 transition-all hover:scale-110"
       >
         <IconChevronRight
           stroke={1}
-          className="w-6 h-6 md:w-14 md:h-11 text-[#c89e3a]  "
+          className="w-6 h-6 md:w-14 md:h-11 text-[#c89e3a]"
         />
       </button>
 
@@ -79,10 +113,10 @@ export default function HeroSection() {
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
+            onClick={() => goToSlide(index)}
             aria-label={`Go to slide ${index + 1}`}
-            className={`w-2 h-2 rounded-full transition-all ${
-              currentSlide === index
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              getActiveIndex() === index
                 ? "bg-amber-500 w-8"
                 : "bg-white/60 hover:bg-white/80"
             }`}

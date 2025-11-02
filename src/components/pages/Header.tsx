@@ -17,13 +17,12 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-
   const inventoryPage = pathname === "/inventory";
   const offerenquiryPage = pathname === "/offer-enquiry";
   const memberPage = pathname === "/member";
   const dashboardPage = pathname === "/dashboard";
-  const Homepage =pathname==="/";
-  const CartPage= pathname === "/cart";
+  const Homepage = pathname === "/";
+  const CartPage = pathname === "/cart";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -185,21 +184,18 @@ export default function Header() {
   if (!isLoggedIn) {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
-      { href: "/contact", label: "Contact Us" },
       { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
     ];
   } else if (isAdmin) {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
-      { href: "/contact", label: "Contact Us" },
       { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
     ];
   } else {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
-      { href: "/contact", label: "Contact Us" },
       { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
     ];
@@ -212,18 +208,20 @@ export default function Header() {
         inventoryPage ||
         offerenquiryPage ||
         memberPage ||
-        dashboardPage || Homepage ||CartPage
+        dashboardPage ||
+        Homepage ||
+        CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
       }`}
     >
       <div className="">
-       <div className="hidden sm:flex justify-center py-2">
-  <p className="text-sm md:text-base tracking-wide text-white">
-    <span>Where Trust Shines,</span>
-    <span >And Quality Sparkles</span>
-  </p>
-</div>
+        <div className="hidden sm:flex justify-center py-2">
+          <p className="text-sm md:text-base tracking-wide text-white">
+            <span>Where Trust Shines,</span>
+            <span> And Quality Sparkles</span>
+          </p>
+        </div>
 
         <div className="hidden sm:block w-full h-[1px] bg-white/30"></div>
 
@@ -250,7 +248,6 @@ export default function Header() {
           </nav>
 
           <div className="flex-shrink-0 relative h-24 w-[280px] sm:h-28 sm:w-[320px] md:h-32 md:w-[360px]">
-
             <button
               onClick={() => router.push("/")}
               className="block w-full h-full focus:outline-none"
@@ -265,10 +262,16 @@ export default function Header() {
               />
             </button>
           </div>
-          
 
-          
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1">
+            {/* Contact Us Button - Always visible */}
+            <button
+              onClick={() => router.push("/contact")}
+              className="py-3 px-3 xl:px-5 xl:py-2 xl:w-29 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+            >
+              CONTACT US
+            </button>
+
             {isCheckingAuth ? (
               <div className="py-1 px-3 flex items-center justify-center">
                 <Loader2 className="w-5 h-5 text-[#FAF6EB]] animate-spin" />
@@ -442,6 +445,17 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
+
+              {/* Contact Us - Always visible in mobile */}
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  router.push("/contact");
+                }}
+                className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
+              >
+                Contact Us
+              </button>
 
               {/* Dashboard - Available only for regular users, NOT for admin */}
               {isLoggedIn && !isAdmin && (

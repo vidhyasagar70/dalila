@@ -19,7 +19,6 @@ interface PriceLocationFilterProps {
   onFiltersChange: (filters: PriceLocationFilters) => void;
 }
 
-// Diamond interface for type safety
 interface Diamond {
   NET_RATE?: string | number;
   DISC_PER?: string | number;
@@ -27,7 +26,6 @@ interface Diamond {
   [key: string]: unknown;
 }
 
-// Static options - these match the API mappings
 const LOCATION_OPTIONS = [
   { label: "MUM", value: "MUM", apiValue: "MU" },
   { label: "BEL", value: "BEL", apiValue: "BE" },
@@ -43,51 +41,15 @@ const LAB_OPTIONS = [
   { label: "OTHERS", value: "OTHERS", apiValue: "OTHERS" }
 ];
 
-// Helper function to match ONLY price filters (frontend filtering)
+// Note: Price filtering is now done server-side via API
+// This function is kept for backward compatibility
 export const matchesPriceFilters = (
   diamond: Diamond,
   filters: PriceLocationFilters
 ): boolean => {
-  // Price per carat filter
-  const pricePerCaratFrom = parseFloat(filters.pricePerCarat?.from || "0");
-  const pricePerCaratTo = parseFloat(filters.pricePerCarat?.to || "999999");
-  const diamondPricePerCarat = parseFloat(String(diamond.NET_RATE || "0"));
-  
-  if (pricePerCaratFrom > 0 && diamondPricePerCarat < pricePerCaratFrom) {
-    return false;
-  }
-  if (pricePerCaratTo > 0 && pricePerCaratTo !== 999999 && diamondPricePerCarat > pricePerCaratTo) {
-    return false;
-  }
-
-  // Discount filter
-  const discountFrom = parseFloat(filters.discount?.from || "-999");
-  const discountTo = parseFloat(filters.discount?.to || "999");
-  const diamondDiscount = parseFloat(String(diamond.DISC_PER || "0"));
-  
-  if (discountFrom !== -999 && diamondDiscount < discountFrom) {
-    return false;
-  }
-  if (discountTo !== 999 && diamondDiscount > discountTo) {
-    return false;
-  }
-
-  // Total price filter
-  const totalPriceFrom = parseFloat(filters.totalPrice?.from || "0");
-  const totalPriceTo = parseFloat(filters.totalPrice?.to || "999999");
-  const diamondTotalPrice = parseFloat(String(diamond.NET_VALUE || "0"));
-  
-  if (totalPriceFrom > 0 && diamondTotalPrice < totalPriceFrom) {
-    return false;
-  }
-  if (totalPriceTo > 0 && totalPriceTo !== 999999 && diamondTotalPrice > totalPriceTo) {
-    return false;
-  }
-
-  return true;
+  return true; // All filtering done server-side
 };
 
-// Helper function to get API values for locations
 export const getLocationApiValues = (selectedLocations: string[]): string[] => {
   return selectedLocations
     .map(location => {
@@ -97,7 +59,6 @@ export const getLocationApiValues = (selectedLocations: string[]): string[] => {
     .filter(Boolean);
 };
 
-// Helper function to get API values for labs
 export const getLabApiValues = (selectedLabs: string[]): string[] => {
   return selectedLabs
     .map(lab => {
@@ -246,7 +207,7 @@ export default function PriceLocationFilter({
                 onChange={(e) =>
                   handlePriceChange("pricePerCarat", "to", e.target.value)
                 }
-                placeholder="∞"
+                placeholder="TO"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -291,7 +252,7 @@ export default function PriceLocationFilter({
                 onChange={(e) =>
                   handlePriceChange("discount", "from", e.target.value)
                 }
-                placeholder="-∞"
+                placeholder="0"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -328,7 +289,7 @@ export default function PriceLocationFilter({
                 onChange={(e) =>
                   handlePriceChange("discount", "to", e.target.value)
                 }
-                placeholder="∞"
+                placeholder="TO"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />
@@ -410,7 +371,7 @@ export default function PriceLocationFilter({
                 onChange={(e) =>
                   handlePriceChange("totalPrice", "to", e.target.value)
                 }
-                placeholder="∞"
+                placeholder="TO"
                 className="w-14 px-1.5 py-0.5 text-center text-xs outline-none"
                 style={{ appearance: "textfield", fontFamily: "inherit" }}
               />

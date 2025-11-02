@@ -48,43 +48,48 @@ export default function DiamondStockTableWithFilter() {
   const [showComparison, setShowComparison] = useState(false);
 
   const [measurements, setMeasurements] = useState({
-    length: { from: "0.50", to: "0.50" },
-    width: { from: "0.50", to: "0.50" },
-    depth: { from: "0.50", to: "0.50" },
-    table: { from: "0.50", to: "0.50" },
-    depthPercent: { from: "0.50", to: "0.50" },
-    ratio: { from: "0.50", to: "0.50" },
-    crAngle: { from: "0.50", to: "0.50" },
-    pavAngle: { from: "0.50", to: "0.50" },
-    gridle: { from: "0.50", to: "0.50" },
-    crHeight: { from: "0.50", to: "0.50" },
-    pavHeight: { from: "0.50", to: "0.50" },
+    length: { from: "", to: "" },
+    width: { from: "", to: "" },
+    depth: { from: "", to: "" },
+    table: { from: "", to: "" },
+    depthPercent: { from: "", to: "" },
+    ratio: { from: "", to: "" },
+    crAngle: { from: "", to: "" },
+    pavAngle: { from: "", to: "" },
+    gridle: { from: "", to: "" },
+    crHeight: { from: "", to: "" },
+    pavHeight: { from: "", to: "" },
   });
+
   const [inclusions, setInclusions] = useState<InclusionFilters>({
     centerBlack: [],
     centerWhite: [],
     sideBlack: [],
     sideWhite: [],
   });
+
   const [shadesFilters, setShadesFilters] = useState<ShadesFilters>({
     shades: [],
     milky: [],
     type2Ct: [],
     brl: [],
   });
+
   const [keySymbolFilters, setKeySymbolFilters] = useState<KeySymbolFilters>({
     keyToSymbol: [],
     eyCln: [],
     hAndA: [],
   });
+
   const [priceLocationFilters, setPriceLocationFilters] =
     useState<PriceLocationFilters>({
-      pricePerCarat: { from: "0.50", to: "0.50" },
-      discount: { from: "0.50", to: "0.50" },
-      totalPrice: { from: "0.50", to: "0.50" },
+      pricePerCarat: { from: "", to: "" },
+      discount: { from: "", to: "" },
+      totalPrice: { from: "", to: "" },
       locations: [],
       labs: [],
     });
+
   const [showFilters, setShowFilters] = useState(false);
 
   const handleColorChange = (colors: string[]) => {
@@ -187,24 +192,24 @@ export default function DiamondStockTableWithFilter() {
       brl: [],
     });
     setPriceLocationFilters({
-      pricePerCarat: { from: "0.50", to: "0.50" },
-      discount: { from: "0.50", to: "0.50" },
-      totalPrice: { from: "0.50", to: "0.50" },
+      pricePerCarat: { from: "", to: "" },
+      discount: { from: "", to: "" },
+      totalPrice: { from: "", to: "" },
       locations: [],
       labs: [],
     });
     setMeasurements({
-      length: { from: "0.50", to: "0.50" },
-      width: { from: "0.50", to: "0.50" },
-      depth: { from: "0.50", to: "0.50" },
-      table: { from: "0.50", to: "0.50" },
-      depthPercent: { from: "0.50", to: "0.50" },
-      ratio: { from: "0.50", to: "0.50" },
-      crAngle: { from: "0.50", to: "0.50" },
-      pavAngle: { from: "0.50", to: "0.50" },
-      gridle: { from: "0.50", to: "0.50" },
-      crHeight: { from: "0.50", to: "0.50" },
-      pavHeight: { from: "0.50", to: "0.50" },
+      length: { from: "", to: "" },
+      width: { from: "", to: "" },
+      depth: { from: "", to: "" },
+      table: { from: "", to: "" },
+      depthPercent: { from: "", to: "" },
+      ratio: { from: "", to: "" },
+      crAngle: { from: "", to: "" },
+      pavAngle: { from: "", to: "" },
+      gridle: { from: "", to: "" },
+      crHeight: { from: "", to: "" },
+      pavHeight: { from: "", to: "" },
     });
   };
 
@@ -375,7 +380,7 @@ export default function DiamondStockTableWithFilter() {
           selectedPolish={selectedPolish}
           selectedSymmetry={selectedSymmetry}
           onSelectionChange={handleSelectionChange}
-          priceLocationFilters={priceLocationFilters}
+          priceFilters={priceLocationFilters}
           selectedLocations={priceLocationFilters.locations}
           selectedLabs={priceLocationFilters.labs}
           keySymbolFilters={keySymbolFilters}
@@ -394,6 +399,7 @@ export default function DiamondStockTableWithFilter() {
           selectedCut={selectedCut}
           selectedPolish={selectedPolish}
           selectedSymmetry={selectedSymmetry}
+          keySymbolFilters={keySymbolFilters}
           pageSize={12}
         />
       )}

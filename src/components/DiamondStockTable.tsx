@@ -41,6 +41,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedLabs = [],
   keySymbolFilters,
   inclusionFilters,
+  priceFilters, // Add price filters prop
   onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
@@ -76,12 +77,30 @@ const DiamondStockTable: React.FC<TableProps> = ({
         const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
         const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
         const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
+        
+        // Check for price filters
+        const hasPriceFilter = 
+          priceFilters &&
+          ((priceFilters.pricePerCarat?.from && priceFilters.pricePerCarat.from.trim()) ||
+           (priceFilters.pricePerCarat?.to && priceFilters.pricePerCarat.to.trim()) ||
+           (priceFilters.discount?.from && priceFilters.discount.from.trim()) ||
+           (priceFilters.discount?.to && priceFilters.discount.to.trim()) ||
+           (priceFilters.totalPrice?.from && priceFilters.totalPrice.from.trim()) ||
+           (priceFilters.totalPrice?.to && priceFilters.totalPrice.to.trim()));
+        
         const hasInclusionFilter = 
           inclusionFilters &&
           (inclusionFilters.centerBlack.length > 0 ||
            inclusionFilters.centerWhite.length > 0 ||
            inclusionFilters.sideBlack.length > 0 ||
            inclusionFilters.sideWhite.length > 0);
+        
+        // Check for Key Symbol filters
+        const hasKeySymbolFilter = 
+          keySymbolFilters &&
+          (keySymbolFilters.keyToSymbol.length > 0 ||
+           keySymbolFilters.eyCln.length > 0 ||
+           keySymbolFilters.hAndA.length > 0);
 
         const hasAnyFilter =
           hasShapeFilter ||
@@ -94,7 +113,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
           hasPolishFilter ||
           hasSymmetryFilter ||
           hasLocationFilter ||
-          hasLabFilter||hasInclusionFilter;
+          hasLabFilter ||
+          hasInclusionFilter ||
+          hasKeySymbolFilter ||
+          hasPriceFilter; // Add price filter check
 
         let response;
         if (hasAnyFilter) {
@@ -157,6 +179,46 @@ const DiamondStockTable: React.FC<TableProps> = ({
               filters.SW = inclusionFilters.sideWhite.join(",");
             }
           }
+          
+          // Add Key Symbol filters to API call
+          if (hasKeySymbolFilter && keySymbolFilters) {
+            if (keySymbolFilters.keyToSymbol.length > 0) {
+              filters.keyToSymbols = keySymbolFilters.keyToSymbol.join(",");
+            }
+            if (keySymbolFilters.eyCln.length > 0) {
+              filters.eyCln = keySymbolFilters.eyCln.join(",");
+            }
+            if (keySymbolFilters.hAndA.length > 0) {
+              filters.hAndA = keySymbolFilters.hAndA.join(",");
+            }
+          }
+
+          // Add Price filters to API call
+          if (hasPriceFilter && priceFilters) {
+            // $/ct (NET_RATE)
+            if (priceFilters.pricePerCarat.from && priceFilters.pricePerCarat.from.trim()) {
+              filters.netRateMin = parseFloat(priceFilters.pricePerCarat.from);
+            }
+            if (priceFilters.pricePerCarat.to && priceFilters.pricePerCarat.to.trim()) {
+              filters.netRateMax = parseFloat(priceFilters.pricePerCarat.to);
+            }
+            
+            // Disc% (DISC_PER)
+            if (priceFilters.discount.from && priceFilters.discount.from.trim()) {
+              filters.discPerMin = parseFloat(priceFilters.discount.from);
+            }
+            if (priceFilters.discount.to && priceFilters.discount.to.trim()) {
+              filters.discPerMax = parseFloat(priceFilters.discount.to);
+            }
+            
+            // Total $ (NET_VALUE)
+            if (priceFilters.totalPrice.from && priceFilters.totalPrice.from.trim()) {
+              filters.netValueMin = parseFloat(priceFilters.totalPrice.from);
+            }
+            if (priceFilters.totalPrice.to && priceFilters.totalPrice.to.trim()) {
+              filters.netValueMax = parseFloat(priceFilters.totalPrice.to);
+            }
+          }
 
           response = await diamondApi.search(filters);
         } else {
@@ -181,7 +243,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
           setData([]);
         }
       } catch (err) {
-        console.error(" Error fetching diamonds:", err);
+        console.error("Error fetching diamonds:", err);
         setError(
           err instanceof Error ? err.message : "Failed to fetch diamonds"
         );
@@ -204,64 +266,11 @@ const DiamondStockTable: React.FC<TableProps> = ({
     selectedPolish,
     selectedSymmetry,
     selectedLocations,
-    selectedLabs,inclusionFilters,
+    selectedLabs,
+    inclusionFilters,
+    keySymbolFilters,
+    priceFilters, // Add to dependencies
   ]);
-
-  const matchesKeySymbolFilters = useCallback((diamond: DiamondData): boolean => {
-    if (!keySymbolFilters) return true;
-
-    const { keyToSymbol, eyCln, hAndA } = keySymbolFilters;
-
-    if (keyToSymbol && keyToSymbol.length > 0) {
-      const diamondKeySymbols = diamond.KEY_TO_SYMBOLS || "";
-
-      if (!keyToSymbol.includes("ALL")) {
-        const hasMatch = keyToSymbol.some(filter => {
-          if (filter === "ALL") return true;
-          return diamondKeySymbols.toLowerCase().includes(filter.toLowerCase());
-        });
-
-        if (!hasMatch) return false;
-      }
-    }
-
-    if (eyCln && eyCln.length > 0) {
-      const comments = (diamond.COMMENTS_1 || "").toLowerCase();
-      const eyClnField = (diamond.EY_CLN || "").toLowerCase();
-
-      const hasEyeClean = eyCln.some(percentage => {
-        if (percentage === "100%") {
-          return comments.includes("100% eye clean") ||
-                 comments.includes("eye clean") ||
-                 comments.includes("eyeclean") ||
-                 eyClnField.includes("100");
-        }
-        return comments.includes(percentage.toLowerCase() + " eye clean") ||
-               eyClnField.includes(percentage.replace("%", ""));
-      });
-
-      if (!hasEyeClean) return false;
-    }
-
-    if (hAndA && hAndA.length > 0) {
-      const ha = (diamond.HA || "").toLowerCase();
-      const hAndAField = (diamond.H_AND_A || "").toLowerCase();
-      const comments = (diamond.COMMENTS_1 || "").toLowerCase();
-
-      const hasHA = hAndA.some(percentage => {
-        const match = ha.includes(percentage.toLowerCase()) ||
-                     hAndAField.includes(percentage.replace("%", "")) ||
-                     comments.includes(percentage.toLowerCase() + " h&a") ||
-                     comments.includes(percentage.toLowerCase() + " hearts") ||
-                     comments.includes("hearts & arrows");
-        return match;
-      });
-
-      if (!hasHA) return false;
-    }
-
-    return true;
-  }, [keySymbolFilters]);
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
@@ -278,7 +287,8 @@ const DiamondStockTable: React.FC<TableProps> = ({
   const sortedData = useMemo(() => {
     if (data.length === 0) return data;
 
-    const filtered = data.filter(matchesKeySymbolFilters);
+    // No client-side filtering needed anymore - all filtering is done server-side
+    const filtered = data;
 
     if (!sortConfig) return filtered;
 
@@ -300,7 +310,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     });
 
     return sorted;
-  }, [data, sortConfig, matchesKeySymbolFilters]);
+  }, [data, sortConfig]);
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const paginatedData = sortedData.slice(
@@ -409,7 +419,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
             (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
             (keySymbolFilters?.keyToSymbol && keySymbolFilters.keyToSymbol.length > 0) ||
             (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
-            (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0)
+            (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0) ||
+            (priceFilters?.pricePerCarat?.from || priceFilters?.pricePerCarat?.to ||
+             priceFilters?.discount?.from || priceFilters?.discount?.to ||
+             priceFilters?.totalPrice?.from || priceFilters?.totalPrice?.to)
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>

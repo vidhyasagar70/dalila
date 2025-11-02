@@ -423,6 +423,15 @@ search: (filters: {
   CW?: string;
   SN?: string;
   SW?: string;
+  keyToSymbols?: string; 
+  eyCln?: string;        
+  hAndA?: string;   
+  netRateMin?: number;
+netRateMax?: number;
+netValueMin?: number;
+netValueMax?: number;
+discPerMin?: number;
+discPerMax?: number;     
 }) => {
   const queryParams = new URLSearchParams();
 
@@ -476,16 +485,18 @@ search: (filters: {
     addMultipleParams("FLOUR", filters.fluorescence);
   }
 
-  // Handle LOCATION - NEW
+  // Handle LOCATION
   if (filters.location) {
     addMultipleParams("LOCATION", filters.location);
   }
 
-  // Handle LAB - NEW
+  // Handle LAB
   if (filters.lab) {
     addMultipleParams("LAB", filters.lab);
   }
-if (filters.CN) {
+
+  // Handle INCLUSIONS
+  if (filters.CN) {
     addMultipleParams("CN", filters.CN);
   }
 
@@ -500,6 +511,22 @@ if (filters.CN) {
   if (filters.SW) {
     addMultipleParams("SW", filters.SW);
   }
+
+  // Handle KEY_TO_SYMBOLS - Server-side filtering
+  if (filters.keyToSymbols) {
+    addMultipleParams("KEY_TO_SYMBOLS", filters.keyToSymbols);
+  }
+
+  // Handle EY_CLN - Server-side filtering
+  if (filters.eyCln) {
+    addMultipleParams("EY_CLN", filters.eyCln);
+  }
+
+  // Handle H_AND_A - Server-side filtering
+  if (filters.hAndA) {
+    addMultipleParams("H_AND_A", filters.hAndA);
+  }
+
   // Handle CARAT RANGE
   if (filters.minCarats !== undefined) {
     queryParams.append("CARATS_MIN", filters.minCarats.toString());
@@ -520,6 +547,24 @@ if (filters.CN) {
   if (filters.stage) {
     addMultipleParams("STAGE", filters.stage);
   }
+  if (filters.netRateMin !== undefined) {
+  queryParams.append("NET_RATE_MIN", filters.netRateMin.toString());
+}
+if (filters.netRateMax !== undefined) {
+  queryParams.append("NET_RATE_MAX", filters.netRateMax.toString());
+}
+if (filters.netValueMin !== undefined) {
+  queryParams.append("NET_VALUE_MIN", filters.netValueMin.toString());
+}
+if (filters.netValueMax !== undefined) {
+  queryParams.append("NET_VALUE_MAX", filters.netValueMax.toString());
+}
+if (filters.discPerMin !== undefined) {
+  queryParams.append("DISC_PER_MIN", filters.discPerMin.toString());
+}
+if (filters.discPerMax !== undefined) {
+  queryParams.append("DISC_PER_MAX", filters.discPerMax.toString());
+}
 
   // Handle SEARCH TERM
   if (filters.searchTerm) {

@@ -43,6 +43,7 @@ export interface DiamondData {
   SIZE?: number; 
   EY_CLN?:string;
   H_AND_A?:string;
+   priceFilters?:string
   
 
 }
@@ -66,7 +67,17 @@ export interface FilterParams {
   CN?:string,
   CW?:string,
   SN?:string,
-  SW?:string
+  SW?:string,
+  keyToSymbols?:string,
+  eyCln?:string,
+  hAndA?:string,
+ 
+netRateMin?: number;
+  netRateMax?: number;
+  netValueMin?: number;
+  netValueMax?: number;
+  discPerMin?: number;
+  discPerMax?: number;
 }
 
 // For DiamondStockTable component
@@ -89,6 +100,11 @@ export interface TableProps {
    selectedLocations?: string[]; 
   selectedLabs?: string[]; 
     keySymbolFilters?: KeySymbolFilters;
+   priceFilters?: {
+  pricePerCarat: { from: string; to: string };
+  discount: { from: string; to: string };
+  totalPrice: { from: string; to: string };
+};
 
 }
 export interface KeySymbolFilters {
