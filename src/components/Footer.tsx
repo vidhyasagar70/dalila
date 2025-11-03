@@ -132,7 +132,7 @@ export default function Footer() {
       <div className="py-6">
         <div className="container mx-auto px-6">
           <p className="text-center text-white/60 text-sm">
-            Copyright 2025 - Dalila | All Rights Reserved
+            Copyright 2025 - Dalila | All Rights Reserved | Powered by Keval Ai
           </p>
         </div>
       </div>

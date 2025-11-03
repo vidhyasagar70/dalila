@@ -215,7 +215,7 @@ export default function Header() {
           : "bg-transparent py-2.5 md:py-3"
       }`}
     >
-      <div className="">
+      <div>
         <div className="hidden sm:flex justify-center py-2">
           <p className="text-sm md:text-base tracking-wide text-white">
             <span>Where Trust Shines,</span>
@@ -414,10 +414,10 @@ export default function Header() {
             )}
           </div>
         </div>
-
-        {/* Bottom Golden Line */}
-        <div className="w-full h-[1px] bg-[#C89E3A]"></div>
       </div>
+
+      {/* Bottom Golden Line */}
+      <div className="absolute bottom-0 left-0 right-0 w-full h-[1px] bg-[#C89E3A]"></div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
