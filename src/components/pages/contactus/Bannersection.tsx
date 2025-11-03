@@ -36,7 +36,7 @@ export default function ContactBanner() {
         <AnimatedContainer direction="right">
           <div className="opacity-100">
             <h1
-              className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-30 ${marcellus.className}`}
+              className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-35 ${marcellus.className}`}
             >
               CONTACT US
             </h1>
