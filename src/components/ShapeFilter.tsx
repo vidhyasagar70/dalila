@@ -12,16 +12,13 @@ const mavenPro = Maven_Pro({
 
 const STATIC_SHAPE_OPTIONS = [
   { value: "ROUND", label: "Round", image: "/shapefilter/round.png" },
-   { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
-   { value: "PEAR", label: "Pear", image: "/shapefilter/pear.png" },
- 
-   { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
-  
+  { value: "RADIANT", label: "Radiant", image: "/shapefilter/radiant.png" },
+  { value: "PEAR", label: "Pear", image: "/shapefilter/pear.png" },
+  { value: "SQUARE", label: "Square", image: "/shapefilter/square.png" },
   { value: "EMERALD", label: "Emerald", image: "/shapefilter/emerald.png" },
-   { value: "OVAL", label: "Oval", image: "/shapefilter/oval.png" },
-
+  { value: "OVAL", label: "Oval", image: "/shapefilter/oval.png" },
   { value: "CUSHION", label: "Cushion", image: "/shapefilter/cushion.png" },
-   {
+  {
     value: "TRILLIANT",
     label: "Trilliant",
     image: "/shapefilter/trilliant.png",
@@ -33,7 +30,6 @@ const STATIC_SHAPE_OPTIONS = [
     image: "/shapefilter/princess.png",
   },
   { value: "MARQUISE", label: "Marquise", image: "/shapefilter/marque.png" },
- 
   { value: "OTHER", label: "Other", image: "/shapefilter/others.png" },
 ];
 
@@ -102,13 +98,15 @@ export default function ShapeFilter({
                   : "0.25px solid #f9e8cd",
               }}
             >
-              <Image
-                src={option.image}
-                alt={option.label}
-                width={28}
-                height={28}
-                className="object-contain"
-              />
+              <div className="w-7 h-7 flex items-center justify-center">
+                <Image
+                  src={option.image}
+                  alt={option.label}
+                  width={28}
+                  height={28}
+                  className="object-contain w-full h-full"
+                />
+              </div>
               <span className="text-small font-normal">{option.label}</span>
             </button>
           ))}

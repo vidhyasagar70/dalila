@@ -161,7 +161,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             <div className="lg:col-span-3 flex flex-col gap-4">
               {/* Certificate Section */}
               {certificateUrl ? (
-                <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
+                <div className="bg-white  overflow-hidden flex-1 flex flex-col">
                   <div className="relative flex-1 bg-gray-50 min-h-[200px]">
                     <Image
                       src={certificateUrl}
@@ -196,7 +196,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
               {/* Video Section */}
               {videoUrl ? (
-                <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
+                <div className="bg-white  overflow-hidden flex-1 flex flex-col">
                   <div className="relative flex-1 bg-gray-50 min-h-[200px]">
                     {!isPlayingVideo ? (
                       <>
@@ -254,15 +254,11 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 </div>
               )}
             </div>
-
             {/* CENTER - Main Image (5 columns) */}
-            <div className="lg:col-span-5 space-y-4 flex flex-col">
-              <div className="relative overflow-hidden flex-1 border border-[#e9e2c6] min-h-[400px]">
+            <div className="lg:col-span-5 space-y-4">
+              <div className="relative overflow-hidden  h-[592px] bg-gray-50">
                 {/* Action Icons */}
                 <div className="absolute top-4 right-4 flex gap-2 z-10">
-                  {/* <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <Share2 size={18} className="text-gray-700" />
-                  </button> */}
                   <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <Download size={18} className="text-gray-700" />
                   </button>
@@ -270,17 +266,19 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
                 {/* Main Display Image */}
                 {selectedImage ? (
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={selectedImage}
-                      alt={diamond.STONE_NO}
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='16'%3ENo Image%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={selectedImage}
+                        alt={diamond.STONE_NO}
+                        fill
+                        style={{ objectFit: 'contain' }}
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='16'%3ENo Image%3C/text%3E%3C/svg%3E";
+                        }}
+                      />
+                    </div>
                   </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
@@ -300,10 +298,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     <h1 className="text-3xl font-bold text-gray-900">
                       {diamond.SHAPE}
                     </h1>
-                    {/* <div className="flex items-center gap-1">
-                      <div className="flex text-yellow-400 text-sm">★★★★★</div>
-                      <span className="text-xs text-gray-600">5.0(258)</span>
-                    </div> */}
                   </div>
                   <p className="text-xs text-gray-600">
                     Expertly cut for exceptional sparkle and clarity.
