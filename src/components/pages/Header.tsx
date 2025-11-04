@@ -23,6 +23,7 @@ export default function Header() {
   const dashboardPage = pathname === "/dashboard";
   const Homepage = pathname === "/";
   const CartPage = pathname === "/cart";
+  const BlogsPage= pathname === "/blogs";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -186,18 +187,21 @@ export default function Header() {
       { href: "/aboutUs", label: "About us" },
       { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
+      {href:"/blogs",label:"Blogs"}
     ];
   } else if (isAdmin) {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
+       {href:"/blogs",label:"Blogs"}
     ];
   } else {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
+      {href:"/blogs",label:"Blogs"}
     ];
   }
 
@@ -209,7 +213,7 @@ export default function Header() {
         offerenquiryPage ||
         memberPage ||
         dashboardPage ||
-        Homepage ||
+        Homepage ||  BlogsPage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"

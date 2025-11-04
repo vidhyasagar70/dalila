@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Loader2, Share2, Download, Play, X } from "lucide-react";
+import { ArrowLeft, Loader2,  Download, Play, X } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";

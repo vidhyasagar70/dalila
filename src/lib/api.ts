@@ -113,7 +113,42 @@ interface User {
   };
   [key: string]: unknown;
 }
+interface Blog {
+  _id: string;
+  title: string;
+  description: string;
+  authorId: string;
+  authorName: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
+interface BlogPaginationData {
+  data: Blog[];
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalRecords: number;
+    recordsPerPage: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+
+interface BlogResponseAll {
+  success: boolean;
+  message: string;
+  data: Blog[];
+  totalRecords: number;
+}
+
+interface BlogResponseSingle {
+  success: boolean;
+  message: string;
+  data: Blog;
+}
 interface CartItem {
   stoneNo: string;
   [key: string]: unknown;
@@ -1209,6 +1244,201 @@ export const quotationApi = {
     ),
 };
 
+// Replace the existing blogApi.create method in your api.ts file with this:
+
+export const blogApi = {
+  // Get all blogs (Public - non-deleted only) with pagination
+  getAll: async (params?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) => {
+    try {
+      const queryParams = new URLSearchParams();
+      
+      if (params?.page) queryParams.append("page", params.page.toString());
+      if (params?.limit) queryParams.append("limit", params.limit.toString());
+      if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
+      if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
+
+      const queryString = queryParams.toString();
+      const endpoint = queryString ? `/api/blogs?${queryString}` : "/api/blogs";
+
+      const response = await apiClient.get<BlogPaginationData>(endpoint);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+      return null;
+    }
+  },
+
+  // Get single blog by ID (Public)
+  getById: async (blogId: string) => {
+    try {
+      const response = await apiClient.get<BlogResponseSingle>(
+        `/api/blogs/${blogId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching blog:", error);
+      return null;
+    }
+  },
+
+  // Admin: Get all blogs (including deleted) with pagination
+  getAllAdmin: async (params?: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        console.error("Unauthorized. Please log in.");
+        return null;
+      }
+
+      const queryParams = new URLSearchParams();
+      
+      if (params?.page) queryParams.append("page", params.page.toString());
+      if (params?.limit) queryParams.append("limit", params.limit.toString());
+      if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
+      if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
+
+      const queryString = queryParams.toString();
+      const endpoint = queryString 
+        ? `/api/admin/blogs?${queryString}` 
+        : "/api/admin/blogs";
+
+      const response = await apiClient.get<BlogPaginationData>(endpoint);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching admin blogs:", error);
+      return null;
+    }
+  },
+
+  // Admin: Get all blogs without pagination
+  getAllAdminNoPagination: async (params?: {
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+  }) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        console.error("Unauthorized. Please log in.");
+        return null;
+      }
+
+      const queryParams = new URLSearchParams();
+      
+      if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
+      if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
+
+      const queryString = queryParams.toString();
+      const endpoint = queryString 
+        ? `/api/admin/blogs/all?${queryString}` 
+        : "/api/admin/blogs/all";
+
+      const response = await apiClient.get<BlogResponseAll>(endpoint);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching all admin blogs:", error);
+      return null;
+    }
+  },
+
+  // Admin: Create new blog - UPDATED TO USE CORRECT ENDPOINT
+  create: async (data: { title: string; description: string }) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Unauthorized. Please log in.");
+      }
+
+      console.log("Creating blog with data:", data);
+      
+      // Use the correct endpoint: /api/admin/blogs (not /api/admin/blogs/all)
+      const response = await apiClient.post<BlogResponseSingle>(
+        "/api/admin/blogs",
+        data
+      );
+      
+      console.log("Blog created successfully:", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Create blog error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to create blog"
+          );
+        }
+      }
+      throw error;
+    }
+  },
+
+  // Admin: Update blog
+  update: async (
+    blogId: string,
+    data: { title?: string; description?: string }
+  ) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Unauthorized. Please log in.");
+      }
+
+      const response = await apiClient.put<BlogResponseSingle>(
+        `/api/admin/blogs/${blogId}`,
+        data
+      );
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Update blog error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to update blog"
+          );
+        }
+      }
+      throw error;
+    }
+  },
+
+  // Admin: Delete blog
+  delete: async (blogId: string) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Unauthorized. Please log in.");
+      }
+
+      const response = await apiClient.delete<ApiResponse<{ message: string }>>(
+        `/api/admin/blogs/${blogId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Delete blog error:", error);
+      return null;
+    }
+  },
+};
+
 // Health check
 export const healthCheck = () => api.get<{ status: string }>("/health");
 
@@ -1216,8 +1446,18 @@ export const healthCheck = () => api.get<{ status: string }>("/health");
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 
 // Export types
-export type { FilterOptions, Diamond, User, CartItem, Quotation,DashboardStats };
-
+export type { 
+  FilterOptions, 
+  Diamond, 
+  User, 
+  CartItem, 
+  Quotation, 
+  DashboardStats,
+  Blog,
+  BlogPaginationData,
+  BlogResponseAll,
+  BlogResponseSingle
+};
 // Export API object
 const apiExport = {
   api,
@@ -1225,7 +1465,9 @@ const apiExport = {
   cartApi,
   userApi,
   quotationApi,
+  blogApi,
   healthCheck,
 };
+
 
 export default apiExport;
