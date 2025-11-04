@@ -24,6 +24,7 @@ export default function Header() {
   const Homepage = pathname === "/";
   const CartPage = pathname === "/cart";
   const BlogsPage= pathname === "/blogs";
+  const BlogDetailPage = pathname.startsWith("/blogs/");
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -213,7 +214,7 @@ export default function Header() {
         offerenquiryPage ||
         memberPage ||
         dashboardPage ||
-        Homepage ||  BlogsPage||
+        Homepage ||  BlogsPage||BlogDetailPage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
