@@ -25,7 +25,7 @@ export default function DiamondSourceshowcase() {
         <div className="grid md:grid-cols-2 gap-16 items-center mb-32">
           <AnimatedContainer direction="scale-out">
             <div>
-              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto overflow-hidden shadow-2xl">
                 <Image
                   src="/diamondcuts/Tellusyourneeds.jpg"
                   alt="Professional diamond dealer"
@@ -102,7 +102,7 @@ export default function DiamondSourceshowcase() {
 
           <div>
             <AnimatedContainer direction="scale-out">
-              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto overflow-hidden shadow-2xl">
                 <Image
                   src="/diamondcuts/WeSearchOurWorldwideNetwork.jpg"
                   alt="Diamond examination with tweezers"
@@ -117,7 +117,7 @@ export default function DiamondSourceshowcase() {
         <div className="grid md:grid-cols-2 gap-16 items-center mb-25 mt-25">
           <div>
             <AnimatedContainer direction="scale-out" delay={0.5}>
-              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto overflow-hidden shadow-2xl">
                 <Image
                   src="/diamondcuts/Fastandsecuredelivery.jpg"
                   alt="Professional diamond dealer"

@@ -45,7 +45,7 @@ export default function DiamondSourceHero() {
 
           <div className="relative pb-6 md:pb-8 lg:pb-12">
             <AnimatedContainer direction="scale-out">
-              <div className="relative w-full h-64 sm:h-80 md:h-96 bg-black rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative w-full h-64 sm:h-80 md:h-96 bg-black  overflow-hidden shadow-2xl">
                 <Image
                   src="/diamondcuts/diamondsourceforyou.jpg"
                   alt="Diamond shapes collection"
