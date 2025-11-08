@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Loader2 } from "lucide-react";
+import { Menu, X, Loader2, ChevronDown } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { userApi } from "@/lib/api";
 
@@ -14,6 +14,7 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,6 +26,8 @@ export default function Header() {
   const CartPage = pathname === "/cart";
   const BlogsPage= pathname === "/blogs";
   const BlogDetailPage = pathname.startsWith("/blogs/");
+  const SecurePage = pathname === "/secure-to-source";
+  const diamondsourcePage= pathname === "/diamond-source";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -186,21 +189,18 @@ export default function Header() {
   if (!isLoggedIn) {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
-      { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
       {href:"/blogs",label:"Blogs"}
     ];
   } else if (isAdmin) {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
-      { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
        {href:"/blogs",label:"Blogs"}
     ];
   } else {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
-      { href: "/weBuy", label: "We Buy" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
       {href:"/blogs",label:"Blogs"}
     ];
@@ -214,7 +214,7 @@ export default function Header() {
         offerenquiryPage ||
         memberPage ||
         dashboardPage ||
-        Homepage ||  BlogsPage||BlogDetailPage||
+        Homepage ||  BlogsPage||BlogDetailPage||SecurePage||diamondsourcePage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -250,6 +250,48 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+            
+            {/* Our Services Dropdown */}
+            <div className="relative group">
+              <button
+                onMouseEnter={() => setIsServicesDropdownOpen(true)}
+                onMouseLeave={() => setIsServicesDropdownOpen(false)}
+                  className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap flex items-center gap-1"
+              >
+                Our Services
+                  <ChevronDown 
+                    size={16} 
+                    className={`transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`}
+                  />
+              </button>
+
+              {isServicesDropdownOpen && (
+                <div
+                  onMouseEnter={() => setIsServicesDropdownOpen(true)}
+                  onMouseLeave={() => setIsServicesDropdownOpen(false)}
+                  className="absolute left-0 top-full mt-0 w-64 bg-white shadow-lg border border-gray-200 rounded-sm z-50"
+                >
+                  <Link
+                    href="/weBuy"
+                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
+                  >
+                    We Buy
+                  </Link>
+                  <Link
+                    href="/secure-to-source"
+                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
+                  >
+                    S2S - Secure To Source
+                  </Link>
+                  <Link
+                    href="/diamond-source"
+                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors"
+                  >
+                    DS4U - Diamond Source For You
+                  </Link>
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="flex-shrink-0 relative h-24 w-[280px] sm:h-28 sm:w-[320px] md:h-32 md:w-[360px]">
@@ -451,13 +493,44 @@ export default function Header() {
                 </Link>
               ))}
 
+              {/* Our Services - Expandable in mobile */}
+              <div className="border-t border-white/20 pt-2">
+                  <p className="text-white text-lg py-2 font-semibold flex items-center gap-2">
+                    Our Services
+                    <ChevronDown size={18} />
+                  </p>
+                <div className="pl-4 flex flex-col gap-2">
+                  <Link
+                    href="/weBuy"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                  >
+                    We Buy
+                  </Link>
+                  <Link
+                    href="/secure-to-source"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                  >
+                    S2S - Secure To Source
+                  </Link>
+                  <Link
+                    href="/diamond-source"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                  >
+                    DS4U - Diamond Source For You
+                  </Link>
+                </div>
+              </div>
+
               {/* Contact Us - Always visible in mobile */}
               <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   router.push("/contact");
                 }}
-                className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
+                className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-t border-white/20 pt-2"
               >
                 Contact Us
               </button>
