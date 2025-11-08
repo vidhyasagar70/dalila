@@ -225,15 +225,6 @@ export default function Header() {
       }`}
     >
       <div>
-        <div className="hidden sm:flex justify-center py-2">
-          <p className="text-sm md:text-base tracking-wide text-white">
-            <span>Where Trust Shines,</span>
-            <span> And Quality Sparkles</span>
-          </p>
-        </div>
-
-        <div className="hidden sm:block w-full h-[1px] bg-white/30"></div>
-
         <div className="flex container mx-auto px-4  md:px-6 lg:px-8 items-center justify-between relative h-20">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -465,10 +456,17 @@ export default function Header() {
             )}
           </div>
         </div>
-      </div>
 
-      {/* Bottom Golden Line */}
-      <div className="absolute bottom-0 left-0 right-0 w-full h-[1px] bg-[#C89E3A]"></div>
+        {/* Tagline - Below main navigation */}
+        <div className="w-full h-[1px] bg-[#C89E3A]"></div>
+        
+        <div className="hidden sm:flex justify-center py-2">
+          <p className="text-sm md:text-base tracking-wide text-white">
+            <span>Where Trust Shines,</span>
+            <span> And Quality Sparkles</span>
+          </p>
+        </div>
+      </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
