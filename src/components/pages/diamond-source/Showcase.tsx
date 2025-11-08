@@ -39,18 +39,35 @@ export default function DiamondSourceshowcase() {
           <div>
             <div className="max-w-xl">
               <AnimatedContainer direction="up">
-                <h2
+              <p
+  className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal mb-4`}
+>
+  1. Share Your Requirements
+</p>  <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
                 >
                   Tell Us What You Need
                 </h2>
               </AnimatedContainer>
               <p
-                className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
+                className={`text-gray-600 leading-relaxed mb-6 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Select stones from any online public platform of your choice. Browse at your convenience and choose the diamonds that match your requirements.
+                Send us your full criteria including:
               </p>
-             
+              <ul className={`space-y-3 mb-8 ${jost.className}`}>
+                <li className="text-gray-600 text-[15px] md:text-base flex items-start">
+                  <span className="mr-3 mt-1.5 inline-block w-2 h-2 rounded-full bg-[#606060]"></span>
+                  <span>Carat, color, clarity, cut/make</span>
+                </li>
+                <li className="text-gray-600 text-[15px] md:text-base flex items-start">
+                  <span className="mr-3 mt-1.5 inline-block w-2 h-2 rounded-full bg-[#606060]"></span>
+                  <span>Fluorescence preferences</span>
+                </li>
+                <li className="text-gray-600 text-[15px] md:text-base flex items-start">
+                  <span className="mr-3 mt-1.5 inline-block w-2 h-2 rounded-full bg-[#606060]"></span>
+                  <span>Budget range</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -60,6 +77,11 @@ export default function DiamondSourceshowcase() {
           <div>
             <div className="max-w-xl">
               <AnimatedContainer direction="up">
+                <p
+  className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal`}
+>
+  2. Expert Search
+</p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className}`}
                 >
@@ -106,6 +128,11 @@ export default function DiamondSourceshowcase() {
           <div>
             <div className="max-w-xl">
               <AnimatedContainer direction="up">
+                <p
+  className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal`}
+>
+  3. Receive Your Diamonds
+</p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
                 >
