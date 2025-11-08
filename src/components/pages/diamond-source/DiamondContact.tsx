@@ -2,7 +2,7 @@
 import { Marcellus, Jost } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
 import GoldButton from "@/components/ui/button";
-
+import { useRouter } from "next/navigation";
 const marcellus = Marcellus({
   variable: "--font-marcellus",
   subsets: ["latin"],
@@ -17,6 +17,7 @@ const jost = Jost({
 });
 
 export default function DiamondContact() {
+  const router = useRouter();
   return (
     <div className="bg-white py-16 md:py-20">
       <div className="max-w-4xl mx-auto px-6 md:px-8 text-center">
@@ -41,7 +42,7 @@ export default function DiamondContact() {
         {/* CTA Button */}
         <AnimatedContainer direction="up" delay={0.4}>
           <div className="flex justify-center">
-            <GoldButton text="CONTACT US NOW" />
+            <GoldButton text="CONTACT US" onClick={() => router.push("/contact")} />
           </div>
         </AnimatedContainer>
       </div>

@@ -5,7 +5,7 @@ import GoldButton from "@/components/ui/button";
 import { FaEuroSign } from "react-icons/fa";
 import { MdLocalShipping } from "react-icons/md";
 import { IoEarth } from "react-icons/io5";
-
+import { useRouter } from "next/navigation";
 const marcellus = Marcellus({
   variable: "--font-marcellus",
   subsets: ["latin"],
@@ -20,6 +20,7 @@ const jost = Jost({
 });
 
 export default function S2SAdvantages() {
+  const router = useRouter();
   const advantages = [
     {
       icon: FaEuroSign,
@@ -85,7 +86,7 @@ export default function S2SAdvantages() {
         {/* Contact Button */}
         <AnimatedContainer direction="up" delay={0.6}>
           <div className="flex justify-center mt-4">
-            <GoldButton text="CONTACT US" />
+            <GoldButton text="CONTACT US" onClick={() => router.push("/contact")} />
           </div>
         </AnimatedContainer>
       </div>
