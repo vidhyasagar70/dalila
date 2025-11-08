@@ -58,7 +58,7 @@ export default function MeasurementFilter({
   ) => {
     // Prevent negative values
     if (value && parseFloat(value) < 0) return;
-    
+
     const updatedMeasurements = {
       ...measurements,
       [key]: {
@@ -111,7 +111,7 @@ export default function MeasurementFilter({
                   )
                 }
                 className="w-20 px-2 py-1 text-center text-xs text-gray-900 rounded-none border border-[#f9e8cd] outline-none focus:border-[#d4b896]"
-                style={{ fontFamily: "inherit", color: '#111827' }}
+                style={{ fontFamily: "inherit", color: "#111827" }}
               />
 
               <span className="text-gray-500 text-xs font-normal">To</span>
@@ -133,7 +133,7 @@ export default function MeasurementFilter({
                   )
                 }
                 className="w-20 px-2 py-1 text-center text-xs text-gray-900 rounded-none border border-[#f9e8cd] outline-none focus:border-[#d4b896]"
-                style={{ fontFamily: "inherit", color: '#111827' }}
+                style={{ fontFamily: "inherit", color: "#111827" }}
               />
             </div>
           ))}

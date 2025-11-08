@@ -40,7 +40,8 @@ export default function SecureSourceBanner() {
               <h1
                 className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-30 ${marcellus.className}`}
               >
-                S2S - Secure To  <br />Source
+                S2S - Secure To <br />
+                Source
               </h1>
               <div className="w-[35%] h-px bg-amber-400 mx-auto mb-6" />
             </div>

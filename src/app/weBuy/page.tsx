@@ -9,7 +9,7 @@ export default function Webuy() {
         <WebuyBanner />
         <Webuyhero />
         <SellDiamondsProcess />
-        <SellDiamondsForm/>
+        <SellDiamondsForm />
       </main>
     </>
   );

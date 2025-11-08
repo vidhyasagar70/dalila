@@ -96,9 +96,24 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
     { label: "Sym", key: "SYM", index: 11 },
     { label: "Fls", key: "FLOUR", index: 12 },
     { label: "Rap.($)", key: "RAP_PRICE", index: 13 },
-    { label: "Length", key: "MEASUREMENTS", index: 14, transform: (val: string) => val?.split("x")[0]?.trim() },
-    { label: "Width", key: "MEASUREMENTS", index: 15, transform: (val: string) => val?.split("x")[1]?.trim() },
-    { label: "Depth", key: "MEASUREMENTS", index: 16, transform: (val: string) => val?.split("x")[2]?.trim() },
+    {
+      label: "Length",
+      key: "MEASUREMENTS",
+      index: 14,
+      transform: (val: string) => val?.split("x")[0]?.trim(),
+    },
+    {
+      label: "Width",
+      key: "MEASUREMENTS",
+      index: 15,
+      transform: (val: string) => val?.split("x")[1]?.trim(),
+    },
+    {
+      label: "Depth",
+      key: "MEASUREMENTS",
+      index: 16,
+      transform: (val: string) => val?.split("x")[2]?.trim(),
+    },
     { label: "Depth %", key: "DEPTH_PER", index: 17 },
     { label: "Table %", key: "TABLE_PER", index: 18 },
     { label: "Disc %", key: "DISC_PER", index: 19 },
@@ -130,7 +145,7 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
   ];
 
   return (
-    <div 
+    <div
       className={`fixed left-0 right-0 bottom-0 top-0 w-full flex items-center justify-center z-40 bg-black/50 ${mavenPro.variable}`}
       onClick={onClose}
     >
@@ -138,8 +153,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
         className="bg-white shadow-xl w-full h-full overflow-y-auto font-maven-pro scrollbar-hide"
         onClick={(e) => e.stopPropagation()}
         style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
         }}
       >
         {/* Header with Title */}
@@ -172,7 +187,9 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                           className="flex items-center gap-2 text-[#050C3A] hover:text-gray-600 transition-colors p-4 w-full"
                         >
                           <ArrowLeft size={18} />
-                          <span className="text-sm font-normal">Back to List</span>
+                          <span className="text-sm font-normal">
+                            Back to List
+                          </span>
                         </button>
                         {/* <div className="px-4 pb-4">
                           <Image 
@@ -190,7 +207,10 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                         key={diamond._id}
                         className="p-4 text-center relative bg-white"
                         style={{
-                          borderRight: index < diamonds.length - 1 ? "1px solid #e7d9b3" : "none",
+                          borderRight:
+                            index < diamonds.length - 1
+                              ? "1px solid #e7d9b3"
+                              : "none",
                           borderBottom: "1px solid #e7d9b3",
                           width: `${100 / diamonds.length}%`,
                           minWidth: "200px",
@@ -245,11 +265,12 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                           {row.label}
                         </th>
                         {diamonds.map((diamond, index) => {
-                          let value = diamond[row.key as keyof DiamondData] || "";
-                          if (row.transform && typeof value === 'string') {
+                          let value =
+                            diamond[row.key as keyof DiamondData] || "";
+                          if (row.transform && typeof value === "string") {
                             value = row.transform(value) || "";
                           }
-                          
+
                           return (
                             <td
                               key={diamond._id}

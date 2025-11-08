@@ -392,7 +392,6 @@ export default function LoginPage() {
 
               {/* Remember Me & Forgot Password */}
               <div className="flex justify-between items-center mb-6 ml-100">
-                
                 <a
                   href="#"
                   onClick={handleForgotPassword}

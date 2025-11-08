@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { ArrowLeft, Loader2,  Download, Play, X } from "lucide-react";
+import { ArrowLeft, Loader2, Download, Play, X } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
@@ -27,7 +27,8 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
 
   // Use actual certificate and video URLs from backend - no dummy data
-  const certificateUrl = (diamond as DiamondData & { CERTI_PDF?: string }).CERTI_PDF || "";
+  const certificateUrl =
+    (diamond as DiamondData & { CERTI_PDF?: string }).CERTI_PDF || "";
   const videoUrl = (diamond as DiamondData & { MP4?: string }).MP4 || "";
   const videoThumbnail = diamond.REAL_IMAGE || "";
 
@@ -100,7 +101,9 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         <span className="text-[10px] font-medium">{label}</span>
       </div>
       <p className="text-sm font-semibold text-gray-900">{value}</p>
-      {description && <p className="text-[10px] text-gray-500">{description}</p>}
+      {description && (
+        <p className="text-[10px] text-gray-500">{description}</p>
+      )}
     </div>
   );
 
@@ -117,7 +120,14 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       </div>
       <div>
         {data.map(([key, value], idx) => (
-          <div key={idx} className="grid grid-cols-2 hover:bg-gray-50" style={{ borderBottom: idx < data.length - 1 ? '1px solid #e9e2c6' : 'none' }}>
+          <div
+            key={idx}
+            className="grid grid-cols-2 hover:bg-gray-50"
+            style={{
+              borderBottom:
+                idx < data.length - 1 ? "1px solid #e9e2c6" : "none",
+            }}
+          >
             <div className="px-4 py-2.5 bg-gray-50">
               <p className="text-sm font-medium text-gray-700">{key}</p>
             </div>
@@ -136,11 +146,11 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       onClick={onClose}
     >
       <div
-       className="bg-white shadow-xl w-full h-full overflow-y-auto font-maven-pro scrollbar-hide"
+        className="bg-white shadow-xl w-full h-full overflow-y-auto font-maven-pro scrollbar-hide"
         onClick={(e) => e.stopPropagation()}
         style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
         }}
       >
         {/* Header with Back Button and Title */}
@@ -169,27 +179,31 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                       fill
                       className="object-cover"
                       onError={(e) => {
-                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.style.display = "none";
                       }}
                     />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
-                      <p className="text-white text-xs font-medium">{diamond.LAB || "GIA"} Certificate</p>
-                      <p className="text-white/80 text-[10px]">{diamond.REPORT_NO || "N/A"}</p>
+                      <p className="text-white text-xs font-medium">
+                        {diamond.LAB || "GIA"} Certificate
+                      </p>
+                      <p className="text-white/80 text-[10px]">
+                        {diamond.REPORT_NO || "N/A"}
+                      </p>
                     </div>
                   </div>
-                  <a 
+                  <a
                     href={certificateUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full bg-gray-50 hover:bg-gray-100 transition-colors py-2 text-xs font-medium text-gray-700 border-t border-[#e9e2c6] flex-shrink-0 text-center"
-                  >
-                   
-                  </a>
+                  ></a>
                 </div>
               ) : (
                 <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
                   <div className="relative flex-1 bg-gray-50 min-h-[200px] flex items-center justify-center">
-                    <span className="text-sm text-gray-400">No Certificate Available</span>
+                    <span className="text-sm text-gray-400">
+                      No Certificate Available
+                    </span>
                   </div>
                 </div>
               )}
@@ -200,7 +214,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   <div className="relative flex-1 bg-gray-50 min-h-[200px]">
                     {!isPlayingVideo ? (
                       <>
-                        <div className="relative w-full h-full cursor-pointer group" onClick={handleVideoClick}>
+                        <div
+                          className="relative w-full h-full cursor-pointer group"
+                          onClick={handleVideoClick}
+                        >
                           {videoThumbnail ? (
                             <Image
                               src={videoThumbnail}
@@ -210,12 +227,18 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                              <span className="text-sm text-gray-400">Video Available</span>
+                              <span className="text-sm text-gray-400">
+                                Video Available
+                              </span>
                             </div>
                           )}
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                              <Play size={20} className="text-[#050C3A] ml-1" fill="currentColor" />
+                              <Play
+                                size={20}
+                                className="text-[#050C3A] ml-1"
+                                fill="currentColor"
+                              />
                             </div>
                           </div>
                         </div>
@@ -239,17 +262,17 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                       </div>
                     )}
                   </div>
-                  <button 
+                  <button
                     onClick={handleVideoClick}
                     className="w-full bg-gray-50 hover:bg-gray-100 transition-colors py-2 text-xs font-medium text-gray-700 border-t border-[#e9e2c6] flex-shrink-0"
-                  >
-                   
-                  </button>
+                  ></button>
                 </div>
               ) : (
                 <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
                   <div className="relative flex-1 bg-gray-50 min-h-[200px] flex items-center justify-center">
-                    <span className="text-sm text-gray-400">No Video Available</span>
+                    <span className="text-sm text-gray-400">
+                      No Video Available
+                    </span>
                   </div>
                 </div>
               )}
@@ -272,7 +295,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         src={selectedImage}
                         alt={diamond.STONE_NO}
                         fill
-                        style={{ objectFit: 'contain' }}
+                        style={{ objectFit: "contain" }}
                         onError={(e) => {
                           e.currentTarget.src =
                             "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239ca3af' font-size='16'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -399,7 +422,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               data={[
                 ["Table%", diamond.TABLE_PER || "N/A"],
                 ["Depth%", diamond.DEPTH_PER || "N/A"],
-                ["Length", diamond.MEASUREMENTS?.split("x")[0]?.trim() || "N/A"],
+                [
+                  "Length",
+                  diamond.MEASUREMENTS?.split("x")[0]?.trim() || "N/A",
+                ],
                 ["Width", diamond.MEASUREMENTS?.split("x")[1]?.trim() || "N/A"],
                 ["Depth", diamond.MEASUREMENTS?.split("x")[2]?.trim() || "N/A"],
                 ["Ratio", "-"],

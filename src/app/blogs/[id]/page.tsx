@@ -73,7 +73,9 @@ export default function BlogDetailPage() {
       <div className="bg-gray-50 min-h-screen">
         <div className="container mx-auto max-w-4xl px-4 py-32">
           <div className="text-center">
-            <h1 className={`text-3xl md:text-4xl text-[#2d2d2d] mb-4 ${marcellus.className}`}>
+            <h1
+              className={`text-3xl md:text-4xl text-[#2d2d2d] mb-4 ${marcellus.className}`}
+            >
               {error || "Blog not found"}
             </h1>
             <button

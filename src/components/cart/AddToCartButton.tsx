@@ -20,18 +20,21 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     // Check authentication first - now with better error handling
     const token = getAuthToken();
     console.log("Token check:", token ? "EXISTS" : "MISSING");
-    
+
     if (!token || token.trim() === "") {
       console.error(" No authentication token found");
-      toast.error("Please login to add items to cart. Your session may have expired.", {
-        duration: 4000,
-      });
-      
+      toast.error(
+        "Please login to add items to cart. Your session may have expired.",
+        {
+          duration: 4000,
+        },
+      );
+
       // Dispatch unauthorized event to trigger login redirect
       if (typeof window !== "undefined") {
         window.dispatchEvent(new CustomEvent("unauthorized_access"));
       }
-      
+
       return;
     }
 
@@ -53,7 +56,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         selectedStoneNumbers.map((stoneNo) => {
           console.log(`  Attempting to add: ${stoneNo}`);
           return cartApi.add(stoneNo);
-        })
+        }),
       );
 
       console.log("Cart API results:", results);
@@ -61,7 +64,11 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       // Analyze results with detailed logging
       const successful = results.filter((r) => {
         if (r.status === "fulfilled") {
-          const value = r.value as { success?: boolean; error?: string; message?: string };
+          const value = r.value as {
+            success?: boolean;
+            error?: string;
+            message?: string;
+          };
           console.log(" Fulfilled:", value);
           return value?.success === true;
         }
@@ -70,7 +77,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       });
 
       const failed = results.length - successful.length;
-      
+
       // Collect backend messages
       const backendMessages = results
         .filter((r) => r.status === "fulfilled")
@@ -98,24 +105,24 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         toast.error("Session expired. Please login again.", {
           duration: 4000,
         });
-        
+
         // Clear potentially invalid token
         if (typeof window !== "undefined") {
           localStorage.removeItem("authToken");
           // Dispatch unauthorized event
           window.dispatchEvent(new CustomEvent("unauthorized_access"));
         }
-        
+
         return;
       }
 
       if (successful.length > 0) {
         // Use backend message if available, otherwise use default
-        const displayMessage = 
+        const displayMessage =
           backendMessages.length > 0 && backendMessages[0]
             ? backendMessages[0]
-            : `${successful.length} diamond${successful.length > 1 ? 's' : ''} added to cart successfully!${failed > 0 ? ` (${failed} failed)` : ""}`;
-        
+            : `${successful.length} diamond${successful.length > 1 ? "s" : ""} added to cart successfully!${failed > 0 ? ` (${failed} failed)` : ""}`;
+
         toast.success(displayMessage, {
           duration: 4000,
         });
@@ -131,48 +138,56 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         }
       } else {
         // Get error message from rejected promises
-        const errorMessage = results
-          .filter((r) => r.status === "rejected")
-          .map((r) => {
-            const reason = r.reason;
-            return reason?.response?.data?.message || reason?.response?.data?.error || reason?.message;
-          })
-          .filter(Boolean)[0] || "Failed to add diamonds to cart. Please try again.";
-        
+        const errorMessage =
+          results
+            .filter((r) => r.status === "rejected")
+            .map((r) => {
+              const reason = r.reason;
+              return (
+                reason?.response?.data?.message ||
+                reason?.response?.data?.error ||
+                reason?.message
+              );
+            })
+            .filter(Boolean)[0] ||
+          "Failed to add diamonds to cart. Please try again.";
+
         toast.error(errorMessage, {
           duration: 3000,
         });
       }
     } catch (error) {
       console.error(" Error adding to cart:", error);
-      
+
       // Enhanced error handling
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { 
-          response?: { 
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: {
             status?: number;
             data?: { error?: string; message?: string };
-          } 
+          };
         };
-        
+
         console.error(" Response status:", axiosError.response?.status);
         console.error(" Response data:", axiosError.response?.data);
-        
+
         if (axiosError.response?.status === 401) {
           toast.error("Session expired. Please login again.", {
             duration: 4000,
           });
-          
+
           // Clear token and dispatch event
           if (typeof window !== "undefined") {
             localStorage.removeItem("authToken");
             window.dispatchEvent(new CustomEvent("unauthorized_access"));
           }
-        } else if (axiosError.response?.data?.error?.includes("Invalid token")) {
+        } else if (
+          axiosError.response?.data?.error?.includes("Invalid token")
+        ) {
           toast.error("Invalid session. Please login again.", {
             duration: 4000,
           });
-          
+
           // Clear token and dispatch event
           if (typeof window !== "undefined") {
             localStorage.removeItem("authToken");
@@ -180,10 +195,15 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           }
         } else {
           // Use backend message if available
-          const backendMessage = axiosError.response?.data?.message || axiosError.response?.data?.error;
-          toast.error(backendMessage || "An error occurred while adding to cart.", {
-            duration: 4000,
-          });
+          const backendMessage =
+            axiosError.response?.data?.message ||
+            axiosError.response?.data?.error;
+          toast.error(
+            backendMessage || "An error occurred while adding to cart.",
+            {
+              duration: 4000,
+            },
+          );
         }
       } else {
         toast.error("Network error. Please check your connection.", {
@@ -199,12 +219,16 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     <button
       onClick={handleAddToCart}
       disabled={selectedCount === 0 || isAdding}
-     className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
-  selectedCount === 0 || isAdding
-    ? "bg-gray-400 cursor-not-allowed"
-    : "bg-[#000033] hover:bg-[#000055]"
-}`}
-      title={selectedCount === 0 ? "Select diamonds to add to cart" : `Add ${selectedCount} diamond${selectedCount > 1 ? 's' : ''} to cart`}
+      className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
+        selectedCount === 0 || isAdding
+          ? "bg-gray-400 cursor-not-allowed"
+          : "bg-[#000033] hover:bg-[#000055]"
+      }`}
+      title={
+        selectedCount === 0
+          ? "Select diamonds to add to cart"
+          : `Add ${selectedCount} diamond${selectedCount > 1 ? "s" : ""} to cart`
+      }
     >
       {isAdding ? (
         <>

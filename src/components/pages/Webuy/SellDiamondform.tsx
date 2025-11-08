@@ -1,15 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Upload} from 'lucide-react';
-
+import React, { useState } from "react";
+import { Upload } from "lucide-react";
 
 const marcellusStyle = {
-  fontFamily: 'Marcellus, serif'
+  fontFamily: "Marcellus, serif",
 };
 
 const jostStyle = {
-  fontFamily: 'Jost, sans-serif'
+  fontFamily: "Jost, sans-serif",
 };
 
 interface FormData {
@@ -28,34 +27,36 @@ interface FormData {
 
 export default function SellDiamondsForm() {
   const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    email: '',
-    phone: '',
-    carat: '',
-    condition: '',
-    material: '',
-    description: '',
-    fullAddress: '',
-    pickupDate: '',
-    pickupTime: '',
-    images: []
+    fullName: "",
+    email: "",
+    phone: "",
+    carat: "",
+    condition: "",
+    material: "",
+    description: "",
+    fullAddress: "",
+    pickupDate: "",
+    pickupTime: "",
+    images: [],
   });
 
   const [dragActive, setDragActive] = useState(false);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
@@ -78,37 +79,49 @@ export default function SellDiamondsForm() {
 
   const handleFiles = (files: FileList) => {
     const fileArray = Array.from(files);
-    const validFiles = fileArray.filter(file => {
-      const isValid = ['image/png', 'image/jpeg', 'image/gif'].includes(file.type);
+    const validFiles = fileArray.filter((file) => {
+      const isValid = ["image/png", "image/jpeg", "image/gif"].includes(
+        file.type,
+      );
       const isUnder10MB = file.size <= 10 * 1024 * 1024;
       return isValid && isUnder10MB;
     });
-    setFormData(prev => ({ ...prev, images: [...prev.images, ...validFiles] }));
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...validFiles],
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Form submitted successfully!');
+    console.log("Form submitted:", formData);
+    alert("Form submitted successfully!");
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2" style={marcellusStyle}>
+          <h1
+            className="text-3xl font-bold text-gray-900 mb-2"
+            style={marcellusStyle}
+          >
             Sell Your Diamonds
           </h1>
           <p className="text-gray-600" style={jostStyle}>
-            Complete the form below to get a free valuation for your diamonds. Our process is secure,
-            confidential, and designed to get you the best possible price.
+            Complete the form below to get a free valuation for your diamonds.
+            Our process is secure, confidential, and designed to get you the
+            best possible price.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
           {/* Full Name */}
           <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="fullName"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Full Name
             </label>
             <input
@@ -120,13 +133,16 @@ export default function SellDiamondsForm() {
               placeholder="Full Name"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
           {/* Email Address */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Email Address
             </label>
             <input
@@ -138,13 +154,16 @@ export default function SellDiamondsForm() {
               placeholder="Email Address"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
           {/* Phone Number */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Phone Number
             </label>
             <input
@@ -156,13 +175,16 @@ export default function SellDiamondsForm() {
               placeholder="Phone Number"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
           {/* Carat (optional) */}
           <div>
-            <label htmlFor="carat" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="carat"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Carat (optional)
             </label>
             <input
@@ -173,13 +195,16 @@ export default function SellDiamondsForm() {
               onChange={handleInputChange}
               placeholder="Carat (optional)"
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
           {/* Condition */}
           <div>
-            <label htmlFor="condition" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="condition"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Condition
             </label>
             <select
@@ -189,18 +214,32 @@ export default function SellDiamondsForm() {
               onChange={handleInputChange}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition text-gray-900"
-              style={{ colorScheme: 'light', color: formData.condition ? '#111827' : '#6b7280' }}
+              style={{
+                colorScheme: "light",
+                color: formData.condition ? "#111827" : "#6b7280",
+              }}
             >
-              <option value="" style={{ color: '#6b7280' }}>Select Condition</option>
-              <option value="excellent" style={{ color: '#111827' }}>Excellent</option>
-              <option value="good" style={{ color: '#111827' }}>Good</option>
-              <option value="fair" style={{ color: '#111827' }}>Fair</option>
+              <option value="" style={{ color: "#6b7280" }}>
+                Select Condition
+              </option>
+              <option value="excellent" style={{ color: "#111827" }}>
+                Excellent
+              </option>
+              <option value="good" style={{ color: "#111827" }}>
+                Good
+              </option>
+              <option value="fair" style={{ color: "#111827" }}>
+                Fair
+              </option>
             </select>
           </div>
 
           {/* Material (optional) */}
           <div>
-            <label htmlFor="material" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="material"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Material (optional)
             </label>
             <input
@@ -211,13 +250,16 @@ export default function SellDiamondsForm() {
               onChange={handleInputChange}
               placeholder="Material (optional)"
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Description
             </label>
             <textarea
@@ -229,7 +271,7 @@ export default function SellDiamondsForm() {
               rows={4}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
@@ -244,7 +286,9 @@ export default function SellDiamondsForm() {
               onDragOver={handleDrag}
               onDrop={handleDrop}
               className={`relative border-2 border-dashed rounded-none p-8 text-center transition hover:border-[#F2DB7F] ${
-                dragActive ? 'border-yellow-500 bg-yellow-50' : 'border-gray-300'
+                dragActive
+                  ? "border-yellow-500 bg-yellow-50"
+                  : "border-gray-300"
               }`}
             >
               <input
@@ -263,7 +307,9 @@ export default function SellDiamondsForm() {
                   htmlFor="fileInput"
                   className="cursor-pointer text-gray-700 hover:text-yellow-600 transition"
                 >
-                  <span className="font-medium border border-gray-300 px-4 py-2 inline-block">Choose File</span>
+                  <span className="font-medium border border-gray-300 px-4 py-2 inline-block">
+                    Choose File
+                  </span>
                   <span className="text-gray-500 ml-2">No file chosen</span>
                 </label>
                 <p className="text-sm text-gray-500 mt-2">
@@ -283,7 +329,10 @@ export default function SellDiamondsForm() {
 
           {/* Full Address */}
           <div>
-            <label htmlFor="fullAddress" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="fullAddress"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Full Address
             </label>
             <textarea
@@ -295,14 +344,17 @@ export default function SellDiamondsForm() {
               rows={3}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
-              style={{ colorScheme: 'light' }}
+              style={{ colorScheme: "light" }}
             />
           </div>
 
           {/* Preferred Pickup Date and Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="pickupDate" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="pickupDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Preferred Pickup Date
               </label>
               <div className="relative">
@@ -314,13 +366,19 @@ export default function SellDiamondsForm() {
                   onChange={handleInputChange}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition"
-                  style={{ colorScheme: 'light', color: formData.pickupDate ? '#111827' : '#6b7280' }}
+                  style={{
+                    colorScheme: "light",
+                    color: formData.pickupDate ? "#111827" : "#6b7280",
+                  }}
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="pickupTime" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="pickupTime"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Preferred Time (Optional)
               </label>
               <div className="relative">
@@ -330,12 +388,23 @@ export default function SellDiamondsForm() {
                   value={formData.pickupTime}
                   onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition text-gray-900"
-                  style={{ colorScheme: 'light', color: formData.pickupTime ? '#111827' : '#6b7280' }}
+                  style={{
+                    colorScheme: "light",
+                    color: formData.pickupTime ? "#111827" : "#6b7280",
+                  }}
                 >
-                  <option value="" style={{ color: '#6b7280' }}>Select Time</option>
-                  <option value="morning" style={{ color: '#111827' }}>Morning (9AM - 12PM)</option>
-                  <option value="afternoon" style={{ color: '#111827' }}>Afternoon (12PM - 5PM)</option>
-                  <option value="evening" style={{ color: '#111827' }}>Evening (5PM - 8PM)</option>
+                  <option value="" style={{ color: "#6b7280" }}>
+                    Select Time
+                  </option>
+                  <option value="morning" style={{ color: "#111827" }}>
+                    Morning (9AM - 12PM)
+                  </option>
+                  <option value="afternoon" style={{ color: "#111827" }}>
+                    Afternoon (12PM - 5PM)
+                  </option>
+                  <option value="evening" style={{ color: "#111827" }}>
+                    Evening (5PM - 8PM)
+                  </option>
                 </select>
               </div>
             </div>

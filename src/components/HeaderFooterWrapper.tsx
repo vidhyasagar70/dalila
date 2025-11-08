@@ -11,7 +11,12 @@ export default function HeaderFooterWrapper({
 }) {
   const pathname = usePathname();
 
-  const noHeaderFooterRoutes = ["/login", "/register", "/customer-details","/forgot-password"];
+  const noHeaderFooterRoutes = [
+    "/login",
+    "/register",
+    "/customer-details",
+    "/forgot-password",
+  ];
 
   const hideHeaderFooter = noHeaderFooterRoutes.includes(pathname);
 

@@ -54,17 +54,18 @@ export default function KeySymbolFilter({
     filters[category]?.includes(value) || false;
 
   return (
-    <div className="mt-1" style={{ width: "100%", fontFamily: "'Maven Pro', sans-serif" }}>
+    <div
+      className="mt-1"
+      style={{ width: "100%", fontFamily: "'Maven Pro', sans-serif" }}
+    >
       {/* Main Header with Icon */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"
         style={{ backgroundColor: "#000033" }}
       >
-        <span className="text-base font-normal text-white">
-          Key To Symbol
-        </span>
+        <span className="text-base font-normal text-white">Key To Symbol</span>
       </div>
-      
+
       {/* Key To Symbol Options */}
       <div
         className="bg-white"
@@ -104,11 +105,11 @@ export default function KeySymbolFilter({
           </button>
         ))}
       </div>
-      
+
       {/* Other Filter Sections */}
-      <div >
+      <div>
         {FILTER_SECTIONS.map((section, index) => (
-          <div key={section.key} >
+          <div key={section.key}>
             {/* Sub-header */}
             <div
               className="px-2.5 py-1.5 font-normal text-white text-sm"

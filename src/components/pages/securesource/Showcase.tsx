@@ -39,18 +39,24 @@ export default function SecureSourceshowcase() {
           <div>
             <div className="max-w-xl">
               <AnimatedContainer direction="up">
+                <p
+                  className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${marcellus.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal mb-4`}
+                >
+                  1. Select Your Stones
+                </p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
                 >
-                  Browse Online <br/> Platforms
+                  Browse Online <br /> Platforms
                 </h2>
               </AnimatedContainer>
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Select stones from any online public platform of your choice. Browse at your convenience and choose the diamonds that match your requirements.
+                Select stones from any online public platform of your choice.
+                Browse at your convenience and choose the diamonds that match
+                your requirements.
               </p>
-             
             </div>
           </div>
         </div>
@@ -60,18 +66,24 @@ export default function SecureSourceshowcase() {
           <div>
             <div className="max-w-xl">
               <AnimatedContainer direction="up">
+                <p
+                  className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${marcellus.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal mb-4`}
+                >
+                  2. Quality Assurance
+                </p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className}`}
                 >
-                  We Perform QC For <br/> You
+                  We Perform QC For <br /> You
                 </h2>
               </AnimatedContainer>
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Our experts perform thorough quality checks on every stone. We ensure each diamond meets the specifications and quality standards before it reaches you.
+                Our experts perform thorough quality checks on every stone. We
+                ensure each diamond meets the specifications and quality
+                standards before it reaches you.
               </p>
-             
             </div>
           </div>
 
@@ -106,18 +118,24 @@ export default function SecureSourceshowcase() {
           <div>
             <div className="max-w-xl">
               <AnimatedContainer direction="up">
+                <p
+                  className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${marcellus.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal mb-4`}
+                >
+                  3. Swift Delivery
+                </p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
                 >
-                  Arrive in Belgium<br/> Fast
+                  Arrive in Belgium
+                  <br /> Fast
                 </h2>
               </AnimatedContainer>
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Orders placed by Wednesday evening arrive in Belgium the following Wednesday. A small additional service margin applies.
+                Orders placed by Wednesday evening arrive in Belgium the
+                following Wednesday. A small additional service margin applies.
               </p>
-              
             </div>
           </div>
         </div>

@@ -48,39 +48,39 @@ export default function RootLayout({
     >
       <body className="antialiased bg-background text-foreground font-jost">
         <HeaderFooterWrapper>{children}</HeaderFooterWrapper>
-      <Toaster
-  position="bottom-right"
-  reverseOrder={false}
-  toastOptions={{
-    duration: 4000,
-    style: {
-      background: '#FAF6EB',
-      color: '#363636',
-      fontFamily: 'var(--font-jost)',
-      border: '1px solid #e5e5e5',
-    },
-    success: {
-      duration: 3000,
-      style: {
-        background: '#FAF6EB',
-      },
-      iconTheme: {
-        primary: '#10b981',
-        secondary: '#FAF6EB',
-      },
-    },
-    error: {
-      duration: 4000,
-      style: {
-        background: '#FAF6EB',
-      },
-      iconTheme: {
-        primary: '#ef4444',
-        secondary: '#FAF6EB',
-      },
-    },
-  }}
-/>
+        <Toaster
+          position="bottom-right"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: "#FAF6EB",
+              color: "#363636",
+              fontFamily: "var(--font-jost)",
+              border: "1px solid #e5e5e5",
+            },
+            success: {
+              duration: 3000,
+              style: {
+                background: "#FAF6EB",
+              },
+              iconTheme: {
+                primary: "#10b981",
+                secondary: "#FAF6EB",
+              },
+            },
+            error: {
+              duration: 4000,
+              style: {
+                background: "#FAF6EB",
+              },
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "#FAF6EB",
+              },
+            },
+          }}
+        />
       </body>
     </html>
   );

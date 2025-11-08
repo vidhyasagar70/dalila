@@ -40,7 +40,9 @@ export default function DiamondSourceBanner() {
               <h1
                 className={`text-4xl md:text-5xl lg:text-6xl font-normal tracking-wide text-white mb-3 mt-30 ${marcellus.className}`}
               >
-                DS4U - Diamond<br />Source For You
+                DS4U - Diamond
+                <br />
+                Source For You
               </h1>
               <div className="w-[35%] h-px bg-amber-400 mx-auto mb-6" />
             </div>

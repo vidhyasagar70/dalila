@@ -5,11 +5,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Dashboard from "../../components/Dashboard/page";
 export default function DashboardPage() {
   return (
-    <ProtectedRoute
-      requireAuth={true}
-      redirectTo="/login"
-      
-    >
+    <ProtectedRoute requireAuth={true} redirectTo="/login">
       <main className="relative">
         <Dashboard />
       </main>

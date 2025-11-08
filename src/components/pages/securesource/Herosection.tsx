@@ -16,16 +16,14 @@ const jost = Jost({
   display: "swap",
 });
 
-
 export default function SecureSourceHero() {
   return (
     <div className="bg-white py-12 md:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <div className="space-y-4 md:space-y-6 lg:pl-4">
-            
             <p
-              className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent`}
+              className={`text-sm sm:text-base md:text-lg tracking-[0.2em] uppercase ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal`}
             >
               Here's How We Help
             </p>
@@ -38,7 +36,9 @@ export default function SecureSourceHero() {
             </AnimatedContainer>
             <AnimatedContainer direction="up" delay={0.5}>
               <p className="text-gray-500 text-xs sm:text-sm md:text-base leading-relaxed">
-                We offer two specialized diamond sourcing services designed to meet your needs in Europe. From secure public platform sourcing to personalized worldwide searches, we&apos;ve got you covered.
+                We offer two specialized diamond sourcing services designed to
+                meet your needs in Europe. From secure public platform sourcing
+                to personalized worldwide searches, we&apos;ve got you covered.
               </p>
             </AnimatedContainer>
           </div>

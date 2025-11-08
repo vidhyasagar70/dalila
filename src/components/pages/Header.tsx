@@ -24,10 +24,10 @@ export default function Header() {
   const dashboardPage = pathname === "/dashboard";
   const Homepage = pathname === "/";
   const CartPage = pathname === "/cart";
-  const BlogsPage= pathname === "/blogs";
+  const BlogsPage = pathname === "/blogs";
   const BlogDetailPage = pathname.startsWith("/blogs/");
   const SecurePage = pathname === "/secure-to-source";
-  const diamondsourcePage= pathname === "/diamond-source";
+  const diamondsourcePage = pathname === "/diamond-source";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -190,19 +190,19 @@ export default function Header() {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-      {href:"/blogs",label:"Blogs"}
+      { href: "/blogs", label: "Blogs" },
     ];
   } else if (isAdmin) {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-       {href:"/blogs",label:"Blogs"}
+      { href: "/blogs", label: "Blogs" },
     ];
   } else {
     navigationItems = [
       { href: "/aboutUs", label: "About us" },
       { href: "/diamondKnowledge", label: "Diamond Knowledge" },
-      {href:"/blogs",label:"Blogs"}
+      { href: "/blogs", label: "Blogs" },
     ];
   }
 
@@ -214,7 +214,11 @@ export default function Header() {
         offerenquiryPage ||
         memberPage ||
         dashboardPage ||
-        Homepage ||  BlogsPage||BlogDetailPage||SecurePage||diamondsourcePage||
+        Homepage ||
+        BlogsPage ||
+        BlogDetailPage ||
+        SecurePage ||
+        diamondsourcePage ||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -250,19 +254,19 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            
+
             {/* Our Services Dropdown */}
             <div className="relative group">
               <button
                 onMouseEnter={() => setIsServicesDropdownOpen(true)}
                 onMouseLeave={() => setIsServicesDropdownOpen(false)}
-                  className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap flex items-center gap-1"
+                className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap flex items-center gap-1"
               >
                 Our Services
-                  <ChevronDown 
-                    size={16} 
-                    className={`transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`}
-                  />
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-200 ${isServicesDropdownOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {isServicesDropdownOpen && (
@@ -495,10 +499,10 @@ export default function Header() {
 
               {/* Our Services - Expandable in mobile */}
               <div className="border-t border-white/20 pt-2">
-                  <p className="text-white text-lg py-2 font-semibold flex items-center gap-2">
-                    Our Services
-                    <ChevronDown size={18} />
-                  </p>
+                <p className="text-white text-lg py-2 font-semibold flex items-center gap-2">
+                  Our Services
+                  <ChevronDown size={18} />
+                </p>
                 <div className="pl-4 flex flex-col gap-2">
                   <Link
                     href="/weBuy"

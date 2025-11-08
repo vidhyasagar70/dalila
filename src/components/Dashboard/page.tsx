@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { 
-  Package, 
-  FileText,  
-  ShoppingCart, 
+import { useState, useEffect } from "react";
+import {
+  Package,
+  FileText,
+  ShoppingCart,
   Loader2,
   AlertCircle,
   ChevronLeft,
   ChevronRight,
   Gem,
   List,
-  DollarSign
-} from 'lucide-react';
+  DollarSign,
+} from "lucide-react";
 
-import { diamondApi, cartApi } from '@/lib/api';
+import { diamondApi, cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
   const [newlyAddedDiamonds, setNewlyAddedDiamonds] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Mock data
@@ -37,15 +37,51 @@ export default function AdminDashboard() {
     newArrival: 25,
     priceRevised: 1234,
     holdStone: 0,
-    upcomingList: 0
+    upcomingList: 0,
   };
 
   // Mock diamond data for carousel
   const mockDiamonds = [
-    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
-    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
-    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
-    { shape: 'ROUND', carat: '5.06', color: 'D', clarity: 'VS2', cut: 'EX', polish: 'EX', symmetry: 'VST', lab: 'GIA' },
+    {
+      shape: "ROUND",
+      carat: "5.06",
+      color: "D",
+      clarity: "VS2",
+      cut: "EX",
+      polish: "EX",
+      symmetry: "VST",
+      lab: "GIA",
+    },
+    {
+      shape: "ROUND",
+      carat: "5.06",
+      color: "D",
+      clarity: "VS2",
+      cut: "EX",
+      polish: "EX",
+      symmetry: "VST",
+      lab: "GIA",
+    },
+    {
+      shape: "ROUND",
+      carat: "5.06",
+      color: "D",
+      clarity: "VS2",
+      cut: "EX",
+      polish: "EX",
+      symmetry: "VST",
+      lab: "GIA",
+    },
+    {
+      shape: "ROUND",
+      carat: "5.06",
+      color: "D",
+      clarity: "VS2",
+      cut: "EX",
+      polish: "EX",
+      symmetry: "VST",
+      lab: "GIA",
+    },
   ];
 
   useEffect(() => {
@@ -57,9 +93,9 @@ export default function AdminDashboard() {
       fetchCartCount();
     };
 
-    window.addEventListener('cart-updated', handleCartUpdate);
+    window.addEventListener("cart-updated", handleCartUpdate);
     return () => {
-      window.removeEventListener('cart-updated', handleCartUpdate);
+      window.removeEventListener("cart-updated", handleCartUpdate);
     };
   }, []);
 
@@ -81,7 +117,7 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      setError('');
+      setError("");
 
       const response = await diamondApi.getDashboardStats();
 
@@ -89,11 +125,11 @@ export default function AdminDashboard() {
         setTotalDiamonds(response.data.totalDiamonds);
         setNewlyAddedDiamonds(response.data.newlyAddedDiamonds);
       } else {
-        setError('Failed to fetch dashboard data');
+        setError("Failed to fetch dashboard data");
       }
     } catch (err) {
-      console.error('Dashboard fetch error:', err);
-      setError('Unable to load dashboard data');
+      console.error("Dashboard fetch error:", err);
+      setError("Unable to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -104,11 +140,17 @@ export default function AdminDashboard() {
   };
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % Math.max(1, mockDiamonds.length - 2));
+    setCurrentSlide(
+      (prev) => (prev + 1) % Math.max(1, mockDiamonds.length - 2),
+    );
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + Math.max(1, mockDiamonds.length - 2)) % Math.max(1, mockDiamonds.length - 2));
+    setCurrentSlide(
+      (prev) =>
+        (prev - 1 + Math.max(1, mockDiamonds.length - 2)) %
+        Math.max(1, mockDiamonds.length - 2),
+    );
   };
 
   if (loading) {
@@ -136,58 +178,88 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-4 gap-4 mb-6">
           {/* Inventory Card - Dark Navy - Clickable */}
           <button
-            onClick={() => handleNavigate('/inventory')}
-            style={{ borderColor: '#FAE9D0', backgroundColor: '#050C3A' }}
+            onClick={() => handleNavigate("/inventory")}
+            style={{ borderColor: "#FAE9D0", backgroundColor: "#050C3A" }}
             className="rounded-xl p-6 text-white shadow-lg border hover:opacity-90 transition-opacity text-left w-full"
           >
             <div className="flex items-center justify-between mb-4">
               <Gem className="w-8 h-8" />
-              <span className={`text-lg opacity-80 ${mavenPro.className}`}>Inventory</span>
+              <span className={`text-lg opacity-80 ${mavenPro.className}`}>
+                Inventory
+              </span>
             </div>
-            <div className={`text-5xl font-bold text-white text-center ${mavenPro.className}`}>{totalDiamonds}</div>
+            <div
+              className={`text-5xl font-bold text-white text-center ${mavenPro.className}`}
+            >
+              {totalDiamonds}
+            </div>
           </button>
 
           {/* New Arrival Card */}
-          <div 
-            style={{ borderColor: '#FAE9D0' }}
+          <div
+            style={{ borderColor: "#FAE9D0" }}
             className="bg-white rounded-xl p-6 shadow-md border"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2 rounded-lg">
                 <FileText className="w-6 h-6 text-gray-600" />
               </div>
-              <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>New Arrival</span>
+              <span
+                className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}
+              >
+                New Arrival
+              </span>
             </div>
-            <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{newlyAddedDiamonds}</div>
+            <div
+              className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}
+            >
+              {newlyAddedDiamonds}
+            </div>
           </div>
 
           {/* Price Revised Card */}
-          <div 
-            style={{ borderColor: '#FAE9D0' }}
+          <div
+            style={{ borderColor: "#FAE9D0" }}
             className="bg-white rounded-xl p-6 shadow-md border"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2 rounded-lg">
                 <DollarSign className="w-6 h-6 text-gray-600" />
               </div>
-              <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Price Revised</span>
+              <span
+                className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}
+              >
+                Price Revised
+              </span>
             </div>
-            <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>0</div>
+            <div
+              className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}
+            >
+              0
+            </div>
           </div>
 
           {/* Cart Card - Clickable - Now showing real count */}
           <button
-            onClick={() => handleNavigate('/cart')}
-            style={{ borderColor: '#FAE9D0' }}
+            onClick={() => handleNavigate("/cart")}
+            style={{ borderColor: "#FAE9D0" }}
             className="bg-white rounded-xl p-6 shadow-md border hover:bg-gray-50 transition-colors text-left w-full"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2 rounded-lg">
                 <ShoppingCart className="w-6 h-6 text-gray-600" />
               </div>
-              <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Cart</span>
+              <span
+                className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}
+              >
+                Cart
+              </span>
             </div>
-            <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{cartCount}</div>
+            <div
+              className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}
+            >
+              {cartCount}
+            </div>
           </button>
         </div>
 
@@ -195,11 +267,15 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-12 gap-6">
           {/* Diamond Carousel - Left Side */}
           <div className="col-span-9 flex">
-            <div 
-              style={{ borderColor: '#FAE9D0' }}
+            <div
+              style={{ borderColor: "#FAE9D0" }}
               className="bg-white rounded-xl p-6 shadow-md border w-full flex flex-col"
             >
-              <h2 className={`text-2xl font-bold text-gray-900 mb-6 ${mavenPro.className}`}>Limited Edition</h2>
+              <h2
+                className={`text-2xl font-bold text-gray-900 mb-6 ${mavenPro.className}`}
+              >
+                Limited Edition
+              </h2>
               <div className="flex items-center justify-between flex-1">
                 <button
                   onClick={prevSlide}
@@ -207,41 +283,46 @@ export default function AdminDashboard() {
                 >
                   <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
-                
+
                 <div className="flex gap-4 flex-1 justify-center items-center">
-                  {mockDiamonds.slice(currentSlide, currentSlide + 3).map((diamond, index) => (
-                    <div 
-                      key={index} 
-                      style={{ borderColor: '#FAE9D0' }}
-                      className="bg-white border rounded-xl p-4 w-56"
-                    >
-                      <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
-                        <video
-                          className="w-32 h-32 object-cover rounded"
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                        >
-                          <source src="/New-Videos/auth-bg.mp4" type="video/mp4" />
-                        </video>
-                      </div>
-                      <div className="text-center space-y-2">
-                        <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
-                          <span>{diamond.shape}</span>
-                          <span>{diamond.carat}</span>
-                          <span>{diamond.color}</span>
-                          <span>{diamond.clarity}</span>
+                  {mockDiamonds
+                    .slice(currentSlide, currentSlide + 3)
+                    .map((diamond, index) => (
+                      <div
+                        key={index}
+                        style={{ borderColor: "#FAE9D0" }}
+                        className="bg-white border rounded-xl p-4 w-56"
+                      >
+                        <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
+                          <video
+                            className="w-32 h-32 object-cover rounded"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                          >
+                            <source
+                              src="/New-Videos/auth-bg.mp4"
+                              type="video/mp4"
+                            />
+                          </video>
                         </div>
-                        <div className="flex justify-center gap-2 text-sm text-gray-600">
-                          <span>-{diamond.cut}</span>
-                          <span>{diamond.polish}</span>
-                          <span>{diamond.symmetry}</span>
-                          <span>{diamond.lab}</span>
+                        <div className="text-center space-y-2">
+                          <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
+                            <span>{diamond.shape}</span>
+                            <span>{diamond.carat}</span>
+                            <span>{diamond.color}</span>
+                            <span>{diamond.clarity}</span>
+                          </div>
+                          <div className="flex justify-center gap-2 text-sm text-gray-600">
+                            <span>-{diamond.cut}</span>
+                            <span>{diamond.polish}</span>
+                            <span>{diamond.symmetry}</span>
+                            <span>{diamond.lab}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
 
                 <button
@@ -257,31 +338,47 @@ export default function AdminDashboard() {
           {/* Right Section - Hold Stone & Upcoming List */}
           <div className="col-span-3 flex flex-col gap-6">
             {/* Hold Stone Card */}
-            <div 
-              style={{ borderColor: '#FAE9D0' }}
+            <div
+              style={{ borderColor: "#FAE9D0" }}
               className="bg-white rounded-xl p-6 shadow-md border flex-1 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <Package className="w-6 h-6 text-gray-600" />
                 </div>
-                <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Hold Stone</span>
+                <span
+                  className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}
+                >
+                  Hold Stone
+                </span>
               </div>
-              <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{mockStats.holdStone}</div>
+              <div
+                className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}
+              >
+                {mockStats.holdStone}
+              </div>
             </div>
 
             {/* Upcoming List Card */}
-            <div 
-              style={{ borderColor: '#FAE9D0' }}
+            <div
+              style={{ borderColor: "#FAE9D0" }}
               className="bg-white rounded-xl p-6 shadow-md border flex-1 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2 rounded-lg">
                   <List className="w-6 h-6 text-gray-600" />
                 </div>
-                <span className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}>Upcoming List</span>
+                <span
+                  className={`text-lg font-semibold text-gray-900 ${mavenPro.className}`}
+                >
+                  Upcoming List
+                </span>
               </div>
-              <div className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}>{mockStats.upcomingList}</div>
+              <div
+                className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}
+              >
+                {mockStats.upcomingList}
+              </div>
             </div>
           </div>
         </div>

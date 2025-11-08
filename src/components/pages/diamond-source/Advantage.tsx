@@ -62,7 +62,7 @@ export default function DiamondSourceAdvantages() {
                 <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#D4AF37] flex items-center justify-center flex-shrink-0">
                   <FaCheck className="text-white" size={24} />
                 </div>
-                
+
                 {/* Content */}
                 <div className="flex-1 pt-0.5">
                   {/* Title */}

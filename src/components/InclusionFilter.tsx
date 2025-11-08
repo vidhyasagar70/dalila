@@ -99,10 +99,7 @@ export default function InclusionFilter({
                 <button
                   key={option}
                   onClick={() =>
-                    toggleInclusion(
-                      type.key as keyof InclusionFilters,
-                      option,
-                    )
+                    toggleInclusion(type.key as keyof InclusionFilters, option)
                   }
                   className={`${mavenPro.className} font-normal transition-colors ${
                     isSelected(type.key as keyof InclusionFilters, option)

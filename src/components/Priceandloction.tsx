@@ -31,29 +31,29 @@ const LOCATION_OPTIONS = [
   { label: "BEL", value: "BEL", apiValue: "BE" },
   { label: "DUB", value: "DUB", apiValue: "DU" },
   { label: "HK", value: "HK", apiValue: "HK" },
-  { label: "NYC", value: "NYC", apiValue: "NY" }
+  { label: "NYC", value: "NYC", apiValue: "NY" },
 ];
 
 const LAB_OPTIONS = [
   { label: "GIA", value: "GIA", apiValue: "GIA" },
   { label: "IGI", value: "IGI", apiValue: "IGI" },
   { label: "HRD", value: "HRD", apiValue: "HRD" },
-  { label: "OTHERS", value: "OTHERS", apiValue: "OTHERS" }
+  { label: "OTHERS", value: "OTHERS", apiValue: "OTHERS" },
 ];
 
 // Note: Price filtering is now done server-side via API
 // This function is kept for backward compatibility
 export const matchesPriceFilters = (
   diamond: Diamond,
-  filters: PriceLocationFilters
+  filters: PriceLocationFilters,
 ): boolean => {
   return true; // All filtering done server-side
 };
 
 export const getLocationApiValues = (selectedLocations: string[]): string[] => {
   return selectedLocations
-    .map(location => {
-      const option = LOCATION_OPTIONS.find(opt => opt.value === location);
+    .map((location) => {
+      const option = LOCATION_OPTIONS.find((opt) => opt.value === location);
       return option?.apiValue || location;
     })
     .filter(Boolean);
@@ -61,8 +61,8 @@ export const getLocationApiValues = (selectedLocations: string[]): string[] => {
 
 export const getLabApiValues = (selectedLabs: string[]): string[] => {
   return selectedLabs
-    .map(lab => {
-      const option = LAB_OPTIONS.find(opt => opt.value === lab);
+    .map((lab) => {
+      const option = LAB_OPTIONS.find((opt) => opt.value === lab);
       return option?.apiValue || lab;
     })
     .filter(Boolean);
@@ -100,7 +100,10 @@ export default function PriceLocationFilter({
     type: "from" | "to",
   ) => {
     const currentValue = parseFloat(filters[field]?.[type] || "0");
-    const newValue = Math.max(field === "discount" ? -999 : 0, currentValue - 0.01).toFixed(2);
+    const newValue = Math.max(
+      field === "discount" ? -999 : 0,
+      currentValue - 0.01,
+    ).toFixed(2);
     handlePriceChange(field, type, newValue);
   };
 
@@ -137,7 +140,10 @@ export default function PriceLocationFilter({
   };
 
   return (
-    <div className="mb-2 mt-1" style={{ width: "100%", fontFamily: "Maven Pro, sans-serif" }}>
+    <div
+      className="mb-2 mt-1"
+      style={{ width: "100%", fontFamily: "Maven Pro, sans-serif" }}
+    >
       {/* Price Section */}
       <div
         className="flex items-center gap-1.5 px-2.5 py-1.5"

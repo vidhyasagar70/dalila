@@ -64,11 +64,14 @@ export default function ShadesFilter({
           height={18}
           className="w-7 h-6"
         />
-        <span className="text-base font-normal text-white" style={{ fontFamily: 'Maven Pro, sans-serif' }}>
+        <span
+          className="text-base font-normal text-white"
+          style={{ fontFamily: "Maven Pro, sans-serif" }}
+        >
           Shades
         </span>
       </div>
-      
+
       {/* Shades Options */}
       <div
         className="bg-white"
@@ -102,14 +105,14 @@ export default function ShadesFilter({
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              fontFamily: 'Maven Pro, sans-serif',
+              fontFamily: "Maven Pro, sans-serif",
             }}
           >
             {option}
           </button>
         ))}
       </div>
-      
+
       {/* Other Filter Sections */}
       <div>
         {FILTER_SECTIONS.map((section) => (
@@ -119,7 +122,10 @@ export default function ShadesFilter({
               className="flex items-center gap-1.5 px-2.5 py-1.5"
               style={{ backgroundColor: "#000033" }}
             >
-              <span className="text-base  text-white" style={{ fontFamily: 'Maven Pro, sans-serif' }}>
+              <span
+                className="text-base  text-white"
+                style={{ fontFamily: "Maven Pro, sans-serif" }}
+              >
                 {section.label}
               </span>
             </div>
@@ -162,7 +168,7 @@ export default function ShadesFilter({
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    fontFamily: 'Maven Pro, sans-serif',
+                    fontFamily: "Maven Pro, sans-serif",
                   }}
                 >
                   {option}

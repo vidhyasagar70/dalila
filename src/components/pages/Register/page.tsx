@@ -31,7 +31,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -100,7 +100,6 @@ export default function RegisterPage() {
       return false;
     }
 
-   
     return true;
   };
 
@@ -406,8 +405,6 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
-
-             
 
               {/* Submit Button */}
               <button

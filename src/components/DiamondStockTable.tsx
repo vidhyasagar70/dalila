@@ -53,7 +53,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
+  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
+    null,
+  );
 
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
@@ -65,42 +67,51 @@ const DiamondStockTable: React.FC<TableProps> = ({
         setError(null);
 
         const hasSearchTerm = searchTerm && searchTerm.trim();
-        const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
-        const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
+        const hasShapeFilter =
+          Array.isArray(selectedShape) && selectedShape.length > 0;
+        const hasColorFilter =
+          Array.isArray(selectedColor) && selectedColor.length > 0;
         const hasCaratFilter =
           (selectedMinCarat && selectedMinCarat.trim()) ||
           (selectedMaxCarat && selectedMaxCarat.trim());
-        const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
+        const hasFluorFilter =
+          Array.isArray(selectedFluor) && selectedFluor.length > 0;
         const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
         const hasCutFilter = selectedCut && selectedCut.trim();
         const hasPolishFilter = selectedPolish && selectedPolish.trim();
         const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
-        const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
-        const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
-        
+        const hasLocationFilter =
+          Array.isArray(selectedLocations) && selectedLocations.length > 0;
+        const hasLabFilter =
+          Array.isArray(selectedLabs) && selectedLabs.length > 0;
+
         // Check for price filters
-        const hasPriceFilter = 
+        const hasPriceFilter =
           priceFilters &&
-          ((priceFilters.pricePerCarat?.from && priceFilters.pricePerCarat.from.trim()) ||
-           (priceFilters.pricePerCarat?.to && priceFilters.pricePerCarat.to.trim()) ||
-           (priceFilters.discount?.from && priceFilters.discount.from.trim()) ||
-           (priceFilters.discount?.to && priceFilters.discount.to.trim()) ||
-           (priceFilters.totalPrice?.from && priceFilters.totalPrice.from.trim()) ||
-           (priceFilters.totalPrice?.to && priceFilters.totalPrice.to.trim()));
-        
-        const hasInclusionFilter = 
+          ((priceFilters.pricePerCarat?.from &&
+            priceFilters.pricePerCarat.from.trim()) ||
+            (priceFilters.pricePerCarat?.to &&
+              priceFilters.pricePerCarat.to.trim()) ||
+            (priceFilters.discount?.from &&
+              priceFilters.discount.from.trim()) ||
+            (priceFilters.discount?.to && priceFilters.discount.to.trim()) ||
+            (priceFilters.totalPrice?.from &&
+              priceFilters.totalPrice.from.trim()) ||
+            (priceFilters.totalPrice?.to && priceFilters.totalPrice.to.trim()));
+
+        const hasInclusionFilter =
           inclusionFilters &&
           (inclusionFilters.centerBlack.length > 0 ||
-           inclusionFilters.centerWhite.length > 0 ||
-           inclusionFilters.sideBlack.length > 0 ||
-           inclusionFilters.sideWhite.length > 0);
-        
+            inclusionFilters.centerWhite.length > 0 ||
+            inclusionFilters.sideBlack.length > 0 ||
+            inclusionFilters.sideWhite.length > 0);
+
         // Check for Key Symbol filters
-        const hasKeySymbolFilter = 
+        const hasKeySymbolFilter =
           keySymbolFilters &&
           (keySymbolFilters.keyToSymbol.length > 0 ||
-           keySymbolFilters.eyCln.length > 0 ||
-           keySymbolFilters.hAndA.length > 0);
+            keySymbolFilters.eyCln.length > 0 ||
+            keySymbolFilters.hAndA.length > 0);
 
         const hasAnyFilter =
           hasShapeFilter ||
@@ -179,7 +190,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
               filters.SW = inclusionFilters.sideWhite.join(",");
             }
           }
-          
+
           // Add Key Symbol filters to API call
           if (hasKeySymbolFilter && keySymbolFilters) {
             if (keySymbolFilters.keyToSymbol.length > 0) {
@@ -196,26 +207,41 @@ const DiamondStockTable: React.FC<TableProps> = ({
           // Add Price filters to API call
           if (hasPriceFilter && priceFilters) {
             // $/ct (NET_RATE)
-            if (priceFilters.pricePerCarat.from && priceFilters.pricePerCarat.from.trim()) {
+            if (
+              priceFilters.pricePerCarat.from &&
+              priceFilters.pricePerCarat.from.trim()
+            ) {
               filters.netRateMin = parseFloat(priceFilters.pricePerCarat.from);
             }
-            if (priceFilters.pricePerCarat.to && priceFilters.pricePerCarat.to.trim()) {
+            if (
+              priceFilters.pricePerCarat.to &&
+              priceFilters.pricePerCarat.to.trim()
+            ) {
               filters.netRateMax = parseFloat(priceFilters.pricePerCarat.to);
             }
-            
+
             // Disc% (DISC_PER)
-            if (priceFilters.discount.from && priceFilters.discount.from.trim()) {
+            if (
+              priceFilters.discount.from &&
+              priceFilters.discount.from.trim()
+            ) {
               filters.discPerMin = parseFloat(priceFilters.discount.from);
             }
             if (priceFilters.discount.to && priceFilters.discount.to.trim()) {
               filters.discPerMax = parseFloat(priceFilters.discount.to);
             }
-            
+
             // Total $ (NET_VALUE)
-            if (priceFilters.totalPrice.from && priceFilters.totalPrice.from.trim()) {
+            if (
+              priceFilters.totalPrice.from &&
+              priceFilters.totalPrice.from.trim()
+            ) {
               filters.netValueMin = parseFloat(priceFilters.totalPrice.from);
             }
-            if (priceFilters.totalPrice.to && priceFilters.totalPrice.to.trim()) {
+            if (
+              priceFilters.totalPrice.to &&
+              priceFilters.totalPrice.to.trim()
+            ) {
               filters.netValueMax = parseFloat(priceFilters.totalPrice.to);
             }
           }
@@ -245,7 +271,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
       } catch (err) {
         console.error("Error fetching diamonds:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to fetch diamonds"
+          err instanceof Error ? err.message : "Failed to fetch diamonds",
         );
         setData([]);
       } finally {
@@ -415,14 +441,19 @@ const DiamondStockTable: React.FC<TableProps> = ({
             selectedFluor ||
             selectedMinCarat ||
             selectedMaxCarat ||
-            (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+            (Array.isArray(selectedLocations) &&
+              selectedLocations.length > 0) ||
             (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
-            (keySymbolFilters?.keyToSymbol && keySymbolFilters.keyToSymbol.length > 0) ||
+            (keySymbolFilters?.keyToSymbol &&
+              keySymbolFilters.keyToSymbol.length > 0) ||
             (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
             (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0) ||
-            (priceFilters?.pricePerCarat?.from || priceFilters?.pricePerCarat?.to ||
-             priceFilters?.discount?.from || priceFilters?.discount?.to ||
-             priceFilters?.totalPrice?.from || priceFilters?.totalPrice?.to)
+            priceFilters?.pricePerCarat?.from ||
+            priceFilters?.pricePerCarat?.to ||
+            priceFilters?.discount?.from ||
+            priceFilters?.discount?.to ||
+            priceFilters?.totalPrice?.from ||
+            priceFilters?.totalPrice?.to
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
@@ -433,9 +464,9 @@ const DiamondStockTable: React.FC<TableProps> = ({
 
   return (
     <>
-      <div className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}>
-       
-
+      <div
+        className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
+      >
         <div className="bg-white shadow-sm flex flex-col rounded-lg">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">

@@ -1,5 +1,3 @@
-
-
 import SecureSourceBanner from "@/components/pages/securesource/Bannersection";
 import SecureSourceHero from "@/components/pages/securesource/Herosection";
 import SecureSourceshowcase from "@/components/pages/securesource/Showcase";
@@ -9,12 +7,11 @@ export default function Contact() {
   return (
     <>
       <main className="relative">
-        <SecureSourceBanner/>
-        <SecureSourceHero/>
-        <SecureSourceshowcase/>
-        <S2SAdvantages/>
-        <SecureContact/>
-    
+        <SecureSourceBanner />
+        <SecureSourceHero />
+        <SecureSourceshowcase />
+        <S2SAdvantages />
+        <SecureContact />
       </main>
     </>
   );

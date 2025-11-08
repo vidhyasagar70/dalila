@@ -279,7 +279,7 @@ export default function CartPage() {
     a.download = "cart-items.csv";
     a.click();
     window.URL.revokeObjectURL(url);
-    
+
     addToast("success", "Cart items exported successfully");
   };
 
@@ -325,7 +325,10 @@ export default function CartPage() {
         getCookie("authToken") || localStorage.getItem("authToken");
 
       if (!authToken) {
-        addToast("error", "Authentication token not found. Please log in again.");
+        addToast(
+          "error",
+          "Authentication token not found. Please log in again.",
+        );
         setIsEmailSending(false);
         return;
       }

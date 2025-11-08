@@ -201,7 +201,7 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, 
+  withCredentials: true,
 });
 
 // Request interceptor
@@ -435,200 +435,199 @@ export const diamondApi = {
   getAllNoPagination: () =>
     api.get<{ diamonds: Diamond[] }>("/api/diamonds/all"),
 
+  search: (filters: {
+    color?: string;
+    clarity?: string;
+    cut?: string;
+    shape?: string;
+    polish?: string;
+    symmetry?: string;
+    minCarats?: number;
+    maxCarats?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    lab?: string;
+    location?: string;
+    stage?: string;
+    page?: number;
+    limit?: number;
+    fluorescence?: string;
+    searchTerm?: string;
+    CN?: string;
+    CW?: string;
+    SN?: string;
+    SW?: string;
+    keyToSymbols?: string;
+    eyCln?: string;
+    hAndA?: string;
+    netRateMin?: number;
+    netRateMax?: number;
+    netValueMin?: number;
+    netValueMax?: number;
+    discPerMin?: number;
+    discPerMax?: number;
+  }) => {
+    const queryParams = new URLSearchParams();
 
-search: (filters: {
-  color?: string;
-  clarity?: string;
-  cut?: string;
-  shape?: string;
-  polish?: string;
-  symmetry?: string;
-  minCarats?: number;
-  maxCarats?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  lab?: string;
-  location?: string;
-  stage?: string;
-  page?: number;
-  limit?: number;
-  fluorescence?: string;
-  searchTerm?: string;
-  CN?: string;
-  CW?: string;
-  SN?: string;
-  SW?: string;
-  keyToSymbols?: string; 
-  eyCln?: string;        
-  hAndA?: string;   
-  netRateMin?: number;
-netRateMax?: number;
-netValueMin?: number;
-netValueMax?: number;
-discPerMin?: number;
-discPerMax?: number;     
-}) => {
-  const queryParams = new URLSearchParams();
+    // Helper function to add multiple values as separate query parameters
+    const addMultipleParams = (paramName: string, value: string) => {
+      if (!value) return;
 
-  // Helper function to add multiple values as separate query parameters
-  const addMultipleParams = (paramName: string, value: string) => {
-    if (!value) return;
-    
-    const values = value
-      .split(",")
-      .map((v) => v.trim())
-      .filter(Boolean);
-    
-    // Add each value as a separate query parameter for OR logic
-    values.forEach((val) => {
-      queryParams.append(paramName, val);
-    });
-  };
+      const values = value
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
 
-  // Handle SHAPE
-  if (filters.shape) {
-    addMultipleParams("SHAPE", filters.shape);
-  }
+      // Add each value as a separate query parameter for OR logic
+      values.forEach((val) => {
+        queryParams.append(paramName, val);
+      });
+    };
 
-  // Handle COLOR
-  if (filters.color) {
-    addMultipleParams("COLOR", filters.color);
-  }
+    // Handle SHAPE
+    if (filters.shape) {
+      addMultipleParams("SHAPE", filters.shape);
+    }
 
-  // Handle CLARITY
-  if (filters.clarity) {
-    addMultipleParams("CLARITY", filters.clarity);
-  }
+    // Handle COLOR
+    if (filters.color) {
+      addMultipleParams("COLOR", filters.color);
+    }
 
-  // Handle CUT
-  if (filters.cut) {
-    addMultipleParams("CUT", filters.cut);
-  }
+    // Handle CLARITY
+    if (filters.clarity) {
+      addMultipleParams("CLARITY", filters.clarity);
+    }
 
-  // Handle POLISH
-  if (filters.polish) {
-    addMultipleParams("POL", filters.polish);
-  }
+    // Handle CUT
+    if (filters.cut) {
+      addMultipleParams("CUT", filters.cut);
+    }
 
-  // Handle SYMMETRY
-  if (filters.symmetry) {
-    addMultipleParams("SYM", filters.symmetry);
-  }
+    // Handle POLISH
+    if (filters.polish) {
+      addMultipleParams("POL", filters.polish);
+    }
 
-  // Handle FLUORESCENCE
-  if (filters.fluorescence) {
-    addMultipleParams("FLOUR", filters.fluorescence);
-  }
+    // Handle SYMMETRY
+    if (filters.symmetry) {
+      addMultipleParams("SYM", filters.symmetry);
+    }
 
-  // Handle LOCATION
-  if (filters.location) {
-    addMultipleParams("LOCATION", filters.location);
-  }
+    // Handle FLUORESCENCE
+    if (filters.fluorescence) {
+      addMultipleParams("FLOUR", filters.fluorescence);
+    }
 
-  // Handle LAB
-  if (filters.lab) {
-    addMultipleParams("LAB", filters.lab);
-  }
+    // Handle LOCATION
+    if (filters.location) {
+      addMultipleParams("LOCATION", filters.location);
+    }
 
-  // Handle INCLUSIONS
-  if (filters.CN) {
-    addMultipleParams("CN", filters.CN);
-  }
+    // Handle LAB
+    if (filters.lab) {
+      addMultipleParams("LAB", filters.lab);
+    }
 
-  if (filters.CW) {
-    addMultipleParams("CW", filters.CW);
-  }
+    // Handle INCLUSIONS
+    if (filters.CN) {
+      addMultipleParams("CN", filters.CN);
+    }
 
-  if (filters.SN) {
-    addMultipleParams("SN", filters.SN);
-  }
+    if (filters.CW) {
+      addMultipleParams("CW", filters.CW);
+    }
 
-  if (filters.SW) {
-    addMultipleParams("SW", filters.SW);
-  }
+    if (filters.SN) {
+      addMultipleParams("SN", filters.SN);
+    }
 
-  // Handle KEY_TO_SYMBOLS - Server-side filtering
-  if (filters.keyToSymbols) {
-    addMultipleParams("KEY_TO_SYMBOLS", filters.keyToSymbols);
-  }
+    if (filters.SW) {
+      addMultipleParams("SW", filters.SW);
+    }
 
-  // Handle EY_CLN - Server-side filtering
-  if (filters.eyCln) {
-    addMultipleParams("EY_CLN", filters.eyCln);
-  }
+    // Handle KEY_TO_SYMBOLS - Server-side filtering
+    if (filters.keyToSymbols) {
+      addMultipleParams("KEY_TO_SYMBOLS", filters.keyToSymbols);
+    }
 
-  // Handle H_AND_A - Server-side filtering
-  if (filters.hAndA) {
-    addMultipleParams("H_AND_A", filters.hAndA);
-  }
+    // Handle EY_CLN - Server-side filtering
+    if (filters.eyCln) {
+      addMultipleParams("EY_CLN", filters.eyCln);
+    }
 
-  // Handle CARAT RANGE
-  if (filters.minCarats !== undefined) {
-    queryParams.append("CARATS_MIN", filters.minCarats.toString());
-  }
-  if (filters.maxCarats !== undefined) {
-    queryParams.append("CARATS_MAX", filters.maxCarats.toString());
-  }
+    // Handle H_AND_A - Server-side filtering
+    if (filters.hAndA) {
+      addMultipleParams("H_AND_A", filters.hAndA);
+    }
 
-  // Handle PRICE RANGE
-  if (filters.minPrice !== undefined) {
-    queryParams.append("MIN_PRICE", filters.minPrice.toString());
-  }
-  if (filters.maxPrice !== undefined) {
-    queryParams.append("MAX_PRICE", filters.maxPrice.toString());
-  }
+    // Handle CARAT RANGE
+    if (filters.minCarats !== undefined) {
+      queryParams.append("CARATS_MIN", filters.minCarats.toString());
+    }
+    if (filters.maxCarats !== undefined) {
+      queryParams.append("CARATS_MAX", filters.maxCarats.toString());
+    }
 
-  // Handle STAGE
-  if (filters.stage) {
-    addMultipleParams("STAGE", filters.stage);
-  }
-  if (filters.netRateMin !== undefined) {
-  queryParams.append("NET_RATE_MIN", filters.netRateMin.toString());
-}
-if (filters.netRateMax !== undefined) {
-  queryParams.append("NET_RATE_MAX", filters.netRateMax.toString());
-}
-if (filters.netValueMin !== undefined) {
-  queryParams.append("NET_VALUE_MIN", filters.netValueMin.toString());
-}
-if (filters.netValueMax !== undefined) {
-  queryParams.append("NET_VALUE_MAX", filters.netValueMax.toString());
-}
-if (filters.discPerMin !== undefined) {
-  queryParams.append("DISC_PER_MIN", filters.discPerMin.toString());
-}
-if (filters.discPerMax !== undefined) {
-  queryParams.append("DISC_PER_MAX", filters.discPerMax.toString());
-}
+    // Handle PRICE RANGE
+    if (filters.minPrice !== undefined) {
+      queryParams.append("MIN_PRICE", filters.minPrice.toString());
+    }
+    if (filters.maxPrice !== undefined) {
+      queryParams.append("MAX_PRICE", filters.maxPrice.toString());
+    }
 
-  // Handle SEARCH TERM
-  if (filters.searchTerm) {
-    queryParams.append("searchTerm", filters.searchTerm);
-  }
+    // Handle STAGE
+    if (filters.stage) {
+      addMultipleParams("STAGE", filters.stage);
+    }
+    if (filters.netRateMin !== undefined) {
+      queryParams.append("NET_RATE_MIN", filters.netRateMin.toString());
+    }
+    if (filters.netRateMax !== undefined) {
+      queryParams.append("NET_RATE_MAX", filters.netRateMax.toString());
+    }
+    if (filters.netValueMin !== undefined) {
+      queryParams.append("NET_VALUE_MIN", filters.netValueMin.toString());
+    }
+    if (filters.netValueMax !== undefined) {
+      queryParams.append("NET_VALUE_MAX", filters.netValueMax.toString());
+    }
+    if (filters.discPerMin !== undefined) {
+      queryParams.append("DISC_PER_MIN", filters.discPerMin.toString());
+    }
+    if (filters.discPerMax !== undefined) {
+      queryParams.append("DISC_PER_MAX", filters.discPerMax.toString());
+    }
 
-  // Handle PAGINATION
-  if (filters.page !== undefined) {
-    queryParams.append("page", filters.page.toString());
-  }
-  if (filters.limit !== undefined) {
-    queryParams.append("limit", filters.limit.toString());
-  }
+    // Handle SEARCH TERM
+    if (filters.searchTerm) {
+      queryParams.append("searchTerm", filters.searchTerm);
+    }
 
-  const queryString = queryParams.toString();
-  const endpoint = queryString
-    ? `/api/diamonds/search?${queryString}`
-    : "/api/diamonds/search";
+    // Handle PAGINATION
+    if (filters.page !== undefined) {
+      queryParams.append("page", filters.page.toString());
+    }
+    if (filters.limit !== undefined) {
+      queryParams.append("limit", filters.limit.toString());
+    }
 
-  console.log("Search API called with URL:", endpoint);
+    const queryString = queryParams.toString();
+    const endpoint = queryString
+      ? `/api/diamonds/search?${queryString}`
+      : "/api/diamonds/search";
 
-  return apiClient
-    .get<ApiResponse<PaginationData<Diamond>>>(endpoint)
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Search error:", error);
-      throw error;
-    });
-},
+    console.log("Search API called with URL:", endpoint);
+
+    return apiClient
+      .get<ApiResponse<PaginationData<Diamond>>>(endpoint)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Search error:", error);
+        throw error;
+      });
+  },
   // Get filter options
   getFilterOptions: async (): Promise<ApiResponse<FilterOptions> | null> => {
     try {
@@ -641,7 +640,6 @@ if (filters.discPerMax !== undefined) {
       return null;
     }
   },
-
 
   sync: (credentials: { username: string; password: string }) =>
     api.post<{ message: string }>("/api/diamonds/sync", credentials),
@@ -670,7 +668,7 @@ if (filters.discPerMax !== undefined) {
       throw error;
     }
   },
-getDashboardStats: async (): Promise<ApiResponse<DashboardStats> | null> => {
+  getDashboardStats: async (): Promise<ApiResponse<DashboardStats> | null> => {
     try {
       const token = getAuthToken();
       if (!token || token.trim() === "") {
@@ -679,16 +677,15 @@ getDashboardStats: async (): Promise<ApiResponse<DashboardStats> | null> => {
       }
 
       const response = await apiClient.get<ApiResponse<DashboardStats>>(
-        "/api/diamonds/dashboard"
+        "/api/diamonds/dashboard",
       );
-      
+
       return response.data;
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
       return null;
     }
   },
-  
 };
 
 export const cartApi = {
@@ -958,42 +955,41 @@ export const userApi = {
   updateEmail: (newEmail: string) =>
     api.put<{ message: string }>("/api/users", "update-email", { newEmail }),
 
-  updatePassword: async (data: { 
-  email: string; 
-  newPassword: string;
-  otp: string;
-}) => {
-  try {
-    const response = await apiClient.put<ApiResponse<{ 
-      message: string;
-      user?: User;
-    }>>(
-      "/api/users/update-password",
-      data
-    );
-    return response.data;
-  } catch (error: unknown) {
-    console.error("Update password error:", error);
-    
-    if (error && typeof error === "object" && "response" in error) {
-      const axiosError = error as {
-        response?: { 
-          data?: { error?: string; message?: string };
-          status?: number;
+  updatePassword: async (data: {
+    email: string;
+    newPassword: string;
+    otp: string;
+  }) => {
+    try {
+      const response = await apiClient.put<
+        ApiResponse<{
+          message: string;
+          user?: User;
+        }>
+      >("/api/users/update-password", data);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Update password error:", error);
+
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: {
+            data?: { error?: string; message?: string };
+            status?: number;
+          };
         };
-      };
-      
-      if (axiosError.response?.data) {
-        throw new Error(
-          axiosError.response.data.error ||
-          axiosError.response.data.message ||
-          "Failed to update password"
-        );
+
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to update password",
+          );
+        }
       }
+      throw error;
     }
-    throw error;
-  }
-},
+  },
 
   submitCustomerData: async (data: {
     email?: string; // Add email parameter
@@ -1256,7 +1252,7 @@ export const blogApi = {
   }) => {
     try {
       const queryParams = new URLSearchParams();
-      
+
       if (params?.page) queryParams.append("page", params.page.toString());
       if (params?.limit) queryParams.append("limit", params.limit.toString());
       if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
@@ -1277,7 +1273,7 @@ export const blogApi = {
   getById: async (blogId: string) => {
     try {
       const response = await apiClient.get<BlogResponseSingle>(
-        `/api/blogs/${blogId}`
+        `/api/blogs/${blogId}`,
       );
       return response.data;
     } catch (error) {
@@ -1301,15 +1297,15 @@ export const blogApi = {
       }
 
       const queryParams = new URLSearchParams();
-      
+
       if (params?.page) queryParams.append("page", params.page.toString());
       if (params?.limit) queryParams.append("limit", params.limit.toString());
       if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
       if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
 
       const queryString = queryParams.toString();
-      const endpoint = queryString 
-        ? `/api/admin/blogs?${queryString}` 
+      const endpoint = queryString
+        ? `/api/admin/blogs?${queryString}`
         : "/api/admin/blogs";
 
       const response = await apiClient.get<BlogPaginationData>(endpoint);
@@ -1333,13 +1329,13 @@ export const blogApi = {
       }
 
       const queryParams = new URLSearchParams();
-      
+
       if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
       if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
 
       const queryString = queryParams.toString();
-      const endpoint = queryString 
-        ? `/api/admin/blogs/all?${queryString}` 
+      const endpoint = queryString
+        ? `/api/admin/blogs/all?${queryString}`
         : "/api/admin/blogs/all";
 
       const response = await apiClient.get<BlogResponseAll>(endpoint);
@@ -1359,13 +1355,13 @@ export const blogApi = {
       }
 
       console.log("Creating blog with data:", data);
-      
+
       // Use the correct endpoint: /api/admin/blogs (not /api/admin/blogs/all)
       const response = await apiClient.post<BlogResponseSingle>(
         "/api/admin/blogs",
-        data
+        data,
       );
-      
+
       console.log("Blog created successfully:", response.data);
       return response.data;
     } catch (error: unknown) {
@@ -1378,7 +1374,7 @@ export const blogApi = {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Failed to create blog"
+              "Failed to create blog",
           );
         }
       }
@@ -1389,7 +1385,7 @@ export const blogApi = {
   // Admin: Update blog
   update: async (
     blogId: string,
-    data: { title?: string; description?: string }
+    data: { title?: string; description?: string },
   ) => {
     try {
       const token = getAuthToken();
@@ -1399,7 +1395,7 @@ export const blogApi = {
 
       const response = await apiClient.put<BlogResponseSingle>(
         `/api/admin/blogs/${blogId}`,
-        data
+        data,
       );
       return response.data;
     } catch (error: unknown) {
@@ -1412,7 +1408,7 @@ export const blogApi = {
           throw new Error(
             axiosError.response.data.error ||
               axiosError.response.data.message ||
-              "Failed to update blog"
+              "Failed to update blog",
           );
         }
       }
@@ -1429,7 +1425,7 @@ export const blogApi = {
       }
 
       const response = await apiClient.delete<ApiResponse<{ message: string }>>(
-        `/api/admin/blogs/${blogId}`
+        `/api/admin/blogs/${blogId}`,
       );
       return response.data;
     } catch (error) {
@@ -1446,17 +1442,17 @@ export const healthCheck = () => api.get<{ status: string }>("/health");
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 
 // Export types
-export type { 
-  FilterOptions, 
-  Diamond, 
-  User, 
-  CartItem, 
-  Quotation, 
+export type {
+  FilterOptions,
+  Diamond,
+  User,
+  CartItem,
+  Quotation,
   DashboardStats,
   Blog,
   BlogPaginationData,
   BlogResponseAll,
-  BlogResponseSingle
+  BlogResponseSingle,
 };
 // Export API object
 const apiExport = {
@@ -1468,6 +1464,5 @@ const apiExport = {
   blogApi,
   healthCheck,
 };
-
 
 export default apiExport;

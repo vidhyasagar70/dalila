@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { diamondApi } from "@/lib/api";
 import type {
   DiamondData,
@@ -50,17 +46,29 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   const filterKey = useMemo(() => {
     return JSON.stringify({
       searchTerm,
-      selectedShape: Array.isArray(selectedShape) ? selectedShape.sort().join(',') : '',
-      selectedColor: Array.isArray(selectedColor) ? selectedColor.sort().join(',') : '',
+      selectedShape: Array.isArray(selectedShape)
+        ? selectedShape.sort().join(",")
+        : "",
+      selectedColor: Array.isArray(selectedColor)
+        ? selectedColor.sort().join(",")
+        : "",
       selectedMinCarat,
       selectedMaxCarat,
-      selectedFluor: Array.isArray(selectedFluor) ? selectedFluor.sort().join(',') : '',
-      selectedClarity: Array.isArray(selectedClarity) ? selectedClarity.sort().join(',') : '',
+      selectedFluor: Array.isArray(selectedFluor)
+        ? selectedFluor.sort().join(",")
+        : "",
+      selectedClarity: Array.isArray(selectedClarity)
+        ? selectedClarity.sort().join(",")
+        : "",
       selectedCut,
       selectedPolish,
       selectedSymmetry,
-      selectedLocations: Array.isArray(selectedLocations) ? selectedLocations.sort().join(',') : '',
-      selectedLabs: Array.isArray(selectedLabs) ? selectedLabs.sort().join(',') : '',
+      selectedLocations: Array.isArray(selectedLocations)
+        ? selectedLocations.sort().join(",")
+        : "",
+      selectedLabs: Array.isArray(selectedLabs)
+        ? selectedLabs.sort().join(",")
+        : "",
     });
   }, [
     searchTerm,
@@ -84,18 +92,24 @@ const DiamondGridView: React.FC<GridViewProps> = ({
         setError(null);
 
         const hasSearchTerm = searchTerm && searchTerm.trim();
-        const hasShapeFilter = Array.isArray(selectedShape) && selectedShape.length > 0;
-        const hasColorFilter = Array.isArray(selectedColor) && selectedColor.length > 0;
+        const hasShapeFilter =
+          Array.isArray(selectedShape) && selectedShape.length > 0;
+        const hasColorFilter =
+          Array.isArray(selectedColor) && selectedColor.length > 0;
         const hasCaratFilter =
           (selectedMinCarat && selectedMinCarat.trim()) ||
           (selectedMaxCarat && selectedMaxCarat.trim());
-        const hasFluorFilter = Array.isArray(selectedFluor) && selectedFluor.length > 0;
-        const hasClarityFilter = Array.isArray(selectedClarity) && selectedClarity.length > 0;
+        const hasFluorFilter =
+          Array.isArray(selectedFluor) && selectedFluor.length > 0;
+        const hasClarityFilter =
+          Array.isArray(selectedClarity) && selectedClarity.length > 0;
         const hasCutFilter = selectedCut && selectedCut.trim();
         const hasPolishFilter = selectedPolish && selectedPolish.trim();
         const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
-        const hasLocationFilter = Array.isArray(selectedLocations) && selectedLocations.length > 0;
-        const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
+        const hasLocationFilter =
+          Array.isArray(selectedLocations) && selectedLocations.length > 0;
+        const hasLabFilter =
+          Array.isArray(selectedLabs) && selectedLabs.length > 0;
 
         const hasAnyFilter =
           hasShapeFilter ||
@@ -183,7 +197,7 @@ const DiamondGridView: React.FC<GridViewProps> = ({
       } catch (err) {
         console.error("Grid View - Error fetching diamonds:", err);
         setError(
-          err instanceof Error ? err.message : "Failed to fetch diamonds"
+          err instanceof Error ? err.message : "Failed to fetch diamonds",
         );
         setData([]);
       } finally {
@@ -247,7 +261,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
             selectedMinCarat ||
             selectedMaxCarat ||
-            (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+            (Array.isArray(selectedLocations) &&
+              selectedLocations.length > 0) ||
             (Array.isArray(selectedLabs) && selectedLabs.length > 0)
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
@@ -261,7 +276,8 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
             selectedMinCarat ||
             selectedMaxCarat ||
-            (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
+            (Array.isArray(selectedLocations) &&
+              selectedLocations.length > 0) ||
             (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
             searchTerm) && (
             <div className="text-sm text-gray-500 mt-2 space-y-1">
@@ -286,9 +302,10 @@ const DiamondGridView: React.FC<GridViewProps> = ({
                   {selectedMaxCarat || "∞"}
                 </p>
               )}
-              {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
-                <p>Location: {selectedLocations.join(", ")}</p>
-              )}
+              {Array.isArray(selectedLocations) &&
+                selectedLocations.length > 0 && (
+                  <p>Location: {selectedLocations.join(", ")}</p>
+                )}
               {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
                 <p>Lab: {selectedLabs.join(", ")}</p>
               )}
@@ -360,11 +377,12 @@ const DiamondGridView: React.FC<GridViewProps> = ({
                 Carat: {selectedMinCarat || "0"} - {selectedMaxCarat || "∞"}
               </span>
             )}
-            {Array.isArray(selectedLocations) && selectedLocations.length > 0 && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                Location: {selectedLocations.join(", ")}
-              </span>
-            )}
+            {Array.isArray(selectedLocations) &&
+              selectedLocations.length > 0 && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                  Location: {selectedLocations.join(", ")}
+                </span>
+              )}
             {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Lab: {selectedLabs.join(", ")}

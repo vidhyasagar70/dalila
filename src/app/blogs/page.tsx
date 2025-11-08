@@ -2,7 +2,16 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Marcellus, Jost } from "next/font/google";
-import { Calendar, User, ChevronLeft, ChevronRight, Loader2, Plus, X, Edit2 } from "lucide-react";
+import {
+  Calendar,
+  User,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Plus,
+  X,
+  Edit2,
+} from "lucide-react";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
 import { blogApi, type Blog } from "@/lib/api";
 
@@ -77,7 +86,7 @@ export default function BlogsPage() {
 
       if (response && response.data) {
         setBlogs(response.data);
-        
+
         if (response.pagination) {
           setTotalPages(response.pagination.totalPages);
           setTotalRecords(response.pagination.totalRecords);
@@ -279,13 +288,13 @@ export default function BlogsPage() {
             <div className="text-center mb-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="w-32"></div>
-                
+
                 <h1
                   className={`text-4xl md:text-5xl lg:text-6xl text-[#2d2d2d] font-normal tracking-tight ${marcellus.className}`}
                 >
                   Our Blog
                 </h1>
-                
+
                 <div className="w-32 flex justify-end">
                   {isAdmin && (
                     <button
@@ -294,7 +303,9 @@ export default function BlogsPage() {
                       title="Add New Blog"
                     >
                       <Plus size={20} />
-                      <span className={`text-sm font-semibold ${jost.className}`}>
+                      <span
+                        className={`text-sm font-semibold ${jost.className}`}
+                      >
                         Add Blog
                       </span>
                     </button>
@@ -346,7 +357,10 @@ export default function BlogsPage() {
                           className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-md hover:bg-[#c89e3a] hover:text-white transition-colors group"
                           title="Edit Blog"
                         >
-                          <Edit2 size={18} className="text-[#c89e3a] group-hover:text-white" />
+                          <Edit2
+                            size={18}
+                            className="text-[#c89e3a] group-hover:text-white"
+                          />
                         </button>
                       )}
 
@@ -407,7 +421,9 @@ export default function BlogsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className={`text-2xl font-semibold text-[#2d2d2d] ${marcellus.className}`}>
+              <h2
+                className={`text-2xl font-semibold text-[#2d2d2d] ${marcellus.className}`}
+              >
                 Add New Blog
               </h2>
               <button
@@ -457,7 +473,8 @@ export default function BlogsPage() {
                   disabled={isSubmitting}
                 />
                 <p className={`text-xs text-gray-500 mt-2 ${jost.className}`}>
-                  You can use HTML tags like &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, etc.
+                  You can use HTML tags like &lt;h1&gt;, &lt;p&gt;,
+                  &lt;strong&gt;, etc.
                 </p>
               </div>
 
@@ -497,7 +514,9 @@ export default function BlogsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className={`text-2xl font-semibold text-[#2d2d2d] ${marcellus.className}`}>
+              <h2
+                className={`text-2xl font-semibold text-[#2d2d2d] ${marcellus.className}`}
+              >
                 Edit Blog
               </h2>
               <button
@@ -547,7 +566,8 @@ export default function BlogsPage() {
                   disabled={isSubmitting}
                 />
                 <p className={`text-xs text-gray-500 mt-2 ${jost.className}`}>
-                  You can use HTML tags like &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, etc.
+                  You can use HTML tags like &lt;h1&gt;, &lt;p&gt;,
+                  &lt;strong&gt;, etc.
                 </p>
               </div>
 

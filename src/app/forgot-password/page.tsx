@@ -31,7 +31,8 @@ export default function ForgotPasswordPage() {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isResending, setIsResending] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -84,8 +85,13 @@ export default function ForgotPasswordPage() {
 
         if (errorMessage.includes("not found")) {
           setError("Email address not found. Please check and try again.");
-        } else if (errorMessage.includes("network") || errorMessage.includes("fetch")) {
-          setError("Unable to connect to server. Please check your internet connection.");
+        } else if (
+          errorMessage.includes("network") ||
+          errorMessage.includes("fetch")
+        ) {
+          setError(
+            "Unable to connect to server. Please check your internet connection.",
+          );
         } else {
           setError(errorMessage || "Failed to send OTP. Please try again.");
         }
@@ -131,24 +137,33 @@ export default function ForgotPasswordPage() {
       });
 
       if (response && response.success) {
-        setSuccess("Password updated successfully! Redirecting to login page...");
+        setSuccess(
+          "Password updated successfully! Redirecting to login page...",
+        );
 
         setTimeout(() => {
           router.push("/login");
         }, 2000);
       } else {
-        setError(response?.message || "Failed to update password. Please try again.");
+        setError(
+          response?.message || "Failed to update password. Please try again.",
+        );
       }
     } catch (err: unknown) {
       console.error("Update password error:", err);
 
       if (err instanceof Error) {
         const errorMessage = err.message;
-        
-        if (errorMessage.includes("Invalid OTP") || errorMessage.includes("expired")) {
+
+        if (
+          errorMessage.includes("Invalid OTP") ||
+          errorMessage.includes("expired")
+        ) {
           setError("Invalid or expired OTP. Please request a new OTP.");
         } else {
-          setError(errorMessage || "Failed to update password. Please try again.");
+          setError(
+            errorMessage || "Failed to update password. Please try again.",
+          );
         }
       } else {
         setError("Unable to connect to server. Please try again.");
@@ -175,7 +190,9 @@ export default function ForgotPasswordPage() {
         setOtp(["", "", "", ""]);
         inputRefs.current[0]?.focus();
       } else {
-        setError(response?.message || "Failed to resend OTP. Please try again.");
+        setError(
+          response?.message || "Failed to resend OTP. Please try again.",
+        );
       }
     } catch (err: unknown) {
       console.error("Resend OTP error:", err);
@@ -202,7 +219,10 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -248,23 +268,33 @@ export default function ForgotPasswordPage() {
           <div
             className="flex flex-col justify-between text-white px-10 py-10 w-full md:w-[50%] md:min-w-[350px]"
             style={{
-              background: "linear-gradient(to right, rgba(4, 8, 37, 0.9) 0%, rgba(4, 8, 37, 0.9) 100%)",
+              background:
+                "linear-gradient(to right, rgba(4, 8, 37, 0.9) 0%, rgba(4, 8, 37, 0.9) 100%)",
             }}
           >
             <div>
               <div className="flex items-center justify-center gap-3 mb-2">
                 <div className="relative w-[250px] md:w-[300px] h-[80px] md:h-[100px]">
-                  <Image src="/dalila_img/Dalila_Logo.png" alt="Dalila Diamonds" fill className="object-contain" />
+                  <Image
+                    src="/dalila_img/Dalila_Logo.png"
+                    alt="Dalila Diamonds"
+                    fill
+                    className="object-contain"
+                  />
                 </div>
               </div>
 
-              <h1 className={`text-4xl md:text-6xl font-light mt-2 mb-4 text-[#d4a018] text-center ${playFair.className}`}>
+              <h1
+                className={`text-4xl md:text-6xl font-light mt-2 mb-4 text-[#d4a018] text-center ${playFair.className}`}
+              >
                 Reset Password
               </h1>
 
               <p className="text-sm md:text-md mt-2 mb-8 font-normal opacity-90 text-center">
-                {currentStep === "email" && "Enter your email address and we'll send you a verification code to reset your password."}
-                {currentStep === "password" && "Enter the OTP sent to your email and create a new secure password for your account."}
+                {currentStep === "email" &&
+                  "Enter your email address and we'll send you a verification code to reset your password."}
+                {currentStep === "password" &&
+                  "Enter the OTP sent to your email and create a new secure password for your account."}
               </p>
             </div>
 
@@ -273,15 +303,21 @@ export default function ForgotPasswordPage() {
               <div className="flex justify-center items-center gap-3">
                 <div
                   className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                    currentStep === "email" ? "bg-[#d4a018] border-[#d4a018] text-white" : "bg-transparent border-[#FFD166] text-[#FFD166]"
+                    currentStep === "email"
+                      ? "bg-[#d4a018] border-[#d4a018] text-white"
+                      : "bg-transparent border-[#FFD166] text-[#FFD166]"
                   }`}
                 >
                   <Mail className="w-5 h-5" />
                 </div>
-                <div className={`w-12 h-0.5 ${currentStep === "password" ? "bg-[#FFD166]" : "bg-gray-600"}`} />
+                <div
+                  className={`w-12 h-0.5 ${currentStep === "password" ? "bg-[#FFD166]" : "bg-gray-600"}`}
+                />
                 <div
                   className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                    currentStep === "password" ? "bg-[#d4a018] border-[#d4a018] text-white" : "bg-transparent border-gray-600 text-gray-600"
+                    currentStep === "password"
+                      ? "bg-[#d4a018] border-[#d4a018] text-white"
+                      : "bg-transparent border-gray-600 text-gray-600"
                   }`}
                 >
                   <Lock className="w-5 h-5" />
@@ -315,7 +351,9 @@ export default function ForgotPasswordPage() {
             </div>
 
             <div className="relative z-10 w-full max-w-[400px]">
-              <h2 className={`text-2xl md:text-3xl font-semibold text-white mb-6 text-center ${playFair.className}`}>
+              <h2
+                className={`text-2xl md:text-3xl font-semibold text-white mb-6 text-center ${playFair.className}`}
+              >
                 {currentStep === "email" && "Enter Your Email"}
                 {currentStep === "password" && "Reset Your Password"}
               </h2>
@@ -385,7 +423,9 @@ export default function ForgotPasswordPage() {
                           inputMode="numeric"
                           maxLength={1}
                           value={digit}
-                          onChange={(e) => handleOtpChange(index, e.target.value)}
+                          onChange={(e) =>
+                            handleOtpChange(index, e.target.value)
+                          }
                           onKeyDown={(e) => handleKeyDown(index, e)}
                           onPaste={index === 0 ? handlePaste : undefined}
                           disabled={isLoading}
@@ -397,7 +437,10 @@ export default function ForgotPasswordPage() {
                     <div className="text-center mt-3">
                       {countdown > 0 ? (
                         <p className="text-xs text-gray-400">
-                          Resend code in <span className="text-[#FFD166] font-semibold">{countdown}s</span>
+                          Resend code in{" "}
+                          <span className="text-[#FFD166] font-semibold">
+                            {countdown}s
+                          </span>
                         </p>
                       ) : (
                         <button
@@ -437,7 +480,11 @@ export default function ForgotPasswordPage() {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
 
@@ -455,11 +502,17 @@ export default function ForgotPasswordPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                       disabled={isLoading}
                     >
-                      {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      {showConfirmPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
 

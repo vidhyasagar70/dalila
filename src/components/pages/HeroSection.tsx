@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
-  
+
   const slides = [
     { image: "/dalila_img/banners/Banneer-01.jpg" },
     { image: "/dalila_img/banners/new/Banner_02.jpg" },
@@ -20,7 +20,7 @@ export default function HeroSection() {
     const timer = setInterval(() => {
       nextSlide();
     }, 7000);
-    
+
     return () => clearInterval(timer);
   }, []);
 
@@ -65,7 +65,7 @@ export default function HeroSection() {
       {/* Background Carousel */}
       <div className="absolute inset-0">
         <div
-          className={`flex h-full ${isTransitioning ? 'transition-transform duration-1000 ease-out' : ''}`}
+          className={`flex h-full ${isTransitioning ? "transition-transform duration-1000 ease-out" : ""}`}
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {extendedSlides.map((slide, index) => (
@@ -96,7 +96,7 @@ export default function HeroSection() {
           className="w-6 h-6 md:w-14 md:h-11 text-[#c89e3a]"
         />
       </button>
-      
+
       <button
         onClick={nextSlide}
         aria-label="Next slide"
