@@ -95,7 +95,7 @@ export default function DiamondSourceshowcase() {
                 Our team searches our exclusive worldwide network for stones
                 that match your exact specifications, including goods not listed
                 on public online platforms. We have access to premium inventory
-                that others don't.
+                that others don&apos;t.
               </p>
             </div>
           </div>

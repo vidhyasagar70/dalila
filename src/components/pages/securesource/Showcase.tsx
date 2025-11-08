@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 
-import GoldButton from "@/components/ui/button";
+
 import { Marcellus, Jost } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
 const marcellus = Marcellus({

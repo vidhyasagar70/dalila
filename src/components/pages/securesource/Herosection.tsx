@@ -25,7 +25,7 @@ export default function SecureSourceHero() {
             <p
               className={`text-sm sm:text-base md:text-lg tracking-[0.2em] uppercase ${jost.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal`}
             >
-              Here's How We Help
+              Here&apos;s How We Help
             </p>
             <AnimatedContainer direction="up">
               <h3
