@@ -28,6 +28,7 @@ export default function Header() {
   const BlogDetailPage = pathname.startsWith("/blogs/");
   const SecurePage = pathname === "/secure-to-source";
   const diamondsourcePage = pathname === "/diamond-source";
+  const customerPage = pathname === "/customer-management";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -218,7 +219,7 @@ export default function Header() {
         BlogsPage ||
         BlogDetailPage ||
         SecurePage ||
-        diamondsourcePage ||
+        diamondsourcePage ||customerPage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -394,6 +395,12 @@ export default function Header() {
                           className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors"
                         >
                           Members
+                        </Link>
+                        <Link
+                          href="/customer-management"
+                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                        >
+                          Customer Management
                         </Link>
                       </div>
                     )}

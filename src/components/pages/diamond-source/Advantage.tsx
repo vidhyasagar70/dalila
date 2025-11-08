@@ -3,6 +3,7 @@ import { Marcellus, Jost } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
 import GoldButton from "@/components/ui/button";
 import { FaCheck } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const marcellus = Marcellus({
   variable: "--font-marcellus",
@@ -18,6 +19,8 @@ const jost = Jost({
 });
 
 export default function DiamondSourceAdvantages() {
+  const router = useRouter();
+  
   const advantages = [
     {
       title: "Weekly Shipments from India",
@@ -86,7 +89,7 @@ export default function DiamondSourceAdvantages() {
         {/* Contact Button */}
         <AnimatedContainer direction="up" delay={0.6}>
           <div className="flex justify-center mt-6">
-            <GoldButton text="CONTACT US" />
+            <GoldButton text="CONTACT US" onClick={() => router.push("/contact")} />
           </div>
         </AnimatedContainer>
       </div>
