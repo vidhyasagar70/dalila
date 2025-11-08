@@ -8,7 +8,7 @@ export default function HeroSection() {
   const [isTransitioning, setIsTransitioning] = useState(true);
 
   const slides = [
-    { image: "/dalila_img/banners/Banneer-01.jpg" },
+    { image: "/dalila_img/banners/Banner-01-speedometer.jpg" },
     { image: "/dalila_img/banners/new/Banner_02.jpg" },
     { image: "/dalila_img/banners/new/Banner_03.jpg" },
   ];
