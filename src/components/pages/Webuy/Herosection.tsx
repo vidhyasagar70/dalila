@@ -27,7 +27,7 @@ export default function Webuyhero() {
               <h3
                 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight ${marcellus.className}`}
               >
-                Sell Your Diamonds With Dalila
+                Sell Your Diamonds<br/> With Dalila
               </h3>
             </AnimatedContainer>
             <h6
@@ -53,7 +53,7 @@ export default function Webuyhero() {
 
           <div className="relative pb-6 md:pb-8 lg:pb-12">
             <AnimatedContainer direction="scale-out">
-              <div className="relative w-full h-64 sm:h-80 md:h-96 bg-black rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative w-full h-64 sm:h-80 md:h-96 bg-black  overflow-hidden shadow-2xl">
                 <Image
                   src="/images/intro1.jpg"
                   alt="Diamond shapes collection"
