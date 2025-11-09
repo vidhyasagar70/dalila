@@ -172,9 +172,29 @@ export default function ContactUsPage() {
                     </div>
                     <div>
                       <p
+                        className={`text-gray-900 font-semibold text-base mb-1 ${jost.className}`}
+                      >
+                        Dalila Diamonds
+                      </p>
+                      <p
                         className={`text-gray-600 text-base ${jost.className}`}
                       >
-                        123 Diamond Street, Jewelry District, XYZ City
+                        Shreyas D. Ganghi
+                      </p>
+                      <p
+                        className={`text-gray-600 text-base ${jost.className}`}
+                      >
+                        Hoveninersstraat 30, Box - 105
+                      </p>
+                      <p
+                        className={`text-gray-600 text-base ${jost.className}`}
+                      >
+                        Office 326, 2018 Antwerpen
+                      </p>
+                      <p
+                        className={`text-gray-600 text-base mt-2 ${jost.className}`}
+                      >
+                        BTW BE: 0736.671.250
                       </p>
                     </div>
                   </div>
