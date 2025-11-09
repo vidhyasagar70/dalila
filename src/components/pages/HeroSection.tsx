@@ -1,10 +1,8 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
-  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
@@ -12,20 +10,14 @@ export default function HeroSection() {
     {
       image: "/dalila_img/banners/Banner-01-speedometer.jpg",
       title: "Timeless Elegance",
-      // Requirement: first banner -> /inventory
-      link: "/inventory",
     },
     {
       image: "/dalila_img/banners/new/Banner_02.jpg",
       title: "Modern Luxury",
-      // Requirement: second banner -> /secure-to-source
-      link: "/secure-to-source",
     },
     {
       image: "/dalila_img/banners/new/Banner_03.jpg",
       title: "Exclusive Collection",
-      // Requirement: third banner -> /weBuy
-      link: "/weBuy",
     },
   ];
 
@@ -76,12 +68,6 @@ export default function HeroSection() {
     return currentSlide - 1;
   };
 
-  const handleExploreClick = () => {
-    const activeIndex = getActiveIndex();
-    const target = slides[activeIndex]?.link || "/";
-    router.push(target);
-  };
-
   return (
     <section className="relative h-[calc(90vh+8rem)] flex items-center overflow-hidden bg-white">
       {/* Background Carousel */}
@@ -105,16 +91,6 @@ export default function HeroSection() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Explore Button - Left Side, Lower Position */}
-      <div className="absolute bottom-40 md:bottom-44 left-6 md:left-12 z-30 ml-26 ">
-        <button
-          onClick={handleExploreClick}
-          className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg hover:scale-105"
-        >
-          EXPLORE MORE
-        </button>
       </div>
 
       {/* Navigation Buttons */}
