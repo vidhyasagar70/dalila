@@ -1,16 +1,32 @@
 "use client";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
   const slides = [
-    { image: "/dalila_img/banners/Banner-01-speedometer.jpg" },
-    { image: "/dalila_img/banners/new/Banner_02.jpg" },
-    { image: "/dalila_img/banners/new/Banner_03.jpg" },
+    {
+      image: "/dalila_img/banners/Banner-01-speedometer.jpg",
+      title: "Timeless Elegance",
+      // Requirement: first banner -> /inventory
+      link: "/inventory",
+    },
+    {
+      image: "/dalila_img/banners/new/Banner_02.jpg",
+      title: "Modern Luxury",
+      // Requirement: second banner -> /secure-to-source
+      link: "/secure-to-source",
+    },
+    {
+      image: "/dalila_img/banners/new/Banner_03.jpg",
+      title: "Exclusive Collection",
+      // Requirement: third banner -> /weBuy
+      link: "/weBuy",
+    },
   ];
 
   // Create slides with clones at beginning and end for infinite loop
@@ -60,6 +76,12 @@ export default function HeroSection() {
     return currentSlide - 1;
   };
 
+  const handleExploreClick = () => {
+    const activeIndex = getActiveIndex();
+    const target = slides[activeIndex]?.link || "/";
+    router.push(target);
+  };
+
   return (
     <section className="relative h-[calc(90vh+8rem)] flex items-center overflow-hidden bg-white">
       {/* Background Carousel */}
@@ -73,16 +95,26 @@ export default function HeroSection() {
               key={index}
               className="relative min-w-full h-full flex-shrink-0"
             >
-              <Image
+              <img
                 src={slide.image}
                 alt={`Dalila Diamonds Banner ${((index - 1 + slides.length) % slides.length) + 1}`}
-                fill
-                className="object-cover"
-                priority={index === 1}
+                className="w-full h-full object-cover"
               />
+              {/* Dark overlay for better button visibility */}
+              <div className="absolute inset-0 bg-black/10" />
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Explore Button - Left Side, Lower Position */}
+      <div className="absolute bottom-40 md:bottom-44 left-6 md:left-12 z-30 ml-26 ">
+        <button
+          onClick={handleExploreClick}
+          className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg hover:scale-105"
+        >
+          EXPLORE MORE
+        </button>
       </div>
 
       {/* Navigation Buttons */}
@@ -91,8 +123,8 @@ export default function HeroSection() {
         aria-label="Previous slide"
         className="absolute left-4 md:-left-1 top-1/2 -translate-y-10 z-30 text-slate-900 rounded-full p-2 transition-all hover:scale-110"
       >
-        <IconChevronLeft
-          stroke={1}
+        <ChevronLeft
+          strokeWidth={1}
           className="w-6 h-6 md:w-14 md:h-11 text-[#c89e3a]"
         />
       </button>
@@ -102,8 +134,8 @@ export default function HeroSection() {
         aria-label="Next slide"
         className="absolute right-4 md:-right-1 top-1/2 -translate-y-10 z-30 text-slate-900 rounded-full p-2 transition-all hover:scale-110"
       >
-        <IconChevronRight
-          stroke={1}
+        <ChevronRight
+          strokeWidth={1}
           className="w-6 h-6 md:w-14 md:h-11 text-[#c89e3a]"
         />
       </button>
