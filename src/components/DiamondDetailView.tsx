@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowLeft, Loader2, Download, Play, X } from "lucide-react";
+import { ArrowLeft, Loader2, Download, Play, X, Clock, MessageCircle } from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
-import { cartApi } from "@/lib/api";
+import { cartApi, holdApi, queryApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 import toast from "react-hot-toast";
 
@@ -25,6 +25,41 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   const [selectedImage] = useState<string>(diamond.REAL_IMAGE || "");
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const [isAddingToHold, setIsAddingToHold] = useState(false);
+  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+  const [enquiryText, setEnquiryText] = useState("");
+  const [isSubmittingEnquiry, setIsSubmittingEnquiry] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  // Check user role on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let userStr = localStorage.getItem("user");
+      
+      // Fallback to cookies if not in localStorage
+      if (!userStr) {
+        const cookies = document.cookie.split(";");
+        const userCookie = cookies.find((c) => c.trim().startsWith("user="));
+        if (userCookie) {
+          try {
+            userStr = decodeURIComponent(userCookie.split("=")[1].trim());
+          } catch (e) {
+            console.error("Error decoding user cookie:", e);
+          }
+        }
+      }
+
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          setUserRole(user.role || null);
+        } catch (e) {
+          console.error("Error parsing user data:", e);
+          setUserRole(null);
+        }
+      }
+    }
+  }, []);
 
   // Use actual certificate and video URLs from backend - no dummy data
   const certificateUrl =
@@ -84,6 +119,86 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   const handleVideoClick = () => {
     if (videoUrl) {
       setIsPlayingVideo(true);
+    }
+  };
+
+  const handleAddToHold = async () => {
+    try {
+      setIsAddingToHold(true);
+
+      const response = await holdApi.add(diamond.STONE_NO);
+
+      if (response?.success) {
+        toast.success(`${diamond.STONE_NO} added to hold successfully!`);
+      } else {
+        toast.error(response?.message || "Failed to add to hold");
+      }
+    } catch (error: unknown) {
+      console.error("Error adding to hold:", error);
+
+      let errorMessage = "Failed to add to hold. Please try again.";
+      if (error && typeof error === "object" && "response" in error) {
+        const err = error as {
+          response?: { status?: number; data?: { error?: string } };
+          message?: string;
+        };
+        if (err.response?.status === 401) {
+          errorMessage = "Please log in to add items to hold.";
+        } else if (err.response?.data?.error) {
+          errorMessage = err.response.data.error;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setIsAddingToHold(false);
+    }
+  };
+
+  const handleEnquirySubmit = async () => {
+    if (!enquiryText.trim()) {
+      toast.error("Please enter your query");
+      return;
+    }
+
+    try {
+      setIsSubmittingEnquiry(true);
+
+      const response = await queryApi.create({
+        stoneNo: diamond.STONE_NO,
+        query: enquiryText.trim(),
+      });
+
+      if (response?.success) {
+        toast.success("Query submitted successfully!");
+        setEnquiryText("");
+        setIsEnquiryOpen(false);
+      } else {
+        toast.error(response?.message || "Failed to submit query");
+      }
+    } catch (error: unknown) {
+      console.error("Error submitting query:", error);
+
+      let errorMessage = "Failed to submit query. Please try again.";
+      if (error && typeof error === "object" && "response" in error) {
+        const err = error as {
+          response?: { status?: number; data?: { error?: string } };
+          message?: string;
+        };
+        if (err.response?.status === 401) {
+          errorMessage = "Please log in to submit queries.";
+        } else if (err.response?.data?.error) {
+          errorMessage = err.response.data.error;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmittingEnquiry(false);
     }
   };
 
@@ -373,22 +488,54 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   <div className="border-t border-[#e9e2c6] pt-2 mt-2"></div>
                 </div>
 
-                {/* Add to Cart Button */}
+                {/* Action Buttons */}
                 <div className="space-y-3 mt-auto">
-                  <button
-                    onClick={handleAddToCart}
-                    disabled={isAddingToCart}
-                    className="w-full bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isAddingToCart ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Adding...
-                      </>
-                    ) : (
-                      "ADD TO CART"
-                    )}
-                  </button>
+                  {/* Add to Cart - Only for non-admin users */}
+                  {userRole !== "ADMIN" && (
+                    <button
+                      onClick={handleAddToCart}
+                      disabled={isAddingToCart}
+                      className="w-full bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAddingToCart ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Adding...
+                        </>
+                      ) : (
+                        "ADD TO CART"
+                      )}
+                    </button>
+                  )}
+
+                  {/* Hold Item and Enquiry - For both admin and users */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={handleAddToHold}
+                      disabled={isAddingToHold}
+                      className="bg-amber-600 text-white py-2.5 rounded font-semibold hover:bg-amber-700 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAddingToHold ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Adding...
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="w-4 h-4" />
+                          Hold Item
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => setIsEnquiryOpen(true)}
+                      className="bg-blue-600 text-white py-2.5 rounded font-semibold hover:bg-blue-700 transition-colors text-sm flex items-center justify-center gap-2"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      Enquiry
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -460,6 +607,85 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Enquiry Modal */}
+      {isEnquiryOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsEnquiryOpen(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-[#050C3A] text-white px-6 py-4 rounded-t-lg flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Submit Enquiry</h3>
+              <button
+                onClick={() => setIsEnquiryOpen(false)}
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Stone Number
+                </label>
+                <input
+                  type="text"
+                  value={diamond.STONE_NO}
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-50 text-gray-700"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Query <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={enquiryText}
+                  onChange={(e) => setEnquiryText(e.target.value)}
+                  placeholder="Enter your query here..."
+                  rows={5}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#050C3A] resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 bg-gray-50 rounded-b-lg flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setIsEnquiryOpen(false);
+                  setEnquiryText("");
+                }}
+                className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEnquirySubmit}
+                disabled={isSubmittingEnquiry || !enquiryText.trim()}
+                className="px-4 py-2 bg-[#050C3A] text-white rounded hover:bg-[#030822] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isSubmittingEnquiry ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Query"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

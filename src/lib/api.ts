@@ -1438,6 +1438,60 @@ export const blogApi = {
 // Health check
 export const healthCheck = () => api.get<{ status: string }>("/health");
 
+// Admin-only endpoints
+export const adminApi = {
+  // Users
+  getAllUsers: (params?: FetchParams) =>
+    api.get<PaginationData<User>>("/api/users", params),
+
+  // Carts (admin view of all users' carts)
+  getAllCarts: () => api.get<any>("/api/diamonds/cart/admin/all"),
+
+  // Holds with optional status filter: approved | pending | rejected
+  getAllHolds: (status?: string) =>
+    api.get<any>("/api/diamonds/hold/admin/all", status ? { status } as FetchParams : {} as FetchParams),
+
+  // All queries (admin)
+  getAllQueries: () => api.get<any>("/api/diamonds/queries/admin/all"),
+
+  // Reply to a query
+  replyToQuery: async (queryId: string, reply: string) => {
+    try {
+      const response = await apiClient.put<ApiResponse<any>>(
+        `/api/diamonds/queries/${queryId}/reply`,
+        { reply }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Reply to query error:", error);
+      throw error;
+    }
+  },
+
+  // Approve/Reject a hold
+  approveHold: (holdId: string) =>
+    api.post<any>(`/api/diamonds/hold/${holdId}/approval`, {}),
+  rejectHold: (holdId: string) =>
+    api.post<any>(`/api/diamonds/hold/${holdId}/reject`, {}),
+
+  // Create a hold (what it's for: place an item on hold for a user)
+  addHold: (payload: any) => api.post<any>("/api/diamonds/hold/add", payload),
+};
+
+// Hold API endpoints
+export const holdApi = {
+  // Add item to hold
+  add: (stoneNo: string) =>
+    api.post<{ message: string }>("/api/diamonds/hold/add", { stoneNo }),
+};
+
+// Query API endpoints
+export const queryApi = {
+  // Create a query
+  create: (data: { stoneNo: string; query: string }) =>
+    api.post<{ message: string }>("/api/diamonds/queries", data),
+};
+
 // Export token management functions
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 
@@ -1462,6 +1516,9 @@ const apiExport = {
   userApi,
   quotationApi,
   blogApi,
+  adminApi,
+  holdApi,
+  queryApi,
   healthCheck,
 };
 
