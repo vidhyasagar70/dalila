@@ -137,17 +137,27 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
           onAddToCart();
         }
       } else {
-        // Get error message from rejected promises
+        // Get error message from rejected promises or fulfilled but failed responses
         const errorMessage =
           results
-            .filter((r) => r.status === "rejected")
             .map((r) => {
-              const reason = r.reason;
-              return (
-                reason?.response?.data?.message ||
-                reason?.response?.data?.error ||
-                reason?.message
-              );
+              if (r.status === "rejected") {
+                const reason = r.reason;
+                return (
+                  reason?.response?.data?.message ||
+                  reason?.response?.data?.error ||
+                  reason?.message
+                );
+              } else if (r.status === "fulfilled") {
+                const value = r.value as {
+                  success?: boolean;
+                  message?: string;
+                };
+                if (!value?.success && value?.message) {
+                  return value.message;
+                }
+              }
+              return null;
             })
             .filter(Boolean)[0] ||
           "Failed to add diamonds to cart. Please try again.";

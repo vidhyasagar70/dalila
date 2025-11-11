@@ -346,16 +346,29 @@ export const api = {
       console.error("POST Error:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
-          response?: { data?: { error?: string; message?: string } };
+          response?: { 
+            data?: { 
+              error?: string; 
+              message?: string;
+              success?: boolean;
+            } 
+          };
         };
+        
+        // If backend returns a structured error response, return it instead of throwing
         if (axiosError.response?.data) {
-          throw new Error(
-            axiosError.response.data.error ||
-              axiosError.response.data.message ||
-              "Request failed",
-          );
+          const errorData = axiosError.response.data;
+          
+          // Return the error as a failed response instead of throwing
+          return {
+            success: false,
+            message: errorData.message || errorData.error || "Request failed",
+            error: errorData.error || errorData.message || "Request failed"
+          } as ApiResponse<T>;
         }
       }
+      
+      // For network errors or other issues, throw
       throw error;
     }
   },

@@ -84,7 +84,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       const response = await cartApi.add(diamond.STONE_NO);
 
       if (response?.success) {
-        toast.success(`${diamond.STONE_NO} added to cart successfully!`);
+        toast.success(response?.message || `${diamond.STONE_NO} added to cart successfully!`);
 
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("cart-updated"));
@@ -98,11 +98,13 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       let errorMessage = "Failed to add to cart. Please try again.";
       if (error && typeof error === "object" && "response" in error) {
         const err = error as {
-          response?: { status?: number; data?: { error?: string } };
+          response?: { status?: number; data?: { error?: string; message?: string } };
           message?: string;
         };
         if (err.response?.status === 401) {
           errorMessage = "Please log in to add items to cart.";
+        } else if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
         } else if (err.response?.data?.error) {
           errorMessage = err.response.data.error;
         } else if (err.message) {
@@ -129,21 +131,35 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       const response = await holdApi.add(diamond.STONE_NO);
 
       if (response?.success) {
-        toast.success(`${diamond.STONE_NO} added to hold successfully!`);
+        toast.success(response?.message || `${diamond.STONE_NO} added to hold successfully!`);
       } else {
+        // Backend returned success: false with a message
         toast.error(response?.message || "Failed to add to hold");
       }
     } catch (error: unknown) {
       console.error("Error adding to hold:", error);
 
+      // Extract message from error response
       let errorMessage = "Failed to add to hold. Please try again.";
+      
       if (error && typeof error === "object" && "response" in error) {
         const err = error as {
-          response?: { status?: number; data?: { error?: string } };
+          response?: { 
+            status?: number; 
+            data?: { 
+              error?: string; 
+              message?: string;
+              success?: boolean;
+            } 
+          };
           message?: string;
         };
+        
         if (err.response?.status === 401) {
           errorMessage = "Please log in to add items to hold.";
+        } else if (err.response?.data?.message) {
+          // Use the message from backend
+          errorMessage = err.response.data.message;
         } else if (err.response?.data?.error) {
           errorMessage = err.response.data.error;
         } else if (err.message) {
