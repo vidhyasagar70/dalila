@@ -513,7 +513,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     <button
                       onClick={handleAddToHold}
                       disabled={isAddingToHold}
-                      className="bg-amber-600 text-white py-2.5 rounded font-semibold hover:bg-amber-700 transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isAddingToHold ? (
                         <>
@@ -530,7 +530,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
                     <button
                       onClick={() => setIsEnquiryOpen(true)}
-                      className="bg-blue-600 text-white py-2.5 rounded font-semibold hover:bg-blue-700 transition-colors text-sm flex items-center justify-center gap-2"
+                      className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2"
                     >
                       <MessageCircle className="w-4 h-4" />
                       Enquiry

@@ -1,13 +1,43 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Marcellus, Jost } from "next/font/google";
 import { ChevronDown, ChevronUp, Send, MessageSquare, X } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { adminApi } from "@/lib/api";
+import { adminApi, Diamond, User } from "@/lib/api";
 import toast from "react-hot-toast";
 
 const marcellus = Marcellus({ variable: "--font-marcellus", weight: "400", subsets: ["latin"] });
 const jost = Jost({ variable: "--font-jost", weight: ["400","500","600","700"], subsets: ["latin"] });
+
+interface CartItem {
+  stoneNo: string;
+  diamond: Diamond;
+  addedAt: string;
+  _id: string;
+}
+
+interface HoldItem {
+  stoneNo: string;
+  diamond: Diamond;
+  status: string;
+  addedAt: string;
+  _id: string;
+}
+
+interface Query {
+  id: string;
+  _id: string;
+  userId: string;
+  stoneNo: string;
+  query: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  adminReply?: string;
+  repliedAt?: string;
+  diamond?: Diamond;
+}
 
 type Row = {
   id: string;
@@ -19,9 +49,9 @@ type Row = {
   businessType?: string;
   vatNumber?: string;
   address?: string;
-  itemsInCart?: any[];
-  holdedItems?: any[];
-  enquiries?: any[];
+  itemsInCart?: CartItem[];
+  holdedItems?: HoldItem[];
+  enquiries?: Query[];
 };
 
 export default function CustomerManagementPage() {
@@ -33,6 +63,9 @@ export default function CustomerManagementPage() {
   const [replyModal, setReplyModal] = useState<{ open: boolean; queryId: string; stoneNo: string } | null>(null);
   const [replyText, setReplyText] = useState("");
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+  const [processingHoldId, setProcessingHoldId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     let mounted = true;
@@ -52,7 +85,18 @@ export default function CustomerManagementPage() {
         ]);
 
         // Robust unwrapping of API responses
-        const unwrap = (res: any) => (res?.data?.data ?? res?.data ?? res ?? null);
+        const unwrap = <T,>(res: T): Record<string, unknown> | null => {
+          if (res && typeof res === 'object') {
+            const resObj = res as Record<string, unknown>;
+            const dataData = resObj?.data as Record<string, unknown> | undefined;
+            if (dataData && typeof dataData === 'object' && 'data' in dataData) {
+              return dataData.data as Record<string, unknown>;
+            }
+            if (dataData) return dataData;
+            return resObj;
+          }
+          return null;
+        };
 
         const usersData = unwrap(usersRes);
         const cartsData = unwrap(cartsRes);
@@ -63,60 +107,65 @@ export default function CustomerManagementPage() {
         const queriesData = unwrap(queriesRes);
 
         // Users
-        const users = (usersData?.users ?? usersData?.data ?? (Array.isArray(usersData) ? usersData : []) ?? []) as any[];
+        const users = (usersData?.users ?? usersData?.data ?? (Array.isArray(usersData) ? usersData : []) ?? []) as User[];
 
         // Carts: admin/all returns array with shape { cart: {..., userId}, user: { userId, ... }, totalItems }
-        const cartsArr = (cartsData?.carts ?? cartsData?.data ?? (Array.isArray(cartsData) ? cartsData : []) ?? []) as any[];
+        const cartsArr = (cartsData?.carts ?? cartsData?.data ?? (Array.isArray(cartsData) ? cartsData : []) ?? []) as Array<{
+          cart: { userId: string; items: CartItem[] };
+          user: User;
+          totalItems: number;
+        }>;
 
         // Holds: admin/all returns array with shape { hold: {..., userId, items: [...]}, user: {...} }
-        const holdsAll = (holdsAllData?.holds ?? holdsAllData?.data ?? (Array.isArray(holdsAllData) ? holdsAllData : []) ?? []) as any[];
+        const holdsAll = (holdsAllData?.holds ?? holdsAllData?.data ?? (Array.isArray(holdsAllData) ? holdsAllData : []) ?? []) as Array<{
+          hold: { userId: string; items: HoldItem[] };
+          user: User;
+        }>;
 
         // Queries: admin/all returns data.groupedQueries -> [ { email, queries: [...] } ]
-        let queries: any[] = [];
+        let queries: Query[] = [];
         if (queriesData?.groupedQueries && Array.isArray(queriesData.groupedQueries)) {
-          queries = queriesData.groupedQueries.flatMap((g: any) => Array.isArray(g.queries) ? g.queries : []);
+          queries = (queriesData.groupedQueries as Array<{ queries: Query[] }>).flatMap((g) => Array.isArray(g.queries) ? g.queries : []);
         } else if (queriesData?.queries && Array.isArray(queriesData.queries)) {
-          queries = queriesData.queries;
+          queries = queriesData.queries as Query[];
         } else if (Array.isArray(queriesData)) {
-          queries = queriesData;
+          queries = queriesData as Query[];
         }
 
         // Build lookup maps by userId
-        const cartByUser: Record<string, any[]> = {};
-        cartsArr.forEach((c: any) => {
-          const uid = c.cart?.userId || c.user?.userId || c.user?._id || c.userId || c.ownerId;
+        const cartByUser: Record<string, CartItem[]> = {};
+        cartsArr.forEach((c) => {
+          const uid: string = (c.cart?.userId || c.user?.userId || c.user?._id || (c.user as Record<string, unknown>).id || '') as string;
           if (!uid) return;
-          const items = c.cart?.items || c.items || [];
-          items.forEach((it: any) => {
-            const item = it?.diamond || it;
+          const items = c.cart?.items || [];
+          items.forEach((it) => {
             if (!cartByUser[uid]) cartByUser[uid] = [];
-            cartByUser[uid].push(item);
+            cartByUser[uid].push(it);
           });
         });
 
-        const holdsByUser: Record<string, any[]> = {};
-        holdsAll.forEach((h: any) => {
-          const uid = h.hold?.userId || h.user?.userId || h.user?._id || h.userId || h.ownerId;
+        const holdsByUser: Record<string, HoldItem[]> = {};
+        holdsAll.forEach((h) => {
+          const uid: string = (h.hold?.userId || h.user?.userId || h.user?._id || (h.user as Record<string, unknown>).id || '') as string;
           if (!uid) return;
-          const items = h.hold?.items || h.items || [];
-          items.forEach((it: any) => {
-            const item = { ...(it?.diamond || it), status: it?.status, addedAt: it?.addedAt, _id: it?._id };
+          const items = h.hold?.items || [];
+          items.forEach((it) => {
             if (!holdsByUser[uid]) holdsByUser[uid] = [];
-            holdsByUser[uid].push(item);
+            holdsByUser[uid].push(it);
           });
         });
 
-        const queriesByUser: Record<string, any[]> = {};
-        queries.forEach((q: any) => {
-          const uid = q.userId || q.user?._id || q.user;
-          if (!uid) return;
+        const queriesByUser: Record<string, Query[]> = {};
+        queries.forEach((q) => {
+          const uid: string = q.userId || '';
+          if (!uid || typeof uid !== 'string') return;
           queriesByUser[uid] = queriesByUser[uid] || [];
           queriesByUser[uid].push(q);
         });
 
         // Compose table rows from users
-        const composed: Row[] = (users || []).map((u: any) => ({
-          id: u.id || u._id || u.userId,
+        const composed: Row[] = (users || []).map((u: User) => ({
+          id: u.id || u._id || (u as Record<string, unknown>).userId as string || '',
           name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.username || u.email,
           username: u.username,
           email: u.email,
@@ -129,22 +178,37 @@ export default function CustomerManagementPage() {
             u.customerData?.address?.city,
             u.customerData?.address?.country,
           ].filter(Boolean).join(", "),
-          itemsInCart: cartByUser[u.id || u._id || u.userId] || [],
-          holdedItems: holdsByUser[u.id || u._id || u.userId] || [],
-          enquiries: queriesByUser[u.id || u._id || u.userId] || [],
+          itemsInCart: cartByUser[u.id || u._id || (u as Record<string, unknown>).userId as string || ''] || [],
+          holdedItems: holdsByUser[u.id || u._id || (u as Record<string, unknown>).userId as string || ''] || [],
+          enquiries: queriesByUser[u.id || u._id || (u as Record<string, unknown>).userId as string || ''] || [],
         }));
 
         if (!mounted) return;
         setRows(composed);
 
+        interface HoldData {
+          holds?: Array<{
+            hold?: { items?: Array<{ status?: string }> };
+            items?: Array<{ status?: string }>;
+            filteredItems?: Array<{ status?: string }>;
+          }>;
+          data?: Array<{
+            hold?: { items?: Array<{ status?: string }> };
+            items?: Array<{ status?: string }>;
+            filteredItems?: Array<{ status?: string }>;
+          }>;
+        }
+
         // Count holds by status robustly, supporting either filteredItems or full items list
-        const countStatus = (dataset: any, status: string) => {
-          const arr = (dataset?.holds ?? dataset?.data ?? (Array.isArray(dataset) ? dataset : [])) as any[];
+        const countStatus = (dataset: Record<string, unknown> | null, status: string) => {
+          if (!dataset) return 0;
+          const holdData = dataset as HoldData;
+          const arr = holdData?.holds ?? holdData?.data ?? (Array.isArray(dataset) ? dataset : []);
           if (!Array.isArray(arr)) return 0;
           return arr.reduce((sum, h) => {
             if (Array.isArray(h.filteredItems)) return sum + h.filteredItems.length;
             const items = h.hold?.items || h.items || [];
-            return sum + items.filter((it: any) => it?.status === status).length;
+            return sum + items.filter((it: { status?: string }) => it?.status === status).length;
           }, 0);
         };
 
@@ -154,9 +218,10 @@ export default function CustomerManagementPage() {
           approved: countStatus(holdsApprovedData, "approved"),
           rejected: countStatus(holdsRejectedData, "rejected"),
         });
-      } catch (e: any) {
+      } catch (e: unknown) {
+        const error = e as { message?: string };
         console.error("Failed to load admin data", e);
-        if (mounted) setError(e?.message || "Failed to load data");
+        if (mounted) setError(error?.message || "Failed to load data");
       } finally {
         if (mounted) setLoading(false);
       }
@@ -164,6 +229,19 @@ export default function CustomerManagementPage() {
     fetchAll();
     return () => { mounted = false; };
   }, []);
+
+  // Helper function to safely access Diamond properties
+  const getDiamondProp = (diamond: Diamond | HoldItem | CartItem | undefined, ...keys: string[]): string => {
+    if (!diamond) return "-";
+    const obj = diamond as Record<string, unknown>;
+    for (const key of keys) {
+      const value = obj[key];
+      if (value !== undefined && value !== null && value !== '') {
+        return String(value);
+      }
+    }
+    return "-";
+  };
 
   const toggleRow = (id: string) => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -193,6 +271,56 @@ export default function CustomerManagementPage() {
       toast.error(error?.response?.data?.message || "Failed to send reply");
     } finally {
       setIsSubmittingReply(false);
+    }
+  };
+
+  const handleApproveHold = async (holdId: string) => {
+    if (!holdId) {
+      toast.error("Invalid hold item");
+      return;
+    }
+
+    try {
+      setProcessingHoldId(holdId);
+      const response = await adminApi.approveHold(holdId);
+
+      if (response?.success) {
+        toast.success("Hold item approved successfully!");
+        // Refresh data
+        window.location.reload();
+      } else {
+        toast.error(response?.message || "Failed to approve hold item");
+      }
+    } catch (error: any) {
+      console.error("Error approving hold:", error);
+      toast.error(error?.response?.data?.message || "Failed to approve hold item");
+    } finally {
+      setProcessingHoldId(null);
+    }
+  };
+
+  const handleDeclineHold = async (holdId: string) => {
+    if (!holdId) {
+      toast.error("Invalid hold item");
+      return;
+    }
+
+    try {
+      setProcessingHoldId(holdId);
+      const response = await adminApi.rejectHold(holdId);
+
+      if (response?.success) {
+        toast.success("Hold item declined successfully!");
+        // Refresh data
+        window.location.reload();
+      } else {
+        toast.error(response?.message || "Failed to decline hold item");
+      }
+    } catch (error: any) {
+      console.error("Error declining hold:", error);
+      toast.error(error?.response?.data?.message || "Failed to decline hold item");
+    } finally {
+      setProcessingHoldId(null);
     }
   };
 
@@ -226,7 +354,7 @@ export default function CustomerManagementPage() {
     const rap = d?.RAP_PRICE || "-";
     const netVal = d?.NET_VALUE || "-";
     return (
-      <tr className="border-t border-gray-200">
+      <tr className="border-t border-[#E9E2C6]">
         <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{stone}</td>
         <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{loc}</td>
         <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{lab}</td>
@@ -244,6 +372,49 @@ export default function CustomerManagementPage() {
         {extraRight && <td className="py-2 pr-6 whitespace-nowrap text-right">{extraRight}</td>}
       </tr>
     );
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(rows.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentRows = rows.slice(startIndex, endIndex);
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      // Show all pages if total is less than max visible
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always show first page
+      pages.push(1);
+      
+      if (currentPage > 3) {
+        pages.push('...');
+      }
+      
+      // Show pages around current page
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (currentPage < totalPages - 2) {
+        pages.push('...');
+      }
+      
+      // Always show last page
+      pages.push(totalPages);
+    }
+    
+    return pages;
   };
 
   return (
@@ -307,7 +478,7 @@ export default function CustomerManagementPage() {
         </div>
 
         {/* Table */}
-        <div className="border border-gray-200 rounded-md overflow-hidden">
+        <div className="border border-[#E9E2C6] rounded-md overflow-hidden">
           <div className="hidden md:grid grid-cols-[60px_1.2fr_1.1fr_1.6fr_1.3fr_1fr_1.2fr_1.1fr_1.2fr_0.8fr_0.8fr_80px] items-center bg-[#0b1b35] text-white text-sm px-4 py-3">
             <div>Sr</div>
             <div>Name</div>
@@ -327,11 +498,11 @@ export default function CustomerManagementPage() {
             <div className="p-6 text-center text-sm text-gray-500">No records found.</div>
           )}
 
-          {(loading ? [] : rows).map((row, idx) => (
-            <div key={row.id} className="border-t border-gray-200">
+          {(loading ? [] : currentRows).map((row, idx) => (
+            <div key={row.id} className="border-t border-[#E9E2C6]">
               {/* Summary Row */}
-              <div className="grid md:grid-cols-[60px_1.2fr_1.1fr_1.6fr_1.3fr_1fr_1.2fr_1.1fr_1.2fr_0.8fr_0.8fr_80px] items-center px-4 py-3 text-sm">
-                <div className="font-medium text-gray-700">{idx + 1}</div>
+              <div className="grid md:grid-cols-[60px_1.2fr_1.1fr_1.6fr_1.3fr_1fr_1.2fr_1.1fr_1.2fr_0.8fr_0.8fr_80px] items-center px-4 py-3 text-sm border-b border-[#E9E2C6]">
+                <div className="font-medium text-gray-700">{startIndex + idx + 1}</div>
                 <div className="text-gray-800">{row.name || "-"}</div>
                 <div className="text-gray-700">{row.username || "-"}</div>
                 <div className="text-gray-700 truncate">{row.email || "-"}</div>
@@ -359,7 +530,7 @@ export default function CustomerManagementPage() {
                       <div className="overflow-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="text-[12px] text-gray-500">
+                            <tr className="text-[12px] text-gray-500 border-b border-[#E9E2C6]">
                               <th className="font-medium pr-6 pb-1 text-left">Stone</th>
                               <th className="font-medium pr-6 pb-1 text-left">Loc</th>
                               <th className="font-medium pr-6 pb-1 text-left">Lab</th>
@@ -394,7 +565,7 @@ export default function CustomerManagementPage() {
                       <div className="overflow-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="text-[12px] text-gray-500">
+                            <tr className="text-[12px] text-gray-500 border-b border-[#E9E2C6]">
                               <th className="font-medium pr-6 pb-1 text-left">Stone</th>
                               <th className="font-medium pr-6 pb-1 text-left">Loc</th>
                               <th className="font-medium pr-6 pb-1 text-left">Lab</th>
@@ -410,15 +581,54 @@ export default function CustomerManagementPage() {
                               <th className="font-medium pr-6 pb-1 text-left">Rap</th>
                               <th className="font-medium pr-6 pb-1 text-left">Net Value</th>
                               <th className="font-medium pr-6 pb-1 text-right">Status</th>
+                              <th className="font-medium pr-6 pb-1 text-right">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {row.holdedItems.map((it, i) => {
+                            {row.holdedItems.map((it, idx) => {
                               const d = it?.diamond || it;
+                              const itemStatus = (it?.status || "pending").toLowerCase();
+                              const itemId = it?._id;
                               return (
-                                <tr key={i} className="border-t border-gray-200">
-                                  {renderDiamondRow(d)}
+                                <tr key={idx} className="border-t border-[#E9E2C6]">
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'STONE_NO', 'stoneNo', 'STONE')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'LOCATION', 'LOC')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'LAB')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'SHAPE')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'CARATS', 'carats')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'COLOR')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'CLARITY')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'CUT')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'POL', 'POLISH')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'SYM', 'SYMMETRY')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'FLOUR', 'FLUOR')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'NET_RATE')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'RAP_PRICE')}</td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{getDiamondProp(d, 'NET_VALUE')}</td>
                                   <td className="py-2 pr-6 whitespace-nowrap text-right"><StatusBadge status={it?.status} /></td>
+                                  <td className="py-2 pr-6 whitespace-nowrap text-right">
+                                    {itemStatus === "pending" && (
+                                      <div className="flex items-center justify-end gap-2">
+                                        <button
+                                          onClick={() => handleApproveHold(itemId)}
+                                          disabled={processingHoldId === itemId}
+                                          className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                          {processingHoldId === itemId ? "..." : "Approve"}
+                                        </button>
+                                        <button
+                                          onClick={() => handleDeclineHold(itemId)}
+                                          disabled={processingHoldId === itemId}
+                                          className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                          {processingHoldId === itemId ? "..." : "Decline"}
+                                        </button>
+                                      </div>
+                                    )}
+                                    {(itemStatus === "approved" || itemStatus === "rejected") && (
+                                      <span className="text-xs text-gray-500">No actions</span>
+                                    )}
+                                  </td>
                                 </tr>
                               );
                             })}
@@ -443,7 +653,7 @@ export default function CustomerManagementPage() {
                           const diamond = q?.diamond;
 
                           return (
-                            <div key={i} className="border border-gray-200 rounded-md p-4 bg-gray-50">
+                            <div key={i} className="border border-[#E9E2C6] rounded-md p-4 bg-gray-50">
                               {/* Query Header */}
                               <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-2">
@@ -456,7 +666,7 @@ export default function CustomerManagementPage() {
 
                               {/* Diamond Details (if available) */}
                               {diamond && (
-                                <div className="mb-3 p-3 bg-white rounded border border-gray-200">
+                                <div className="mb-3 p-3 bg-white rounded border border-[#E9E2C6]">
                                   <p className="text-xs font-medium text-gray-600 mb-2">Diamond Details</p>
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
                                     <div><span className="text-gray-500">Shape:</span> <span className="font-medium">{diamond.SHAPE}</span></div>
@@ -474,7 +684,7 @@ export default function CustomerManagementPage() {
                               {/* Customer Query */}
                               <div className="mb-3">
                                 <p className="text-xs font-medium text-gray-600 mb-1">Customer Query:</p>
-                                <p className="text-sm text-gray-800 bg-white p-2 rounded border border-gray-200">{query}</p>
+                                <p className="text-sm text-gray-800 bg-white p-2 rounded border border-[#E9E2C6]">{query}</p>
                               </div>
 
                               {/* Admin Reply (if exists) */}
@@ -491,7 +701,7 @@ export default function CustomerManagementPage() {
                                 <div className="flex justify-end">
                                   <button
                                     onClick={() => setReplyModal({ open: true, queryId: q.id || q._id, stoneNo: stone })}
-                                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#030822] text-white text-sm rounded hover:bg-[#020615] transition-colors"
                                   >
                                     <Send size={14} />
                                     Reply
@@ -510,14 +720,46 @@ export default function CustomerManagementPage() {
           ))}
         </div>
 
-        {/* Pagination (UI only) */}
-        <div className="flex items-center gap-2 justify-center mt-6 text-sm">
-          {[1,2,3,4,5].map((p) => (
-            <button key={p} className={`border px-3 py-1 rounded-md ${p===1?"bg-[#0b1b35] text-white border-[#0b1b35]":"border-gray-300 text-gray-700"}`}>{p}</button>
-          ))}
-          <button className="border px-3 py-1 rounded-md border-gray-300 text-gray-700">…</button>
-          <button className="border px-3 py-1 rounded-md border-gray-300 text-gray-700">10</button>
-        </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2 justify-center mt-6 text-sm">
+            {/* Previous Button */}
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="border px-3 py-1 rounded-md border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              ←
+            </button>
+
+            {/* Page Numbers */}
+            {getPageNumbers().map((page, index) => (
+              <button
+                key={index}
+                onClick={() => typeof page === 'number' && setCurrentPage(page)}
+                disabled={page === '...'}
+                className={`border px-3 py-1 rounded-md transition-colors ${
+                  page === currentPage
+                    ? "bg-[#EAD9BE] text-gray-900 border-[#EAD9BE] font-semibold"
+                    : page === '...'
+                    ? "border-transparent text-gray-400 cursor-default"
+                    : "border-gray-300 text-gray-700 hover:bg-[#EAD9BE]"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            {/* Next Button */}
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className="border px-3 py-1 rounded-md border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              →
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Reply Modal */}
