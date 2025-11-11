@@ -268,12 +268,6 @@ export default function Header() {
                   className="absolute left-0 top-full mt-0 w-64 bg-white shadow-lg border border-gray-200 rounded-sm z-50"
                 >
                   <Link
-                    href="/weBuy"
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
-                  >
-                    We Buy
-                  </Link>
-                  <Link
                     href="/secure-to-source"
                     className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                   >
@@ -281,9 +275,15 @@ export default function Header() {
                   </Link>
                   <Link
                     href="/diamond-source"
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors"
+                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                   >
                     DS4U - Diamond Source For You
+                  </Link>
+                  <Link
+                    href="/sud"
+                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors"
+                  >
+                    SUD - Sell Your Diamonds
                   </Link>
                 </div>
               )}
@@ -510,13 +510,6 @@ export default function Header() {
                 </p>
                 <div className="pl-4 flex flex-col gap-2">
                   <Link
-                    href="/weBuy"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
-                  >
-                    We Buy
-                  </Link>
-                  <Link
                     href="/secure-to-source"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
@@ -529,6 +522,13 @@ export default function Header() {
                     className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
                   >
                     DS4U - Diamond Source For You
+                  </Link>
+                  <Link
+                    href="/sud"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                  >
+                    SUD - Sell Your Diamonds
                   </Link>
                 </div>
               </div>
