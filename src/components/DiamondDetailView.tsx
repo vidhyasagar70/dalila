@@ -506,52 +506,55 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
                 {/* Action Buttons */}
                 <div className="space-y-3 mt-auto">
-                  {/* Add to Cart - Only for non-admin users */}
+                  {/* All buttons - Only for non-admin users */}
                   {userRole !== "ADMIN" && (
-                    <button
-                      onClick={handleAddToCart}
-                      disabled={isAddingToCart}
-                      className="w-full bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isAddingToCart ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Adding...
-                        </>
-                      ) : (
-                        "ADD TO CART"
-                      )}
-                    </button>
+                    <>
+                      {/* Add to Cart */}
+                      <button
+                        onClick={handleAddToCart}
+                        disabled={isAddingToCart}
+                        className="w-full bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isAddingToCart ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Adding...
+                          </>
+                        ) : (
+                          "ADD TO CART"
+                        )}
+                      </button>
+
+                      {/* Hold Item and Enquiry */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={handleAddToHold}
+                          disabled={isAddingToHold}
+                          className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isAddingToHold ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Adding...
+                            </>
+                          ) : (
+                            <>
+                              <Clock className="w-4 h-4" />
+                              Hold Item
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          onClick={() => setIsEnquiryOpen(true)}
+                          className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          Enquiry
+                        </button>
+                      </div>
+                    </>
                   )}
-
-                  {/* Hold Item and Enquiry - For both admin and users */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={handleAddToHold}
-                      disabled={isAddingToHold}
-                      className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isAddingToHold ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Adding...
-                        </>
-                      ) : (
-                        <>
-                          <Clock className="w-4 h-4" />
-                          Hold Item
-                        </>
-                      )}
-                    </button>
-
-                    <button
-                      onClick={() => setIsEnquiryOpen(true)}
-                      className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      Enquiry
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
