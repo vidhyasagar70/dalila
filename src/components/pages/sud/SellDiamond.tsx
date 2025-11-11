@@ -72,55 +72,53 @@ export default function SellDiamondsProcess() {
         <div className="space-y-16 md:space-y-24">
           {steps.map((step, index) => (
             <div key={index} className="relative w-full">
-              {/* Image Section */}
-              <AnimatedContainer
-                direction={step.imagePosition === "left" ? "left" : "right"}
-                delay={0.2}
-              >
-                <div
-                  className={`relative w-full lg:w-1/2 ${
-                    step.imagePosition === "right" ? "ml-auto" : "mr-auto"
-                  }`}
-                >
-                  <Image
-                    src={step.image}
-                    alt={step.title}
-                    width={400}
-                    height={500}
-                    className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
-                    priority={index === 0}
-                  />
-                </div>
-              </AnimatedContainer>
-
-              {/* Content Section - Overlapping */}
               <div
-                className={`relative lg:absolute lg:top-1/2 lg:-translate-y-1/2 ${
-                  step.imagePosition === "right" ? "lg:left-0" : "lg:right-0"
-                } w-full lg:w-3/5 mt-8 lg:mt-0`}
+                className={`flex flex-col lg:flex-row gap-8 items-stretch ${
+                  step.imagePosition === "right" ? "lg:flex-row-reverse" : ""
+                }`}
               >
+                {/* Image Section */}
+                <AnimatedContainer
+                  direction={step.imagePosition === "left" ? "left" : "right"}
+                  delay={0.2}
+                >
+                  <div className="w-full lg:flex-1">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      width={400}
+                      height={500}
+                      className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
+                      priority={index === 0}
+                    />
+                  </div>
+                </AnimatedContainer>
+
+                {/* Content Section */}
                 <AnimatedContainer
                   direction={step.imagePosition === "left" ? "right" : "left"}
                   delay={0.4}
                 >
-                  <div className="bg-white border border-gray-200 p-10 md:p-12 lg:p-16 shadow-lg mx-4 lg:mx-0">
-                    <div className="mb-6">
+                  <div className="w-full lg:flex-1 flex items-center">
+                    <div className="bg-white border border-gray-200 p-10 md:p-12 lg:p-16 shadow-lg w-full">
+                      <div className="mb-6">
+                        <p
+                          className={`text-sm md:text-base text-gray-600 mb-3 ${marcellus.className}`}
+                        >
+                          {step.number}. {step.title}
+                        </p>
+                        <h2
+                          className={`text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-6 font-normal leading-tight ${marcellus.className}`}
+                        >
+                          {step.heading}
+                        </h2>
+                      </div>
                       <p
-                        className={`text-sm md:text-base text-gray-600 mb-3 ${marcellus.className}`}
+                        className={`text-base md:text-lg text-gray-600 leading-relaxed ${jost.className}`}
                       >
-                        {step.number}. {step.title}
+                        {step.description}
                       </p>
-                      <h2
-                        className={`text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-6 font-normal leading-tight ${marcellus.className}`}
-                      >
-                        {step.heading}
-                      </h2>
                     </div>
-                    <p
-                      className={`text-base md:text-lg text-gray-600 leading-relaxed ${jost.className}`}
-                    >
-                      {step.description}
-                    </p>
                   </div>
                 </AnimatedContainer>
               </div>

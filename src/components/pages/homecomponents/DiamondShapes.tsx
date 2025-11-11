@@ -113,7 +113,6 @@ export default function DiamondShapes() {
                     alt={`${shape.name} cut diamond`}
                     fill
                     style={{ objectFit: "cover" }}
-                    className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
                 <div className="py-2 px-2 text-center bg-[#c89e3a]">
@@ -141,7 +140,6 @@ export default function DiamondShapes() {
                     alt={`${shape.name} cut diamond`}
                     fill
                     style={{ objectFit: "cover" }}
-                    className="transition-transform duration-300 hover:scale-110"
                   />
                 </div>
                 <div className="py-3 px-3 text-center bg-[#c89e3a]">
@@ -171,7 +169,6 @@ export default function DiamondShapes() {
                       alt={`${shape.name} cut diamond`}
                       fill
                       style={{ objectFit: "cover" }}
-                      className="transition-transform duration-300 hover:scale-110"
                     />
                   </div>
                   <div className="py-3 px-4 text-center bg-[#c89e3a]">
@@ -196,7 +193,6 @@ export default function DiamondShapes() {
                       alt={`${shapes[6].name} cut diamond`}
                       fill
                       style={{ objectFit: "cover" }}
-                      className="transition-transform duration-300 hover:scale-110"
                     />
                   </div>
                   <div className="py-3 px-4 text-center bg-[#c89e3a]">
@@ -217,7 +213,6 @@ export default function DiamondShapes() {
                       alt={`${shapes[7].name} cut diamond`}
                       fill
                       style={{ objectFit: "cover" }}
-                      className="transition-transform duration-300 hover:scale-110"
                     />
                   </div>
                   <div className="py-3 px-4 text-center bg-[#c89e3a]">
@@ -238,7 +233,6 @@ export default function DiamondShapes() {
                       alt={`${shapes[8].name} cut diamond`}
                       fill
                       style={{ objectFit: "cover" }}
-                      className="transition-transform duration-300 hover:scale-110"
                     />
                   </div>
                   <div className="py-3 px-4 text-center bg-[#c89e3a]">
@@ -259,7 +253,6 @@ export default function DiamondShapes() {
                       alt={`${shapes[9].name} cut diamond`}
                       fill
                       style={{ objectFit: "cover" }}
-                      className="transition-transform duration-300 hover:scale-110"
                     />
                   </div>
                   <div className="py-3 px-4 text-center bg-[#c89e3a]">
