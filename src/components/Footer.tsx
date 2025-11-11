@@ -95,7 +95,7 @@ export default function Footer() {
               <h4 className="text-lg font-medium mb-6">Address</h4>
               <div className="text-white/70 space-y-2">
                 <p className="font-medium text-white">Dalila Diamonds</p>
-                <p>Shreyas D. Ganghi</p>
+                <p>Shreyas D. Gandhi</p>
                 <p>Hoveninersstraat 30, Box - 105</p>
                 <p>Office 326, 2018 Antwerpen</p>
                 <p className="mt-3">BTW BE: 0736.671.250</p>

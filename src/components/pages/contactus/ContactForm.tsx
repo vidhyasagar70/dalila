@@ -179,7 +179,7 @@ export default function ContactUsPage() {
                       <p
                         className={`text-gray-600 text-base ${jost.className}`}
                       >
-                        Shreyas D. Ganghi
+                        Shreyas D. Gandhi
                       </p>
                       <p
                         className={`text-gray-600 text-base ${jost.className}`}
