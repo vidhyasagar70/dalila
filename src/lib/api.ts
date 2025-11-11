@@ -1536,6 +1536,18 @@ export const adminApi = {
       return response.data;
     } catch (error: unknown) {
       console.error("Reply to query error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to reply to query",
+          );
+        }
+      }
       throw error;
     }
   },
@@ -1558,6 +1570,18 @@ export const adminApi = {
       return response.data;
     } catch (error: unknown) {
       console.error("Approve hold error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to approve hold",
+          );
+        }
+      }
       throw error;
     }
   },
@@ -1578,6 +1602,18 @@ export const adminApi = {
       return response.data;
     } catch (error: unknown) {
       console.error("Reject hold error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to reject hold",
+          );
+        }
+      }
       throw error;
     }
   },

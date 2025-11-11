@@ -39,6 +39,11 @@ interface Query {
   diamond?: Diamond;
 }
 
+interface ApiResponseData {
+  data?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
 type Row = {
   id: string;
   name?: string;
@@ -87,13 +92,13 @@ export default function CustomerManagementPage() {
         // Robust unwrapping of API responses
         const unwrap = <T,>(res: T): Record<string, unknown> | null => {
           if (res && typeof res === 'object') {
-            const resObj = res as Record<string, unknown>;
-            const dataData = resObj?.data as Record<string, unknown> | undefined;
+            const resObj = res as ApiResponseData;
+            const dataData = resObj?.data as ApiResponseData | undefined;
             if (dataData && typeof dataData === 'object' && 'data' in dataData) {
               return dataData.data as Record<string, unknown>;
             }
-            if (dataData) return dataData;
-            return resObj;
+            if (dataData) return dataData as Record<string, unknown>;
+            return resObj as Record<string, unknown>;
           }
           return null;
         };
@@ -164,24 +169,27 @@ export default function CustomerManagementPage() {
         });
 
         // Compose table rows from users
-        const composed: Row[] = (users || []).map((u: User) => ({
-          id: u.id || u._id || (u as Record<string, unknown>).userId as string || '',
-          name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.username || u.email,
-          username: u.username,
-          email: u.email,
-          phone: u.customerData?.phoneNumber,
-          company: u.customerData?.businessInfo?.companyName,
-          businessType: u.customerData?.businessInfo?.businessType,
-          vatNumber: u.customerData?.businessInfo?.vatNumber,
-          address: [
-            u.customerData?.address?.street,
-            u.customerData?.address?.city,
-            u.customerData?.address?.country,
-          ].filter(Boolean).join(", "),
-          itemsInCart: cartByUser[u.id || u._id || (u as Record<string, unknown>).userId as string || ''] || [],
-          holdedItems: holdsByUser[u.id || u._id || (u as Record<string, unknown>).userId as string || ''] || [],
-          enquiries: queriesByUser[u.id || u._id || (u as Record<string, unknown>).userId as string || ''] || [],
-        }));
+        const composed: Row[] = (users || []).map((u: User) => {
+          const userId = u.id || u._id || (u as Record<string, unknown>).userId as string || '';
+          return {
+            id: userId,
+            name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.username || u.email,
+            username: u.username,
+            email: u.email,
+            phone: u.customerData?.phoneNumber,
+            company: u.customerData?.businessInfo?.companyName,
+            businessType: u.customerData?.businessInfo?.businessType,
+            vatNumber: u.customerData?.businessInfo?.vatNumber,
+            address: [
+              u.customerData?.address?.street,
+              u.customerData?.address?.city,
+              u.customerData?.address?.country,
+            ].filter(Boolean).join(", "),
+            itemsInCart: cartByUser[userId] || [],
+            holdedItems: holdsByUser[userId] || [],
+            enquiries: queriesByUser[userId] || [],
+          };
+        });
 
         if (!mounted) return;
         setRows(composed);
@@ -266,9 +274,16 @@ export default function CustomerManagementPage() {
       } else {
         toast.error(response?.message || "Failed to send reply");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending reply:", error);
-      toast.error(error?.response?.data?.message || "Failed to send reply");
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        toast.error(axiosError?.response?.data?.message || "Failed to send reply");
+      } else {
+        toast.error("Failed to send reply");
+      }
     } finally {
       setIsSubmittingReply(false);
     }
@@ -291,9 +306,16 @@ export default function CustomerManagementPage() {
       } else {
         toast.error(response?.message || "Failed to approve hold item");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error approving hold:", error);
-      toast.error(error?.response?.data?.message || "Failed to approve hold item");
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        toast.error(axiosError?.response?.data?.message || "Failed to approve hold item");
+      } else {
+        toast.error("Failed to approve hold item");
+      }
     } finally {
       setProcessingHoldId(null);
     }
@@ -316,9 +338,16 @@ export default function CustomerManagementPage() {
       } else {
         toast.error(response?.message || "Failed to decline hold item");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error declining hold:", error);
-      toast.error(error?.response?.data?.message || "Failed to decline hold item");
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        toast.error(axiosError?.response?.data?.message || "Failed to decline hold item");
+      } else {
+        toast.error("Failed to decline hold item");
+      }
     } finally {
       setProcessingHoldId(null);
     }
@@ -336,23 +365,22 @@ export default function CustomerManagementPage() {
     return <span className={`inline-block px-2 py-0.5 text-[11px] border rounded ${cls}`}>{label}</span>;
   };
 
-  const get = (obj: any, key: string) => (obj ? obj[key] ?? obj[key.toUpperCase?.()] ?? obj[key.toLowerCase?.()] : undefined);
-
-  const renderDiamondRow = (d: any, extraRight?: React.ReactNode) => {
-    const stone = d?.STONE_NO || d?.stoneNo || d?.STONE || "-";
-    const loc = d?.LOCATION || d?.LOC || "-";
-    const lab = d?.LAB || "-";
-    const shape = d?.SHAPE || "-";
-    const carats = d?.CARATS || d?.carats || "-";
-    const color = d?.COLOR || "-";
-    const clarity = d?.CLARITY || "-";
-    const cut = d?.CUT || "-";
-    const pol = d?.POL || d?.POLISH || "-";
-    const sym = d?.SYM || d?.SYMMETRY || "-";
-    const fluor = d?.FLOUR || d?.FLUOR || "-";
-    const netRate = d?.NET_RATE || "-";
-    const rap = d?.RAP_PRICE || "-";
-    const netVal = d?.NET_VALUE || "-";
+  const renderDiamondRow = (d: Diamond | HoldItem | CartItem | Record<string, unknown>, extraRight?: React.ReactNode) => {
+    const obj = d as Record<string, unknown>;
+    const stone = String(obj?.STONE_NO || obj?.stoneNo || obj?.STONE || "-");
+    const loc = String(obj?.LOCATION || obj?.LOC || "-");
+    const lab = String(obj?.LAB || "-");
+    const shape = String(obj?.SHAPE || "-");
+    const carats = String(obj?.CARATS || obj?.carats || "-");
+    const color = String(obj?.COLOR || "-");
+    const clarity = String(obj?.CLARITY || "-");
+    const cut = String(obj?.CUT || "-");
+    const pol = String(obj?.POL || obj?.POLISH || "-");
+    const sym = String(obj?.SYM || obj?.SYMMETRY || "-");
+    const fluor = String(obj?.FLOUR || obj?.FLUOR || "-");
+    const netRate = String(obj?.NET_RATE || "-");
+    const rap = String(obj?.RAP_PRICE || "-");
+    const netVal = String(obj?.NET_VALUE || "-");
     return (
       <tr className="border-t border-[#E9E2C6]">
         <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{stone}</td>
@@ -548,7 +576,7 @@ export default function CustomerManagementPage() {
                             </tr>
                           </thead>
                           <tbody>
-                            {row.itemsInCart.map((it, i) => {
+                            {row.itemsInCart.map((it) => {
                               const d = it?.diamond || it;
                               return <>{renderDiamondRow(d)}</>;
                             })}
@@ -643,10 +671,10 @@ export default function CustomerManagementPage() {
                     <div className="py-3">
                       <p className={`${jost.className} text-gray-800 font-medium mb-2`}>Enquiries</p>
                       <div className="space-y-3">
-                        {row.enquiries.map((q: any, i) => {
-                          const stone = q?.stoneNo || q?.diamond?.STONE_NO || "-";
-                          const query = q?.query || q?.message || q?.text || "-";
-                          const status = q?.status || "pending";
+                        {row.enquiries.map((q, i) => {
+                          const stone = String(q?.stoneNo || (q?.diamond as Diamond | undefined)?.STONE_NO || "-");
+                          const query = String(q?.query || "-");
+                          const status = String(q?.status || "pending");
                           const createdAt = q?.createdAt ? new Date(q.createdAt).toLocaleString() : "";
                           const adminReply = q?.adminReply;
                           const repliedAt = q?.repliedAt ? new Date(q.repliedAt).toLocaleString() : "";
@@ -669,14 +697,14 @@ export default function CustomerManagementPage() {
                                 <div className="mb-3 p-3 bg-white rounded border border-[#E9E2C6]">
                                   <p className="text-xs font-medium text-gray-600 mb-2">Diamond Details</p>
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                                    <div><span className="text-gray-500">Shape:</span> <span className="font-medium">{diamond.SHAPE}</span></div>
-                                    <div><span className="text-gray-500">Carats:</span> <span className="font-medium">{diamond.CARATS}</span></div>
-                                    <div><span className="text-gray-500">Color:</span> <span className="font-medium">{diamond.COLOR}</span></div>
-                                    <div><span className="text-gray-500">Clarity:</span> <span className="font-medium">{diamond.CLARITY}</span></div>
-                                    <div><span className="text-gray-500">Cut:</span> <span className="font-medium">{diamond.CUT}</span></div>
-                                    <div><span className="text-gray-500">Lab:</span> <span className="font-medium">{diamond.LAB}</span></div>
-                                    <div><span className="text-gray-500">Location:</span> <span className="font-medium">{diamond.LOCATION}</span></div>
-                                    <div><span className="text-gray-500">Net Value:</span> <span className="font-medium">${diamond.NET_VALUE}</span></div>
+                                    <div><span className="text-gray-500">Shape:</span> <span className="font-medium">{String((diamond as Diamond).SHAPE || "-")}</span></div>
+                                    <div><span className="text-gray-500">Carats:</span> <span className="font-medium">{String((diamond as Diamond).CARATS || "-")}</span></div>
+                                    <div><span className="text-gray-500">Color:</span> <span className="font-medium">{String((diamond as Diamond).COLOR || "-")}</span></div>
+                                    <div><span className="text-gray-500">Clarity:</span> <span className="font-medium">{String((diamond as Diamond).CLARITY || "-")}</span></div>
+                                    <div><span className="text-gray-500">Cut:</span> <span className="font-medium">{String((diamond as Diamond).CUT || "-")}</span></div>
+                                    <div><span className="text-gray-500">Lab:</span> <span className="font-medium">{String((diamond as Diamond).LAB || "-")}</span></div>
+                                    <div><span className="text-gray-500">Location:</span> <span className="font-medium">{String((diamond as Diamond).LOCATION || "-")}</span></div>
+                                    <div><span className="text-gray-500">Net Value:</span> <span className="font-medium">${String((diamond as Diamond).NET_VALUE || "-")}</span></div>
                                   </div>
                                 </div>
                               )}
