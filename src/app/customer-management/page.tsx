@@ -681,46 +681,46 @@ export default function CustomerManagementPage() {
                           const diamond = q?.diamond;
 
                           return (
-                            <div key={i} className="border border-[#E9E2C6] rounded-md p-4 bg-gray-50">
+                            <div key={i} className="border border-[#E9E2C6] rounded-md p-4 bg-gray-50 [color-scheme:light]">
                               {/* Query Header */}
                               <div className="flex items-start justify-between mb-3">
                                 <div className="flex items-center gap-2">
                                   <MessageSquare size={16} className="text-blue-600" />
-                                  <span className="font-medium text-gray-800">Stone: {stone}</span>
+                                  <span className="font-medium text-gray-900">Stone: {stone}</span>
                                   <StatusBadge status={status} />
                                 </div>
-                                <span className="text-xs text-gray-500">{createdAt}</span>
+                                <span className="text-xs text-gray-600">{createdAt}</span>
                               </div>
 
                               {/* Diamond Details (if available) */}
                               {diamond && (
-                                <div className="mb-3 p-3 bg-white rounded border border-[#E9E2C6]">
-                                  <p className="text-xs font-medium text-gray-600 mb-2">Diamond Details</p>
+                                <div className="mb-3 p-3 bg-white rounded border border-[#E9E2C6] [color-scheme:light]">
+                                  <p className="text-xs font-medium text-gray-700 mb-2">Diamond Details</p>
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                                    <div><span className="text-gray-500">Shape:</span> <span className="font-medium">{String((diamond as Diamond).SHAPE || "-")}</span></div>
-                                    <div><span className="text-gray-500">Carats:</span> <span className="font-medium">{String((diamond as Diamond).CARATS || "-")}</span></div>
-                                    <div><span className="text-gray-500">Color:</span> <span className="font-medium">{String((diamond as Diamond).COLOR || "-")}</span></div>
-                                    <div><span className="text-gray-500">Clarity:</span> <span className="font-medium">{String((diamond as Diamond).CLARITY || "-")}</span></div>
-                                    <div><span className="text-gray-500">Cut:</span> <span className="font-medium">{String((diamond as Diamond).CUT || "-")}</span></div>
-                                    <div><span className="text-gray-500">Lab:</span> <span className="font-medium">{String((diamond as Diamond).LAB || "-")}</span></div>
-                                    <div><span className="text-gray-500">Location:</span> <span className="font-medium">{String((diamond as Diamond).LOCATION || "-")}</span></div>
-                                    <div><span className="text-gray-500">Net Value:</span> <span className="font-medium">${String((diamond as Diamond).NET_VALUE || "-")}</span></div>
+                                    <div><span className="text-gray-600">Shape:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).SHAPE || "-")}</span></div>
+                                    <div><span className="text-gray-600">Carats:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).CARATS || "-")}</span></div>
+                                    <div><span className="text-gray-600">Color:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).COLOR || "-")}</span></div>
+                                    <div><span className="text-gray-600">Clarity:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).CLARITY || "-")}</span></div>
+                                    <div><span className="text-gray-600">Cut:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).CUT || "-")}</span></div>
+                                    <div><span className="text-gray-600">Lab:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).LAB || "-")}</span></div>
+                                    <div><span className="text-gray-600">Location:</span> <span className="font-medium text-gray-900">{String((diamond as Diamond).LOCATION || "-")}</span></div>
+                                    <div><span className="text-gray-600">Net Value:</span> <span className="font-medium text-gray-900">${String((diamond as Diamond).NET_VALUE || "-")}</span></div>
                                   </div>
                                 </div>
                               )}
 
                               {/* Customer Query */}
                               <div className="mb-3">
-                                <p className="text-xs font-medium text-gray-600 mb-1">Customer Query:</p>
-                                <p className="text-sm text-gray-800 bg-white p-2 rounded border border-[#E9E2C6]">{query}</p>
+                                <p className="text-xs font-medium text-gray-700 mb-1 bg-white px-1">Customer Query:</p>
+                                <p className="text-sm text-gray-900 bg-white p-2 rounded border border-[#E9E2C6] [color-scheme:light]">{query}</p>
                               </div>
 
                               {/* Admin Reply (if exists) */}
                               {adminReply && (
                                 <div className="mb-3">
-                                  <p className="text-xs font-medium text-gray-600 mb-1">Admin Reply:</p>
-                                  <p className="text-sm text-gray-800 bg-green-50 p-2 rounded border border-green-200">{adminReply}</p>
-                                  <p className="text-xs text-gray-500 mt-1">Replied on: {repliedAt}</p>
+                                  <p className="text-xs font-medium text-gray-700 mb-1 bg-white px-1">Dalila Diamond:</p>
+                                  <p className="text-sm text-gray-900 bg-green-50 p-2 rounded border border-green-200 [color-scheme:light]">{adminReply}</p>
+                                  <p className="text-xs text-gray-600 mt-1 bg-white px-1">Replied on: {repliedAt}</p>
                                 </div>
                               )}
 
@@ -800,7 +800,7 @@ export default function CustomerManagementPage() {
           }}
         >
           <div
-            className="bg-white rounded-lg shadow-xl w-full max-w-md"
+            className="bg-white rounded-lg shadow-xl w-full max-w-md [color-scheme:light]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -820,19 +820,19 @@ export default function CustomerManagementPage() {
             {/* Modal Body */}
             <div className="p-6 space-y-4">
               <div>
-                <label className={`${jost.className} block text-sm font-medium text-gray-700 mb-2`}>
+                <label className={`${jost.className} block text-sm font-medium text-gray-900 mb-2`}>
                   Stone Number
                 </label>
                 <input
                   type="text"
                   value={replyModal.stoneNo}
                   disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-50 text-gray-700"
+                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-50 text-gray-900 [color-scheme:light]"
                 />
               </div>
 
               <div>
-                <label className={`${jost.className} block text-sm font-medium text-gray-700 mb-2`}>
+                <label className={`${jost.className} block text-sm font-medium text-gray-900 mb-2`}>
                   Your Reply <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -840,7 +840,7 @@ export default function CustomerManagementPage() {
                   onChange={(e) => setReplyText(e.target.value)}
                   placeholder="Enter your reply here..."
                   rows={5}
-                  className={`${jost.className} w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0b1b35] resize-none`}
+                  className={`${jost.className} w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0b1b35] resize-none bg-white text-gray-900 placeholder:text-gray-500 [color-scheme:light]`}
                 />
               </div>
             </div>
@@ -852,7 +852,7 @@ export default function CustomerManagementPage() {
                   setReplyModal(null);
                   setReplyText("");
                 }}
-                className={`${jost.className} px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100 transition-colors`}
+                className={`${jost.className} px-4 py-2 border border-gray-300 rounded text-gray-900 hover:bg-gray-100 transition-colors`}
               >
                 Cancel
               </button>
