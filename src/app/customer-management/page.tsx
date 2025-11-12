@@ -346,10 +346,26 @@ export default function CustomerManagementPage() {
 
       if (response?.success) {
         toast.success("Reply sent successfully!");
+        
+        // Update the state directly instead of reloading
+        setRows((prevRows) =>
+          prevRows.map((row) => ({
+            ...row,
+            enquiries: row.enquiries?.map((query) =>
+              query.id === replyModal.queryId || query._id === replyModal.queryId
+                ? {
+                    ...query,
+                    status: "replied",
+                    adminReply: replyText.trim(),
+                    repliedAt: new Date().toISOString(),
+                  }
+                : query
+            ),
+          }))
+        );
+
         setReplyModal(null);
         setReplyText("");
-        // Refresh data
-        window.location.reload();
       } else {
         toast.error(response?.message || "Failed to send reply");
       }
@@ -382,8 +398,23 @@ export default function CustomerManagementPage() {
 
       if (response?.success) {
         toast.success("Hold item approved successfully!");
-        // Refresh data
-        window.location.reload();
+        
+        // Update the state directly instead of reloading
+        setRows((prevRows) =>
+          prevRows.map((row) => ({
+            ...row,
+            holdedItems: row.holdedItems?.map((item) =>
+              item._id === holdId ? { ...item, status: "approved" } : item
+            ),
+          }))
+        );
+
+        // Update stats
+        setStats((prev) => ({
+          ...prev,
+          pending: Math.max(0, prev.pending - 1),
+          approved: prev.approved + 1,
+        }));
       } else {
         toast.error(response?.message || "Failed to approve hold item");
       }
@@ -416,8 +447,23 @@ export default function CustomerManagementPage() {
 
       if (response?.success) {
         toast.success("Hold item declined successfully!");
-        // Refresh data
-        window.location.reload();
+        
+        // Update the state directly instead of reloading
+        setRows((prevRows) =>
+          prevRows.map((row) => ({
+            ...row,
+            holdedItems: row.holdedItems?.map((item) =>
+              item._id === holdId ? { ...item, status: "rejected" } : item
+            ),
+          }))
+        );
+
+        // Update stats
+        setStats((prev) => ({
+          ...prev,
+          pending: Math.max(0, prev.pending - 1),
+          rejected: prev.rejected + 1,
+        }));
       } else {
         toast.error(response?.message || "Failed to decline hold item");
       }
