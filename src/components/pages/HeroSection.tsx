@@ -1,33 +1,41 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(true);
+  const router = useRouter();
 
   const slides = [
     {
       image: "/dalila_img/banners/Banner-01-speedometer.jpg",
       title: "Timeless Elegance",
+      buttonPosition: "bottom-left",
+      buttonLink: "/inventory",
     },
     {
       image: "/dalila_img/banners/new/Banner_02.jpg",
       title: "Modern Luxury",
+      buttonPosition: "bottom-left",
+      buttonLink: "/diamond-source",
     },
     {
       image: "/dalila_img/banners/new/Banner_03.jpg",
       title: "Exclusive Collection",
+      buttonPosition: "center",
+      buttonLink: "/sud",
     },
   ];
 
-  // Create slides with clones at beginning and end for infinite loop
+
   const extendedSlides = [slides[slides.length - 1], ...slides, slides[0]];
 
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
-    }, 7000);
+    }, 8000);
 
     return () => clearInterval(timer);
   }, []);
@@ -68,6 +76,25 @@ export default function HeroSection() {
     return currentSlide - 1;
   };
 
+  const handleExploreClick = (link: string) => {
+    router.push(link);
+  };
+
+  const getButtonPositionClasses = (position: string, slideIndex: number) => {
+    if (position === "center") {
+      return "absolute top-72 left-1/2 -translate-x-1/2 md:top-80";
+    }
+
+    if (slideIndex === 0) {
+      return "absolute bottom-48 left-18 md:bottom-56 md:left-32";
+    }
+
+    if (slideIndex === 1) {
+      return "absolute bottom-40 left-22 md:bottom-48 md:left-40 md:bottom-20";
+    }
+    return "absolute bottom-40 left-18 md:bottom-48 md:left-32";
+  };
+
   return (
     <section className="relative h-[calc(90vh+8rem)] flex items-center overflow-hidden bg-white">
       {/* Background Carousel */}
@@ -76,20 +103,36 @@ export default function HeroSection() {
           className={`flex h-full ${isTransitioning ? "transition-transform duration-1000 ease-out" : ""}`}
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {extendedSlides.map((slide, index) => (
-            <div
-              key={index}
-              className="relative min-w-full h-full flex-shrink-0"
-            >
-              <img
-                src={slide.image}
-                alt={`Dalila Diamonds Banner ${((index - 1 + slides.length) % slides.length) + 1}`}
-                className="w-full h-full object-cover"
-              />
-              {/* Dark overlay for better button visibility */}
-              <div className="absolute inset-0 bg-black/10" />
-            </div>
-          ))}
+          {extendedSlides.map((slide, index) => {
+            const actualIndex = (index - 1 + slides.length) % slides.length;
+            const actualSlide = slides[actualIndex];
+            
+            return (
+              <div
+                key={index}
+                className="relative min-w-full h-full flex-shrink-0"
+              >
+                <img
+                  src={slide.image}
+                  alt={`Dalila Diamonds Banner ${actualIndex + 1}`}
+                  className="w-full h-full object-cover"
+                />
+
+                <div className="absolute inset-0 bg-black/10" />
+                
+                {index > 0 && index <= slides.length && (
+                  <div className={getButtonPositionClasses(actualSlide.buttonPosition, actualIndex)}>
+                    <button
+                      onClick={() => handleExploreClick(actualSlide.buttonLink)}
+                      className="z-20 px-4 py-2 md:px-6 md:py-3 bg-[#c89e3a] hover:bg-[#b08932] text-white font-semibold text-xs md:text-sm rounded-none transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                    >
+                      Explore More
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
