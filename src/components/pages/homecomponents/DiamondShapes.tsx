@@ -71,15 +71,18 @@ export default function DiamondShapes() {
 
   const shapes = [
     { name: "Round", image: "/shapephotos/Round.jpg" },
-    { name: "Princess", image: "/shapephotos/Princess.jpg" },
-    { name: "Cushion", image: "/shapephotos/Cushion.jpg" },
-    { name: "Radiant", image: "/shapephotos/Radiant.jpg" },
-    { name: "Asscher", image: "/shapephotos/Asscher.jpg" },
-    { name: "Heart", image: "/shapephotos/Heart.jpg" },
-    { name: "Pear", image: "/shapephotos/Pear.jpg" },
-    { name: "Marquise", image: "/shapephotos/marquise.jpg" },
     { name: "Oval", image: "/shapephotos/Oval.jpg" },
+    { name: "Pear", image: "/shapephotos/Pear.jpg" },
     { name: "Emerald", image: "/shapephotos/Emerald.jpg" },
+    { name: "Heart", image: "/shapephotos/Heart.jpg" },
+    { name: "Cushion", image: "/shapephotos/Cushion.jpg" },
+
+    { name: "Asscher", image: "/shapephotos/Asscher.jpg" },
+    { name: "Radiant", image: "/shapephotos/Radiant.jpg" },
+
+    { name: "Princess", image: "/shapephotos/Princess.jpg" },
+
+    { name: "Marquise", image: "/shapephotos/marquise.jpg" },
   ];
 
   const handleShapeClick = (shape: { name: string; image: string }) =>

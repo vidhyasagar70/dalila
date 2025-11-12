@@ -20,7 +20,7 @@ const jost = Jost({
 
 export default function DiamondSourceAdvantages() {
   const router = useRouter();
-  
+
   const advantages = [
     {
       title: "Weekly Shipments from India",
@@ -89,7 +89,10 @@ export default function DiamondSourceAdvantages() {
         {/* Contact Button */}
         <AnimatedContainer direction="up" delay={0.6}>
           <div className="flex justify-center mt-6">
-            <GoldButton text="CONTACT US" onClick={() => router.push("/contact")} />
+            <GoldButton
+              text="CONTACT US"
+              onClick={() => router.push("/contact")}
+            />
           </div>
         </AnimatedContainer>
       </div>

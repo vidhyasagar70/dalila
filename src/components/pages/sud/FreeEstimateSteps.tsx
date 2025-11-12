@@ -30,37 +30,25 @@ export default function FreeEstimateSteps() {
     {
       number: "02",
       title: "Upload diamond photos",
-      details: [
-        "Top & side view on plain background",
-        "Use good daylight",
-      ],
+      details: ["Top & side view on plain background", "Use good daylight"],
       color: "bg-[#E8B71D]",
     },
     {
       number: "03",
       title: "Upload certificate",
-      details: [
-        "GIA / IGI / HRD certificate",
-        "Or share the report number",
-      ],
+      details: ["GIA / IGI / HRD certificate", "Or share the report number"],
       color: "bg-[#1ABC9C]",
     },
     {
       number: "04",
       title: "Add any comments",
-      details: [
-        "Chips, repolish, laser inscription",
-        "Asking price, timeline",
-      ],
+      details: ["Chips, repolish, laser inscription", "Asking price, timeline"],
       color: "bg-[#3498DB]",
     },
     {
       number: "05",
       title: "Share contact details",
-      details: [
-        "Name, email, phone",
-        "City / Country",
-      ],
+      details: ["Name, email, phone", "City / Country"],
       color: "bg-[#2ECC71]",
     },
   ];
@@ -111,10 +99,14 @@ export default function FreeEstimateSteps() {
                     </h3>
 
                     {/* Details */}
-                    <ul className={`text-sm text-gray-600 space-y-1.5 ${jost.className}`}>
+                    <ul
+                      className={`text-sm text-gray-600 space-y-1.5 ${jost.className}`}
+                    >
                       {step.details.map((detail, detailIndex) => (
                         <li key={detailIndex} className="flex items-start">
-                          <span className="mr-2 mt-0.5 text-gray-600 text-base font-bold">•</span>
+                          <span className="mr-2 mt-0.5 text-gray-600 text-base font-bold">
+                            •
+                          </span>
                           <span className="text-left">{detail}</span>
                         </li>
                       ))}
@@ -144,10 +136,14 @@ export default function FreeEstimateSteps() {
                     >
                       {step.title}
                     </h3>
-                    <ul className={`text-xs md:text-sm text-gray-600 space-y-1.5 ${jost.className}`}>
+                    <ul
+                      className={`text-xs md:text-sm text-gray-600 space-y-1.5 ${jost.className}`}
+                    >
                       {step.details.map((detail, detailIndex) => (
                         <li key={detailIndex} className="flex items-start">
-                          <span className="mr-2 mt-0.5 text-gray-500 text-sm">•</span>
+                          <span className="mr-2 mt-0.5 text-gray-500 text-sm">
+                            •
+                          </span>
                           <span>{detail}</span>
                         </li>
                       ))}

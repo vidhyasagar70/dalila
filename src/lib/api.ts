@@ -346,28 +346,28 @@ export const api = {
       console.error("POST Error:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
-          response?: { 
-            data?: { 
-              error?: string; 
+          response?: {
+            data?: {
+              error?: string;
               message?: string;
               success?: boolean;
-            } 
+            };
           };
         };
-        
+
         // If backend returns a structured error response, return it instead of throwing
         if (axiosError.response?.data) {
           const errorData = axiosError.response.data;
-          
+
           // Return the error as a failed response instead of throwing
           return {
             success: false,
             message: errorData.message || errorData.error || "Request failed",
-            error: errorData.error || errorData.message || "Request failed"
+            error: errorData.error || errorData.message || "Request failed",
           } as ApiResponse<T>;
         }
       }
-      
+
       // For network errors or other issues, throw
       throw error;
     }
@@ -1458,25 +1458,26 @@ export const adminApi = {
     api.get<PaginationData<User>>("/api/users", params),
 
   // Carts (admin view of all users' carts)
-  getAllCarts: () => api.get<{
-    success: boolean;
-    carts: Array<{
-      cart: {
-        userId: string;
-        items: Array<{
-          stoneNo: string;
-          diamond: Diamond;
-          addedAt: string;
+  getAllCarts: () =>
+    api.get<{
+      success: boolean;
+      carts: Array<{
+        cart: {
+          userId: string;
+          items: Array<{
+            stoneNo: string;
+            diamond: Diamond;
+            addedAt: string;
+            _id: string;
+          }>;
           _id: string;
-        }>;
-        _id: string;
-        createdAt: string;
-        updatedAt: string;
-      };
-      user: User;
-      totalItems: number;
-    }>;
-  }>("/api/diamonds/cart/admin/all"),
+          createdAt: string;
+          updatedAt: string;
+        };
+        user: User;
+        totalItems: number;
+      }>;
+    }>("/api/diamonds/cart/admin/all"),
 
   // Holds with optional status filter: approved | pending | rejected
   getAllHolds: (status?: string) =>
@@ -1505,47 +1506,50 @@ export const adminApi = {
           _id: string;
         }>;
       }>;
-    }>("/api/diamonds/hold/admin/all", status ? { status } as FetchParams : {} as FetchParams),
+    }>(
+      "/api/diamonds/hold/admin/all",
+      status ? ({ status } as FetchParams) : ({} as FetchParams),
+    ),
 
   // All queries (admin)
-  getAllQueries: () => api.get<{
-    success: boolean;
-    groupedQueries: Array<{
-      email: string;
-      queries: Array<{
-        id: string;
-        _id: string;
-        userId: string;
-        stoneNo: string;
-        query: string;
-        status: string;
-        createdAt: string;
-        updatedAt: string;
-        adminReply?: string;
-        repliedAt?: string;
-        diamond?: Diamond;
-      }>;
-    }>;
-  }>("/api/diamonds/queries/admin/all"),
-
-  // Reply to a query
-  replyToQuery: async (queryId: string, reply: string) => {
-    try {
-      const response = await apiClient.put<ApiResponse<{
-        message: string;
-        query: {
+  getAllQueries: () =>
+    api.get<{
+      success: boolean;
+      groupedQueries: Array<{
+        email: string;
+        queries: Array<{
           id: string;
+          _id: string;
           userId: string;
           stoneNo: string;
           query: string;
           status: string;
-          adminReply: string;
-          repliedAt: string;
-        };
-      }>>(
-        `/api/diamonds/queries/${queryId}/reply`,
-        { reply }
-      );
+          createdAt: string;
+          updatedAt: string;
+          adminReply?: string;
+          repliedAt?: string;
+          diamond?: Diamond;
+        }>;
+      }>;
+    }>("/api/diamonds/queries/admin/all"),
+
+  // Reply to a query
+  replyToQuery: async (queryId: string, reply: string) => {
+    try {
+      const response = await apiClient.put<
+        ApiResponse<{
+          message: string;
+          query: {
+            id: string;
+            userId: string;
+            stoneNo: string;
+            query: string;
+            status: string;
+            adminReply: string;
+            repliedAt: string;
+          };
+        }>
+      >(`/api/diamonds/queries/${queryId}/reply`, { reply });
       return response.data;
     } catch (error: unknown) {
       console.error("Reply to query error:", error);
@@ -1568,18 +1572,20 @@ export const adminApi = {
   // Approve/Reject a hold
   approveHold: async (holdId: string) => {
     try {
-      const response = await apiClient.post<ApiResponse<{
-        message: string;
-        hold: {
-          id: string;
-          userId: string;
-          items: Array<{
-            stoneNo: string;
-            status: string;
-            _id: string;
-          }>;
-        };
-      }>>(`/api/diamonds/hold/${holdId}/approve`, {});
+      const response = await apiClient.post<
+        ApiResponse<{
+          message: string;
+          hold: {
+            id: string;
+            userId: string;
+            items: Array<{
+              stoneNo: string;
+              status: string;
+              _id: string;
+            }>;
+          };
+        }>
+      >(`/api/diamonds/hold/${holdId}/approve`, {});
       return response.data;
     } catch (error: unknown) {
       console.error("Approve hold error:", error);
@@ -1600,18 +1606,20 @@ export const adminApi = {
   },
   rejectHold: async (holdId: string) => {
     try {
-      const response = await apiClient.post<ApiResponse<{
-        message: string;
-        hold: {
-          id: string;
-          userId: string;
-          items: Array<{
-            stoneNo: string;
-            status: string;
-            _id: string;
-          }>;
-        };
-      }>>(`/api/diamonds/hold/${holdId}/reject`, {});
+      const response = await apiClient.post<
+        ApiResponse<{
+          message: string;
+          hold: {
+            id: string;
+            userId: string;
+            items: Array<{
+              stoneNo: string;
+              status: string;
+              _id: string;
+            }>;
+          };
+        }>
+      >(`/api/diamonds/hold/${holdId}/reject`, {});
       return response.data;
     } catch (error: unknown) {
       console.error("Reject hold error:", error);
@@ -1632,7 +1640,7 @@ export const adminApi = {
   },
 
   // Create a hold (what it's for: place an item on hold for a user)
-  addHold: (payload: { stoneNo: string; userId?: string }) => 
+  addHold: (payload: { stoneNo: string; userId?: string }) =>
     api.post<{
       message: string;
       hold: {

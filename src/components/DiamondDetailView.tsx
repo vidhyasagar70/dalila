@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowLeft, Loader2, Download, Play, X, Clock, MessageCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  Download,
+  Play,
+  X,
+  Clock,
+  MessageCircle,
+} from "lucide-react";
 import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi, holdApi, queryApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
@@ -35,7 +43,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   useEffect(() => {
     if (typeof window !== "undefined") {
       let userStr = localStorage.getItem("user");
-      
+
       // Fallback to cookies if not in localStorage
       if (!userStr) {
         const cookies = document.cookie.split(";");
@@ -84,7 +92,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       const response = await cartApi.add(diamond.STONE_NO);
 
       if (response?.success) {
-        toast.success(response?.message || `${diamond.STONE_NO} added to cart successfully!`);
+        toast.success(
+          response?.message ||
+            `${diamond.STONE_NO} added to cart successfully!`,
+        );
 
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("cart-updated"));
@@ -98,7 +109,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       let errorMessage = "Failed to add to cart. Please try again.";
       if (error && typeof error === "object" && "response" in error) {
         const err = error as {
-          response?: { status?: number; data?: { error?: string; message?: string } };
+          response?: {
+            status?: number;
+            data?: { error?: string; message?: string };
+          };
           message?: string;
         };
         if (err.response?.status === 401) {
@@ -131,7 +145,10 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
       const response = await holdApi.add(diamond.STONE_NO);
 
       if (response?.success) {
-        toast.success(response?.message || `${diamond.STONE_NO} added to hold successfully!`);
+        toast.success(
+          response?.message ||
+            `${diamond.STONE_NO} added to hold successfully!`,
+        );
       } else {
         // Backend returned success: false with a message
         toast.error(response?.message || "Failed to add to hold");
@@ -141,20 +158,20 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
       // Extract message from error response
       let errorMessage = "Failed to add to hold. Please try again.";
-      
+
       if (error && typeof error === "object" && "response" in error) {
         const err = error as {
-          response?: { 
-            status?: number; 
-            data?: { 
-              error?: string; 
+          response?: {
+            status?: number;
+            data?: {
+              error?: string;
               message?: string;
               success?: boolean;
-            } 
+            };
           };
           message?: string;
         };
-        
+
         if (err.response?.status === 401) {
           errorMessage = "Please log in to add items to hold.";
         } else if (err.response?.data?.message) {

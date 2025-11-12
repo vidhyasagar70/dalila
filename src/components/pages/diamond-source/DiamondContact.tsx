@@ -42,7 +42,10 @@ export default function DiamondContact() {
         {/* CTA Button */}
         <AnimatedContainer direction="up" delay={0.4}>
           <div className="flex justify-center">
-            <GoldButton text="CONTACT US" onClick={() => router.push("/contact")} />
+            <GoldButton
+              text="CONTACT US"
+              onClick={() => router.push("/contact")}
+            />
           </div>
         </AnimatedContainer>
       </div>

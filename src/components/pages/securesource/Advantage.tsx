@@ -86,7 +86,10 @@ export default function S2SAdvantages() {
         {/* Contact Button */}
         <AnimatedContainer direction="up" delay={0.6}>
           <div className="flex justify-center mt-4">
-            <GoldButton text="CONTACT US" onClick={() => router.push("/contact")} />
+            <GoldButton
+              text="CONTACT US"
+              onClick={() => router.push("/contact")}
+            />
           </div>
         </AnimatedContainer>
       </div>

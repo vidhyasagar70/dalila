@@ -219,7 +219,8 @@ export default function Header() {
         BlogsPage ||
         BlogDetailPage ||
         SecurePage ||
-        diamondsourcePage ||customerPage||
+        diamondsourcePage ||
+        customerPage ||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -466,7 +467,7 @@ export default function Header() {
 
         {/* Tagline - Below main navigation */}
         <div className="w-full h-[1px] bg-[#C89E3A]"></div>
-        
+
         <div className="hidden sm:flex justify-center py-2">
           <p className="text-sm md:text-base tracking-wide text-white">
             <span>Where Trust Shines,</span>

@@ -9,9 +9,21 @@ const marcellus = Marcellus({
 });
 export default function CertifiedBy() {
   const certifications = [
-    { name: "IGI", image: "/dalila_img/client/client_1.png", size: { width: 180, height: 100 } },
-    { name: "GIA", image: "/dalila_img/client/client_2.png", size: { width: 150, height: 85 } },
-    { name: "HRD", image: "/dalila_img/client/client_3.png", size: { width: 200, height: 110 } },
+    {
+      name: "IGI",
+      image: "/dalila_img/client/client_1.png",
+      size: { width: 180, height: 100 },
+    },
+    {
+      name: "GIA",
+      image: "/dalila_img/client/client_2.png",
+      size: { width: 150, height: 85 },
+    },
+    {
+      name: "HRD",
+      image: "/dalila_img/client/client_3.png",
+      size: { width: 200, height: 110 },
+    },
   ];
 
   const slideStyle = {
@@ -54,7 +66,10 @@ export default function CertifiedBy() {
                     width={cert.size.width}
                     height={cert.size.height}
                     className="object-contain transition-all duration-300"
-                    style={{ maxWidth: `${cert.size.width}px`, maxHeight: `${cert.size.height}px` }}
+                    style={{
+                      maxWidth: `${cert.size.width}px`,
+                      maxHeight: `${cert.size.height}px`,
+                    }}
                   />
                 </div>
               </div>
@@ -73,7 +88,10 @@ export default function CertifiedBy() {
                     width={cert.size.width}
                     height={cert.size.height}
                     className="object-contain transition-all duration-300"
-                    style={{ maxWidth: `${cert.size.width}px`, maxHeight: `${cert.size.height}px` }}
+                    style={{
+                      maxWidth: `${cert.size.width}px`,
+                      maxHeight: `${cert.size.height}px`,
+                    }}
                   />
                 </div>
               </div>
@@ -92,7 +110,10 @@ export default function CertifiedBy() {
                     width={cert.size.width}
                     height={cert.size.height}
                     className="object-contain transition-all duration-300"
-                    style={{ maxWidth: `${cert.size.width}px`, maxHeight: `${cert.size.height}px` }}
+                    style={{
+                      maxWidth: `${cert.size.width}px`,
+                      maxHeight: `${cert.size.height}px`,
+                    }}
                   />
                 </div>
               </div>

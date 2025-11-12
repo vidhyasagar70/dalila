@@ -27,7 +27,8 @@ export default function Webuyhero() {
               <h3
                 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight ${marcellus.className}`}
               >
-                Sell Your Diamonds<br/> With Dalila
+                Sell Your Diamonds
+                <br /> With Dalila
               </h3>
             </AnimatedContainer>
             <h6
