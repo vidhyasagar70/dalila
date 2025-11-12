@@ -90,7 +90,7 @@ export default function HeroSection() {
     }
 
     if (slideIndex === 1) {
-      return "absolute bottom-40 left-22 md:bottom-48 md:left-40 md:bottom-20";
+      return "absolute bottom-50 left-22 md:bottom-65 md:left-42";
     }
     return "absolute bottom-40 left-18 md:bottom-48 md:left-32";
   };
