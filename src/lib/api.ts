@@ -1572,7 +1572,7 @@ export const adminApi = {
   // Approve/Reject a hold
   approveHold: async (holdId: string) => {
     try {
-      const response = await apiClient.post<
+      const response = await apiClient.put<
         ApiResponse<{
           message: string;
           hold: {
@@ -1606,7 +1606,7 @@ export const adminApi = {
   },
   rejectHold: async (holdId: string) => {
     try {
-      const response = await apiClient.post<
+      const response = await apiClient.put<
         ApiResponse<{
           message: string;
           hold: {
