@@ -466,7 +466,7 @@ export default function Header() {
         </div>
 
         {/* Tagline - Below main navigation */}
-        <div className="w-full h-[1px] bg-[#C89E3A]"></div>
+        <div className="w-full h-[2px] bg-[#C89E3A]"></div>
 
         <div className="hidden sm:flex justify-center py-2">
           <p className="text-sm md:text-base tracking-wide text-white">
