@@ -29,6 +29,7 @@ export default function Header() {
   const SecurePage = pathname === "/secure-to-source";
   const diamondsourcePage = pathname === "/diamond-source";
   const customerPage = pathname === "/customer-management";
+   const enquiryPage = pathname === "/enquiry";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -220,7 +221,7 @@ export default function Header() {
         BlogDetailPage ||
         SecurePage ||
         diamondsourcePage ||
-        customerPage ||
+        customerPage ||enquiryPage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"

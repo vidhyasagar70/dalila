@@ -1667,6 +1667,36 @@ export const queryApi = {
   // Create a query
   create: (data: { stoneNo: string; query: string }) =>
     api.post<{ message: string }>("/api/diamonds/queries", data),
+
+  // Get user's queries
+  getUserQueries: async () => {
+    try {
+      const response = await apiClient.get<{
+        success: boolean;
+        message: string;
+        data: {
+          queries: Array<{
+            id: string;
+            userId: string;
+            userEmail: string;
+            stoneNo: string;
+            diamond: Diamond;
+            query: string;
+            status: string;
+            createdAt: string;
+            updatedAt: string;
+            adminReply?: string;
+            repliedAt?: string;
+            repliedBy?: string;
+          }>;
+        };
+      }>("/api/diamonds/queries");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user queries:", error);
+      throw error;
+    }
+  },
 };
 
 // Export token management functions

@@ -1,0 +1,368 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { queryApi, Diamond } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { Loader2 } from "lucide-react";
+
+interface Query {
+  id: string;
+  userId: string;
+  userEmail: string;
+  stoneNo: string;
+  diamond: Diamond;
+  query: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  adminReply?: string;
+  repliedAt?: string;
+  repliedBy?: string;
+}
+
+function EnquiryPageContent() {
+  const [queries, setQueries] = useState<Query[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(3); // Set to 3 for testing, change to 10 for production
+
+  useEffect(() => {
+    fetchQueries();
+  }, []);
+
+  const fetchQueries = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await queryApi.getUserQueries();
+      
+      if (response.success) {
+        setQueries(response.data.queries);
+      } else {
+        setError(response.message || "Failed to fetch enquiries");
+      }
+    } catch (err: any) {
+      console.error("Error fetching queries:", err);
+      setError("Failed to load enquiries. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(queries.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentQueries = queries.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    
+    // Always show pages 1, 2, ..., 9, 10 pattern from the image
+    if (totalPages <= 10) {
+      // Show all pages if 10 or fewer
+      for (let i = 1; i <= totalPages; i++) {
+        buttons.push(
+          <button
+            key={i}
+            onClick={() => handlePageChange(i)}
+            className={`min-w-[36px] h-9 px-3 text-sm ${
+              currentPage === i
+                ? "text-gray-900 font-medium"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            {i}
+          </button>
+        );
+      }
+    } else {
+      // Show pages 1, 2
+      buttons.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          className={`min-w-[36px] h-9 px-3 text-sm ${
+            currentPage === 1
+              ? "text-gray-900 font-medium"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          1
+        </button>
+      );
+
+      buttons.push(
+        <button
+          key={2}
+          onClick={() => handlePageChange(2)}
+          className={`min-w-[36px] h-9 px-3 text-sm ${
+            currentPage === 2
+              ? "text-gray-900 font-medium"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          2
+        </button>
+      );
+
+      // Show ellipsis
+      buttons.push(
+        <span key="ellipsis" className="min-w-[36px] h-9 px-3 text-sm text-gray-600 flex items-center justify-center">
+          ...
+        </span>
+      );
+
+      // Show second to last page
+      buttons.push(
+        <button
+          key={totalPages - 1}
+          onClick={() => handlePageChange(totalPages - 1)}
+          className={`min-w-[36px] h-9 px-3 text-sm ${
+            currentPage === totalPages - 1
+              ? "text-gray-900 font-medium"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          {totalPages - 1}
+        </button>
+      );
+
+      // Show last page
+      buttons.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          className={`min-w-[36px] h-9 px-3 text-sm ${
+            currentPage === totalPages
+              ? "text-gray-900 font-medium"
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    return buttons;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center mt-32">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">Loading your enquiries...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Error</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={fetchQueries}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 mt-25">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Enquiries</h1>
+          <p className="text-sm text-gray-600 mt-1">
+            Manage customer hold requests and diamond enquiries
+          </p>
+        </div>
+
+        {/* Enquiries Table */}
+        {queries.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-12 text-center">
+            <div className="text-gray-400 text-6xl mb-4">💎</div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              No Enquiries Yet
+            </h2>
+            <p className="text-gray-600">
+              You haven't made any enquiries yet.
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-[#0a1628]">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-white">
+                    Sr
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-white">
+                    Diamond ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-white">
+                    Enquiry
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {currentQueries.map((query, index) => (
+                  <React.Fragment key={query.id}>
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {indexOfFirstItem + index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {query.stoneNo}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
+                        <div className="flex items-center justify-between">
+                          <span>{query.query}</span>
+                          {query.adminReply && (
+                            <button
+                              onClick={() => {
+                                const element = document.getElementById(
+                                  `reply-${query.id}`
+                                );
+                                if (element) {
+                                  element.style.display =
+                                    element.style.display === "none"
+                                      ? "table-row"
+                                      : "none";
+                                }
+                              }}
+                              className="ml-4 text-gray-400 hover:text-gray-600"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 9l-7 7-7-7"
+                                />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                    {query.adminReply && (
+                      <tr
+                        id={`reply-${query.id}`}
+                        className="bg-gray-50"
+                        style={{ display: "none" }}
+                      >
+                        <td colSpan={3} className="px-6 py-4">
+                          <div className="ml-8">
+                            <p className="text-sm font-semibold text-gray-700 mb-1">
+                              Reply From Dalila
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {query.adminReply}
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Pagination - Always show if there are queries */}
+            {queries.length > 0 && (
+              <div className="bg-white px-4 py-4 flex items-center justify-center border-t border-gray-200">
+                <div className="flex items-center">
+                  {/* Previous Button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`w-9 h-9 flex items-center justify-center ${
+                      currentPage === 1
+                        ? "text-gray-300 cursor-not-allowed"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Page Numbers */}
+                  <div className="flex items-center">
+                    {renderPaginationButtons()}
+                  </div>
+
+                  {/* Next Button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`w-9 h-9 flex items-center justify-center ${
+                      currentPage === totalPages
+                        ? "text-gray-300 cursor-not-allowed"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function EnquiryPage() {
+  return (
+    <ProtectedRoute requireAuth={true} requireCustomerData={true}>
+      <EnquiryPageContent />
+    </ProtectedRoute>
+  );
+}

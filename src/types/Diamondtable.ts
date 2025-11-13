@@ -138,6 +138,11 @@ export interface GridViewProps {
     sideBlack: string[];
     sideWhite: string[];
   };
+  priceFilters?: {
+    pricePerCarat: { from: string; to: string };
+    discount: { from: string; to: string };
+    totalPrice: { from: string; to: string };
+  };
 }
 
 // API Response types

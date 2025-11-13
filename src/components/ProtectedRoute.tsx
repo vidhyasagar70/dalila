@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
   allowedRoles?: string[];
   requireCustomerData?: boolean;
   requireKycApproval?: boolean;
-  requireApprovedStatus?: boolean; // NEW: Check if user status is APPROVED
+  requireApprovedStatus?: boolean;
 }
 
 export default function ProtectedRoute({

@@ -32,6 +32,9 @@ const DiamondGridView: React.FC<GridViewProps> = ({
   selectedLocations = [],
   selectedLabs = [],
   selectedSymmetry = "",
+  keySymbolFilters,
+  inclusionFilters,
+  priceFilters,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,6 +72,9 @@ const DiamondGridView: React.FC<GridViewProps> = ({
       selectedLabs: Array.isArray(selectedLabs)
         ? selectedLabs.sort().join(",")
         : "",
+      keySymbolFilters,
+      inclusionFilters,
+      priceFilters,
     });
   }, [
     searchTerm,
@@ -83,6 +89,9 @@ const DiamondGridView: React.FC<GridViewProps> = ({
     selectedSymmetry,
     selectedLocations,
     selectedLabs,
+    keySymbolFilters,
+    inclusionFilters,
+    priceFilters,
   ]);
 
   useEffect(() => {
@@ -111,6 +120,34 @@ const DiamondGridView: React.FC<GridViewProps> = ({
         const hasLabFilter =
           Array.isArray(selectedLabs) && selectedLabs.length > 0;
 
+        // Check for price filters
+        const hasPriceFilter =
+          priceFilters &&
+          ((priceFilters.pricePerCarat?.from &&
+            priceFilters.pricePerCarat.from.trim()) ||
+            (priceFilters.pricePerCarat?.to &&
+              priceFilters.pricePerCarat.to.trim()) ||
+            (priceFilters.discount?.from &&
+              priceFilters.discount.from.trim()) ||
+            (priceFilters.discount?.to && priceFilters.discount.to.trim()) ||
+            (priceFilters.totalPrice?.from &&
+              priceFilters.totalPrice.from.trim()) ||
+            (priceFilters.totalPrice?.to && priceFilters.totalPrice.to.trim()));
+
+        const hasInclusionFilter =
+          inclusionFilters &&
+          (inclusionFilters.centerBlack.length > 0 ||
+            inclusionFilters.centerWhite.length > 0 ||
+            inclusionFilters.sideBlack.length > 0 ||
+            inclusionFilters.sideWhite.length > 0);
+
+        // Check for Key Symbol filters
+        const hasKeySymbolFilter =
+          keySymbolFilters &&
+          (keySymbolFilters.keyToSymbol.length > 0 ||
+            keySymbolFilters.eyCln.length > 0 ||
+            keySymbolFilters.hAndA.length > 0);
+
         const hasAnyFilter =
           hasShapeFilter ||
           hasColorFilter ||
@@ -122,7 +159,10 @@ const DiamondGridView: React.FC<GridViewProps> = ({
           hasPolishFilter ||
           hasSymmetryFilter ||
           hasLocationFilter ||
-          hasLabFilter;
+          hasLabFilter ||
+          hasInclusionFilter ||
+          hasKeySymbolFilter ||
+          hasPriceFilter; // Add price filter check
 
         let response;
         if (hasAnyFilter) {
@@ -170,6 +210,75 @@ const DiamondGridView: React.FC<GridViewProps> = ({
           if (hasLabFilter) {
             const apiLabValues = getLabApiValues(selectedLabs);
             filters.lab = apiLabValues.join(",");
+          }
+          if (hasInclusionFilter && inclusionFilters) {
+            if (inclusionFilters.centerBlack.length > 0) {
+              filters.CN = inclusionFilters.centerBlack.join(",");
+            }
+            if (inclusionFilters.centerWhite.length > 0) {
+              filters.CW = inclusionFilters.centerWhite.join(",");
+            }
+            if (inclusionFilters.sideBlack.length > 0) {
+              filters.SN = inclusionFilters.sideBlack.join(",");
+            }
+            if (inclusionFilters.sideWhite.length > 0) {
+              filters.SW = inclusionFilters.sideWhite.join(",");
+            }
+          }
+
+          // Add Key Symbol filters to API call
+          if (hasKeySymbolFilter && keySymbolFilters) {
+            if (keySymbolFilters.keyToSymbol.length > 0) {
+              filters.keyToSymbols = keySymbolFilters.keyToSymbol.join(",");
+            }
+            if (keySymbolFilters.eyCln.length > 0) {
+              filters.eyCln = keySymbolFilters.eyCln.join(",");
+            }
+            if (keySymbolFilters.hAndA.length > 0) {
+              filters.hAndA = keySymbolFilters.hAndA.join(",");
+            }
+          }
+
+          // Add Price filters to API call
+          if (hasPriceFilter && priceFilters) {
+            // $/ct (NET_RATE)
+            if (
+              priceFilters.pricePerCarat.from &&
+              priceFilters.pricePerCarat.from.trim()
+            ) {
+              filters.netRateMin = parseFloat(priceFilters.pricePerCarat.from);
+            }
+            if (
+              priceFilters.pricePerCarat.to &&
+              priceFilters.pricePerCarat.to.trim()
+            ) {
+              filters.netRateMax = parseFloat(priceFilters.pricePerCarat.to);
+            }
+
+            // Disc% (DISC_PER)
+            if (
+              priceFilters.discount.from &&
+              priceFilters.discount.from.trim()
+            ) {
+              filters.discPerMin = parseFloat(priceFilters.discount.from);
+            }
+            if (priceFilters.discount.to && priceFilters.discount.to.trim()) {
+              filters.discPerMax = parseFloat(priceFilters.discount.to);
+            }
+
+            // Total $ (NET_VALUE)
+            if (
+              priceFilters.totalPrice.from &&
+              priceFilters.totalPrice.from.trim()
+            ) {
+              filters.netValueMin = parseFloat(priceFilters.totalPrice.from);
+            }
+            if (
+              priceFilters.totalPrice.to &&
+              priceFilters.totalPrice.to.trim()
+            ) {
+              filters.netValueMax = parseFloat(priceFilters.totalPrice.to);
+            }
           }
 
           response = await diamondApi.search(filters);
@@ -263,7 +372,25 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             selectedMaxCarat ||
             (Array.isArray(selectedLocations) &&
               selectedLocations.length > 0) ||
-            (Array.isArray(selectedLabs) && selectedLabs.length > 0)
+            (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
+            (keySymbolFilters?.keyToSymbol &&
+              keySymbolFilters.keyToSymbol.length > 0) ||
+            (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
+            (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0) ||
+            (inclusionFilters?.centerBlack &&
+              inclusionFilters.centerBlack.length > 0) ||
+            (inclusionFilters?.centerWhite &&
+              inclusionFilters.centerWhite.length > 0) ||
+            (inclusionFilters?.sideBlack &&
+              inclusionFilters.sideBlack.length > 0) ||
+            (inclusionFilters?.sideWhite &&
+              inclusionFilters.sideWhite.length > 0) ||
+            priceFilters?.pricePerCarat?.from ||
+            priceFilters?.pricePerCarat?.to ||
+            priceFilters?.discount?.from ||
+            priceFilters?.discount?.to ||
+            priceFilters?.totalPrice?.from ||
+            priceFilters?.totalPrice?.to
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>
@@ -279,6 +406,24 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             (Array.isArray(selectedLocations) &&
               selectedLocations.length > 0) ||
             (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
+            (keySymbolFilters?.keyToSymbol &&
+              keySymbolFilters.keyToSymbol.length > 0) ||
+            (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
+            (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0) ||
+            (inclusionFilters?.centerBlack &&
+              inclusionFilters.centerBlack.length > 0) ||
+            (inclusionFilters?.centerWhite &&
+              inclusionFilters.centerWhite.length > 0) ||
+            (inclusionFilters?.sideBlack &&
+              inclusionFilters.sideBlack.length > 0) ||
+            (inclusionFilters?.sideWhite &&
+              inclusionFilters.sideWhite.length > 0) ||
+            priceFilters?.pricePerCarat?.from ||
+            priceFilters?.pricePerCarat?.to ||
+            priceFilters?.discount?.from ||
+            priceFilters?.discount?.to ||
+            priceFilters?.totalPrice?.from ||
+            priceFilters?.totalPrice?.to ||
             searchTerm) && (
             <div className="text-sm text-gray-500 mt-2 space-y-1">
               {Array.isArray(selectedShape) && selectedShape.length > 0 && (
@@ -309,6 +454,56 @@ const DiamondGridView: React.FC<GridViewProps> = ({
               {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
                 <p>Lab: {selectedLabs.join(", ")}</p>
               )}
+              {keySymbolFilters?.keyToSymbol &&
+                keySymbolFilters.keyToSymbol.length > 0 && (
+                  <p>Key Symbols: {keySymbolFilters.keyToSymbol.join(", ")}</p>
+                )}
+              {keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0 && (
+                <p>Eye Clean: {keySymbolFilters.eyCln.join(", ")}</p>
+              )}
+              {keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0 && (
+                <p>H&A: {keySymbolFilters.hAndA.join(", ")}</p>
+              )}
+              {inclusionFilters?.centerBlack &&
+                inclusionFilters.centerBlack.length > 0 && (
+                  <p>
+                    Center Black: {inclusionFilters.centerBlack.join(", ")}
+                  </p>
+                )}
+              {inclusionFilters?.centerWhite &&
+                inclusionFilters.centerWhite.length > 0 && (
+                  <p>
+                    Center White: {inclusionFilters.centerWhite.join(", ")}
+                  </p>
+                )}
+              {inclusionFilters?.sideBlack &&
+                inclusionFilters.sideBlack.length > 0 && (
+                  <p>Side Black: {inclusionFilters.sideBlack.join(", ")}</p>
+                )}
+              {inclusionFilters?.sideWhite &&
+                inclusionFilters.sideWhite.length > 0 && (
+                  <p>Side White: {inclusionFilters.sideWhite.join(", ")}</p>
+                )}
+              {(priceFilters?.pricePerCarat?.from ||
+                priceFilters?.pricePerCarat?.to) && (
+                <p>
+                  Price/ct: {priceFilters.pricePerCarat.from || "0"} -{" "}
+                  {priceFilters.pricePerCarat.to || "∞"}
+                </p>
+              )}
+              {(priceFilters?.discount?.from || priceFilters?.discount?.to) && (
+                <p>
+                  Discount%: {priceFilters.discount.from || "0"} -{" "}
+                  {priceFilters.discount.to || "∞"}
+                </p>
+              )}
+              {(priceFilters?.totalPrice?.from ||
+                priceFilters?.totalPrice?.to) && (
+                <p>
+                  Total Price: {priceFilters.totalPrice.from || "0"} -{" "}
+                  {priceFilters.totalPrice.to || "∞"}
+                </p>
+              )}
               {searchTerm && <p>Search: &quot;{searchTerm}&quot;</p>}
             </div>
           )}
@@ -334,7 +529,25 @@ const DiamondGridView: React.FC<GridViewProps> = ({
           selectedMinCarat ||
           selectedMaxCarat ||
           (Array.isArray(selectedLocations) && selectedLocations.length > 0) ||
-          (Array.isArray(selectedLabs) && selectedLabs.length > 0)) && (
+          (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
+          (keySymbolFilters?.keyToSymbol &&
+            keySymbolFilters.keyToSymbol.length > 0) ||
+          (keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0) ||
+          (keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0) ||
+          (inclusionFilters?.centerBlack &&
+            inclusionFilters.centerBlack.length > 0) ||
+          (inclusionFilters?.centerWhite &&
+            inclusionFilters.centerWhite.length > 0) ||
+          (inclusionFilters?.sideBlack &&
+            inclusionFilters.sideBlack.length > 0) ||
+          (inclusionFilters?.sideWhite &&
+            inclusionFilters.sideWhite.length > 0) ||
+          priceFilters?.pricePerCarat?.from ||
+          priceFilters?.pricePerCarat?.to ||
+          priceFilters?.discount?.from ||
+          priceFilters?.discount?.to ||
+          priceFilters?.totalPrice?.from ||
+          priceFilters?.totalPrice?.to) && (
           <div className="mb-3 flex items-center gap-2 text-sm text-gray-600 flex-wrap">
             <span className="font-medium">Active Filters:</span>
             {Array.isArray(selectedShape) && selectedShape.length > 0 && (
@@ -386,6 +599,66 @@ const DiamondGridView: React.FC<GridViewProps> = ({
             {Array.isArray(selectedLabs) && selectedLabs.length > 0 && (
               <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
                 Lab: {selectedLabs.join(", ")}
+              </span>
+            )}
+            {keySymbolFilters?.keyToSymbol &&
+              keySymbolFilters.keyToSymbol.length > 0 && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                  Key Symbols: {keySymbolFilters.keyToSymbol.join(", ")}
+                </span>
+              )}
+            {keySymbolFilters?.eyCln && keySymbolFilters.eyCln.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Eye Clean: {keySymbolFilters.eyCln.join(", ")}
+              </span>
+            )}
+            {keySymbolFilters?.hAndA && keySymbolFilters.hAndA.length > 0 && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                H&A: {keySymbolFilters.hAndA.join(", ")}
+              </span>
+            )}
+            {inclusionFilters?.centerBlack &&
+              inclusionFilters.centerBlack.length > 0 && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                  CN: {inclusionFilters.centerBlack.join(", ")}
+                </span>
+              )}
+            {inclusionFilters?.centerWhite &&
+              inclusionFilters.centerWhite.length > 0 && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                  CW: {inclusionFilters.centerWhite.join(", ")}
+                </span>
+              )}
+            {inclusionFilters?.sideBlack &&
+              inclusionFilters.sideBlack.length > 0 && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                  SN: {inclusionFilters.sideBlack.join(", ")}
+                </span>
+              )}
+            {inclusionFilters?.sideWhite &&
+              inclusionFilters.sideWhite.length > 0 && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                  SW: {inclusionFilters.sideWhite.join(", ")}
+                </span>
+              )}
+            {(priceFilters?.pricePerCarat?.from ||
+              priceFilters?.pricePerCarat?.to) && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                $/ct: {priceFilters.pricePerCarat.from || "0"} -{" "}
+                {priceFilters.pricePerCarat.to || "∞"}
+              </span>
+            )}
+            {(priceFilters?.discount?.from || priceFilters?.discount?.to) && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Disc%: {priceFilters.discount.from || "0"} -{" "}
+                {priceFilters.discount.to || "∞"}
+              </span>
+            )}
+            {(priceFilters?.totalPrice?.from ||
+              priceFilters?.totalPrice?.to) && (
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                Total $: {priceFilters.totalPrice.from || "0"} -{" "}
+                {priceFilters.totalPrice.to || "∞"}
               </span>
             )}
             {searchTerm && (
