@@ -82,7 +82,7 @@ export default function DiamondShapes() {
 
     { name: "Princess", image: "/DiamondsinBlubg/Princess.jpg" },
 
-    { name: "Marquise", image: "/DiamondsinBlubg/marquise.jpg" },
+    { name: "Marquise", image: "/DiamondsinBlubg/Marquise.jpg" },
   ];
 
   const handleShapeClick = (shape: { name: string; image: string }) =>
