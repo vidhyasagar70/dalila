@@ -18,7 +18,7 @@ export default function HomeContent() {
             <AnimatedContainer direction="scale-out">
               <div className="relative h-[280px] sm:h-[320px] md:h-[350px] lg:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
                 <Image
-                  src="/diamondcuts/sellyourdiamonds.jpg"
+                  src="/diamondcuts/sell_your_diamonds_home.jpg"
                   alt="Professional diamond dealer"
                   fill
                   className="object-cover"

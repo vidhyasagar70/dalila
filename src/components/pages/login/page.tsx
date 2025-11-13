@@ -68,7 +68,7 @@ export default function LoginPage() {
     }
 
     try {
-      console.log("🔐 Attempting login...");
+      console.log(" Attempting login...");
 
       // Call the login API
       const response = await userApi.login({
@@ -144,21 +144,21 @@ export default function LoginPage() {
             !user.customerData.businessInfo
           ) {
             console.log(
-              "⚠️ Customer data missing or incomplete - redirecting to form",
+              " Customer data missing or incomplete - redirecting to form",
             );
             redirectUrl = "/customer-details";
             setError("");
           }
           // Check KYC status if customer data exists
           else if (user.kycStatus === "pending") {
-            console.log("⏳ KYC pending approval");
+            console.log(" KYC pending approval");
             setError(
               "Your account is pending approval. Please wait for admin verification.",
             );
             setIsLoading(false);
             return;
           } else if (user.kycStatus === "rejected") {
-            console.log("❌ KYC rejected");
+            console.log(" KYC rejected");
             setError(
               "Your account application was rejected. Please contact support.",
             );
@@ -172,7 +172,7 @@ export default function LoginPage() {
           // If no KYC status but has customer data, redirect to customer details
           else {
             console.log(
-              "⚠️ No KYC status - checking customer data completeness",
+              " No KYC status - checking customer data completeness",
             );
             // Double check if customer data is actually complete
             const hasCompleteData =
@@ -187,7 +187,7 @@ export default function LoginPage() {
               redirectUrl = searchParams.get("redirect") || "/";
               setError("");
             } else {
-              console.log("⚠️ Customer data incomplete - redirecting to form");
+              console.log(" Customer data incomplete - redirecting to form");
               redirectUrl = "/customer-details";
               setError("");
             }
@@ -211,7 +211,7 @@ export default function LoginPage() {
         setIsLoading(false);
       }
     } catch (err: unknown) {
-      console.error("❌ Login error:", err);
+      console.error(" Login error:", err);
 
       if (err instanceof Error) {
         const errorMessage = err.message;
@@ -262,7 +262,7 @@ export default function LoginPage() {
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="/New-Videos/auth-bg.mp4"
+        src="/New-Videos/diamond_countdown.mp4"
         autoPlay
         muted
         loop
@@ -415,7 +415,7 @@ export default function LoginPage() {
               </button>
 
               {/* Register Link */}
-              <div className="mt-6 text-center text-xs text-[#474745]">
+              <div className="mt-6 text-center text-xs text-white">
                 Don&apos;t have an account?{" "}
                 <a
                   href="#"

@@ -24,7 +24,7 @@ export default function SellDiamondsProcess() {
       heading: "Start the Process with a Simple Form.",
       description:
         "Fill out our straightforward online form and provide any details you have about your diamonds or jewelry. It's quick, easy, and the first step toward getting the best value.",
-      image: "/images/step_1.png",
+      image: "/sell/step_1.png",
       imagePosition: "left",
     },
     {
@@ -33,7 +33,7 @@ export default function SellDiamondsProcess() {
       heading: "Meet Us in Person or we'll Pickup",
       description:
         "You can schedule a face-to-face evaluation at one of our trusted locations. If you prefer not to travel, we offer a safe, insured courier service to collect your diamonds from anywhere in Europe. Your valuable pieces are always in safe hands.",
-      image: "/images/step_2.png",
+      image: "/sell/step_2.png",
       imagePosition: "right",
     },
     {
@@ -42,7 +42,7 @@ export default function SellDiamondsProcess() {
       heading: "Assessments by Certified Professionals.",
       description:
         "Our GIA-certified gemologists and gold specialists evaluate your diamonds and fine jewelry based on the 4Cs, current market conditions, and accurate pricing.",
-      image: "/images/step_3.png",
+      image: "/sell/step_3.png",
       imagePosition: "left",
     },
     {
@@ -51,7 +51,7 @@ export default function SellDiamondsProcess() {
       heading: "Fair & Transparent Offers.",
       description:
         "Once we ve evaluated your diamonds, we present you with the most competitive offers, reflecting the true value based on the global diamond and gold market.",
-      image: "/images/step_4.png",
+      image: "/sell/step_4.png",
       imagePosition: "right",
     },
     {
@@ -60,7 +60,7 @@ export default function SellDiamondsProcess() {
       heading: "Receive Your Payment in 24 Hours.",
       description:
         "Once you accept our offer, we process your payment within 24 hours via secure bank transfer.",
-      image: "/images/step_5.png",
+      image: "/sell/recieve_your_payment.png",
       imagePosition: "left",
     },
   ];
@@ -87,8 +87,8 @@ export default function SellDiamondsProcess() {
                       src={step.image}
                       alt={step.title}
                       width={400}
-                      height={500}
-                      className="w-full h-96 md:h-[500px] lg:h-[600px] object-cover"
+                      height={400}
+                      className="w-full h-64 md:h-80 lg:h-96 object-cover"
                       priority={index === 0}
                     />
                   </div>
@@ -100,7 +100,7 @@ export default function SellDiamondsProcess() {
                   delay={0.4}
                 >
                   <div className="w-full lg:flex-1 flex items-center">
-                    <div className="bg-white border border-gray-200 p-10 md:p-12 lg:p-16 shadow-lg w-full">
+                    <div className="w-full">
                       <div className="mb-6">
                         <p
                           className={`text-sm md:text-base text-gray-600 mb-3 ${marcellus.className}`}

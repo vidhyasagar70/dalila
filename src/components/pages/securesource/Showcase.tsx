@@ -26,7 +26,7 @@ export default function SecureSourceshowcase() {
             <div>
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto  overflow-hidden shadow-2xl">
                 <Image
-                  src="/diamondcuts/Browseonlineplatforms.jpg"
+                  src="/secure_to_source/Browse_online_platforms.jpg"
                   alt="Professional diamond dealer"
                   fill
                   className="object-cover"
@@ -90,7 +90,7 @@ export default function SecureSourceshowcase() {
             <AnimatedContainer direction="scale-out">
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto  overflow-hidden shadow-2xl">
                 <Image
-                  src="/diamondcuts/QualityAssurance.jpg"
+                  src="/secure_to_source/Quality_Assurance.jpg"
                   alt="Diamond examination with tweezers"
                   fill
                   className="object-cover"
@@ -105,7 +105,7 @@ export default function SecureSourceshowcase() {
             <AnimatedContainer direction="scale-out" delay={0.5}>
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto  overflow-hidden shadow-2xl">
                 <Image
-                  src="/diamondcuts/Deliveryinbelgium.jpg"
+                  src="/secure_to_source/arrive_in_belgium.jpg"
                   alt="Professional diamond dealer"
                   fill
                   className="object-cover"

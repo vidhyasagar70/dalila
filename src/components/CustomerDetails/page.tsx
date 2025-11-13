@@ -409,7 +409,7 @@ function CustomerDetailsContent() {
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="/New-Videos/auth-bg.mp4"
+        src="/New-Videos/diamond_countdown.mp4"
         autoPlay
         muted
         loop

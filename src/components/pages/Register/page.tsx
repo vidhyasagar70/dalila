@@ -191,7 +191,7 @@ export default function RegisterPage() {
       {/* Background Video */}
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="/New-Videos/auth-bg.mp4"
+        src="/New-Videos/diamond_countdown.mp4"
         autoPlay
         muted
         loop
@@ -423,7 +423,7 @@ export default function RegisterPage() {
               </button>
 
               {/* Login Link */}
-              <div className="mt-6 text-center text-xs text-[#474745]">
+              <div className="mt-6 text-center text-xs text-white">
                 Already have an account?{" "}
                 <a
                   href="#"

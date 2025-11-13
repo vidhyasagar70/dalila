@@ -16,7 +16,7 @@ export default function HeroSection() {
       buttonLink: "/inventory",
     },
     {
-      image: "/dalila_img/banners/new/Banner_02.jpg",
+      image: "/dalila_img/banners/Banner-02.jpg",
       title: "Modern Luxury",
       buttonPosition: "bottom-left",
       buttonLink: "/diamond-source",

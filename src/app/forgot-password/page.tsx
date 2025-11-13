@@ -253,7 +253,7 @@ export default function ForgotPasswordPage() {
     <div className="relative w-full h-screen overflow-hidden bg-black">
       <video
         className="absolute inset-0 w-full h-full object-cover"
-        src="/New-Videos/auth-bg.mp4"
+        src="/New-Videos/diamond_countdown.mp4"
         autoPlay
         muted
         loop
@@ -533,7 +533,7 @@ export default function ForgotPasswordPage() {
                 </form>
               )}
 
-              <div className="mt-6 text-center text-xs text-[#474745]">
+              <div className="mt-6 text-center text-xs text-white">
                 Remember your password?{" "}
                 <a
                   href="#"

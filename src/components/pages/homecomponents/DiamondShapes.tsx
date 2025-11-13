@@ -70,19 +70,19 @@ export default function DiamondShapes() {
   } | null>(null);
 
   const shapes = [
-    { name: "Round", image: "/shapephotos/Round.jpg" },
-    { name: "Oval", image: "/shapephotos/Oval.jpg" },
-    { name: "Pear", image: "/shapephotos/Pear.jpg" },
-    { name: "Emerald", image: "/shapephotos/Emerald.jpg" },
-    { name: "Heart", image: "/shapephotos/Heart.jpg" },
-    { name: "Cushion", image: "/shapephotos/Cushion.jpg" },
+    { name: "Round", image: "/DiamondsinBlubg/Round.jpg" },
+    { name: "Oval", image: "/DiamondsinBlubg/Oval.jpg" },
+    { name: "Pear", image: "/DiamondsinBlubg/Pear.jpg" },
+    { name: "Emerald", image: "/DiamondsinBlubg/Emerald.jpg" },
+    { name: "Heart", image: "/DiamondsinBlubg/Heart.jpg" },
+    { name: "Cushion", image: "/DiamondsinBlubg/Cushion.jpg" },
 
-    { name: "Asscher", image: "/shapephotos/Asscher.jpg" },
-    { name: "Radiant", image: "/shapephotos/Radiant.jpg" },
+    { name: "Asscher", image: "/DiamondsinBlubg/Asscher.jpg" },
+    { name: "Radiant", image: "/DiamondsinBlubg/Radiant.jpg" },
 
-    { name: "Princess", image: "/shapephotos/Princess.jpg" },
+    { name: "Princess", image: "/DiamondsinBlubg/Princess.jpg" },
 
-    { name: "Marquise", image: "/shapephotos/marquise.jpg" },
+    { name: "Marquise", image: "/DiamondsinBlubg/marquise.jpg" },
   ];
 
   const handleShapeClick = (shape: { name: string; image: string }) =>
