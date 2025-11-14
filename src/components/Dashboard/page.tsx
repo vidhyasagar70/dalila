@@ -18,6 +18,7 @@ import Image from "next/image";
 import { diamondApi, cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 import type { LimitedEditionDiamond } from "@/lib/api";
+import type { DiamondData } from "@/types/Diamondtable";
 import DiamondDetailView from "@/components/DiamondDetailView";
 
 const mavenPro = Maven_Pro({
@@ -419,7 +420,7 @@ export default function AdminDashboard() {
       {/* Diamond Detail View Modal */}
       {selectedDiamond && (
         <DiamondDetailView
-          diamond={selectedDiamond as any}
+          diamond={selectedDiamond as unknown as DiamondData}
           onClose={() => setSelectedDiamond(null)}
         />
       )}
