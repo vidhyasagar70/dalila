@@ -15,7 +15,6 @@ import type {
 } from "@/types/Diamondtable";
 import DiamondDetailView from "../DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
-import { getLocationApiValues, getLabApiValues } from "../Priceandloction";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",

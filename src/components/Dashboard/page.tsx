@@ -13,6 +13,7 @@ import {
   List,
   DollarSign,
 } from "lucide-react";
+import Image from "next/image";
 
 import { diamondApi, cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
@@ -296,9 +297,11 @@ export default function AdminDashboard() {
                                 <source src={diamond.MP4} type="video/mp4" />
                               </video>
                             ) : diamond.REAL_IMAGE ? (
-                              <img
+                              <Image
                                 src={diamond.REAL_IMAGE}
                                 alt={diamond.STONE_NO}
+                                width={128}
+                                height={128}
                                 className="w-32 h-32 object-cover rounded"
                               />
                             ) : (

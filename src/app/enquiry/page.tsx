@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { queryApi, Diamond } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 
@@ -44,7 +43,7 @@ function EnquiryPageContent() {
       } else {
         setError(response.message || "Failed to fetch enquiries");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error fetching queries:", err);
       setError("Failed to load enquiries. Please try again later.");
     } finally {
@@ -203,7 +202,7 @@ function EnquiryPageContent() {
               No Enquiries Yet
             </h2>
             <p className="text-gray-600">
-              You haven't made any enquiries yet.
+              You haven&apos;t made any enquiries yet.
             </p>
           </div>
         ) : (

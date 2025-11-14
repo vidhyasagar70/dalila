@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Image from "next/image";
+
 import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({

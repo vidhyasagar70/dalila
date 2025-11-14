@@ -11,14 +11,6 @@ import ClarityFilter from "./ClarityFilterLimited";
 import FluorFilter from "./FluorescenceFilterLimited";
 import DiamondStockTable from "./DiamondStockTableLimited";
 import SpecialClarityFilter from "./Specialdiamond";
-import { Maven_Pro } from "next/font/google";
-
-const mavenPro = Maven_Pro({
-  variable: "--font-maven-pro",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
 
 export default function DiamondStockTableWithFilter() {
   const [selectedColor, setSelectedColor] = useState<string[]>([]);
@@ -45,10 +37,6 @@ export default function DiamondStockTableWithFilter() {
 
   const handleFluorChange = (fluor: string[]) => {
     setSelectedFluor(fluor);
-  };
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
   };
 
   const handleClarityChange = (clarity: string[]) => {
@@ -86,37 +74,6 @@ export default function DiamondStockTableWithFilter() {
     diamonds: DiamondData[],
   ) => {
     setSelectedDiamonds(diamonds);
-  };
-
-  const handleCompare = () => {
-    if (selectedDiamonds.length > 0) {
-      setShowComparison(true);
-    }
-  };
-
-  const handleEmail = () => {
-    console.log(
-      "Email sent for diamonds:",
-      selectedDiamonds.map((d) => d.STONE_NO),
-    );
-  };
-
-  const handleAddToCart = () => {
-    setSelectedDiamonds([]);
-    console.log("Diamonds added to cart successfully, selection cleared");
-  };
-
-  const handleResetFilters = () => {
-    setSelectedColor([]);
-    setSelectedShape([]);
-    setSelectedClarity([]);
-    setSelectedCut("");
-    setSelectedPolish("");
-    setSelectedSymmetry("");
-    setSelectedLabs([]);
-    setSelectedFluor([]);
-    setSelectedMinCarat("");
-    setSelectedMaxCarat("");
   };
 
   const handleSaveParameters = async () => {
