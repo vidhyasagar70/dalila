@@ -27,7 +27,7 @@ export default function DiamondSourceshowcase() {
             <div>
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto overflow-hidden shadow-2xl">
                 <Image
-                  src="/diamonds_source/Tell_us_your_needs.jpg"
+                  src="/secure_to_source/tray.jpg"
                   alt="Professional diamond dealer"
                   fill
                   className="object-cover"

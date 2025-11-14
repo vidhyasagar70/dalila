@@ -787,15 +787,18 @@ export default function CustomerManagementPage() {
                     {/* Items in cart */}
                     {row.itemsInCart && row.itemsInCart.length > 0 && (
                       <div className="py-3">
-                        <p
-                          className={`${jost.className} text-gray-800 font-medium mb-2`}
-                        >
-                          Items in cart
-                        </p>
                         <div className="overflow-auto">
                           <table className="w-full text-left border-collapse">
                             <thead>
+                              <tr>
+                                <th colSpan={14}>
+                                  <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block">
+                                    Items in cart
+                                  </span>
+                                </th>
+                              </tr>
                               <tr className="text-[12px] text-gray-500 border-b border-[#E9E2C6]">
+                                <th className="py-3 px-4 font-medium">Sr no</th>
                                 <th className="font-medium pr-6 pb-1 text-left">
                                   Stone
                                 </th>
@@ -854,15 +857,18 @@ export default function CustomerManagementPage() {
                     {/* Holded Items */}
                     {row.holdedItems && row.holdedItems.length > 0 && (
                       <div className="py-3">
-                        <p
-                          className={`${jost.className} text-gray-800 font-medium mb-2`}
-                        >
-                          Holded Items
-                        </p>
                         <div className="overflow-auto">
                           <table className="w-full text-left border-collapse">
                             <thead>
+                              <tr>
+                                <th colSpan={16}>
+                                  <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block">
+                                    Holded Items
+                                  </span>
+                                </th>
+                              </tr>
                               <tr className="text-[12px] text-gray-500 border-b border-[#E9E2C6]">
+                                <th className="py-3 px-4 font-medium">Sr no</th>
                                 <th className="font-medium pr-6 pb-1 text-left">
                                   Stone
                                 </th>

@@ -90,7 +90,7 @@ export default function SecureSourceshowcase() {
             <AnimatedContainer direction="scale-out">
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto  overflow-hidden shadow-2xl">
                 <Image
-                  src="/secure_to_source/Quality_Assurance.jpg"
+                  src="/secure_to_source/close-up.jpg"
                   alt="Diamond examination with tweezers"
                   fill
                   className="object-cover"
@@ -105,7 +105,7 @@ export default function SecureSourceshowcase() {
             <AnimatedContainer direction="scale-out" delay={0.5}>
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto  overflow-hidden shadow-2xl">
                 <Image
-                  src="/secure_to_source/arrive_in_belgium.jpg"
+                  src="/secure_to_source/flight.jpg"
                   alt="Professional diamond dealer"
                   fill
                   className="object-cover"
@@ -125,8 +125,8 @@ export default function SecureSourceshowcase() {
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
                 >
-                  Arrive in Belgium
-                  <br /> Fast
+                 
+                  Fast and secure delivery <br /> to Belgium
                 </h2>
               </AnimatedContainer>
               <p

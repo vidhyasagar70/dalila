@@ -31,7 +31,7 @@ export default function SecureSourceHero() {
               <h3
                 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight ${marcellus.className}`}
               >
-                Secure To Source
+                S3:Secured-Sourcing-Service 
               </h3>
             </AnimatedContainer>
             <AnimatedContainer direction="up" delay={0.5}>

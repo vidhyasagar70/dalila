@@ -53,8 +53,8 @@ export default function Diamondshowcase() {
                 >
                   Diamonds are more than just gemstones — they are timeless
                   symbols of love, craftsmanship, and nature&apos;s brilliance.
-                  Formed deep within the Earth over billions of years, every
-                  natural diamond carries a story of purity and perfection.
+                  Formed deep within the Earth over billions of years, each
+                  natural diamond carries it&apos;s own story. 
                   Whether you&apos;re buying your first diamond or expanding
                   your collection, understanding the key aspects of a diamond
                   helps you make a truly informed choice. This guide is designed
