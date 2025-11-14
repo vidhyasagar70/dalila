@@ -14,6 +14,7 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -30,6 +31,7 @@ export default function Header() {
   const diamondsourcePage = pathname === "/diamond-source";
   const customerPage = pathname === "/customer-management";
    const enquiryPage = pathname === "/enquiry";
+   const limitedEditionPage = pathname === "/limitedEdition";
 
   // Determine if user is admin
   const isAdmin = isLoggedIn && userRole === "ADMIN";
@@ -221,7 +223,7 @@ export default function Header() {
         BlogDetailPage ||
         SecurePage ||
         diamondsourcePage ||
-        customerPage ||enquiryPage||
+        customerPage ||enquiryPage||limitedEditionPage ||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -338,14 +340,38 @@ export default function Header() {
               </>
             ) : (
               <div className="flex gap-3">
-                {/* DASHBOARD - Available only for regular users, NOT for admin */}
+                {/* USER PANEL - Available only for regular users, NOT for admin */}
                 {!isAdmin && (
-                  <button
-                    onClick={() => router.push("/dashboard")}
-                    className="py-3 px-3 xl:px-3 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap xl:w-27 xl:h-10"
-                  >
-                    DASHBOARD
-                  </button>
+                  <div className="relative group">
+                    <button
+                      onMouseEnter={() => setIsUserDropdownOpen(true)}
+                      onMouseLeave={() => setIsUserDropdownOpen(false)}
+                      className="py-3 px-3 xl:px-3 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap xl:w-27 xl:h-10"
+                    >
+                      USER PANEL
+                    </button>
+
+                    {isUserDropdownOpen && (
+                      <div
+                        onMouseEnter={() => setIsUserDropdownOpen(true)}
+                        onMouseLeave={() => setIsUserDropdownOpen(false)}
+                        className="absolute top-full left-0 mt-0 w-full bg-[#050c3a] border border-[#c89e3a] rounded shadow-lg z-50"
+                      >
+                        <Link
+                          href="/dashboard"
+                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors"
+                        >
+                          Dashboard
+                        </Link>
+                        <Link
+                          href="/enquiry"
+                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                        >
+                          Enquiry
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {/* INVENTORY - Available for Admin or APPROVED users */}
@@ -403,6 +429,12 @@ export default function Header() {
                           className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
                         >
                           Customer Management
+                        </Link>
+                        <Link
+                          href="/limitedEdition"
+                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                        >
+                          Limited Edition
                         </Link>
                       </div>
                     )}
@@ -546,17 +578,34 @@ export default function Header() {
                 Contact Us
               </button>
 
-              {/* Dashboard - Available only for regular users, NOT for admin */}
+              {/* User Panel - Available only for regular users, NOT for admin */}
               {isLoggedIn && !isAdmin && (
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    router.push("/dashboard");
-                  }}
-                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
-                >
-                  Dashboard
-                </button>
+                <div className="border-t border-white/20 pt-2">
+                  <p className="text-white text-lg py-2 font-semibold flex items-center gap-2">
+                    User Panel
+                    <ChevronDown size={18} />
+                  </p>
+                  <div className="pl-4 flex flex-col gap-2">
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        router.push("/dashboard");
+                      }}
+                      className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        router.push("/enquiry");
+                      }}
+                      className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                    >
+                      Enquiry
+                    </button>
+                  </div>
+                </div>
               )}
 
               {/* Inventory - Available for Admin or APPROVED users */}
@@ -586,15 +635,41 @@ export default function Header() {
 
               {/* Admin Panel - Only for admins */}
               {isAdmin && (
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    router.push("/member");
-                  }}
-                  className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
-                >
-                  Admin Panel
-                </button>
+                <div className="border-t border-white/20 pt-2">
+                  <p className="text-white text-lg py-2 font-semibold flex items-center gap-2">
+                    Admin Panel
+                    <ChevronDown size={18} />
+                  </p>
+                  <div className="pl-4 flex flex-col gap-2">
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        router.push("/member");
+                      }}
+                      className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                    >
+                      Members
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        router.push("/customer-management");
+                      }}
+                      className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                    >
+                      Customer Management
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        router.push("/limitedEdition");
+                      }}
+                      className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                    >
+                      Limited Edition
+                    </button>
+                  </div>
+                </div>
               )}
             </nav>
 

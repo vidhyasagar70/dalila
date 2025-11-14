@@ -80,6 +80,29 @@ interface Diamond {
   [key: string]: unknown;
 }
 
+interface LimitedEditionDiamond {
+  STONE_NO: string;
+  SHAPE: string;
+  CARATS: string;
+  COLOR: string;
+  CLARITY: string;
+  CUT: string;
+  POL: string;
+  SYM: string;
+  LAB: string;
+  MP4: string;
+  REAL_IMAGE: string;
+  ARROW_IMAGE: string;
+  HEART_IMAGE: string;
+  CERTI_PDF: string;
+  NET_RATE: string;
+  NET_VALUE: string;
+  DISC_PER: string;
+  RAP_PRICE: string;
+  FLOUR: string;
+  [key: string]: unknown;
+}
+
 interface User {
   _id?: string;
   id: string;
@@ -696,6 +719,42 @@ export const diamondApi = {
       return response.data;
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
+      return null;
+    }
+  },
+
+  getLimitedEdition: async (): Promise<ApiResponse<{ diamonds: LimitedEditionDiamond[]; count: number }> | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<{ diamonds: LimitedEditionDiamond[]; count: number }>>(
+        "/api/diamonds/limited-edition",
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching limited edition diamonds:", error);
+      return null;
+    }
+  },
+
+  saveLimitedEditionFilters: async (filters: {
+    SHAPE?: string;
+    COLOR?: string;
+    CLARITY?: string;
+    CUT?: string;
+    POL?: string;
+    SYM?: string;
+    LAB?: string;
+    FLOUR?: string;
+    CARATS_MIN?: string;
+    CARATS_MAX?: string;
+  }): Promise<ApiResponse<{ diamonds: LimitedEditionDiamond[]; count: number }> | null> => {
+    try {
+      const response = await apiClient.post<ApiResponse<{ diamonds: LimitedEditionDiamond[]; count: number }>>(
+        "/api/diamonds/limited-edition",
+        filters
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error saving limited edition filters:", error);
       return null;
     }
   },
@@ -1706,6 +1765,7 @@ export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 export type {
   FilterOptions,
   Diamond,
+  LimitedEditionDiamond,
   User,
   CartItem,
   Quotation,

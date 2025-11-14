@@ -16,6 +16,7 @@ import {
 
 import { diamondApi, cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
+import type { LimitedEditionDiamond } from "@/lib/api";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -31,6 +32,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [limitedEditionDiamonds, setLimitedEditionDiamonds] = useState<LimitedEditionDiamond[]>([]);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   // Mock data
   const mockStats = {
@@ -40,53 +43,10 @@ export default function AdminDashboard() {
     upcomingList: 0,
   };
 
-  // Mock diamond data for carousel
-  const mockDiamonds = [
-    {
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
-    {
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
-    {
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
-    {
-      shape: "ROUND",
-      carat: "5.06",
-      color: "D",
-      clarity: "VS2",
-      cut: "EX",
-      polish: "EX",
-      symmetry: "VST",
-      lab: "GIA",
-    },
-  ];
-
   useEffect(() => {
     fetchDashboardData();
     fetchCartCount();
+    fetchLimitedEditionDiamonds();
 
     // Listen for cart updates
     const handleCartUpdate = () => {
@@ -98,6 +58,19 @@ export default function AdminDashboard() {
       window.removeEventListener("cart-updated", handleCartUpdate);
     };
   }, []);
+
+  // Auto-play carousel effect
+  useEffect(() => {
+    if (!isAutoPlaying || limitedEditionDiamonds.length <= 3) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => 
+        (prev + 1) % Math.max(1, limitedEditionDiamonds.length - 2)
+      );
+    }, 3000); // Change slide every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, limitedEditionDiamonds.length]);
 
   const fetchCartCount = async () => {
     try {
@@ -135,22 +108,37 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchLimitedEditionDiamonds = async () => {
+    try {
+      const response = await diamondApi.getLimitedEdition();
+      if (response && response.success && response.data) {
+        setLimitedEditionDiamonds(response.data.diamonds.slice(0, 6)); // Get first 6 diamonds
+      }
+    } catch (err) {
+      console.error("Limited edition fetch error:", err);
+    }
+  };
+
   const handleNavigate = (path: string) => {
     window.location.href = path;
   };
 
   const nextSlide = () => {
+    setIsAutoPlaying(false);
     setCurrentSlide(
-      (prev) => (prev + 1) % Math.max(1, mockDiamonds.length - 2),
+      (prev) => (prev + 1) % Math.max(1, limitedEditionDiamonds.length - 2),
     );
+    setTimeout(() => setIsAutoPlaying(true), 5000); // Resume auto-play after 5 seconds
   };
 
   const prevSlide = () => {
+    setIsAutoPlaying(false);
     setCurrentSlide(
       (prev) =>
-        (prev - 1 + Math.max(1, mockDiamonds.length - 2)) %
-        Math.max(1, mockDiamonds.length - 2),
+        (prev - 1 + Math.max(1, limitedEditionDiamonds.length - 2)) %
+        Math.max(1, limitedEditionDiamonds.length - 2),
     );
+    setTimeout(() => setIsAutoPlaying(true), 5000); // Resume auto-play after 5 seconds
   };
 
   if (loading) {
@@ -279,59 +267,97 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between flex-1">
                 <button
                   onClick={prevSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0 self-center"
+                  className="p-2 rounded-full bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
                 >
                   <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
 
                 <div className="flex gap-4 flex-1 justify-center items-center">
-                  {mockDiamonds
-                    .slice(currentSlide, currentSlide + 3)
-                    .map((diamond, index) => (
-                      <div
-                        key={index}
-                        style={{ borderColor: "#FAE9D0" }}
-                        className="bg-white border rounded-xl p-4 w-56"
-                      >
-                        <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
-                          <video
-                            className="w-32 h-32 object-cover rounded"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                          >
-                            <source
-                              src="/New-Videos/auth-bg.mp4"
-                              type="video/mp4"
-                            />
-                          </video>
-                        </div>
-                        <div className="text-center space-y-2">
-                          <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
-                            <span>{diamond.shape}</span>
-                            <span>{diamond.carat}</span>
-                            <span>{diamond.color}</span>
-                            <span>{diamond.clarity}</span>
+                  {limitedEditionDiamonds.length > 0 ? (
+                    limitedEditionDiamonds
+                      .slice(currentSlide, currentSlide + 3)
+                      .map((diamond, index) => (
+                        <div
+                          key={diamond.STONE_NO || index}
+                          className="bg-white border rounded-xl p-4 w-56"
+                          style={{
+                            borderColor: "#FAE9D0"
+                          }}
+                        >
+                          <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
+                            {diamond.MP4 ? (
+                              <video
+                                className="w-32 h-32 object-cover rounded"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                              >
+                                <source src={diamond.MP4} type="video/mp4" />
+                              </video>
+                            ) : diamond.REAL_IMAGE ? (
+                              <img
+                                src={diamond.REAL_IMAGE}
+                                alt={diamond.STONE_NO}
+                                className="w-32 h-32 object-cover rounded"
+                              />
+                            ) : (
+                              <div className="w-32 h-32 bg-gray-200 rounded flex items-center justify-center">
+                                <span className="text-gray-400">No Image</span>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex justify-center gap-2 text-sm text-gray-600">
-                            <span>-{diamond.cut}</span>
-                            <span>{diamond.polish}</span>
-                            <span>{diamond.symmetry}</span>
-                            <span>{diamond.lab}</span>
+                          <div className="text-center space-y-2">
+                            <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
+                              <span>{diamond.SHAPE}</span>
+                              <span>{diamond.CARATS}</span>
+                              <span>{diamond.COLOR}</span>
+                              <span>{diamond.CLARITY}</span>
+                            </div>
+                            <div className="flex justify-center gap-2 text-sm text-gray-600">
+                              <span>-{diamond.CUT || "N/A"}</span>
+                              <span>{diamond.POL}</span>
+                              <span>{diamond.SYM}</span>
+                              <span>{diamond.LAB}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                  ) : (
+                    <div className="text-center text-gray-500">
+                      No limited edition diamonds available
+                    </div>
+                  )}
                 </div>
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0] transition-colors flex-shrink-0 self-center"
+                  className="p-2 rounded-full bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
                 >
                   <ChevronRight className="w-5 h-5 text-white" />
                 </button>
               </div>
+              
+              {/* Carousel Indicators */}
+              {limitedEditionDiamonds.length > 3 && (
+                <div className="flex justify-center gap-2 mt-4">
+                  {Array.from({ length: Math.ceil(limitedEditionDiamonds.length - 2) }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setIsAutoPlaying(false);
+                        setCurrentSlide(index);
+                        setTimeout(() => setIsAutoPlaying(true), 5000);
+                      }}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        currentSlide === index 
+                          ? 'w-8 bg-[#FAE9D0]' 
+                          : 'w-2 bg-gray-300 hover:bg-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
