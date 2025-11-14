@@ -160,7 +160,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 p-6 mt-30">
       <div className="max-w-7xl mx-auto">
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-red-600" />
             <p className="text-red-700">{error}</p>
           </div>
@@ -172,7 +172,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => handleNavigate("/inventory")}
             style={{ borderColor: "#FAE9D0", backgroundColor: "#050C3A" }}
-            className="rounded-xl p-6 text-white shadow-lg border hover:opacity-90 transition-opacity text-left w-full"
+            className="p-6 text-white shadow-lg border hover:opacity-90 transition-opacity text-left w-full"
           >
             <div className="flex items-center justify-between mb-4">
               <Gem className="w-8 h-8" />
@@ -190,10 +190,10 @@ export default function AdminDashboard() {
           {/* New Arrival Card */}
           <div
             style={{ borderColor: "#FAE9D0" }}
-            className="bg-white rounded-xl p-6 shadow-md border"
+            className="bg-white p-6 shadow-md border"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="bg-gray-100 p-2 rounded-lg">
+              <div className="bg-gray-100 p-2">
                 <FileText className="w-6 h-6 text-gray-600" />
               </div>
               <span
@@ -212,10 +212,10 @@ export default function AdminDashboard() {
           {/* Price Revised Card */}
           <div
             style={{ borderColor: "#FAE9D0" }}
-            className="bg-white rounded-xl p-6 shadow-md border"
+            className="bg-white p-6 shadow-md border"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="bg-gray-100 p-2 rounded-lg">
+              <div className="bg-gray-100 p-2">
                 <DollarSign className="w-6 h-6 text-gray-600" />
               </div>
               <span
@@ -235,10 +235,10 @@ export default function AdminDashboard() {
           <button
             onClick={() => handleNavigate("/cart")}
             style={{ borderColor: "#FAE9D0" }}
-            className="bg-white rounded-xl p-6 shadow-md border hover:bg-gray-50 transition-colors text-left w-full"
+            className="bg-white p-6 shadow-md border hover:bg-gray-50 transition-colors text-left w-full"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="bg-gray-100 p-2 rounded-lg">
+              <div className="bg-gray-100 p-2">
                 <ShoppingCart className="w-6 h-6 text-gray-600" />
               </div>
               <span
@@ -261,7 +261,7 @@ export default function AdminDashboard() {
           <div className="col-span-9 flex">
             <div
               style={{ borderColor: "#FAE9D0" }}
-              className="bg-white rounded-xl p-6 shadow-md border w-full flex flex-col"
+              className="bg-white p-6 shadow-md border w-full flex flex-col"
             >
               <h2
                 className={`text-2xl font-bold text-gray-900 mb-6 ${mavenPro.className}`}
@@ -271,7 +271,7 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between flex-1">
                 <button
                   onClick={prevSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
+                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
                 >
                   <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
@@ -284,15 +284,15 @@ export default function AdminDashboard() {
                         <button
                           key={diamond.STONE_NO || index}
                           onClick={() => setSelectedDiamond(diamond)}
-                          className="bg-white border rounded-xl p-4 w-56 hover:shadow-lg transition-shadow cursor-pointer text-left"
+                          className="bg-white border p-4 w-56 hover:shadow-lg transition-shadow cursor-pointer text-left"
                           style={{
                             borderColor: "#FAE9D0"
                           }}
                         >
-                          <div className="bg-gray-50 rounded-lg p-6 mb-4 flex items-center justify-center">
+                          <div className="bg-gray-50 p-6 mb-4 flex items-center justify-center">
                             {diamond.MP4 ? (
                               <video
-                                className="w-32 h-32 object-cover rounded"
+                                className="w-32 h-32 object-cover"
                                 autoPlay
                                 loop
                                 muted
@@ -306,10 +306,10 @@ export default function AdminDashboard() {
                                 alt={diamond.STONE_NO}
                                 width={128}
                                 height={128}
-                                className="w-32 h-32 object-cover rounded"
+                                className="w-32 h-32 object-cover"
                               />
                             ) : (
-                              <div className="w-32 h-32 bg-gray-200 rounded flex items-center justify-center">
+                              <div className="w-32 h-32 bg-gray-200 flex items-center justify-center">
                                 <span className="text-gray-400">No Image</span>
                               </div>
                             )}
@@ -339,7 +339,7 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 rounded-full bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
+                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
                 >
                   <ChevronRight className="w-5 h-5 text-white" />
                 </button>
@@ -356,7 +356,7 @@ export default function AdminDashboard() {
                         setCurrentSlide(index);
                         setTimeout(() => setIsAutoPlaying(true), 5000);
                       }}
-                      className={`h-2 rounded-full transition-all duration-300 ${
+                      className={`h-2 transition-all duration-300 ${
                         currentSlide === index 
                           ? 'w-8 bg-[#FAE9D0]' 
                           : 'w-2 bg-gray-300 hover:bg-gray-400'

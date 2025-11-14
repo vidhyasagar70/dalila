@@ -526,29 +526,6 @@ export default function CartPage() {
               {isEmailSending ? "Sending..." : "Enquiree"}
             </span>
           </button>
-
-          <div className="ml-auto flex items-center gap-0 border-l border-gray-200 dark:border-gray-200">
-            <button
-              onClick={handleExportToExcel}
-              disabled={selectedItems.size === 0}
-              className="p-2.5 px-4 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed border-r border-gray-200 dark:border-gray-200"
-              title="Export to excel"
-            >
-              <Download className="w-5 h-5" />
-            </button>
-            <button
-              onClick={handleEnquire}
-              disabled={selectedItems.size === 0 || isEmailSending}
-              className="p-2.5 px-4 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              title="Enquire"
-            >
-              {isEmailSending ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Mail className="w-5 h-5" />
-              )}
-            </button>
-          </div>
         </div>
 
         {/* Table */}
