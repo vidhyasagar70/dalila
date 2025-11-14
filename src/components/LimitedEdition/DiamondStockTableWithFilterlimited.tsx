@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 import { DiamondData } from "@/types/Diamondtable";
 import DiamondComparisonPage from "../DiamondComparisonPage";
@@ -129,14 +130,14 @@ export default function DiamondStockTableWithFilter() {
       const response = await diamondApi.saveLimitedEditionFilters(filters);
       
       if (response && response.success) {
-        alert("Parameters saved successfully!");
+        toast.success("Parameters saved successfully!");
         console.log("Saved filters response:", response);
       } else {
-        alert("Failed to save parameters");
+        toast.error("Failed to save parameters");
       }
     } catch (error) {
       console.error("Error saving parameters:", error);
-      alert("Error saving parameters");
+      toast.error("Error saving parameters");
     }
   };
 
@@ -192,6 +193,10 @@ export default function DiamondStockTableWithFilter() {
         selectedMaxCarat={selectedMaxCarat}
         selectedFluor={selectedFluor}
         selectedClarity={selectedClarity}
+        selectedCut={selectedCut}
+        selectedPolish={selectedPolish}
+        selectedSymmetry={selectedSymmetry}
+        selectedLabs={selectedLabs}
         onSelectionChange={handleSelectionChange}
         pageSize={10}
       />

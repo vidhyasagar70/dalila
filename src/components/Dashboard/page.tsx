@@ -18,6 +18,7 @@ import Image from "next/image";
 import { diamondApi, cartApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 import type { LimitedEditionDiamond } from "@/lib/api";
+import DiamondDetailView from "@/components/DiamondDetailView";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [limitedEditionDiamonds, setLimitedEditionDiamonds] = useState<LimitedEditionDiamond[]>([]);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [selectedDiamond, setSelectedDiamond] = useState<LimitedEditionDiamond | null>(null);
 
   // Mock data
   const mockStats = {
@@ -278,9 +280,10 @@ export default function AdminDashboard() {
                     limitedEditionDiamonds
                       .slice(currentSlide, currentSlide + 3)
                       .map((diamond, index) => (
-                        <div
+                        <button
                           key={diamond.STONE_NO || index}
-                          className="bg-white border rounded-xl p-4 w-56"
+                          onClick={() => setSelectedDiamond(diamond)}
+                          className="bg-white border rounded-xl p-4 w-56 hover:shadow-lg transition-shadow cursor-pointer text-left"
                           style={{
                             borderColor: "#FAE9D0"
                           }}
@@ -324,7 +327,7 @@ export default function AdminDashboard() {
                               <span>{diamond.LAB}</span>
                             </div>
                           </div>
-                        </div>
+                        </button>
                       ))
                   ) : (
                     <div className="text-center text-gray-500">
@@ -412,6 +415,14 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Diamond Detail View Modal */}
+      {selectedDiamond && (
+        <DiamondDetailView
+          diamond={selectedDiamond as any}
+          onClose={() => setSelectedDiamond(null)}
+        />
+      )}
     </div>
   );
 }

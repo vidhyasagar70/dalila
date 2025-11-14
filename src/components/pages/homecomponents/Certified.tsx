@@ -22,7 +22,7 @@ export default function CertifiedBy() {
     {
       name: "HRD",
       image: "/dalila_img/client/client_3.png",
-      size: { width: 200, height: 110 },
+      size: { width: 260, height: 140 },
     },
   ];
 

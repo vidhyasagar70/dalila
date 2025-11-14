@@ -33,6 +33,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
   selectedMaxCarat = "",
   selectedFluor = [],
   selectedClarity = [],
+  selectedCut = "",
+  selectedPolish = "",
+  selectedSymmetry = "",
+  selectedLabs = [],
   onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
@@ -67,6 +71,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
       const hasFluorFilter =
         Array.isArray(selectedFluor) && selectedFluor.length > 0;
       const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
+      const hasCutFilter = selectedCut && selectedCut.trim();
+      const hasPolishFilter = selectedPolish && selectedPolish.trim();
+      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
+      const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
 
       const hasAnyFilter =
         hasShapeFilter ||
@@ -74,7 +82,11 @@ const DiamondStockTable: React.FC<TableProps> = ({
         hasSearchTerm ||
         hasCaratFilter ||
         hasFluorFilter ||
-        hasClarityFilter;
+        hasClarityFilter ||
+        hasCutFilter ||
+        hasPolishFilter ||
+        hasSymmetryFilter ||
+        hasLabFilter;
 
         let response;
         if (hasAnyFilter) {
@@ -102,6 +114,18 @@ const DiamondStockTable: React.FC<TableProps> = ({
           }
           if (hasClarityFilter) {
             filters.clarity = selectedClarity.join(",");
+          }
+          if (hasCutFilter) {
+            filters.cut = selectedCut.trim();
+          }
+          if (hasPolishFilter) {
+            filters.polish = selectedPolish.trim();
+          }
+          if (hasSymmetryFilter) {
+            filters.symmetry = selectedSymmetry.trim();
+          }
+          if (hasLabFilter) {
+            filters.lab = selectedLabs.join(",");
           }
           if (hasSearchTerm) {
           filters.searchTerm = searchTerm.trim();
@@ -146,6 +170,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
     selectedMaxCarat,
     selectedFluor,
     selectedClarity,
+    selectedCut,
+    selectedPolish,
+    selectedSymmetry,
+    selectedLabs,
   ]);
 
   useEffect(() => {

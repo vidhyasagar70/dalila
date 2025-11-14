@@ -240,16 +240,13 @@ export default function Header() {
           </button>
 
           <nav className="hidden lg:flex items-center gap-2 xl:gap-3 flex-1">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={item.requiresAuth ? handleInventoryClick : undefined}
-                className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {/* About us */}
+            <Link
+              href="/aboutUs"
+              className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
+            >
+              About us
+            </Link>
 
             {/* Our Services Dropdown */}
             <div className="relative group">
@@ -292,6 +289,18 @@ export default function Header() {
                 </div>
               )}
             </div>
+
+            {/* Diamond Knowledge and Blogs */}
+            {navigationItems.slice(1).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={item.requiresAuth ? handleInventoryClick : undefined}
+                className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           <div className="flex-shrink-0 relative h-24 w-[280px] sm:h-28 sm:w-[320px] md:h-32 md:w-[360px]">
@@ -520,21 +529,14 @@ export default function Header() {
             </div>
 
             <nav className="flex flex-col gap-3 mb-8">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => {
-                    if (item.requiresAuth) {
-                      handleInventoryClick(e);
-                    }
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {/* About us */}
+              <Link
+                href="/aboutUs"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
+              >
+                About us
+              </Link>
 
               {/* Our Services - Expandable in mobile */}
               <div className="border-t border-white/20 pt-2">
@@ -566,6 +568,23 @@ export default function Header() {
                   </Link>
                 </div>
               </div>
+
+              {/* Diamond Knowledge and Blogs */}
+              {navigationItems.slice(1).map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => {
+                    if (item.requiresAuth) {
+                      handleInventoryClick(e);
+                    }
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-white hover:text-[#c89e3a] transition-colors text-lg py-2"
+                >
+                  {item.label}
+                </Link>
+              ))}
 
               {/* Contact Us - Always visible in mobile */}
               <button
