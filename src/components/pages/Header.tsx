@@ -362,26 +362,30 @@ export default function Header() {
                     <button
                       onMouseEnter={() => setIsUserDropdownOpen(true)}
                       onMouseLeave={() => setIsUserDropdownOpen(false)}
-                      className="py-3 px-3 xl:px-3 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap xl:w-27 xl:h-10"
+                      className="py-3 px-3 xl:px-4 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap flex items-center justify-center gap-1"
                     >
                       USER PANEL
+                      <ChevronDown
+                        size={16}
+                        className={`transition-transform duration-200 ${isUserDropdownOpen ? "rotate-180" : ""}`}
+                      />
                     </button>
 
                     {isUserDropdownOpen && (
                       <div
                         onMouseEnter={() => setIsUserDropdownOpen(true)}
                         onMouseLeave={() => setIsUserDropdownOpen(false)}
-                        className="absolute top-full left-0 mt-0 w-full bg-[#050c3a] border border-[#c89e3a] rounded shadow-lg z-50"
+                        className="absolute top-full left-0 mt-0 w-64 bg-white shadow-lg border border-gray-200 rounded-sm z-50"
                       >
                         <Link
                           href="/dashboard"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                         >
                           Dashboard
                         </Link>
                         <Link
                           href="/enquiry"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors"
                         >
                           Enquiry
                         </Link>
@@ -429,39 +433,43 @@ export default function Header() {
                     <button
                       onMouseEnter={() => setIsAdminDropdownOpen(true)}
                       onMouseLeave={() => setIsAdminDropdownOpen(false)}
-                      className="py-3 px-3 xl:px-3 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap xl:w-27 xl:h-10"
+                      className="py-3 px-3 xl:px-4 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap flex items-center justify-center gap-1"
                     >
                       ADMIN PANEL
+                      <ChevronDown
+                        size={16}
+                        className={`transition-transform duration-200 ${isAdminDropdownOpen ? "rotate-180" : ""}`}
+                      />
                     </button>
 
                     {isAdminDropdownOpen && (
                       <div
                         onMouseEnter={() => setIsAdminDropdownOpen(true)}
                         onMouseLeave={() => setIsAdminDropdownOpen(false)}
-                        className="absolute top-full left-0 mt-0 w-full bg-[#050c3a] border border-[#c89e3a] rounded shadow-lg z-50"
+                        className="absolute top-full left-0 mt-0 w-64 bg-white shadow-lg border border-gray-200 rounded-sm z-50"
                       >
                         <Link
                           href="/member"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                         >
                           Members
                         </Link>
                         <Link
                           href="/customer-management"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                         >
                           Customer Management
                         </Link>
                         <Link
                           href="/limitedEdition"
-                          className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                         >
                           Limited Edition
                         </Link>
                         {userRole === "SUPER_ADMIN" && (
                           <Link
                             href="/create-admin"
-                            className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                            className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors"
                           >
                             Create Admin
                           </Link>
