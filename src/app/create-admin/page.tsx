@@ -112,12 +112,15 @@ function CreateAdminPage() {
     }
 
     try {
+      console.log("Attempting to delete admin:", adminId);
       const response = await userApi.deleteAdmin(adminId);
+
+      console.log("Delete response:", response);
 
       if (response?.success) {
         setMessage({
           type: "success",
-          text: "Admin deleted successfully!",
+          text: response?.message || "Admin deleted successfully!",
         });
         // Refresh admin list
         fetchAdminList(currentPage);
@@ -128,6 +131,7 @@ function CreateAdminPage() {
         });
       }
     } catch (error) {
+      console.error("Delete admin error:", error);
       setMessage({
         type: "error",
         text: error instanceof Error ? error.message : "Failed to delete admin",

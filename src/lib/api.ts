@@ -1351,18 +1351,30 @@ export const userApi = {
         throw new Error("Unauthorized. Please log in.");
       }
 
-      const response = await apiClient.delete<
-        ApiResponse<{
-          message: string;
-        }>
-      >(`/api/users/admin/admin/${adminId}`);
+      console.log("Deleting admin with ID:", adminId);
+      console.log("Using token:", token ? "EXISTS" : "MISSING");
+
+      const response = await apiClient.delete<{
+        success: boolean;
+        message: string;
+        data?: unknown;
+      }>(`/api/users/admin/${adminId}`);
+
+      console.log("Delete admin response:", response.data);
+
       return response.data;
     } catch (error: unknown) {
       console.error("Delete admin error:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
-          response?: { data?: { error?: string; message?: string } };
+          response?: {
+            status?: number;
+            data?: { error?: string; message?: string; success?: boolean };
+          };
         };
+        
+        console.error("Error response:", axiosError.response);
+        
         if (axiosError.response?.data) {
           throw new Error(
             axiosError.response.data.error ||
