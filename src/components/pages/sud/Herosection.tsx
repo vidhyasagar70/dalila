@@ -27,8 +27,8 @@ export default function Webuyhero() {
               <h3
                 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight ${marcellus.className}`}
               >
-                Sell Your Diamonds
-                <br /> With Dalila
+              Sell Your Diamonds Safely and Seamlessly at Dalila DIAMONDS
+
               </h3>
             </AnimatedContainer>
             <h6
@@ -38,16 +38,7 @@ export default function Webuyhero() {
             </h6>
             <AnimatedContainer direction="up" delay={0.5}>
               <p className="text-gray-500 text-xs sm:text-sm md:text-base leading-relaxed">
-                At Dalila, we understand that every diamond carries more than
-                just value — it carries meaning, memories, and trust.
-                That&apos;s why we&apos;ve created a seamless 5-step process
-                designed with elegance, discretion, and precision at its core.
-                From the moment you share your diamond with us to the instant
-                you receive your payment, every detail is handled with the
-                utmost care and transparency. Our experts ensure that your
-                diamond&apos;s true brilliance is recognized and rewarded,
-                offering you not just a transaction, but an experience worthy of
-                the gem you hold.
+                Selling your diamond or fine jewellery should be a secure, seamless and rewarding experience. At Dalila DIAMONDS, we provide a transparent and hassle-free process you can trust. Whether you’re selling a single diamond or an entire collection, we handle every piece with care and professionalism. Here’s how the process works.
               </p>
             </AnimatedContainer>
           </div>

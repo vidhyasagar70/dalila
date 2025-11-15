@@ -55,7 +55,7 @@ export default function AboutHero() {
               <h3
                 className={`text-3xl md:tex t-4xl lg:text-5xl text-gray-800 leading-tight ${marcellus.className}`}
               >
-                We Shape Brilliance into Timeless Value.
+                Shape Brilliance into Timeless Value.
               </h3>
             </AnimatedContainer>
 
@@ -64,23 +64,13 @@ export default function AboutHero() {
               <p
                 className={`text-gray-500 text-sm md:text-base leading-relaxed ${jost.className}`}
               >
-                At DALILA, we believe diamonds are more than gems — they are a
-                symbol of trust, innovation, and enduring luxury. As a leading
-                name in the natural diamond industry, we partner with businesses
-                and connoisseurs to deliver diamonds that embody precision,
-                sustainability, and prestige. From wholesale supply to bespoke
-                creations, every DALILA diamond is crafted to inspire confidence
-                and redefine brilliance.
+                At DALILA DIAMONDS, we believe diamonds represent more than beauty , they embody trust, innovation, and enduring luxury. As a leading name in the natural diamond industry, we collaborate with businesses and connoisseurs alike to deliver creations defined by precision, sustainability, and prestige. From refined wholesale offerings to bespoke masterpieces, every DALILA diamond is crafted to inspire confidence and redefine brilliance.
               </p>
 
               <p
                 className={`text-gray-500 text-sm md:text-base leading-relaxed ${jost.className}`}
               >
-                With a legacy spanning over five decades, our family has been
-                dedicated to the art and integrity of the diamond trade. What
-                began as a modest endeavor in Gujarat has evolved into a
-                respected international enterprise, recognized for its
-                commitment to excellence, trust, and ethics.
+                With a legacy spanning over five decades, our family has remained dedicated to the art and integrity of diamond craftsmanship. What began as a modest pursuit in Gujarat has grown into a respected international enterprise, celebrated for its unwavering commitment to excellence, authenticity, and ethical values.
               </p>
             </AnimatedContainer>
           </div>

@@ -51,16 +51,16 @@ export default function Diamondshowcase() {
                 <p
                   className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
                 >
-                  Diamonds are more than just gemstones — they are timeless
-                  symbols of love, craftsmanship, and nature&apos;s brilliance.
-                  Formed deep within the Earth over billions of years, each
-                  natural diamond carries it&apos;s own story. 
-                  Whether you&apos;re buying your first diamond or expanding
-                  your collection, understanding the key aspects of a diamond
-                  helps you make a truly informed choice. This guide is designed
-                  to help you explore every detail — from how diamonds are
-                  formed to what makes each one unique.
+                  Diamonds are more than gemstones they are timeless symbols of love,
+                   craftsmanship and nature’s brilliance.
+                    Formed deep within the Earth over billions of years,
+                     each natural diamond carries its own story.
+                      Whether you’re choosing your very first stone or refining a lifelong collection, 
+                      understanding a diamond’s key characteristics helps you make a truly confident choice. <br/>
+                      This guide walks you through every facet - from how diamonds are formed to what makes each one unique.
+
                 </p>
+                
               </div>
             </AnimatedContainer>
           </div>

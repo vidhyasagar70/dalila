@@ -54,7 +54,8 @@ export default function AboutMilestone() {
                       className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className} [&>span]:text-[#181818]`}
                     >
                       <span className="font-semibold">
-                        50+ years of family expertise in the diamond business
+                        50+ years of family expertise in the diamond industry.
+
                       </span>
                     </p>
                   </div>
@@ -64,6 +65,7 @@ export default function AboutMilestone() {
                     >
                       <span className="font-semibold">
                         Expansion from Surat and Mumbai to a global presence.
+
                       </span>
                     </p>
                   </div>
@@ -77,8 +79,8 @@ export default function AboutMilestone() {
                       className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className} [&>span]:text-[#181818]`}
                     >
                       <span className="font-semibold">
-                        Strategic establishment in Antwerp (since 2007) to serve
-                        European clientele.
+                         Strategic establishment in Antwerp (since 2007) to serve and strengthen our European clientele.
+
                       </span>
                     </p>
                   </div>
@@ -87,8 +89,8 @@ export default function AboutMilestone() {
                       className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className} [&>span]:text-[#181818]`}
                     >
                       <span className="font-semibold">
-                        Strong international network across the United States,
-                        Europe, Hong Kong, China, and beyond.
+                        A strong international network spanning the United States, Europe, Hong Kong, China, and beyond.
+
                       </span>
                     </p>
                   </div>
@@ -102,8 +104,7 @@ export default function AboutMilestone() {
                       className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className} [&>span]:text-[#181818]`}
                     >
                       <span className="font-semibold">
-                        A reputation built on quality, transparency, and
-                        long-standing relationships.
+                        A reputation built on quality, transparency, and long-standing relationships.
                       </span>
                     </p>
                   </div>

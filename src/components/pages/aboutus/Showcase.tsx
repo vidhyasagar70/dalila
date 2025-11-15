@@ -48,16 +48,15 @@ export default function Aboutshowcase() {
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                The origins of our company date back more than 50 years, when
-                three visionary brothers left their village in Gujarat at the
-                age of 18, determined to build a future in the diamond industry.
-                Through perseverance, hard work, and adherence to ethical
-                business practices, they established a strong foundation in
-                Surat and Mumbai. As the second generation joined the business,
-                the vision expanded to international markets, creating enduring
-                partnerships worldwide. This forward-looking approach, combined
-                with our deeply rooted values, has positioned us as a trusted
-                name in the global diamond trade.
+                The roots of our company stretch back more than five decades, to when three visionary brothers left their village in Gujarat at just 18, determined to build a future in the diamond trade. Through unwavering perseverance,
+                 hard work and a commitment to ethical practices, 
+                 they laid a strong foundation in Surat and Mumbai.
+                 As the second generation joined the business,
+                the vision expanded beyond India’s borders,
+                forging lasting partnerships and establishing a global presence.Today, this forward-looking spirit grounded in deeply held family values continues to guide us, 
+                earning DALILA its reputation as a trusted name in the international diamond industry.
+
+
               </p>
               {/* <button
                 className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}

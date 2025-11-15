@@ -59,10 +59,8 @@ export default function Legacy() {
               <p
                 className={`text-gray-300 text-xs sm:text-sm md:text-base leading-relaxed mb-4 md:mb-6 ${jost.className}`}
               >
-                Our guiding principles remain constant—unwavering dedication to
-                quality, integrity in every transaction, and a passion for
-                building lasting relationships across the global diamond
-                community.
+                Our guiding principles remain unchanged: an unwavering commitment to quality, integrity in every transaction, 
+                and a passion for building enduring relationships across the global diamond community.
               </p>
             </AnimatedContainer>
             <button

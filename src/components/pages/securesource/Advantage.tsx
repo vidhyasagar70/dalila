@@ -25,17 +25,17 @@ export default function S2SAdvantages() {
     {
       icon: FaEuroSign,
       title: "Euro Payment",
-      description: "Euro payment accepted for your convenience",
+      description: "Euro payments accepted for your convenience.",
     },
     {
       icon: MdLocalShipping,
       title: "Weekly Shipments",
-      description: "From India (except on Indian public holidays)",
+      description: "Regular weekly shipments from India (excluding Indian public holidays).",
     },
     {
       icon: IoEarth,
       title: "EU Shipping",
-      description: "Ship to any EU country for additional FedEx fee",
+      description: "Delivery available to any EU country for an additional fee",
     },
   ];
 
@@ -47,7 +47,8 @@ export default function S2SAdvantages() {
           <h2
             className={`text-3xl md:text-4xl lg:text-[2.75rem] font-normal text-center mb-10 md:mb-12 text-white tracking-tight ${marcellus.className}`}
           >
-            ADVANTAGES OF S2S - SECURE TO SOURCE
+            WHY CHOOSE S2S (ADVANTAGES OF S2S REPLACE IT) SECURE TO SOURCE
+
           </h2>
         </AnimatedContainer>
 

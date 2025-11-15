@@ -52,9 +52,7 @@ export default function SecureSourceshowcase() {
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Select stones from any online public platform of your choice.
-                Browse at your convenience and choose the diamonds that match
-                your requirements.
+                Explore diamonds on any trusted online platform of your choice. Browse at your convenience and shortlist the stones that meet your specifications and preferences.
               </p>
             </div>
           </div>
@@ -73,15 +71,15 @@ export default function SecureSourceshowcase() {
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className}`}
                 >
-                  We Perform QC For <br /> You
+                  We Handle Quality Control for You
+
                 </h2>
               </AnimatedContainer>
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Our experts perform thorough quality checks on every stone. We
-                ensure each diamond meets the specifications and quality
-                standards before it reaches you.
+                Our experts carry out rigorous quality checks on every stone. 
+                We verify that each diamond matches your chosen specifications and meets our exacting quality standards before it reaches you
               </p>
             </div>
           </div>
@@ -132,8 +130,8 @@ export default function SecureSourceshowcase() {
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Orders placed by Wednesday evening arrive in Belgium the
-                following Wednesday. A small additional service margin applies.
+                Orders placed by Wednesday evening are scheduled to arrive in Belgium by the following Wednesday. This priority service ensures your diamonds reach you quickly and securely.
+                 A small additional service fee applies.
               </p>
             </div>
           </div>
