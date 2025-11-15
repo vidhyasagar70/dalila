@@ -86,7 +86,7 @@ export default function HeroSection() {
     }
 
     if (slideIndex === 0) {
-      return "absolute bottom-48 left-18 md:bottom-56 md:left-32";
+      return "absolute bottom-56 left-18 md:bottom-64 md:left-32";
     }
 
     if (slideIndex === 1) {
