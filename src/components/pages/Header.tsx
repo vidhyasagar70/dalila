@@ -32,13 +32,14 @@ export default function Header() {
   const customerPage = pathname === "/customer-management";
    const enquiryPage = pathname === "/enquiry";
    const limitedEditionPage = pathname === "/limitedEdition";
+   const createAdminPage = pathname === "/create-admin";
 
-  // Determine if user is admin
-  const isAdmin = isLoggedIn && userRole === "ADMIN";
+  // Determine if user is admin or super admin
+  const isAdmin = isLoggedIn && (userRole === "ADMIN" || userRole === "SUPER_ADMIN");
 
   // Check if inventory is accessible (Admin or APPROVED status)
   const isInventoryAccessible =
-    isLoggedIn && (userRole === "ADMIN" || userStatus === "APPROVED");
+    isLoggedIn && (userRole === "ADMIN" || userRole === "SUPER_ADMIN" || userStatus === "APPROVED");
 
   // Check user authentication and role on mount and when pathname changes
   useEffect(() => {
@@ -173,10 +174,16 @@ export default function Header() {
   };
 
   const handleInventoryClick = (e: React.MouseEvent) => {
+    // Dispatch event to close any open diamond detail modal
+    if (typeof window !== "undefined") {
+      const closeModalEvent = new CustomEvent("close-diamond-modal");
+      window.dispatchEvent(closeModalEvent);
+    }
+
     if (!isLoggedIn) {
       e.preventDefault();
       router.push("/login");
-    } else if (userRole !== "ADMIN" && userStatus !== "APPROVED") {
+    } else if (userRole !== "ADMIN" && userRole !== "SUPER_ADMIN" && userStatus !== "APPROVED") {
       e.preventDefault();
       alert(
         "Your account is pending approval. Please wait for admin verification to access the inventory.",
@@ -223,7 +230,7 @@ export default function Header() {
         BlogDetailPage ||
         SecurePage ||
         diamondsourcePage ||
-        customerPage ||enquiryPage||limitedEditionPage ||
+        customerPage ||enquiryPage||limitedEditionPage ||createAdminPage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -386,6 +393,12 @@ export default function Header() {
                 {/* INVENTORY - Available for Admin or APPROVED users */}
                 <button
                   onClick={(e) => {
+                    // Close any open diamond detail modal
+                    if (typeof window !== "undefined") {
+                      const closeModalEvent = new CustomEvent("close-diamond-modal");
+                      window.dispatchEvent(closeModalEvent);
+                    }
+
                     if (isInventoryAccessible) {
                       router.push("/inventory");
                     } else {
@@ -445,6 +458,14 @@ export default function Header() {
                         >
                           Limited Edition
                         </Link>
+                        {userRole === "SUPER_ADMIN" && (
+                          <Link
+                            href="/create-admin"
+                            className="block px-4 py-3 text-sm text-white hover:bg-[#c89e3a] hover:text-white transition-colors border-t border-white/10"
+                          >
+                            Create Admin
+                          </Link>
+                        )}
                       </div>
                     )}
                   </div>
@@ -631,6 +652,12 @@ export default function Header() {
               {isLoggedIn && (
                 <button
                   onClick={(e) => {
+                    // Close any open diamond detail modal
+                    if (typeof window !== "undefined") {
+                      const closeModalEvent = new CustomEvent("close-diamond-modal");
+                      window.dispatchEvent(closeModalEvent);
+                    }
+
                     if (isInventoryAccessible) {
                       setIsMobileMenuOpen(false);
                       router.push("/inventory");
@@ -687,6 +714,17 @@ export default function Header() {
                     >
                       Limited Edition
                     </button>
+                    {userRole === "SUPER_ADMIN" && (
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          router.push("/create-admin");
+                        }}
+                        className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                      >
+                        Create Admin
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

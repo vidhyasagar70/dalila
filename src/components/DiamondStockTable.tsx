@@ -60,6 +60,23 @@ const DiamondStockTable: React.FC<TableProps> = ({
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
 
+  // Close modal when navigation occurs
+  useEffect(() => {
+    const handleCloseModal = () => {
+      setSelectedDiamond(null);
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("close-diamond-modal", handleCloseModal);
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("close-diamond-modal", handleCloseModal);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const fetchDiamonds = async () => {
       try {

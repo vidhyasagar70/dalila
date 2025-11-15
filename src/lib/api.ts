@@ -1268,6 +1268,112 @@ export const userApi = {
       throw error;
     }
   },
+
+  // Create admin user (SUPER_ADMIN only)
+  createAdmin: async (data: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Unauthorized. Please log in.");
+      }
+
+      const response = await apiClient.post<
+        ApiResponse<{
+          message: string;
+          user: User;
+        }>
+      >("/api/users/admin/create", data);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Create admin error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to create admin",
+          );
+        }
+      }
+      throw error;
+    }
+  },
+
+  // Get all admin users (SUPER_ADMIN only)
+  getAdminList: async (params?: { page?: number; limit?: number }) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Unauthorized. Please log in.");
+      }
+
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.append("page", params.page.toString());
+      if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+      const queryString = queryParams.toString();
+      const endpoint = queryString
+        ? `/api/users/admin/list?${queryString}`
+        : "/api/users/admin/list";
+
+      const response = await apiClient.get<{
+        success: boolean;
+        message: string;
+        data: User[];
+        pagination: {
+          currentPage: number;
+          totalPages: number;
+          totalRecords: number;
+          recordsPerPage: number;
+          hasNextPage: boolean;
+          hasPrevPage: boolean;
+        };
+      }>(endpoint);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Get admin list error:", error);
+      throw error;
+    }
+  },
+
+  // Delete admin user (SUPER_ADMIN only)
+  deleteAdmin: async (adminId: string) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Unauthorized. Please log in.");
+      }
+
+      const response = await apiClient.delete<
+        ApiResponse<{
+          message: string;
+        }>
+      >(`/api/users/admin/admin/${adminId}`);
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Delete admin error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { error?: string; message?: string } };
+        };
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to delete admin",
+          );
+        }
+      }
+      throw error;
+    }
+  },
 };
 
 // Quotation API endpoints

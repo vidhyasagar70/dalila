@@ -130,9 +130,9 @@ export default function LoginPage() {
           console.log(" Customer data:", user.customerData);
           console.log(" KYC Status:", user.kycStatus);
 
-          // Check if user is admin
-          if (user.role === "ADMIN") {
-            console.log(" Admin user - redirecting to dashboard");
+          // Check if user is admin or super admin
+          if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+            console.log(` ${user.role} user - redirecting to dashboard`);
             redirectUrl = searchParams.get("redirect") || "/";
             setError("");
           }
