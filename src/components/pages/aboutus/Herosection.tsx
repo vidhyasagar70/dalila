@@ -53,7 +53,7 @@ export default function AboutHero() {
             {/* Main Heading */}
             <AnimatedContainer direction="up">
               <h3
-                className={`text-3xl md:tex t-4xl lg:text-5xl text-gray-900 leading-tight ${marcellus.className}`}
+                className={`text-3xl md:tex t-4xl lg:text-5xl text-gray-800 leading-tight ${marcellus.className}`}
               >
                 We Shape Brilliance into Timeless Value.
               </h3>

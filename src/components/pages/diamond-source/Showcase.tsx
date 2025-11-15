@@ -81,21 +81,18 @@ export default function DiamondSourceshowcase() {
                 <p
                   className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${marcellus.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal`}
                 >
-                  2. Expert Search
+                  2.EXPERT SEARCH
                 </p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className}`}
                 >
-                  We Search Our Worldwide <br /> Network
+                  We Source Through Our Global Network
                 </h2>
               </AnimatedContainer>
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Our team searches our exclusive worldwide network for stones
-                that match your exact specifications, including goods not listed
-                on public online platforms. We have access to premium inventory
-                that others don&apos;t.
+               Our experts access an exclusive worldwide network to locate diamonds tailored to your exact specifications  including rare inventory unavailable on public platforms. This ensures you receive options beyond the ordinary
               </p>
             </div>
           </div>
@@ -134,7 +131,8 @@ export default function DiamondSourceshowcase() {
                 <p
                   className={`text-sm sm:text-base md:text-lg tracking-[0.05em] uppercase ${marcellus.className} bg-gradient-to-r from-[#bd9f41] via-[#e4c75f] to-[#bd9f41] bg-clip-text text-transparent font-normal`}
                 >
-                  3. Receive Your Diamonds
+                  3. RECEIVE YOUR DIAMONDS
+
                 </p>
                 <h2
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
@@ -146,9 +144,7 @@ export default function DiamondSourceshowcase() {
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-                Weekly shipments from India ensure you receive your diamonds
-                quickly and securely. No additional cost for delivery within
-                Belgium.
+                Weekly shipments from India ensure your diamonds reach you quickly and safely. Delivery within Belgium is included at no additional cost.
               </p>
             </div>
           </div>

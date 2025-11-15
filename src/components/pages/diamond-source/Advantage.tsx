@@ -24,11 +24,11 @@ export default function DiamondSourceAdvantages() {
   const advantages = [
     {
       title: "Weekly Shipments from India",
-      description: "Except on Indian public holidays",
+      description: "Reliable weekly dispatches (excluding Indian public holidays)",
     },
     {
-      title: "Free Belgium Delivery",
-      description: "No additional cost for delivery within Belgium",
+      title: "Free Delivery in Belgium",
+      description: "Enjoy secure delivery at no additional cost",
     },
     {
       title: "EU Shipping Available",
@@ -36,7 +36,7 @@ export default function DiamondSourceAdvantages() {
     },
     {
       title: "Euro Payment Accepted",
-      description: "Convenient payment in your currency",
+      description: "Simple and convenient payments in your local currency",
     },
   ];
 

@@ -20,35 +20,35 @@ export default function FreeEstimateSteps() {
   const steps = [
     {
       number: "01",
-      title: "Tell us about your diamond",
+      title: "Tell Us About Your Diamond",
       details: [
-        "Shape, carat weight, color, clarity, cut/make, fluorescence",
+        "Shape, carat weight, colour, clarity, cut/make, fluorescence",
         "Measurements and setting (if mounted)",
       ],
       color: "bg-[#E85D4F]",
     },
     {
       number: "02",
-      title: "Upload diamond photos",
-      details: ["Top & side view on plain background", "Use good daylight"],
+      title: "Upload Diamond Photos",
+      details: ["Top and side view on a plain background", "Taken in good natural daylight"],
       color: "bg-[#E8B71D]",
     },
     {
       number: "03",
-      title: "Upload certificate",
-      details: ["GIA / IGI / HRD certificate", "Or share the report number"],
+      title: "Upload Certificate",
+      details: ["GIA / IGI / HRD certificate", "Or simply share the report number"],
       color: "bg-[#1ABC9C]",
     },
     {
       number: "04",
-      title: "Add any comments",
-      details: ["Chips, repolish, laser inscription", "Asking price, timeline"],
+      title: "Add Your Comments",
+      details: ["Chips, repolish, laser inscription", "Desired price and timeline"],
       color: "bg-[#3498DB]",
     },
     {
       number: "05",
-      title: "Share contact details",
-      details: ["Name, email, phone", "City / Country"],
+      title: "Share Your Contact Details",
+      details: ["Name, email, phone", "City and country"],
       color: "bg-[#2ECC71]",
     },
   ];
@@ -63,7 +63,7 @@ export default function FreeEstimateSteps() {
           >
             Get a Free Estimate{" "}
             <span className="bg-gradient-to-r from-[#3498DB] via-[#5DADE2] to-[#3498DB] bg-clip-text text-transparent">
-              (5 Quick Steps)
+              — In 5 Simple Steps
             </span>
           </h2>
         </AnimatedContainer>

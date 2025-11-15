@@ -21,27 +21,27 @@ export default function SellDiamondsProcess() {
     {
       number: "1",
       title: "Complete the Form",
-      heading: "Start the Process with a Simple Form.",
+      heading: "Begin with a Simple Step",
       description:
-        "Fill out our straightforward online form and provide any details you have about your diamonds or jewelry. It's quick, easy, and the first step toward getting the best value.",
+        "Share a few details in our online form about your diamond or jewellery. It takes just a moment and begins the process of receiving a professional valuation.",
       image: "/sell/step_1.png",
       imagePosition: "left",
     },
     {
       number: "2",
       title: "In-Person Evaluation or Safe Pickup",
-      heading: "Meet Us in Person or we'll Pickup",
+      heading: "Visit Us Personally, or Let Us Collect It Securely",
       description:
-        "You can schedule a face-to-face evaluation at one of our trusted locations. If you prefer not to travel, we offer a safe, insured courier service to collect your diamonds from anywhere in Europe. Your valuable pieces are always in safe hands.",
+        "Meet us at one of our trusted locations for a private evaluation. Prefer not to travel? We can arrange a fully insured, secure courier pickup from anywhere in Europe. Your diamond stays protected, discreetly handled, and always in expert hands.",
       image: "/sell/step_2.png",
       imagePosition: "right",
     },
     {
       number: "3",
       title: "Professional Diamond Valuation",
-      heading: "Assessments by Certified Professionals.",
+      heading: "Certified Experts You Can Trust",
       description:
-        "Our GIA-certified gemologists and gold specialists evaluate your diamonds and fine jewelry based on the 4Cs, current market conditions, and accurate pricing.",
+        "Our GIA-certified gemologists and jewellery specialists carefully assess your diamonds using the 4Cs, global market data and strict valuation standards ensuring an accurate, reliable price.",
       image: "/sell/step_3.png",
       imagePosition: "left",
     },
@@ -50,16 +50,16 @@ export default function SellDiamondsProcess() {
       title: "Receive the Best Offer",
       heading: "Fair & Transparent Offers.",
       description:
-        "Once we ve evaluated your diamonds, we present you with the most competitive offers, reflecting the true value based on the global diamond and gold market.",
+        " Once we’ve evaluated your diamonds, we present you with a clear, competitive offer that reflects their true value, based on current global diamond and gold market conditions",
       image: "/sell/step_4.png",
       imagePosition: "right",
     },
     {
       number: "5",
       title: "Fast and Secure Payment",
-      heading: "Receive Your Payment in 24 Hours.",
+      heading: "Receive Your Payment Within 24 Hours",
       description:
-        "Once you accept our offer, we process your payment within 24 hours via secure bank transfer.",
+        "Once you accept our offer, we process your payment within 24 hours via secure bank transfer, ensuring a smooth and reliable conclusion to your sale.",
       image: "/sell/recieve_your_payment.png",
       imagePosition: "left",
     },

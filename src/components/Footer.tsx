@@ -26,7 +26,7 @@ export default function Footer() {
     { name: "Home", href: "/" },
     // { name: "About", href: "/about" },
     { name: "Diamond Knowledge", href: "/diamondKnowledge" },
-    { name: "Sell", href: "/weBuy" },
+    { name: "Sell", href: "/sud" },
     { name: "Contact", href: "/contact" },
   ];
 

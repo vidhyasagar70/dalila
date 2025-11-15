@@ -26,20 +26,7 @@ export default function AboutDalila() {
                 />
               </div>
             </AnimatedContainer>
-            <AnimatedContainer
-              direction="scale-out"
-              delay={0.2}
-              className="flex justify-end relative"
-            >
-              <div
-                className="absolute -top-10 -right-10 max-w-sm px-8 py-4 sm:px-10 sm:py-5 md:px-12 md:py-8 shadow-xl"
-                style={{ backgroundColor: "#c89e3a" }}
-              >
-                <h3 className="text-sm sm:text-lg md:text-2xl lg:text-3xl font-semibold text-white whitespace-nowrap tracking-wide">
-                  ABOUT DALILA
-                </h3>
-              </div>
-            </AnimatedContainer>
+            
           </div>
           <div className="space-y-4 md:space-y-6 lg:pl-4">
             <AnimatedContainer direction="up" delay={0.5}>

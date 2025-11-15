@@ -16,6 +16,8 @@ import {
 import { cartApi, diamondApi } from "@/lib/api";
 import Image from "next/image";
 import DiamondComparisonPage from "../../components/DiamondComparisonPage";
+import DiamondDetailView from "@/components/DiamondDetailView";
+import type { DiamondData } from "@/types/Diamondtable";
 
 interface CartDiamondData {
   _id: string;
@@ -104,6 +106,9 @@ export default function CartPage() {
   const [selectedDiamondsForComparison, setSelectedDiamondsForComparison] =
     useState<Array<CartDiamondData & { _id: string }>>([]);
   const [isEmailSending, setIsEmailSending] = useState(false);
+  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
+    null,
+  );
 
   // Toast management
   const addToast = (type: "success" | "error", message: string) => {
@@ -603,7 +608,7 @@ export default function CartPage() {
                 {paginatedItems.map((item, idx) => (
                   <tr
                     key={item._id}
-                    className={`${idx % 2 === 0 ? "bg-white dark:bg-white" : "bg-[#faf6eb] dark:bg-[#faf6eb]"} hover:bg-[#060c3c]/5 dark:hover:bg-[#060c3c]/5 transition-colors border-b border-[#F9E8CD] dark:border-[#F9E8CD]`}
+                    className={`${idx % 2 === 0 ? "bg-white dark:bg-white" : "bg-[#faf6eb] dark:bg-[#faf6eb]"} border-b border-[#F9E8CD] dark:border-[#F9E8CD]`}
                   >
                     <td className="px-4 py-3">
                       <input
@@ -638,7 +643,10 @@ export default function CartPage() {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
+                    <td 
+                      className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c] font-medium cursor-pointer hover:text-blue-600 hover:underline"
+                      onClick={() => setSelectedDiamond(item.diamond as unknown as DiamondData)}
+                    >
                       {item.stoneNo}
                     </td>
                     <td className="px-4 py-3 text-sm text-[#060c3c] dark:text-[#060c3c]">
@@ -775,6 +783,14 @@ export default function CartPage() {
         <DiamondComparisonPage
           diamonds={selectedDiamondsForComparison}
           onClose={() => setShowComparison(false)}
+        />
+      )}
+
+      {/* Diamond Detail Modal (from cart row click) */}
+      {selectedDiamond && (
+        <DiamondDetailView
+          diamond={selectedDiamond as unknown as DiamondData}
+          onClose={() => setSelectedDiamond(null)}
         />
       )}
 
