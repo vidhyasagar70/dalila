@@ -330,7 +330,7 @@ export default function Header() {
             {/* Contact Us Button - Always visible */}
             <button
               onClick={() => router.push("/contact")}
-              className="py-3 px-3 xl:px-5 xl:py-2 xl:w-29 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+              className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
             >
               CONTACT US
             </button>
@@ -343,13 +343,13 @@ export default function Header() {
               <>
                 <button
                   onClick={() => router.push("/login")}
-                  className="py-3 px-3 xl:px-5 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                 >
                   LOGIN
                 </button>
                 <button
                   onClick={() => router.push("/register")}
-                  className="py-3 px-3 xl:px-5 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                 >
                   REGISTER
                 </button>
@@ -362,7 +362,7 @@ export default function Header() {
                     <button
                       onMouseEnter={() => setIsUserDropdownOpen(true)}
                       onMouseLeave={() => setIsUserDropdownOpen(false)}
-                      className="py-3 px-3 xl:px-4 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap flex items-center justify-center gap-1"
+                      className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap flex items-center justify-center gap-1"
                     >
                       USER PANEL
                       <ChevronDown
@@ -413,7 +413,7 @@ export default function Header() {
                     }
                   }}
                   disabled={!isInventoryAccessible}
-                  className={`py-3 px-3 xl:px-3 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm border border-[#c89e3a] transition-colors whitespace-nowrap ${
+                  className={`py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm border border-[#c89e3a] transition-colors whitespace-nowrap ${
                     isInventoryAccessible
                       ? "text-white hover:bg-[#c89e3a] hover:text-white cursor-pointer"
                       : "text-gray-400 bg-gray-700 cursor-not-allowed opacity-60"
@@ -433,7 +433,7 @@ export default function Header() {
                     <button
                       onMouseEnter={() => setIsAdminDropdownOpen(true)}
                       onMouseLeave={() => setIsAdminDropdownOpen(false)}
-                      className="py-3 px-3 xl:px-4 xl:py-2 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap flex items-center justify-center gap-1"
+                      className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap flex items-center justify-center gap-1"
                     >
                       ADMIN PANEL
                       <ChevronDown
@@ -481,7 +481,7 @@ export default function Header() {
 
                 <button
                   onClick={handleLogout}
-                  className="py-3 px-3 xl:px-3 xl:py-2 xl:w-27 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
                 >
                   LOGOUT
                 </button>

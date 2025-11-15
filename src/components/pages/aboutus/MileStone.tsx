@@ -59,7 +59,8 @@ export default function AboutMilestone() {
                       </span>
                     </p>
                   </div>
-                  <div className="flex-1 pl-8">
+                  <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
+                  <div className="flex-1">
                     <p
                       className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className} [&>span]:text-[#181818]`}
                     >
@@ -84,7 +85,8 @@ export default function AboutMilestone() {
                       </span>
                     </p>
                   </div>
-                  <div className="flex-1 pl-8">
+                  <Gem className="text-[#c89e3a] flex-shrink-0" size={24} />
+                  <div className="flex-1">
                     <p
                       className={`text-gray-600 text-base md:text-lg leading-relaxed ${jost.className} [&>span]:text-[#181818]`}
                     >

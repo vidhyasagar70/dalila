@@ -10,7 +10,7 @@ export default function HeroSection() {
 
   const slides = [
     {
-      image: "/dalila_img/banners/Banner-01-speedometer.jpg",
+      image: "/dalila_img/banners/Banner-01.jpg",
       title: "Timeless Elegance",
       buttonPosition: "bottom-left",
       buttonLink: "/inventory",
