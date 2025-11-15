@@ -198,7 +198,7 @@ function CreateAdminPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c89e3a] focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c89e3a] focus:border-transparent outline-none transition-all bg-white text-gray-900"
                   placeholder="Enter username"
                 />
               </div>
@@ -217,7 +217,7 @@ function CreateAdminPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c89e3a] focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c89e3a] focus:border-transparent outline-none transition-all bg-white text-gray-900"
                   placeholder="admin@example.com"
                 />
               </div>
@@ -239,7 +239,7 @@ function CreateAdminPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={8}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c89e3a] focus:border-transparent outline-none transition-all pr-12"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c89e3a] focus:border-transparent outline-none transition-all pr-12 bg-white text-gray-900"
                   placeholder="Minimum 8 characters"
                 />
                 <button
