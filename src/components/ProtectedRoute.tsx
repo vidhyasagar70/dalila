@@ -102,8 +102,8 @@ export default function ProtectedRoute({
         setIsAuthorized(false);
         setIsChecking(false);
 
-        // If admin, go to dashboard
-        if (userRole === "ADMIN") {
+        // If admin or super admin, go to dashboard
+        if (userRole === "ADMIN" || userRole === "SUPER_ADMIN") {
           router.push("/");
         }
         // If user hasn't completed customer data, go to customer-details
@@ -123,6 +123,7 @@ export default function ProtectedRoute({
         requireAuth &&
         requireCustomerData &&
         userRole !== "ADMIN" &&
+        userRole !== "SUPER_ADMIN" &&
         !hasCustomerData
       ) {
         setIsAuthorized(false);
@@ -133,7 +134,7 @@ export default function ProtectedRoute({
 
       // Case 4: Route requires KYC approval
       // (Except for admin users who don't need KYC)
-      if (requireAuth && requireKycApproval && userRole !== "ADMIN") {
+      if (requireAuth && requireKycApproval && userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
         if (kycStatus !== "approved") {
           setIsAuthorized(false);
           setIsChecking(false);
@@ -151,7 +152,7 @@ export default function ProtectedRoute({
 
       // NEW Case 5: Route requires APPROVED status
       // (Except for admin users who don't need status check)
-      if (requireAuth && requireApprovedStatus && userRole !== "ADMIN") {
+      if (requireAuth && requireApprovedStatus && userRole !== "ADMIN" && userRole !== "SUPER_ADMIN") {
         if (userStatus !== "APPROVED") {
           setIsAuthorized(false);
           setIsChecking(false);

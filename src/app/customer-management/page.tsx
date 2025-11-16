@@ -590,7 +590,7 @@ export default function CustomerManagementPage() {
   };
 
   return (
-    <ProtectedRoute requireAuth={true} allowedRoles={["ADMIN"]} redirectTo="/">
+    <ProtectedRoute requireAuth={true} allowedRoles={["ADMIN", "SUPER_ADMIN"]} redirectTo="/">
       <div className="min-h-screen bg-white pt-28 pb-16 mt-10">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <h1

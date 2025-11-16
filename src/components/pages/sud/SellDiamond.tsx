@@ -103,7 +103,8 @@ export default function SellDiamondsProcess() {
                     <div className="w-full">
                       <div className="mb-6">
                         <p
-                          className={`text-sm md:text-base text-gray-600 mb-3 ${marcellus.className}`}
+                          className={`text-sm md:text-base mb-3 ${marcellus.className}`}
+                          style={{ color: '#C1A344' }}
                         >
                           {step.number}. {step.title}
                         </p>

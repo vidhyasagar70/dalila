@@ -66,7 +66,7 @@ export default function BlogsPage() {
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
-          setIsAdmin(user.role === "ADMIN");
+          setIsAdmin(user.role === "ADMIN" || user.role === "SUPER_ADMIN");
         } catch {
           setIsAdmin(false);
         }
@@ -451,7 +451,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setNewBlog({ ...newBlog, title: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] bg-white text-gray-900 ${jost.className}`}
                   placeholder="Enter blog title"
                   disabled={isSubmitting}
                 />
@@ -468,7 +468,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setNewBlog({ ...newBlog, description: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] bg-white text-gray-900 ${jost.className}`}
                   placeholder="<h1>Welcome!</h1><p>Your blog content here...</p>"
                   disabled={isSubmitting}
                 />
@@ -544,7 +544,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setEditBlog({ ...editBlog, title: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] bg-white text-gray-900 ${jost.className}`}
                   placeholder="Enter blog title"
                   disabled={isSubmitting}
                 />
@@ -561,7 +561,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setEditBlog({ ...editBlog, description: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] bg-white text-gray-900 ${jost.className}`}
                   placeholder="<h1>Welcome!</h1><p>Your blog content here...</p>"
                   disabled={isSubmitting}
                 />

@@ -76,9 +76,11 @@ export default function Legacy() {
               <Image
                 src="/images/asscher-blue.jpg"
                 alt="About Us Background"
-                fill
-                className="object-cover"
-                priority
+                width={800}
+                height={550}
+                loading="lazy"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover w-full h-full"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
             </div>

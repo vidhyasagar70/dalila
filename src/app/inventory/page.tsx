@@ -7,7 +7,7 @@ export default function Inventory() {
     <ProtectedRoute
       requireAuth={true}
       redirectTo="/login"
-      allowedRoles={["USER", "ADMIN"]}
+      allowedRoles={["USER", "ADMIN", "SUPER_ADMIN"]}
       requireApprovedStatus={true}
     >
       <main className="relative">

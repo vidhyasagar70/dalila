@@ -115,6 +115,8 @@ export default function DiamondShapes() {
                     src={shape.image}
                     alt={`${shape.name} cut diamond`}
                     fill
+                    loading="lazy"
+                    sizes="(max-width: 768px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
                   />
                 </div>
@@ -142,6 +144,8 @@ export default function DiamondShapes() {
                     src={shape.image}
                     alt={`${shape.name} cut diamond`}
                     fill
+                    loading="lazy"
+                    sizes="(min-width: 768px) and (max-width: 1024px) 33vw, 16vw"
                     style={{ objectFit: "cover" }}
                   />
                 </div>
@@ -171,6 +175,8 @@ export default function DiamondShapes() {
                       src={shape.image}
                       alt={`${shape.name} cut diamond`}
                       fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 16vw, 33vw"
                       style={{ objectFit: "cover" }}
                     />
                   </div>
@@ -195,6 +201,8 @@ export default function DiamondShapes() {
                       src={shapes[6].image}
                       alt={`${shapes[6].name} cut diamond`}
                       fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 16vw, 33vw"
                       style={{ objectFit: "cover" }}
                     />
                   </div>
@@ -215,6 +223,8 @@ export default function DiamondShapes() {
                       src={shapes[7].image}
                       alt={`${shapes[7].name} cut diamond`}
                       fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 16vw, 33vw"
                       style={{ objectFit: "cover" }}
                     />
                   </div>
@@ -235,6 +245,8 @@ export default function DiamondShapes() {
                       src={shapes[8].image}
                       alt={`${shapes[8].name} cut diamond`}
                       fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 16vw, 33vw"
                       style={{ objectFit: "cover" }}
                     />
                   </div>
@@ -255,6 +267,8 @@ export default function DiamondShapes() {
                       src={shapes[9].image}
                       alt={`${shapes[9].name} cut diamond`}
                       fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 16vw, 33vw"
                       style={{ objectFit: "cover" }}
                     />
                   </div>

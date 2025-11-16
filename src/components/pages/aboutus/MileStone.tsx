@@ -36,7 +36,10 @@ export default function AboutMilestone() {
                 <Image
                   src="/images/about_us_3.png"
                   alt="Diamond on display"
-                  fill
+                  width={480}
+                  height={390}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 480px"
                   className="object-contain"
                 />
               </div>

@@ -5,7 +5,7 @@ import DiamondStockTableWithFilter from "@/components/LimitedEdition/DiamondStoc
 
 export default function LimitedEditionPage() {
   return (
-    <ProtectedRoute requireAuth={true} allowedRoles={["ADMIN"]} redirectTo="/">
+    <ProtectedRoute requireAuth={true} allowedRoles={["ADMIN", "SUPER_ADMIN"]} redirectTo="/">
       <DiamondStockTableWithFilter />
     </ProtectedRoute>
   );

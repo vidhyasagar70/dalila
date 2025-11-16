@@ -490,7 +490,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 </div>
 
                 {/* Basic Information */}
-                <div className="bg-gray-50 p-4 rounded flex-1 flex flex-col">
+                <div className="bg-gray-50 p-4 rounded-none flex-1 flex flex-col">
                   <div className="border-b border-[#e9e2c6] pb-2 mb-2">
                     <h3 className="text-base font-bold text-gray-900">
                       Basic Information
@@ -524,13 +524,13 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 {/* Action Buttons */}
                 <div className="space-y-3 mt-auto">
                   {/* All buttons - Only for non-admin users */}
-                  {userRole !== "ADMIN" && (
+                  {userRole !== "ADMIN" && userRole !== "SUPER_ADMIN" && (
                     <>
                       {/* Add to Cart */}
                       <button
                         onClick={handleAddToCart}
                         disabled={isAddingToCart}
-                        className="w-full bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-[#050C3A] text-white py-2.5 rounded-none font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isAddingToCart ? (
                           <>
@@ -547,7 +547,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         <button
                           onClick={handleAddToHold}
                           disabled={isAddingToHold}
-                          className="bg-[#050C3A] text-white py-2.5 rounded font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="bg-[#050C3A] text-white py-2.5 rounded-none font-semibold hover:bg-[#030822] transition-colors text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isAddingToHold ? (
                             <>
@@ -651,11 +651,11 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
           onClick={() => setIsEnquiryOpen(false)}
         >
           <div
-            className="bg-white rounded-lg shadow-xl w-full max-w-md"
+            className="bg-white rounded-none shadow-xl w-full max-w-md"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="bg-[#050C3A] text-white px-6 py-4 rounded-t-lg flex items-center justify-between">
+            <div className="bg-[#050C3A] text-white px-6 py-4 rounded-none flex items-center justify-between">
               <h3 className="text-lg font-semibold">Submit Enquiry</h3>
               <button
                 onClick={() => setIsEnquiryOpen(false)}
@@ -675,7 +675,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   type="text"
                   value={diamond.STONE_NO}
                   disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-50 text-gray-700"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-none bg-gray-50 text-gray-700"
                 />
               </div>
 
@@ -688,26 +688,26 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   onChange={(e) => setEnquiryText(e.target.value)}
                   placeholder="Enter your query here..."
                   rows={5}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#050C3A] resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-[#050C3A] resize-none bg-white text-gray-900"
                 />
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 bg-gray-50 rounded-b-lg flex gap-3 justify-end">
+            <div className="px-6 py-4 bg-gray-50 rounded-none flex gap-3 justify-end">
               <button
                 onClick={() => {
                   setIsEnquiryOpen(false);
                   setEnquiryText("");
                 }}
-                className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 border border-gray-300 rounded-none text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleEnquirySubmit}
                 disabled={isSubmittingEnquiry || !enquiryText.trim()}
-                className="px-4 py-2 bg-[#050C3A] text-white rounded hover:bg-[#030822] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 bg-[#050C3A] text-white rounded-none hover:bg-[#030822] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSubmittingEnquiry ? (
                   <>

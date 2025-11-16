@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import {
   Download,
   Mail,
@@ -15,9 +16,30 @@ import {
 } from "lucide-react";
 import { cartApi, diamondApi } from "@/lib/api";
 import Image from "next/image";
-import DiamondComparisonPage from "../../components/DiamondComparisonPage";
-import DiamondDetailView from "@/components/DiamondDetailView";
 import type { DiamondData } from "@/types/Diamondtable";
+
+// Dynamic imports for modal components
+const DiamondComparisonPage = dynamic(
+  () => import("../../components/DiamondComparisonPage"),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#D1B350]" />
+      </div>
+    ),
+  }
+);
+
+const DiamondDetailView = dynamic(
+  () => import("@/components/DiamondDetailView"),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#D1B350]" />
+      </div>
+    ),
+  }
+);
 
 interface CartDiamondData {
   _id: string;

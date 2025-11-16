@@ -312,7 +312,7 @@ export default function MembersManagement() {
     <ProtectedRoute
       requireAuth={true}
       redirectTo="/login"
-      allowedRoles={["ADMIN"]}
+      allowedRoles={["ADMIN", "SUPER_ADMIN"]}
     >
       <div className="min-h-screen bg-white p-8 mt-35">
         {/* Header Tabs */}

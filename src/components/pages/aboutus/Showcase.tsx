@@ -29,7 +29,10 @@ export default function Aboutshowcase() {
                 <Image
                   src="/images/Heritage.png"
                   alt="Professional diamond dealer"
-                  fill
+                  width={480}
+                  height={340}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 480px"
                   className="object-cover"
                 />
               </div>
@@ -105,7 +108,10 @@ export default function Aboutshowcase() {
                 <Image
                   src="/images/diamondwork.png"
                   alt="Diamond examination with tweezers"
-                  fill
+                  width={480}
+                  height={340}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 480px"
                   className="object-cover"
                 />
               </div>
@@ -120,7 +126,10 @@ export default function Aboutshowcase() {
                 <Image
                   src="/images/sell_page.jpg"
                   alt="Professional diamond dealer"
-                  fill
+                  width={480}
+                  height={340}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 480px"
                   className="object-cover"
                 />
               </div>
