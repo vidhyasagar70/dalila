@@ -48,7 +48,7 @@ export default function AboutDalila() {
             <div className="pt-4 md:pt-6">
               <AnimatedContainer direction="scale-out">
                 <button
-                  className="px-6 py-3 sm:px-8 sm:py-3.5 md:px-10 md:py-4 text-white font-bold text-xs sm:text-sm uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95"
+                  className="px-6 py-3 sm:px-8 sm:py-3.5 md:px-10 md:py-4 text-white font-bold text-xs sm:text-sm uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95 cursor-pointer"
                   style={{ backgroundColor: "#c89e3a" }}
                 >
                   Explore More

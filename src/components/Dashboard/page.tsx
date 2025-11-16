@@ -172,7 +172,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => handleNavigate("/inventory")}
             style={{ borderColor: "#FAE9D0", backgroundColor: "#050C3A" }}
-            className="p-6 text-white shadow-lg border hover:opacity-90 transition-opacity text-left w-full"
+            className="p-6 text-white shadow-lg border hover:opacity-90 transition-opacity text-left w-full cursor-pointer"
           >
             <div className="flex items-center justify-between mb-4">
               <Gem className="w-8 h-8" />
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
           <button
             onClick={() => handleNavigate("/cart")}
             style={{ borderColor: "#FAE9D0" }}
-            className="bg-white p-6 shadow-md border hover:bg-gray-50 transition-colors text-left w-full"
+            className="bg-white p-6 shadow-md border hover:bg-gray-50 transition-colors text-left w-full cursor-pointer"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gray-100 p-2">
@@ -284,10 +284,7 @@ export default function AdminDashboard() {
                         <button
                           key={diamond.STONE_NO || index}
                           onClick={() => setSelectedDiamond(diamond)}
-                          className="bg-white border p-4 w-56 hover:shadow-lg transition-shadow cursor-pointer text-left"
-                          style={{
-                            borderColor: "#FAE9D0"
-                          }}
+                          className="bg-white p-4 w-56 hover:shadow-lg transition-shadow cursor-pointer text-left"
                         >
                           <div className="bg-gray-50 p-6 mb-4 flex items-center justify-center">
                             {diamond.MP4 ? (

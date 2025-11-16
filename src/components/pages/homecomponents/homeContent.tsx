@@ -52,11 +52,7 @@ export default function HomeContent() {
                   process works
                 </p>
               </AnimatedContainer>
-              {/* <button
-                className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
-              >
-                Sell Now
-              </button> */}
+              
               <GoldButton text="Sell Now" />
             </div>
           </div>
@@ -90,11 +86,7 @@ export default function HomeContent() {
                   formed to what makes each one unique.
                 </p>
               </AnimatedContainer>
-              {/* <button
-                className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-6 py-3 md:px-8 md:py-3.5 lg:px-9 rounded-sm transition-all duration-300 mt-4 md:mt-6 text-xs md:text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
-              >
-                Explore More
-              </button> */}
+             
               <GoldButton text="Explore More" />
             </div>
           </div>
