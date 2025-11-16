@@ -44,14 +44,13 @@ export default function VideoContent() {
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         onError={(e) => {
           console.error("Video failed to load:", e);
           setVideoError(true);
         }}
       >
-        {/* Change this line to use .mp4 */}
-        <source src="/dalila_img/LEGACY_video.mov" type="video/mp4" />
+        <source src="/New-Videos/LEGACY_video.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 

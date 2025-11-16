@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { Playfair_Display, Jost, Marcellus, Maven_Pro } from "next/font/google";
+import { Playfair_Display, Jost } from "next/font/google";
 import "./globals.css";
 import HeaderFooterWrapper from "@/components/HeaderFooterWrapper";
 import { Toaster } from "react-hot-toast";
@@ -8,28 +8,17 @@ import { Toaster } from "react-hot-toast";
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const jost = Jost({
   variable: "--font-jost",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
-});
-
-const marcellus = Marcellus({
-  variable: "--font-marcellus",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-const mavenPro = Maven_Pro({
-  variable: "--font-maven-pro",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -43,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${jost.variable} ${marcellus.variable} ${mavenPro.variable}`}
+      className={`${playfair.variable} ${jost.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased bg-background text-foreground font-jost">

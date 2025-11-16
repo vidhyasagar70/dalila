@@ -2,6 +2,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -112,10 +113,14 @@ export default function HeroSection() {
                 key={index}
                 className="relative min-w-full h-full flex-shrink-0"
               >
-                <img
+                <Image
                   src={slide.image}
                   alt={`Dalila Diamonds Banner ${actualIndex + 1}`}
-                  className="w-full h-full object-cover"
+                  fill
+                  priority={index === 1}
+                  quality={85}
+                  sizes="100vw"
+                  className="object-cover"
                 />
 
                 <div className="absolute inset-0 bg-black/10" />
