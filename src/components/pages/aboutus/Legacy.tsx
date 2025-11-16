@@ -64,7 +64,7 @@ export default function Legacy() {
               </p>
             </AnimatedContainer>
             <button
-              className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit ${jost.className}`}
+              className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm cursor-pointer lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit ${jost.className}`}
             >
               CONTACT
             </button>

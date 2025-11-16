@@ -341,7 +341,7 @@ export default function ForgotPasswordPage() {
                 </button>
               )}
               <button
-                className="bg-[#101638]/80 rounded-full p-2 shadow-md hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
+                className="bg-[#101638]/80 rounded-full p-2 shadow-md hover:bg-[#d4a018]cursor-pointer transition-all duration-200 hover:scale-110"
                 title="Home"
                 onClick={() => router.push("/")}
                 type="button"
@@ -390,7 +390,7 @@ export default function ForgotPasswordPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 cursor-pointer rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98]"
                   >
                     {isLoading ? (
                       <>
@@ -541,7 +541,7 @@ export default function ForgotPasswordPage() {
                     e.preventDefault();
                     router.push("/login");
                   }}
-                  className="text-[#FFD166] font-semibold hover:text-yellow-400 hover:underline transition-colors"
+                  className="text-[#FFD166] font-semibold hover:text-yellow-400 hover:underline cursor-pointer transition-colors"
                 >
                   Login Here
                 </a>

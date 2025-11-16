@@ -260,7 +260,7 @@ function OTPVerificationContent() {
                 <ArrowLeft className="w-5 h-5 text-white" />
               </button>
               <button
-                className="bg-[#101638]/80 rounded-full p-2 shadow-md hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
+                className="bg-[#101638]/80 rounded-full cursor-pointer p-2 shadow-md hover:bg-[#d4a018] transition-all duration-200 hover:scale-110"
                 title="Home"
                 onClick={() => router.push("/")}
                 type="button"
@@ -323,7 +323,7 @@ function OTPVerificationContent() {
               <button
                 type="submit"
                 disabled={isLoading || otp.join("").length !== 4}
-                className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] mb-4"
+                className="w-full bg-[#d4a018] hover:bg-[#c4a639] text-white cursor-pointer font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-[1.02] active:scale-[0.98] mb-4"
               >
                 {isLoading ? (
                   <>

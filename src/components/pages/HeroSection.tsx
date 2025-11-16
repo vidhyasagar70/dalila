@@ -129,7 +129,7 @@ export default function HeroSection() {
                   <div className={getButtonPositionClasses(actualSlide.buttonPosition, actualIndex)}>
                     <button
                       onClick={() => handleExploreClick(actualSlide.buttonLink)}
-                      className="z-20 px-4 py-2 md:px-6 md:py-3 bg-[#c89e3a] hover:bg-[#b08932] text-white font-semibold text-xs md:text-sm rounded-none transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                      className="z-20 px-4 py-2 md:px-6 md:py-3 bg-[#c89e3a] hover:bg-[#b08932] text-white font-semibold text-xs md:text-sm rounded-none transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 cursor-pointer"
                     >
                       Explore More
                     </button>

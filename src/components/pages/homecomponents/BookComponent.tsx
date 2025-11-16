@@ -51,7 +51,7 @@ export default function BookComponent() {
             </AnimatedContainer>
             <AnimatedContainer direction="up">
               <button
-                className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit ${playFair.className}`}
+                className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer whitespace-nowrap w-fit ${playFair.className}`}
               >
                 BOOK NOW
               </button>

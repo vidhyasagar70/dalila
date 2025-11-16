@@ -113,7 +113,7 @@ export default function ContactUsPage() {
                       <div className="flex justify-center items-center h-full ml-10">
                         <button
                           onClick={handleSubmit}
-                          className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded uppercase tracking-wide text-sm"
+                          className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded uppercase cursor-pointer tracking-wide text-sm"
                           style={{
                             background: goldGradient,
                             boxShadow: "0 2px 4px rgba(181, 137, 0, 0.2)",

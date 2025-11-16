@@ -258,9 +258,13 @@ export default function RegisterPage() {
           <div className="relative flex-1 flex flex-col justify-center items-center bg-black/20 px-4 py-8 md:py-0">
             {/* Home Button */}
             <button
-              className="absolute top-4 md:top-6 right-4 md:right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-10 hover:bg-[#d4a018] transition-all duration-200 hover:scale-110 cursor-pointer"
+              className="absolute top-4 md:top-6 right-4 md:right-6 bg-[#101638]/80 rounded-full p-2 shadow-md z-50 hover:bg-[#d4a018] transition-all duration-200 hover:scale-110 cursor-pointer"
               title="Home"
-              onClick={() => router.push("/")}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push("/");
+              }}
               type="button"
             >
               <Home className="w-5 h-5 text-white" />

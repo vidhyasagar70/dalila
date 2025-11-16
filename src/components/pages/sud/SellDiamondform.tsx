@@ -413,7 +413,7 @@ export default function SellDiamondsForm() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#D4A017] hover:bg-[#B58900] text-white font-semibold py-3 px-6 rounded-none transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+            className="w-full bg-[#D4A017] hover:bg-[#B58900] text-white cursor-pointer font-semibold py-3 px-6 rounded-none transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
           >
             Submit
           </button>
