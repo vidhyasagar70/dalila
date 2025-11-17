@@ -53,6 +53,7 @@ export default function Diamondcuts() {
                     fill
                     style={{ objectFit: "cover" }}
                     priority
+                    unoptimized
                   />
                 </div>
               </div>

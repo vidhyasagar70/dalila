@@ -30,6 +30,7 @@ export default function Diamondshowcase() {
                   alt="Professional diamond dealer"
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               </div>
             </div>
@@ -110,6 +111,7 @@ export default function Diamondshowcase() {
                   alt="Diamond examination with tweezers"
                   fill
                   className="object-cover"
+                  unoptimized
                 />
               </div>
             </AnimatedContainer>

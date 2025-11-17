@@ -79,6 +79,7 @@ export default function DiamondShapeCuts() {
                       fill
                       style={{ objectFit: "contain" }}
                       sizes="(max-width: 768px) 64px, (max-width: 1200px) 80px, 100px"
+                      unoptimized
                     />
                   </div>
                   <h3
