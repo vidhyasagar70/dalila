@@ -122,7 +122,7 @@ export default function Aboutshowcase() {
         <div className="grid md:grid-cols-2 gap-16 items-center mb-25 mt-25">
           <div>
             <AnimatedContainer direction="scale-out" delay={0.5}>
-              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto overflow-hidden">
                 <Image
                   src="/images/sell_page.jpg"
                   alt="Professional diamond dealer"

@@ -32,7 +32,7 @@ export default function AboutMilestone() {
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <AnimatedContainer direction="left" delay={0.5}>
-              <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[350px] md:h-[390px] w-full max-w-[480px] mx-auto overflow-hidden">
                 <Image
                   src="/images/about_us_3.png"
                   alt="Diamond on display"
