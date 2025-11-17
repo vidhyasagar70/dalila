@@ -34,6 +34,24 @@ export default function Header() {
    const limitedEditionPage = pathname === "/limitedEdition";
    const createAdminPage = pathname === "/create-admin";
 
+  // Function to check if token has expired
+  const isTokenExpired = (): boolean => {
+    if (typeof window === "undefined") return false;
+    
+    const tokenTimestamp = localStorage.getItem("authTokenTimestamp");
+    if (!tokenTimestamp) {
+      // If no timestamp exists, set it now for existing sessions
+      // This handles users who were logged in before this feature was added
+      localStorage.setItem("authTokenTimestamp", Date.now().toString());
+      return false;
+    }
+    
+    const tokenAge = Date.now() - parseInt(tokenTimestamp, 10);
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    
+    return tokenAge >= ONE_DAY_MS;
+  };
+
   // Determine if user is admin or super admin
   const isAdmin = isLoggedIn && (userRole === "ADMIN" || userRole === "SUPER_ADMIN");
 
@@ -74,6 +92,35 @@ export default function Header() {
         }
 
         const hasValidAuth = !!(userStr && token);
+
+        // Check if token has expired
+        if (hasValidAuth && isTokenExpired()) {
+          console.log("Token has expired. Logging out user...");
+          // Clear auth data
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("authTokenTimestamp");
+          localStorage.removeItem("user");
+          document.cookie = "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+          document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+          
+          setUserRole(null);
+          setUserStatus(null);
+          setIsLoggedIn(false);
+          setIsCheckingAuth(false);
+          
+          // Dispatch logout event
+          const logoutEvent = new CustomEvent("user-logged-out");
+          window.dispatchEvent(logoutEvent);
+          
+          // Only redirect to login if not on homepage or public pages
+          const publicPages = ["/", "/aboutUs", "/diamondKnowledge", "/blogs", "/contact", "/secure-to-source", "/diamond-source", "/sud"];
+          const isPublicPage = publicPages.some(page => pathname === page || pathname.startsWith("/blogs/"));
+          
+          if (!isPublicPage) {
+            router.push("/login");
+          }
+          return;
+        }
 
         if (hasValidAuth && userStr) {
           try {
@@ -154,6 +201,7 @@ export default function Header() {
 
       if (typeof window !== "undefined") {
         localStorage.removeItem("authToken");
+        localStorage.removeItem("authTokenTimestamp");
         localStorage.removeItem("user");
 
         document.cookie =

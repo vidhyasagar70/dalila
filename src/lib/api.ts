@@ -215,6 +215,7 @@ const setAuthToken = (token: string): void => {
 const removeAuthToken = (): void => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("authTokenTimestamp");
   }
 };
 
@@ -841,6 +842,11 @@ export const userApi = {
         if (token) {
           console.log(" Token found, storing...");
           setAuthToken(token);
+          
+          // Store token timestamp for expiration checking
+          if (typeof window !== "undefined") {
+            localStorage.setItem("authTokenTimestamp", Date.now().toString());
+          }
 
           const storedToken = getAuthToken();
           console.log(
@@ -950,12 +956,14 @@ export const userApi = {
       removeAuthToken();
       if (typeof window !== "undefined") {
         localStorage.removeItem("user");
+        localStorage.removeItem("authTokenTimestamp");
       }
       return response;
     } catch (error) {
       removeAuthToken();
       if (typeof window !== "undefined") {
         localStorage.removeItem("user");
+        localStorage.removeItem("authTokenTimestamp");
       }
       throw error;
     }
