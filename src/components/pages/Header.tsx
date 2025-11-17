@@ -330,7 +330,7 @@ export default function Header() {
             {/* Contact Us Button - Always visible */}
             <button
               onClick={() => router.push("/contact")}
-              className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+              className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap cursor-pointer"
             >
               CONTACT US
             </button>
@@ -481,7 +481,7 @@ export default function Header() {
 
                 <button
                   onClick={handleLogout}
-                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap cursor-pointer"
                 >
                   LOGOUT
                 </button>
@@ -498,14 +498,14 @@ export default function Header() {
             ) : !isLoggedIn ? (
               <button
                 onClick={() => router.push("/login")}
-                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
               >
                 LOGIN
               </button>
             ) : (
               <button
                 onClick={handleLogout}
-                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                className="py-1 px-3 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
               >
                 LOGOUT
               </button>
@@ -521,14 +521,14 @@ export default function Header() {
             ) : !isLoggedIn ? (
               <button
                 onClick={() => router.push("/login")}
-                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
               >
                 LOGIN
               </button>
             ) : (
               <button
                 onClick={handleLogout}
-                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                className="py-1 px-4 text-xs text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
               >
                 LOGOUT
               </button>
@@ -621,7 +621,7 @@ export default function Header() {
                   setIsMobileMenuOpen(false);
                   router.push("/contact");
                 }}
-                className="text-left cursor-pointer text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-t border-white/20 pt-2"
+                className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-t border-white/20 pt-2 cursor-pointer"
               >
                 Contact Us
               </button>
@@ -750,7 +750,7 @@ export default function Header() {
                       setIsMobileMenuOpen(false);
                       router.push("/login");
                     }}
-                    className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                    className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
                   >
                     LOGIN
                   </button>
@@ -759,7 +759,7 @@ export default function Header() {
                       setIsMobileMenuOpen(false);
                       router.push("/register");
                     }}
-                    className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                    className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
                   >
                     REGISTER
                   </button>
@@ -770,7 +770,7 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                     handleLogout();
                   }}
-                  className="w-full cursor-pointer py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                  className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer"
                 >
                   LOGOUT
                 </button>
