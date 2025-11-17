@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { formApi } from "@/lib/api";
 import { Eye, X, RefreshCw, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { Marcellus, Jost } from "next/font/google";
+import Image from "next/image";
 
 const marcellus = Marcellus({
   variable: "--font-marcellus",
@@ -54,17 +55,11 @@ export default function BuyFormManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [expandedEmail, setExpandedEmail] = useState<string | null>(null);
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    console.log("BuyFormManagement mounted");
-    fetchSubmissions();
-  }, [currentPage]);
-
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -82,19 +77,24 @@ export default function BuyFormManagement() {
         console.log("Submissions data:", response.data);
         console.log("Number of submissions:", response.data.length);
         setGroupedData(response.data);
-        setTotalPages(response.pagination.totalPages);
       } else {
         console.error("Response not successful:", response);
         setError("No data available or request failed.");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error fetching submissions:", err);
-      console.error("Error details:", err.response?.data || err.message);
-      setError(`Failed to load submissions: ${err.response?.data?.message || err.message || "Please try again."}`);
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      console.error("Error details:", error.response?.data || error.message);
+      setError(`Failed to load submissions: ${error.response?.data?.message || error.message || "Please try again."}`);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    console.log("BuyFormManagement mounted");
+    fetchSubmissions();
+  }, [fetchSubmissions]);
 
   const handleViewDetails = (submission: Submission) => {
     setSelectedSubmission(submission);
@@ -456,11 +456,15 @@ export default function BuyFormManagement() {
                       key={index}
                       className="border border-[#E9E2C6] rounded-md overflow-hidden"
                     >
-                      <img
-                        src={image.s3Url}
-                        alt={image.fileName}
-                        className="w-full h-48 object-cover"
-                      />
+                      <div className="relative w-full h-48">
+                        <Image
+                          src={image.s3Url}
+                          alt={image.fileName}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      </div>
                       <div className="p-3 bg-gray-50">
                         <p className={`${jost.className} text-sm font-medium text-gray-900 truncate`}>
                           {image.fileName}
