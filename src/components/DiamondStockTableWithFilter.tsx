@@ -22,6 +22,7 @@ import DiamondGridView from "./DiamondGridView";
 import CompareButton from "./CompareButton";
 import EmailButton from "./EmailButton";
 import AddToCartButton from "../components/cart/AddToCartButton";
+import HoldButton from "../components/cart/HoldButton";
 import { Maven_Pro } from "next/font/google";
 
 const mavenPro = Maven_Pro({
@@ -163,6 +164,11 @@ export default function DiamondStockTableWithFilter() {
     console.log("Diamonds added to cart successfully, selection cleared");
   };
 
+  const handleAddToHold = () => {
+    setSelectedDiamonds([]);
+    console.log("Diamonds added to hold successfully, selection cleared");
+  };
+
   const handleResetFilters = () => {
     setSelectedColor([]);
     setSelectedShape([]);
@@ -288,6 +294,12 @@ export default function DiamondStockTableWithFilter() {
             selectedCount={selectedDiamonds.length}
             selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
             onAddToCart={handleAddToCart}
+          />
+
+          <HoldButton
+            selectedCount={selectedDiamonds.length}
+            selectedStoneNumbers={selectedDiamonds.map((d) => d.STONE_NO)}
+            onAddToHold={handleAddToHold}
           />
 
           <CompareButton

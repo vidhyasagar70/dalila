@@ -210,7 +210,7 @@ export default function ContactUsPage() {
                       <p
                         className={`text-gray-600 text-base ${jost.className}`}
                       >
-                        +1 234 567 890
+                        +32 3 231 63 27
                       </p>
                     </div>
                   </div>
@@ -226,7 +226,7 @@ export default function ContactUsPage() {
                       <p
                         className={`text-gray-600 text-base ${jost.className}`}
                       >
-                        contact@dalila.com
+                        info@daliladiamonds.com
                       </p>
                     </div>
                   </div>
@@ -259,18 +259,23 @@ export default function ContactUsPage() {
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             <div className="relative h-96 bg-gray-200">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d144.95373531531654!3d-37.817209979751645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEnvato!5e0!3m2!1sen!2sau!4v1589529723331!5m2!1sen!2sau"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2499.2772864045445!2d4.411851776909697!3d51.21893463306524!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c3f70762e5678b%3A0x5d9b8c8b5e8b8b8b!2sHoveninersstraat%2030%2C%202018%20Antwerpen%2C%20Belgium!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 className="absolute inset-0"
-                title="Location Map"
+                title="Dalila Diamonds Location - Antwerp, Belgium"
               />
-              <button className="absolute top-4 left-4 px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded shadow-md hover:bg-gray-50 transition-colors">
+              <a
+                href="https://www.google.com/maps/place/Hoveninersstraat+30,+2018+Antwerpen,+Belgium"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute top-4 left-4 px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded shadow-md hover:bg-gray-50 transition-colors"
+              >
                 View larger map
-              </button>
+              </a>
             </div>
           </div>
         </div>

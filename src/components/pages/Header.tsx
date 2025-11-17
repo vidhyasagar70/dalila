@@ -246,11 +246,11 @@ export default function Header() {
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
-          <nav className="hidden lg:flex items-center gap-2 xl:gap-3 flex-1">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-start">
             {/* About us */}
             <Link
               href="/aboutUs"
-              className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
+              className="py-3 px-1.5 xl:px-2.5 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
             >
               About us
             </Link>
@@ -260,7 +260,7 @@ export default function Header() {
               <button
                 onMouseEnter={() => setIsServicesDropdownOpen(true)}
                 onMouseLeave={() => setIsServicesDropdownOpen(false)}
-                className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap flex items-center gap-1"
+                className="py-3 px-1.5 xl:px-2.5 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap flex items-center gap-1"
               >
                 Our Services
                 <ChevronDown
@@ -303,7 +303,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={item.requiresAuth ? handleInventoryClick : undefined}
-                className="py-3 px-2 xl:px-3 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
+                className="py-3 px-1.5 xl:px-2.5 text-xs xl:text-base text-white hover:text-[#c89e3a] transition-colors whitespace-nowrap"
               >
                 {item.label}
               </Link>

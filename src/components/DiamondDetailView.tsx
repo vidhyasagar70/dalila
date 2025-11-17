@@ -315,82 +315,36 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         <div className="p-6 pb-20">
           {/* Top Section: Certificate, Image, and Info */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-            {/* LEFT - Certificate and Video (3 columns) */}
-            <div className="lg:col-span-3 flex flex-col gap-4">
-              {/* Certificate Section */}
-              {certificateUrl ? (
-                <div className="bg-white  overflow-hidden flex-1 flex flex-col">
-                  <div className="relative flex-1 bg-gray-50 min-h-[200px]">
-                    <Image
-                      src={certificateUrl}
-                      alt="Diamond Certificate"
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
-                      <p className="text-white text-xs font-medium">
-                        {diamond.LAB || "GIA"} Certificate
-                      </p>
-                      <p className="text-white/80 text-[10px]">
-                        {diamond.REPORT_NO || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-                  <a
-                    href={certificateUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-gray-50 hover:bg-gray-100 transition-colors py-2 text-xs font-medium text-gray-700 border-t border-[#e9e2c6] flex-shrink-0 text-center"
-                  ></a>
-                </div>
-              ) : (
-                <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
-                  <div className="relative flex-1 bg-gray-50 min-h-[200px] flex items-center justify-center">
-                    <span className="text-sm text-gray-400">
-                      No Certificate Available
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Video Section */}
+          {/* LEFT - Video only (same height as center image) */}
+            <div className="lg:col-span-4">
+              {/* Video Section (450px height) */}
               {videoUrl ? (
-                <div className="bg-white  overflow-hidden flex-1 flex flex-col">
-                  <div className="relative flex-1 bg-gray-50 min-h-[200px]">
+                <div className="bg-white overflow-hidden h-[479px] mt-14">
+                  <div className="relative bg-gray-50 h-full">
                     {!isPlayingVideo ? (
-                      <>
-                        <div
-                          className="relative w-full h-full cursor-pointer group"
-                          onClick={handleVideoClick}
-                        >
-                          {videoThumbnail ? (
-                            <Image
-                              src={videoThumbnail}
-                              alt="Diamond Video"
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                              <span className="text-sm text-gray-400">
-                                Video Available
-                              </span>
-                            </div>
-                          )}
-                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                              <Play
-                                size={20}
-                                className="text-[#050C3A] ml-1"
-                                fill="currentColor"
-                              />
-                            </div>
+                      <div
+                        className="relative w-full h-full cursor-pointer group"
+                        onClick={handleVideoClick}
+                      >
+                        {videoThumbnail ? (
+                          <Image
+                            src={videoThumbnail}
+                            alt="Diamond Video"
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                            <span className="text-sm text-gray-400">Video Available</span>
+                          </div>
+                        )}
+
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                            <Play size={20} className="text-[#050C3A] ml-1" fill="currentColor" />
                           </div>
                         </div>
-                      </>
+                      </div>
                     ) : (
                       <div className="relative w-full h-full">
                         <button
@@ -399,41 +353,30 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         >
                           <X size={16} className="text-white" />
                         </button>
-                        <video
-                          src={videoUrl}
-                          controls
-                          autoPlay
-                          className="w-full h-full object-cover"
-                        >
+                        <video src={videoUrl} controls autoPlay className="w-full h-full object-cover">
                           Your browser does not support the video tag.
                         </video>
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={handleVideoClick}
-                    className="w-full bg-gray-50 hover:bg-gray-100 transition-colors py-2 text-xs font-medium text-gray-700 border-t border-[#e9e2c6] flex-shrink-0"
-                  ></button>
                 </div>
               ) : (
-                <div className="bg-white border border-[#e9e2c6] overflow-hidden flex-1 flex flex-col">
-                  <div className="relative flex-1 bg-gray-50 min-h-[200px] flex items-center justify-center">
-                    <span className="text-sm text-gray-400">
-                      No Video Available
-                    </span>
+                <div className="bg-white border border-[#e9e2c6] overflow-hidden h-[479px] mt-14">
+                  <div className="relative bg-gray-50 h-full flex items-center justify-center">
+                    <span className="text-sm text-gray-400">No Video Available</span>
                   </div>
                 </div>
               )}
             </div>
-            {/* CENTER - Main Image (5 columns) */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="relative overflow-hidden  h-[592px] bg-gray-50">
+            {/* CENTER - Main Image (match video size) */}
+            <div className="lg:col-span-4 space-y-4">
+              <div className="relative overflow-hidden h-[592px] bg-gray-50">
                 {/* Action Icons */}
-                <div className="absolute top-4 right-4 flex gap-2 z-10">
+                {/* <div className="absolute top-4 right-4 flex gap-2 z-10">
                   <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
                     <Download size={18} className="text-gray-700" />
                   </button>
-                </div>
+                </div> */}
 
                 {/* Main Display Image */}
                 {selectedImage ? (
@@ -452,7 +395,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 h-[592px]">
                     No Image Available
                   </div>
                 )}
@@ -462,17 +405,13 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             {/* RIGHT - Diamond Info (4 columns) */}
             <div className="lg:col-span-4 flex flex-col">
               <div className="space-y-4 flex-1 flex flex-col">
-                {/* Title Section with Rating */}
+                {/* Title Section - show Stone Number instead of shape */}
                 <div className="pt-4">
-                  <p className="text-xs text-gray-500 mb-1">Diamond Images</p>
                   <div className="flex justify-between items-start mb-1">
                     <h1 className="text-3xl font-bold text-gray-900">
-                      {diamond.SHAPE}
+                      {diamond.STONE_NO}
                     </h1>
                   </div>
-                  <p className="text-xs text-gray-600">
-                    Expertly cut for exceptional sparkle and clarity.
-                  </p>
                 </div>
 
                 {/* Price Section */}

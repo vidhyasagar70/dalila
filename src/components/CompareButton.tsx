@@ -24,14 +24,14 @@ export default function CompareButton({
     <button
       onClick={handleCompare}
       disabled={disabled || selectedCount === 0}
-      className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
+      className={`flex items-center justify-center gap-2 px-3 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
         disabled || selectedCount === 0
           ? "bg-gray-400 cursor-not-allowed"
           : "bg-[#000033]"
       }`}
     >
       <Scale className="w-4 h-4" />
-      <span>Compare Diamonds</span>
+      <span>Compare</span>
     </button>
   );
 }

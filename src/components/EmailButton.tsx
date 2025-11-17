@@ -176,7 +176,7 @@ export default function EmailButton({
       <button
         onClick={handleEmailClick}
         disabled={disabled || selectedCount === 0}
-        className={`flex items-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
+        className={`flex items-center justify-center gap-2 px-3 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors ${
           disabled || selectedCount === 0
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-[#000033] hover:bg-[#000055]"
@@ -185,7 +185,7 @@ export default function EmailButton({
         <Mail className="w-4 h-4" />
         <span>Email Selected</span>
         {selectedCount > 0 && (
-          <span className="bg-white text-[#000033] px-2 py-0.5 rounded-full text-xs font-bold">
+          <span className="bg-white text-[#000033] px-2 py-0.5 rounded-full text-xs font-bold min-w-[20px] text-center">
             {selectedCount}
           </span>
         )}
