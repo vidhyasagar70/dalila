@@ -395,7 +395,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 h-[592px]">
+                  <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
                     No Image Available
                   </div>
                 )}
@@ -403,12 +403,12 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             </div>
 
             {/* RIGHT - Diamond Info (4 columns) */}
-            <div className="lg:col-span-4 flex flex-col">
-              <div className="space-y-4 flex-1 flex flex-col">
+            <div className="lg:col-span-4 flex flex-col ">
+              <div className="space-y-4 flex-1 flex flex-col ">
                 {/* Title Section - show Stone Number instead of shape */}
-                <div className="pt-4">
+                <div className="pt-4 mt-11">
                   <div className="flex justify-between items-start mb-1">
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-3xl font-bold text-gray-900 ">
                       {diamond.STONE_NO}
                     </h1>
                   </div>
