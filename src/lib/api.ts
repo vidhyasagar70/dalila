@@ -1837,6 +1837,28 @@ export const holdApi = {
   // Add item to hold
   add: (stoneNo: string) =>
     api.post<{ message: string }>("/api/diamonds/hold/add", { stoneNo }),
+
+  // Get current user's hold items
+  get: () =>
+    api.get<{
+      hold: {
+        _id: string;
+        userId: string;
+        items: Array<{
+          stoneNo: string;
+          diamond: Diamond;
+          status: string;
+          addedAt: string;
+          _id: string;
+          statusUpdatedAt?: string;
+          statusUpdatedBy?: string;
+          rejectionReason?: string;
+        }>;
+        createdAt: string;
+        updatedAt: string;
+      };
+      totalItems: number;
+    }>("/api/diamonds/hold"),
 };
 
 // Query API endpoints

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-import { diamondApi, cartApi } from "@/lib/api";
+import { diamondApi, cartApi, holdApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 import type { LimitedEditionDiamond } from "@/lib/api";
 import type { DiamondData } from "@/types/Diamondtable";
@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   const [totalDiamonds, setTotalDiamonds] = useState(0);
   const [newlyAddedDiamonds, setNewlyAddedDiamonds] = useState(0);
   const [cartCount, setCartCount] = useState(0);
+  const [holdCount, setHoldCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -50,6 +51,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
     fetchCartCount();
+    fetchHoldCount();
     fetchLimitedEditionDiamonds();
 
     // Listen for cart updates
@@ -88,6 +90,21 @@ export default function AdminDashboard() {
       }
     } catch {
       setCartCount(0);
+    }
+  };
+
+  const fetchHoldCount = async () => {
+    try {
+      const response = await holdApi.get();
+      console.log("Dashboard - Hold response:", response);
+
+      if (response?.success && response.data?.hold?.items) {
+        setHoldCount(response.data.hold.items.length);
+      } else {
+        setHoldCount(0);
+      }
+    } catch {
+      setHoldCount(0);
     }
   };
 
@@ -271,20 +288,24 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between flex-1">
                 <button
                   onClick={prevSlide}
-                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
+                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center z-10"
                 >
                   <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
 
-                <div className="flex gap-4 flex-1 justify-center items-center">
+                <div className="flex gap-4 flex-1 justify-center items-center overflow-hidden relative">
                   {limitedEditionDiamonds.length > 0 ? (
-                    limitedEditionDiamonds
-                      .slice(currentSlide, currentSlide + 3)
-                      .map((diamond, index) => (
+                    <div 
+                      className="flex gap-4 transition-transform duration-500 ease-in-out"
+                      style={{
+                        transform: `translateX(-${currentSlide * (224 + 16)}px)` // 224px card width + 16px gap
+                      }}
+                    >
+                      {limitedEditionDiamonds.map((diamond, index) => (
                         <button
                           key={diamond.STONE_NO || index}
                           onClick={() => setSelectedDiamond(diamond)}
-                          className="bg-white p-4 w-56 hover:shadow-lg transition-shadow cursor-pointer text-left"
+                          className="bg-white p-4 w-56 flex-shrink-0 hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer text-left"
                         >
                           <div className="bg-gray-50 p-6 mb-4 flex items-center justify-center">
                             {diamond.MP4 ? (
@@ -326,7 +347,8 @@ export default function AdminDashboard() {
                             </div>
                           </div>
                         </button>
-                      ))
+                      ))}
+                    </div>
                   ) : (
                     <div className="text-center text-gray-500">
                       No limited edition diamonds available
@@ -336,7 +358,7 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center"
+                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center z-10"
                 >
                   <ChevronRight className="w-5 h-5 text-white" />
                 </button>
@@ -370,10 +392,10 @@ export default function AdminDashboard() {
             {/* Hold Stone Card */}
             <div
               style={{ borderColor: "#FAE9D0" }}
-              className="bg-white rounded-xl p-6 shadow-md border flex-1 flex flex-col justify-between"
+              className="bg-white rounded-none p-6 shadow-md border flex-1 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="bg-gray-100 p-2 rounded-lg">
+                <div className="bg-gray-100 p-2  rounded-none">
                   <Package className="w-6 h-6 text-gray-600" />
                 </div>
                 <span
@@ -385,17 +407,17 @@ export default function AdminDashboard() {
               <div
                 className={`text-5xl font-bold text-gray-900 text-center ${mavenPro.className}`}
               >
-                {mockStats.holdStone}
+                {holdCount}
               </div>
             </div>
 
             {/* Upcoming List Card */}
             <div
               style={{ borderColor: "#FAE9D0" }}
-              className="bg-white rounded-xl p-6 shadow-md border flex-1 flex flex-col justify-between"
+              className="bg-white rounded-none p-6 shadow-md border flex-1 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className="bg-gray-100 p-2 rounded-lg">
+              <div className="flex items-center justify-between mb-4 rounded-none">
+                <div className="bg-gray-100 p-2 rounded-none">
                   <List className="w-6 h-6 text-gray-600" />
                 </div>
                 <span

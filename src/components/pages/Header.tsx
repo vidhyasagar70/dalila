@@ -343,13 +343,13 @@ export default function Header() {
               <>
                 <button
                   onClick={() => router.push("/login")}
-                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap cursor-pointer"
                 >
                   LOGIN
                 </button>
                 <button
                   onClick={() => router.push("/register")}
-                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap"
+                  className="py-3 px-3 xl:px-4 xl:py-2.5 xl:h-10 text-xs xl:text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap cursor-pointer"
                 >
                   REGISTER
                 </button>
@@ -621,7 +621,7 @@ export default function Header() {
                   setIsMobileMenuOpen(false);
                   router.push("/contact");
                 }}
-                className="text-left text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-t border-white/20 pt-2"
+                className="text-left cursor-pointer text-white hover:text-[#c89e3a] transition-colors text-lg py-2 border-t border-white/20 pt-2"
               >
                 Contact Us
               </button>
@@ -770,7 +770,7 @@ export default function Header() {
                     setIsMobileMenuOpen(false);
                     handleLogout();
                   }}
-                  className="w-full py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+                  className="w-full cursor-pointer py-3 text-sm text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
                 >
                   LOGOUT
                 </button>

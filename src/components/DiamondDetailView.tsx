@@ -707,7 +707,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               <button
                 onClick={handleEnquirySubmit}
                 disabled={isSubmittingEnquiry || !enquiryText.trim()}
-                className="px-4 py-2 bg-[#050C3A] text-white rounded-none hover:bg-[#030822] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-4 py-2 bg-[#050C3A] text-white cursor-pointer rounded-none hover:bg-[#030822] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSubmittingEnquiry ? (
                   <>

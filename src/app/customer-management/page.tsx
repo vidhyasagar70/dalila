@@ -792,12 +792,12 @@ export default function CustomerManagementPage() {
                             <thead>
                               <tr>
                                 <th colSpan={14}>
-                                  <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block">
+                                  <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block mb-1">
                                     Items in cart
                                   </span>
                                 </th>
                               </tr>
-                              <tr className="text-[12px] text-gray-500 border-b border-[#E9E2C6]">
+                              <tr className="text-[12px] text-white bg-[#0b1b35] border-b border-[#E9E2C6]">
                                 <th className="py-3 px-4 font-medium">Sr no</th>
                                 <th className="font-medium pr-6 pb-1 text-left">
                                   Stone
@@ -862,12 +862,12 @@ export default function CustomerManagementPage() {
                             <thead>
                               <tr>
                                 <th colSpan={16}>
-                                  <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block">
+                                  <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block mb-1">
                                     Holded Items
                                   </span>
                                 </th>
                               </tr>
-                              <tr className="text-[12px] text-gray-500 border-b border-[#E9E2C6]">
+                              <tr className="text-[12px] text-white bg-[#0b1b35] border-b border-[#E9E2C6]">
                                 <th className="py-3 px-4 font-medium">Sr no</th>
                                 <th className="font-medium pr-6 pb-1 text-left">
                                   Stone
@@ -1206,7 +1206,7 @@ export default function CustomerManagementPage() {
                                           stoneNo: stone,
                                         })
                                       }
-                                      className="flex items-center gap-2 px-4 py-2 bg-[#030822] text-white text-sm rounded hover:bg-[#020615] transition-colors"
+                                      className="flex items-center gap-2 px-4 py-2 bg-[#030822] text-white text-sm rounded-none cursor-pointer hover:bg-[#020615] transition-colors"
                                     >
                                       <Send size={14} />
                                       Reply
