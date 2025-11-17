@@ -42,9 +42,9 @@ export default function DiamondShapeCuts() {
           <div className="max-w-6xl mx-auto">
             {/* First 8 items in 4 columns */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
-              {diamondCuts.slice(8).map((cut, index) => (
+              {diamondCuts.slice(0, 8).map((cut, index) => (
                 <div
-                  key={index + 8}
+                  key={index}
                   className="bg-white shadow-sm hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center justify-center min-h-[180px]"
                 >
                   <div className="w-16 h-16 mb-4 flex items-center justify-center relative">
