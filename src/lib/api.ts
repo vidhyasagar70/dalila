@@ -1906,6 +1906,136 @@ export const queryApi = {
   },
 };
 
+// Form API endpoints
+export const formApi = {
+  // Submit sell diamond form
+  submitSellDiamond: async (formData: FormData) => {
+    try {
+      const token = getAuthToken();
+      if (!token || token.trim() === "") {
+        throw new Error("Please login to submit the form. Authentication required.");
+      }
+
+      const response = await apiClient.post<ApiResponse<{ message: string }>>(
+        "/api/forms/submit",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      console.error("Form submission error:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { 
+            data?: { error?: string; message?: string };
+            status?: number;
+          };
+        };
+        
+        // Handle 401 Unauthorized
+        if (axiosError.response?.status === 401) {
+          throw new Error("Please login to submit the form. Your session may have expired.");
+        }
+        
+        if (axiosError.response?.data) {
+          throw new Error(
+            axiosError.response.data.error ||
+              axiosError.response.data.message ||
+              "Failed to submit form",
+          );
+        }
+      }
+      throw error;
+    }
+  },
+
+  // Get all form submissions grouped by email (Admin)
+  getGroupedSubmissions: async (params?: {
+    page?: number;
+    limit?: number;
+  }) => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.append("page", params.page.toString());
+      if (params?.limit) queryParams.append("limit", params.limit.toString());
+      
+      const url = queryParams.toString() 
+        ? `/api/forms/grouped?${queryParams.toString()}`
+        : "/api/forms/grouped";
+      
+      console.log("Fetching buy form submissions from:", url);
+      
+      const response = await apiClient.get<{
+        success: boolean;
+        message: string;
+        data: Array<{
+          email: string;
+          submissions: Array<{
+            _id: string;
+            name: string;
+            email: string;
+            address: string;
+            phoneNumber: string;
+            countryCode: string;
+            carat: number;
+            material: string;
+            description: string;
+            images: Array<{
+              fileName: string;
+              s3Key: string;
+              s3Url: string;
+              fileSize: number;
+              mimeType: string;
+              uploadedAt: string;
+            }>;
+            status: string;
+            createdAt: string;
+            updatedAt: string;
+          }>;
+          totalCount: number;
+          lastSubmittedAt: string;
+        }>;
+        pagination: {
+          currentPage: number;
+          totalPages: number;
+          totalRecords: number;
+          recordsPerPage: number;
+          hasNextPage: boolean;
+          hasPrevPage: boolean;
+        };
+      }>(url);
+      
+      console.log("Buy form submissions response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Get grouped submissions error:", error);
+      throw error;
+    }
+  },
+
+  // Update form submission status (Admin)
+  updateSubmissionStatus: async (
+    submissionId: string,
+    status: string,
+  ) => {
+    try {
+      const response = await apiClient.patch<{
+        success: boolean;
+        message: string;
+      }>(`/api/forms/${submissionId}/status`, { status });
+      return response.data;
+    } catch (error) {
+      console.error("Update submission status error:", error);
+      throw error;
+    }
+  },
+};
+
 // Export token management functions
 export { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated };
 
@@ -1934,6 +2064,7 @@ const apiExport = {
   adminApi,
   holdApi,
   queryApi,
+  formApi,
   healthCheck,
 };
 

@@ -33,6 +33,7 @@ export default function Header() {
    const enquiryPage = pathname === "/enquiry";
    const limitedEditionPage = pathname === "/limitedEdition";
    const createAdminPage = pathname === "/create-admin";
+   const buyFormPage = pathname === "/buy-form";
 
   // Function to check if token has expired
   const isTokenExpired = (): boolean => {
@@ -278,7 +279,7 @@ export default function Header() {
         BlogDetailPage ||
         SecurePage ||
         diamondsourcePage ||
-        customerPage ||enquiryPage||limitedEditionPage ||createAdminPage||
+        customerPage ||enquiryPage||limitedEditionPage ||createAdminPage||buyFormPage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"
@@ -507,6 +508,12 @@ export default function Header() {
                           className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
                         >
                           Customer Management
+                        </Link>
+                        <Link
+                          href="/buy-form"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#c89e3a] hover:text-white transition-colors border-b border-gray-100"
+                        >
+                          Buy Form Submissions
                         </Link>
                         <Link
                           href="/limitedEdition"
@@ -760,6 +767,15 @@ export default function Header() {
                       className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
                     >
                       Customer Management
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        router.push("/buy-form");
+                      }}
+                      className="text-left text-gray-300 hover:text-[#c89e3a] transition-colors text-base py-2"
+                    >
+                      Buy Form Submissions
                     </button>
                     <button
                       onClick={() => {

@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { Upload } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Upload, Loader2 } from "lucide-react";
+import { formApi } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const marcellusStyle = {
   fontFamily: "Marcellus, serif",
@@ -41,6 +43,45 @@ export default function SellDiamondsForm() {
   });
 
   const [dragActive, setDragActive] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const router = useRouter();
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = () => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("authToken");
+        const user = localStorage.getItem("user");
+        setIsLoggedIn(!!(token && user));
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("storage", handleAuthChange);
+      window.addEventListener("user-logged-in", handleAuthChange);
+      window.addEventListener("user-logged-out", handleAuthChange);
+
+      return () => {
+        window.removeEventListener("storage", handleAuthChange);
+        window.removeEventListener("user-logged-in", handleAuthChange);
+        window.removeEventListener("user-logged-out", handleAuthChange);
+      };
+    }
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -92,10 +133,114 @@ export default function SellDiamondsForm() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Form submitted successfully!");
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: "" });
+
+    try {
+      // Validate required fields
+      if (!formData.fullName.trim()) {
+        setSubmitStatus({ type: "error", message: "Full Name is required" });
+        setIsSubmitting(false);
+        return;
+      }
+      if (!formData.email.trim()) {
+        setSubmitStatus({ type: "error", message: "Email is required" });
+        setIsSubmitting(false);
+        return;
+      }
+      if (!formData.phone.trim()) {
+        setSubmitStatus({ type: "error", message: "Phone Number is required" });
+        setIsSubmitting(false);
+        return;
+      }
+      if (!formData.fullAddress.trim()) {
+        setSubmitStatus({ type: "error", message: "Full Address is required" });
+        setIsSubmitting(false);
+        return;
+      }
+      if (!formData.description.trim()) {
+        setSubmitStatus({ type: "error", message: "Description is required" });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Create FormData object for multipart/form-data
+      const submitData = new FormData();
+      
+      // Append required fields
+      submitData.append("name", formData.fullName.trim());
+      submitData.append("email", formData.email.trim());
+      submitData.append("phoneNumber", formData.phone.trim());
+      submitData.append("countryCode", "+1"); // You can make this dynamic if needed
+      submitData.append("address", formData.fullAddress.trim());
+      submitData.append("material", formData.material.trim() || "Not specified");
+      submitData.append("description", formData.description.trim());
+      
+      // Append optional fields only if they have values
+      if (formData.carat && formData.carat.trim()) {
+        submitData.append("carat", formData.carat.trim());
+      }
+      if (formData.condition) {
+        submitData.append("condition", formData.condition);
+      }
+      if (formData.pickupDate) {
+        submitData.append("pickupDate", formData.pickupDate);
+      }
+      if (formData.pickupTime) {
+        submitData.append("pickupTime", formData.pickupTime);
+      }
+      
+      // Append images
+      formData.images.forEach((image) => {
+        submitData.append("images", image);
+      });
+
+      // Submit to API
+      const response = await formApi.submitSellDiamond(submitData);
+
+      if (response.success) {
+        setSubmitStatus({
+          type: "success",
+          message: "Form submitted successfully! We will contact you soon.",
+        });
+        
+        // Reset form after successful submission
+        setFormData({
+          fullName: "",
+          email: "",
+          phone: "",
+          carat: "",
+          condition: "",
+          material: "",
+          description: "",
+          fullAddress: "",
+          pickupDate: "",
+          pickupTime: "",
+          images: [],
+        });
+        
+        // Clear file input
+        const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = "";
+        }
+      } else {
+        setSubmitStatus({
+          type: "error",
+          message: response.message || response.error || "Failed to submit form. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setSubmitStatus({
+        type: "error",
+        message: error instanceof Error ? error.message : "An error occurred while submitting the form. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -115,7 +260,43 @@ export default function SellDiamondsForm() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
+        {isCheckingAuth ? (
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="w-8 h-8 text-[#D4A017] animate-spin" />
+            <span className="ml-3 text-gray-600">Loading...</span>
+          </div>
+        ) : !isLoggedIn ? (
+          <div className="text-center py-12">
+            <div className="mb-6">
+              <svg
+                className="mx-auto h-12 w-12 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Login Required
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Please login to submit your diamond selling request.
+            </p>
+            <button
+              onClick={() => router.push("/login")}
+              className="bg-[#D4A017] hover:bg-[#B58900] text-white font-semibold py-3 px-8 rounded-none transition duration-200 cursor-pointer"
+            >
+              Go to Login
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
           {/* Full Name */}
           <div>
             <label
@@ -234,13 +415,13 @@ export default function SellDiamondsForm() {
             </select>
           </div>
 
-          {/* Material (optional) */}
+          {/* Material */}
           <div>
             <label
               htmlFor="material"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Material (optional)
+              Material <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -248,7 +429,8 @@ export default function SellDiamondsForm() {
               name="material"
               value={formData.material}
               onChange={handleInputChange}
-              placeholder="Material (optional)"
+              placeholder="Material (e.g., Gold, Silver, Platinum)"
+              required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
               style={{ colorScheme: "light" }}
             />
@@ -410,14 +592,36 @@ export default function SellDiamondsForm() {
             </div>
           </div>
 
+          {/* Status Message */}
+          {submitStatus.type && (
+            <div
+              className={`p-4 rounded-none border ${
+                submitStatus.type === "success"
+                  ? "bg-green-50 border-green-500 text-green-800"
+                  : "bg-red-50 border-red-500 text-red-800"
+              }`}
+            >
+              <p className="text-sm font-medium">{submitStatus.message}</p>
+            </div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#D4A017] hover:bg-[#B58900] text-white cursor-pointer font-semibold py-3 px-6 rounded-none transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+            disabled={isSubmitting}
+            className="w-full bg-[#D4A017] hover:bg-[#B58900] text-white cursor-pointer font-semibold py-3 px-6 rounded-none transition duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
           >
-            Submit
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
+        )}
       </div>
     </div>
   );
