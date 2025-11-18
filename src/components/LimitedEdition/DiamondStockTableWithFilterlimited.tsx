@@ -3,11 +3,12 @@ import React, { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 
 import { DiamondData } from "@/types/Diamondtable";
+import type { LimitedEditionDiamond } from "@/lib/api";
 import DiamondComparisonPage from "../DiamondComparisonPage";
-import ColorFilter from "./colorfilterLimited";
+import ColorFilterLimited from "./colorfilterLimited";
 
 import ShapeFilter from "./shapefilteLimited";
-import CaratFilter from "./CaratFilterLimited";
+import { CaratFilterLimited } from "./CaratFilterLimited";
 import ClarityFilter from "./ClarityFilterLimited";
 import FluorFilter from "./FluorescenceFilterLimited";
 import DiamondStockTable from "./DiamondStockTableLimited";
@@ -15,8 +16,9 @@ import SpecialClarityFilter from "./Specialdiamond";
 import LimitedEditionPage from "./limitedEditionproduct";
 
 export default function DiamondStockTableWithFilter() {
-    // Limited Edition Diamonds state and fetch logic lifted here
-    const [limitedEditionDiamonds, setLimitedEditionDiamonds] = useState<any[]>([]);
+  const [isLimitedOpen, setIsLimitedOpen] = useState(false);
+  // Limited Edition Diamonds state and fetch logic lifted here
+  const [limitedEditionDiamonds, setLimitedEditionDiamonds] = useState<LimitedEditionDiamond[]>([]);
     const [limitedEditionLoading, setLimitedEditionLoading] = useState(false);
     const [limitedEditionError, setLimitedEditionError] = useState("");
     const [limitedEditionHasLoadedOnce, setLimitedEditionHasLoadedOnce] = useState(false);
@@ -33,7 +35,7 @@ export default function DiamondStockTableWithFilter() {
         } else {
           setLimitedEditionError("Failed to fetch limited edition diamonds");
         }
-      } catch (err) {
+      } catch {
         setLimitedEditionError("Unable to load limited edition diamonds");
       } finally {
         setLimitedEditionLoading(false);
@@ -48,8 +50,7 @@ export default function DiamondStockTableWithFilter() {
   const [selectedSymmetry, setSelectedSymmetry] = useState("");
   const [selectedLabs, setSelectedLabs] = useState<string[]>([]);
   const [selectedFluor, setSelectedFluor] = useState<string[]>([]);
-  const [selectedMinCarat, setSelectedMinCarat] = useState("");
-  const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
+  const [selectedCaratRanges, setSelectedCaratRanges] = useState<{ min: string; max: string }[]>([]);
   const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
   const [showComparison, setShowComparison] = useState(false);
 
@@ -90,9 +91,8 @@ export default function DiamondStockTableWithFilter() {
     setSearchTerm("");
   };
 
-  const handleCaratChange = (min: string, max: string) => {
-    setSelectedMinCarat(min);
-    setSelectedMaxCarat(max);
+  const handleCaratChange = (ranges: { min: string; max: string }[]) => {
+    setSelectedCaratRanges(ranges);
   };
 
   const handleSelectionChange = (
@@ -142,11 +142,12 @@ export default function DiamondStockTableWithFilter() {
       if (selectedFluor.length > 0) {
         filters.FLOUR = selectedFluor.join(",");
       }
-      if (selectedMinCarat) {
-        filters.CARATS_MIN = selectedMinCarat;
-      }
-      if (selectedMaxCarat) {
-        filters.CARATS_MAX = selectedMaxCarat;
+      // If any carat ranges are selected, use the min of the lowest and max of the highest for filtering
+      if (selectedCaratRanges.length > 0) {
+        const minVals = selectedCaratRanges.map(r => parseFloat(r.min)).filter(v => !isNaN(v));
+        const maxVals = selectedCaratRanges.map(r => parseFloat(r.max)).filter(v => !isNaN(v));
+        if (minVals.length > 0) filters.CARATS_MIN = Math.min(...minVals).toString();
+        if (maxVals.length > 0) filters.CARATS_MAX = Math.max(...maxVals).toString();
       }
 
       console.log("Saving filters:", filters);
@@ -168,6 +169,13 @@ export default function DiamondStockTableWithFilter() {
     }
   };
 
+  const handleLimitedToggle = () => {
+    if (!isLimitedOpen && !limitedEditionHasLoadedOnce) {
+      fetchLimitedEditionDiamonds();
+    }
+    setIsLimitedOpen((prev) => !prev);
+  };
+
   return (
     <div className="w-full bg-[#F5F7FA] mt-30">
       {/* TOP ROW: Shapes, Carat, Clarity + Fluor/Color stack */}
@@ -176,9 +184,8 @@ export default function DiamondStockTableWithFilter() {
           selectedShape={selectedShape}
           onShapeChange={handleShapeChange}
         />
-        <CaratFilter
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
+        <CaratFilterLimited
+          selectedCaratRanges={selectedCaratRanges}
           onCaratChange={handleCaratChange}
         />
         <div className="flex flex-col">
@@ -202,10 +209,12 @@ export default function DiamondStockTableWithFilter() {
             selectedClarity={selectedClarity}
             onClarityChange={handleClarityChange}
           />
-          <ColorFilter
+          <ColorFilterLimited
             selectedColor={selectedColor}
             onColorChange={handleColorChange}
             onSaveParameters={handleSaveParameters}
+            isLimitedOpen={isLimitedOpen}
+            onLimitedToggle={handleLimitedToggle}
           />
         </div>
       </div>
@@ -217,6 +226,8 @@ export default function DiamondStockTableWithFilter() {
         error={limitedEditionError}
         hasLoadedOnce={limitedEditionHasLoadedOnce}
         refreshLimitedEditionDiamonds={fetchLimitedEditionDiamonds}
+        isOpen={isLimitedOpen}
+        onToggle={handleLimitedToggle}
       />
       
       {/* Table View - With padding */}
@@ -225,8 +236,7 @@ export default function DiamondStockTableWithFilter() {
           searchTerm={searchTerm}
           selectedShape={selectedShape}
           selectedColor={selectedColor}
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
+          selectedCaratRanges={selectedCaratRanges}
           selectedFluor={selectedFluor}
           selectedClarity={selectedClarity}
           selectedCut={selectedCut}

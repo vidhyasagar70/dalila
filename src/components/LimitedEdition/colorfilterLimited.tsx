@@ -27,11 +27,18 @@ interface ColorFilterProps {
   onSaveParameters?: () => void;
 }
 
+interface ColorFilterLimitedProps extends ColorFilterProps {
+  isLimitedOpen: boolean;
+  onLimitedToggle: () => void;
+}
+
 export default function ColorFilterLimited({
   selectedColor,
   onColorChange,
   onSaveParameters,
-}: ColorFilterProps) {
+  isLimitedOpen,
+  onLimitedToggle,
+}: ColorFilterLimitedProps) {
   const handleColorClick = (color: string) => {
     const currentColors = Array.isArray(selectedColor) ? selectedColor : [];
 
@@ -97,20 +104,34 @@ export default function ColorFilterLimited({
           </button>
         ))}
       </div>
-      {/* Save Parameters Button */}
-      <button
-        onClick={onSaveParameters}
-        className={`${mavenPro.className} w-full flex  cursor-pointer items-center justify-center gap-2 px-3 py-2 text-white font-normal transition-colors hover:opacity-90`}
-        style={{
-          backgroundColor: "#000033",
-          border: "0.25px solid #f9e8cd",
-          borderTop: "none",
-          fontSize: "14px",
-        }}
-      >
-        <Save size={16} strokeWidth={2} />
-        <span>Save Parameters</span>
-      </button>
+      {/* Save Parameters Button and Limited Button Side by Side */}
+      <div className="flex gap-2 mt-2">
+        <button
+          onClick={onLimitedToggle}
+          className="bg-[#181847] px-2 py-2 shadow-md hover:bg-[#252564] transition-all duration-300 inline-flex items-center gap-1 rounded-none"
+          style={{ minWidth: 'auto', width: 'auto', height: '40px' }}
+        >
+          <span className={`${mavenPro.className} font-medium text-white text-sm`}>Limited</span>
+          {isLimitedOpen ? (
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+          ) : (
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          )}
+        </button>
+        <button
+          onClick={onSaveParameters}
+          className={`${mavenPro.className} flex-1 flex cursor-pointer items-center justify-center gap-2 px-3 py-2 text-white font-normal transition-colors hover:opacity-90`}
+          style={{
+            backgroundColor: "#000033",
+            border: "0.25px solid #f9e8cd",
+            borderTop: "none",
+            fontSize: "14px",
+          }}
+        >
+          <Save size={16} strokeWidth={2} />
+          <span>Save Parameters</span>
+        </button>
+      </div>
     </div>
   );
 }

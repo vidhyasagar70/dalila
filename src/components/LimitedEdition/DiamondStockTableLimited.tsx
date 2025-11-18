@@ -23,14 +23,19 @@ const mavenPro = Maven_Pro({
   display: "swap",
 });
 
-const DiamondStockTable: React.FC<TableProps> = ({
+interface CaratRangeValue { min: string; max: string; }
+
+interface LimitedTableProps extends Omit<TableProps, 'selectedMinCarat' | 'selectedMaxCarat'> {
+  selectedCaratRanges?: CaratRangeValue[];
+}
+
+const DiamondStockTable: React.FC<LimitedTableProps> = ({
   pageSize = 20,
   onRowClick,
   searchTerm = "",
   selectedShape = [],
   selectedColor = [],
-  selectedMinCarat = "",
-  selectedMaxCarat = "",
+  selectedCaratRanges = [],
   selectedFluor = [],
   selectedClarity = [],
   selectedCut = "",
@@ -65,9 +70,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
         Array.isArray(selectedShape) && selectedShape.length > 0;
       const hasColorFilter =
         Array.isArray(selectedColor) && selectedColor.length > 0;
-      const hasCaratFilter =
-        (selectedMinCarat && selectedMinCarat.trim()) ||
-        (selectedMaxCarat && selectedMaxCarat.trim());
+      const hasCaratFilter = Array.isArray(selectedCaratRanges) && selectedCaratRanges.length > 0;
       const hasFluorFilter =
         Array.isArray(selectedFluor) && selectedFluor.length > 0;
       const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
@@ -102,12 +105,11 @@ const DiamondStockTable: React.FC<TableProps> = ({
             filters.color = selectedColor.join(",");
           }
           if (hasCaratFilter) {
-            if (selectedMinCarat && selectedMinCarat.trim()) {
-              filters.minCarats = parseFloat(selectedMinCarat);
-            }
-            if (selectedMaxCarat && selectedMaxCarat.trim()) {
-              filters.maxCarats = parseFloat(selectedMaxCarat);
-            }
+            // Use min of all mins and max of all maxes for API filter
+            const minVals = selectedCaratRanges.map(r => parseFloat(r.min)).filter(v => !isNaN(v));
+            const maxVals = selectedCaratRanges.map(r => parseFloat(r.max)).filter(v => !isNaN(v));
+            if (minVals.length > 0) filters.minCarats = Math.min(...minVals);
+            if (maxVals.length > 0) filters.maxCarats = Math.max(...maxVals);
           }
           if (hasFluorFilter) {
             filters.fluorescence = selectedFluor.join(",");
@@ -166,8 +168,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
     searchTerm,
     selectedShape,
     selectedColor,
-    selectedMinCarat,
-    selectedMaxCarat,
+    selectedCaratRanges,
     selectedFluor,
     selectedClarity,
     selectedCut,
@@ -315,11 +316,10 @@ const DiamondStockTable: React.FC<TableProps> = ({
           <p className="text-gray-600 text-lg mb-3">
             {searchTerm ||
             (Array.isArray(selectedShape) && selectedShape.length > 0) ||
-            selectedColor ||
-            selectedClarity.length > 0 ||
-            selectedFluor ||
-            selectedMinCarat ||
-            selectedMaxCarat
+            (Array.isArray(selectedColor) && selectedColor.length > 0) ||
+            (Array.isArray(selectedClarity) && selectedClarity.length > 0) ||
+            (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
+            (Array.isArray(selectedCaratRanges) && selectedCaratRanges.length > 0)
               ? `No diamonds found matching your filters`
               : "No diamonds found"}
           </p>

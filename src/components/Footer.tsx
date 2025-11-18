@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronUp, Facebook, Instagram, Twitter, Youtube, ChevronDown } from "lucide-react";
+import { ChevronUp,  ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";

@@ -92,7 +92,7 @@ export default function DiamondSourceshowcase() {
               <p
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
-               Our experts access an exclusive worldwide network to locate diamonds tailored to your exact specifications  including rare inventory unavailable on public platforms. This ensures you receive options beyond the ordinary
+               Our experts access an exclusive worldwide network to locate diamonds tailored to your exact specifications  including rare inventory unavailable on public platforms. This ensures you receive options beyond the ordinary.
               </p>
             </div>
           </div>

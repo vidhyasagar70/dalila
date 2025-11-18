@@ -4,6 +4,22 @@ import React, { useEffect, useState } from "react";
 import { queryApi, Diamond } from "@/lib/api";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
+import { Playfair_Display, Jost } from "next/font/google";
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
+});
 
 interface Query {
   id: string;
