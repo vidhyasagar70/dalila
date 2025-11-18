@@ -241,7 +241,12 @@ export default function EmailButton({
                   {selectedStoneNumbers.slice(0, 10).map((stone, idx) => (
                     <span
                       key={idx}
-                      className="text-xs bg-white px-2 py-1 rounded border border-gray-200"
+                      className="text-xs bg-neutral-200 text-gray-900 px-2 py-1 rounded border border-gray-300 shadow-sm"
+                      style={{
+                        // fallback for older browsers or custom themes
+                        backgroundColor: '#e5e7eb', // Tailwind's gray-200
+                        color: '#111827', // Tailwind's gray-900
+                      }}
                     >
                       {stone}
                     </span>

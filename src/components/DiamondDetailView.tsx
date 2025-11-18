@@ -12,6 +12,21 @@ import type { DiamondData } from "@/types/Diamondtable";
 import { cartApi, holdApi, queryApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 import toast from "react-hot-toast";
+import { Marcellus, Jost } from "next/font/google";
+
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
+});
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -68,9 +83,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     }
   }, []);
 
-  // Use actual certificate and video URLs from backend - no dummy data
-  // const certificateUrl =
-  //   (diamond as DiamondData & { CERTI_PDF?: string }).CERTI_PDF || "";
   const videoUrl = (diamond as DiamondData & { MP4?: string }).MP4 || "";
   const videoThumbnail = diamond.REAL_IMAGE || "";
 
@@ -149,13 +161,11 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             `${diamond.STONE_NO} added to hold successfully!`,
         );
       } else {
-        // Backend returned success: false with a message
         toast.error(response?.message || "Failed to add to hold");
       }
     } catch (error: unknown) {
       console.error("Error adding to hold:", error);
 
-      // Extract message from error response
       let errorMessage = "Failed to add to hold. Please try again.";
 
       if (error && typeof error === "object" && "response" in error) {
@@ -174,7 +184,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         if (err.response?.status === 401) {
           errorMessage = "Please log in to add items to hold.";
         } else if (err.response?.data?.message) {
-          // Use the message from backend
           errorMessage = err.response.data.message;
         } else if (err.response?.data?.error) {
           errorMessage = err.response.data.error;
@@ -243,13 +252,13 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
     value: string;
     description: string;
   }) => (
-    <div className="space-y-0.5">
+    <div className="space-y-1">
       <div className="flex items-center gap-1 text-gray-600">
-        <span className="text-[10px] font-medium">{label}</span>
+        <span className={`text-sm font-medium ${marcellus.className}`}>{label}</span>
       </div>
-      <p className="text-sm font-semibold text-gray-900">{value}</p>
+      <p className={`text-lg font-semibold text-gray-900 ${marcellus.className}`}>{value}</p>
       {description && (
-        <p className="text-[10px] text-gray-500">{description}</p>
+        <p className={`text-xs text-gray-500 ${marcellus.className}`}>{description}</p>
       )}
     </div>
   );
@@ -289,7 +298,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
   return (
     <div
-      className={`fixed left-0 right-0 bottom-0 top-[88px] w-full flex items-center justify-center z-40 bg-black/50 ${mavenPro.variable}`}
+      className={`fixed left-0 right-0 bottom-0 top-[88px] w-full flex items-center justify-center z-40 bg-black/50 ${mavenPro.variable} ${marcellus.variable} ${jost.variable}`}
       onClick={onClose}
     >
       <div
@@ -314,7 +323,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
         <div className="p-6 pb-20">
           {/* Top Section: Certificate, Image, and Info */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-          {/* LEFT - Video only (same height as center image) */}
+            {/* LEFT - Video only (same height as center image) */}
             <div className="lg:col-span-4">
               {/* Video Section (450px height) */}
               {videoUrl ? (
@@ -370,13 +379,6 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             {/* CENTER - Main Image (match video size) */}
             <div className="lg:col-span-4 space-y-4">
               <div className="relative overflow-hidden h-[592px] bg-gray-50">
-                {/* Action Icons */}
-                {/* <div className="absolute top-4 right-4 flex gap-2 z-10">
-                  <button className="w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
-                    <Download size={18} className="text-gray-700" />
-                  </button>
-                </div> */}
-
                 {/* Main Display Image */}
                 {selectedImage ? (
                   <div className="relative w-full h-full flex items-center justify-center">
@@ -430,7 +432,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 {/* Basic Information */}
                 <div className="bg-gray-50 p-4 rounded-none flex-1 flex flex-col">
                   <div className="border-b border-[#e9e2c6] pb-2 mb-2">
-                    <h3 className="text-base font-bold text-gray-900">
+                    <h3 className={`text-3xl md:text-4xl font-medium text-slate-900 mb-2 ${marcellus.className}`}>
                       Basic Information
                     </h3>
                   </div>

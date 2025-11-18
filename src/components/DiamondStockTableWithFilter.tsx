@@ -46,6 +46,7 @@ export default function DiamondStockTableWithFilter() {
   const [selectedMinCarat, setSelectedMinCarat] = useState("");
   const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
   const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
+  const [compareDiamonds, setCompareDiamonds] = useState<DiamondData[]>([]);
   const [showComparison, setShowComparison] = useState(false);
   const [clearSelectionTrigger, setClearSelectionTrigger] = useState(0);
 
@@ -149,10 +150,12 @@ export default function DiamondStockTableWithFilter() {
 
   const handleCompare = () => {
     if (selectedDiamonds.length > 0) {
+      // store the diamonds to be compared so modal gets the data
+      setCompareDiamonds(selectedDiamonds);
       setShowComparison(true);
       // Clear selections after opening comparison
       setSelectedDiamonds([]);
-      setClearSelectionTrigger(prev => prev + 1);
+      setClearSelectionTrigger((prev) => prev + 1);
     }
   };
 
@@ -429,8 +432,11 @@ export default function DiamondStockTableWithFilter() {
       {/* Comparison Modal */}
       {showComparison && (
         <DiamondComparisonPage
-          diamonds={selectedDiamonds}
-          onClose={() => setShowComparison(false)}
+          diamonds={compareDiamonds}
+          onClose={() => {
+            setShowComparison(false);
+            setCompareDiamonds([]);
+          }}
         />
       )}
     </div>
