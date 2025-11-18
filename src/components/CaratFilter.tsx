@@ -10,10 +10,10 @@ const mavenPro = Maven_Pro({
   display: "swap",
 });
 
+
 interface CaratFilterProps {
-  selectedMinCarat: string;
-  selectedMaxCarat: string;
-  onCaratChange: (min: string, max: string) => void;
+  selectedCaratRanges: { min: string; max: string }[];
+  onCaratChange: (ranges: { min: string; max: string }[]) => void;
 }
 
 interface CaratRange {
@@ -41,45 +41,60 @@ const STATIC_CARAT_RANGES: CaratRange[] = [
   { label: "5.00 - 99.99", value: "5.00-99.99", min: 5.0, max: 99.99 },
 ];
 
+
 export default function CaratFilter({
-  selectedMinCarat,
-  selectedMaxCarat,
+  selectedCaratRanges,
   onCaratChange,
 }: CaratFilterProps) {
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
 
+  // Helper to check if a static range is selected
+  const isRangeSelected = (range: CaratRange) =>
+    selectedCaratRanges.some(
+      (r) => r.min === range.min.toString() && r.max === range.max.toString()
+    );
+
+  // Toggle static range selection
+  const handleRangeClick = (range: CaratRange) => {
+    const min = range.min.toString();
+    const max = range.max.toString();
+    const exists = selectedCaratRanges.some((r) => r.min === min && r.max === max);
+    let newRanges;
+    if (exists) {
+      newRanges = selectedCaratRanges.filter((r) => !(r.min === min && r.max === max));
+    } else {
+      newRanges = [...selectedCaratRanges, { min, max }];
+    }
+    onCaratChange(newRanges);
+  };
+
+  // Handle manual input (single custom range)
   const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Prevent negative values
     if (value && parseFloat(value) < 0) return;
     setFromValue(value);
-    if (value && toValue) onCaratChange(value, toValue);
-    else if (!value && !toValue) onCaratChange("", "");
+    if (value && toValue) {
+      onCaratChange([
+        ...selectedCaratRanges.filter((r) => r.min !== fromValue || r.max !== toValue),
+        { min: value, max: toValue },
+      ]);
+    } else if (!value && !toValue) {
+      onCaratChange(selectedCaratRanges.filter((r) => r.min !== fromValue || r.max !== toValue));
+    }
   };
 
   const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Prevent negative values
     if (value && parseFloat(value) < 0) return;
     setToValue(value);
-    if (fromValue && value) onCaratChange(fromValue, value);
-    else if (!fromValue && !value) onCaratChange("", "");
-  };
-
-  const handleRangeClick = (range: CaratRange) => {
-    const isSelected =
-      selectedMinCarat === range.min.toString() &&
-      selectedMaxCarat === range.max.toString();
-
-    if (isSelected) {
-      setFromValue("");
-      setToValue("");
-      onCaratChange("", "");
-    } else {
-      setFromValue(range.min.toString());
-      setToValue(range.max.toString());
-      onCaratChange(range.min.toString(), range.max.toString());
+    if (fromValue && value) {
+      onCaratChange([
+        ...selectedCaratRanges.filter((r) => r.min !== fromValue || r.max !== value),
+        { min: fromValue, max: value },
+      ]);
+    } else if (!fromValue && !value) {
+      onCaratChange(selectedCaratRanges.filter((r) => r.min !== fromValue || r.max !== value));
     }
   };
 
@@ -140,10 +155,7 @@ export default function CaratFilter({
         {/* Range Buttons */}
         <div className="grid grid-cols-3 gap-1">
           {STATIC_CARAT_RANGES.map((range) => {
-            const isSelected =
-              selectedMinCarat === range.min.toString() &&
-              selectedMaxCarat === range.max.toString();
-
+            const isSelected = isRangeSelected(range);
             return (
               <button
                 key={range.value}

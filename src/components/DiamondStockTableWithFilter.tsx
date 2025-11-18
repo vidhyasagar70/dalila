@@ -43,8 +43,7 @@ export default function DiamondStockTableWithFilter() {
   const [selectedPolish, setSelectedPolish] = useState("");
   const [selectedSymmetry, setSelectedSymmetry] = useState("");
   const [selectedFluor, setSelectedFluor] = useState<string[]>([]);
-  const [selectedMinCarat, setSelectedMinCarat] = useState("");
-  const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
+  const [selectedCaratRanges, setSelectedCaratRanges] = useState<{ min: string; max: string }[]>([]);
   const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
   const [compareDiamonds, setCompareDiamonds] = useState<DiamondData[]>([]);
   const [showComparison, setShowComparison] = useState(false);
@@ -136,9 +135,8 @@ export default function DiamondStockTableWithFilter() {
     setSearchTerm("");
   };
 
-  const handleCaratChange = (min: string, max: string) => {
-    setSelectedMinCarat(min);
-    setSelectedMaxCarat(max);
+  const handleCaratChange = (ranges: { min: string; max: string }[]) => {
+    setSelectedCaratRanges(ranges);
   };
 
   const handleSelectionChange = (
@@ -190,8 +188,7 @@ export default function DiamondStockTableWithFilter() {
     setSelectedPolish("");
     setSelectedSymmetry("");
     setSelectedFluor([]);
-    setSelectedMinCarat("");
-    setSelectedMaxCarat("");
+    setSelectedCaratRanges([]);
     setKeySymbolFilters({
       keyToSymbol: [],
       eyCln: [],
@@ -240,8 +237,7 @@ export default function DiamondStockTableWithFilter() {
           onShapeChange={handleShapeChange}
         />
         <CaratFilter
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
+          selectedCaratRanges={selectedCaratRanges}
           onCaratChange={handleCaratChange}
         />
         <ClarityFilter
@@ -396,8 +392,8 @@ export default function DiamondStockTableWithFilter() {
           searchTerm={searchTerm}
           selectedShape={selectedShape}
           selectedColor={selectedColor}
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
+          selectedMinCarat={selectedCaratRanges.length === 1 ? selectedCaratRanges[0].min : ""}
+          selectedMaxCarat={selectedCaratRanges.length === 1 ? selectedCaratRanges[0].max : ""}
           selectedFluor={selectedFluor}
           selectedClarity={selectedClarity}
           selectedCut={selectedCut}
@@ -417,8 +413,8 @@ export default function DiamondStockTableWithFilter() {
           searchTerm={searchTerm}
           selectedShape={selectedShape}
           selectedColor={selectedColor}
-          selectedMinCarat={selectedMinCarat}
-          selectedMaxCarat={selectedMaxCarat}
+          selectedMinCarat={selectedCaratRanges.length === 1 ? selectedCaratRanges[0].min : ""}
+          selectedMaxCarat={selectedCaratRanges.length === 1 ? selectedCaratRanges[0].max : ""}
           selectedFluor={selectedFluor}
           selectedClarity={selectedClarity}
           selectedCut={selectedCut}
