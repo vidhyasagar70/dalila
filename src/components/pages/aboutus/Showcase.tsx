@@ -67,7 +67,7 @@ export default function Aboutshowcase() {
                  hard work and a commitment to ethical practices, 
                  they laid a strong foundation in Surat and Mumbai.
                  As the second generation joined the business,
-                the vision expanded beyond India's borders,
+                the vision expanded beyond India&apos;s borders,
                 forging lasting partnerships and establishing a global presence.Today, this forward-looking spirit grounded in deeply held family values continues to guide us, 
                 earning DALILA its reputation as a trusted name in the international diamond industry.
               </p>

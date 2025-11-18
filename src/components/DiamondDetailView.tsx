@@ -3,7 +3,6 @@ import Image from "next/image";
 import {
   ArrowLeft,
   Loader2,
-  Download,
   Play,
   X,
   Clock,
@@ -70,8 +69,8 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   }, []);
 
   // Use actual certificate and video URLs from backend - no dummy data
-  const certificateUrl =
-    (diamond as DiamondData & { CERTI_PDF?: string }).CERTI_PDF || "";
+  // const certificateUrl =
+  //   (diamond as DiamondData & { CERTI_PDF?: string }).CERTI_PDF || "";
   const videoUrl = (diamond as DiamondData & { MP4?: string }).MP4 || "";
   const videoThumbnail = diamond.REAL_IMAGE || "";
 

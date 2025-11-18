@@ -166,7 +166,7 @@ export default function Header() {
         window.removeEventListener("user-logged-out", handleAuthEvent);
       };
     }
-  }, [pathname]);
+  }, [pathname, router]);
 
   useEffect(() => {
     const handleScroll = () => {
