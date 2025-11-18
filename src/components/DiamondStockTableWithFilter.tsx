@@ -275,7 +275,7 @@ export default function DiamondStockTableWithFilter() {
         <div className="flex items-center gap-1 bg-[#faf6eb] rounded-none p-0.5">
           <button
             onClick={() => setViewMode("list")}
-            className={`p-2 rounded transition-colors ${
+            className={`p-2 rounded cursor-pointer transition-colors ${
               viewMode === "list"
                 ? "bg-[#000033] text-white"
                 : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
@@ -286,7 +286,7 @@ export default function DiamondStockTableWithFilter() {
           </button>
           <button
             onClick={() => setViewMode("grid")}
-            className={`p-2 rounded transition-colors ${
+            className={`p-2 rounded cursor-pointer transition-colors ${
               viewMode === "grid"
                 ? "bg-[#000033] text-white"
                 : "bg-[#faf6eb] text-gray-600 hover:bg-gray-200"
@@ -337,7 +337,7 @@ export default function DiamondStockTableWithFilter() {
               height={16}
               className="w-4 h-4"
             />
-            <span className="text-sm font-medium">Advanced Filters</span>
+            <span className="text-sm font-medium cursor-pointer">Advanced Filters</span>
             {showFilters ? (
               <ChevronUp className="w-4 h-4" />
             ) : (
@@ -347,7 +347,7 @@ export default function DiamondStockTableWithFilter() {
 
           <button
             onClick={handleResetFilters}
-            className="flex items-center gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded-none hover:bg-[#000055] whitespace-nowrap"
+            className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-[#000033] text-white transition-colors shadow-sm rounded-none hover:bg-[#000055] whitespace-nowrap"
             title="Reset All Filters"
           >
             <Image

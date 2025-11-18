@@ -101,7 +101,7 @@ const HoldButton: React.FC<HoldButtonProps> = ({
       });
 
       if (authErrors.length > 0) {
-        console.error("⚠️ Authentication errors detected");
+        console.error(" Authentication errors detected");
         toast.error("Session expired. Please login again.", {
           duration: 4000,
         });
@@ -156,7 +156,7 @@ const HoldButton: React.FC<HoldButtonProps> = ({
         });
       }
     } catch (error) {
-      console.error("❌ Error adding to hold:", error);
+      console.error(" Error adding to hold:", error);
 
       // Enhanced error handling
       if (error && typeof error === "object" && "response" in error) {
@@ -221,7 +221,7 @@ const HoldButton: React.FC<HoldButtonProps> = ({
     <button
       onClick={handleAddToHold}
       disabled={selectedCount === 0 || isAdding}
-      className={`flex items-center justify-center gap-2 px-3 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors w-[100px] ${
+      className={`flex items-center justify-center cursor-pointer gap-2 px-3 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors w-[100px] ${
         selectedCount === 0 || isAdding
           ? "bg-gray-400 cursor-not-allowed"
           : "bg-[#000033] hover:bg-[#000055]"

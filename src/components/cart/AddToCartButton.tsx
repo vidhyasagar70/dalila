@@ -229,7 +229,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     <button
       onClick={handleAddToCart}
       disabled={selectedCount === 0 || isAdding}
-      className={`flex items-center justify-center gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors w-[140px] ${
+      className={`flex items-center justify-center cursor-pointer gap-2 px-4 py-2 text-white text-sm font-medium rounded-none shadow-sm transition-colors w-[140px] ${
         selectedCount === 0 || isAdding
           ? "bg-gray-400 cursor-not-allowed"
           : "bg-[#000033] hover:bg-[#000055]"

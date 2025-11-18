@@ -100,7 +100,7 @@ export default function ColorFilterLimited({
       {/* Save Parameters Button */}
       <button
         onClick={onSaveParameters}
-        className={`${mavenPro.className} w-full flex items-center justify-center gap-2 px-3 py-2 text-white font-normal transition-colors hover:opacity-90`}
+        className={`${mavenPro.className} w-full flex  cursor-pointer items-center justify-center gap-2 px-3 py-2 text-white font-normal transition-colors hover:opacity-90`}
         style={{
           backgroundColor: "#000033",
           border: "0.25px solid #f9e8cd",

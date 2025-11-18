@@ -583,7 +583,7 @@ export default function MembersManagement() {
                               <button
                                 onClick={() => handleApprove(userId)}
                                 disabled={actionLoading === userId}
-                                className="text-emerald-600 hover:text-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="text-emerald-600 cursor-pointer hover:text-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Approve"
                               >
                                 {actionLoading === userId ? (
@@ -595,7 +595,7 @@ export default function MembersManagement() {
                               <button
                                 onClick={() => handleReject(userId)}
                                 disabled={actionLoading === userId}
-                                className="text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="text-red-600  cursor-pointer hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Reject"
                               >
                                 <X className="w-4 h-4" />

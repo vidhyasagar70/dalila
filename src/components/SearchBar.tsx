@@ -61,7 +61,7 @@ export default function SearchBar({
         <button
           onClick={handleSearch}
           disabled={isSearching}
-          className="px-5 py-1.5 bg-[#000033] text-white text-sm font-medium hover:bg-[#000044] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-5 py-1.5 bg-[#000033] cursor-pointer text-white text-sm font-medium hover:bg-[#000044] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSearching ? "Searching..." : "Search"}
         </button>

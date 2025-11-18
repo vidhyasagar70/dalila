@@ -769,7 +769,7 @@ export default function CustomerManagementPage() {
                   <div className="flex justify-end pr-2">
                     <button
                       onClick={() => toggleRow(row.id)}
-                      className="inline-flex items-center gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-md"
+                      className="inline-flex items-center cursor-pointer gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-md"
                     >
                       View{" "}
                       {expanded[row.id] ? (
@@ -991,7 +991,7 @@ export default function CustomerManagementPage() {
                                             disabled={
                                               processingHoldId === itemId
                                             }
-                                            className="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="px-3 py-1 bg-green-600  cursor-pointer text-white text-xs rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                           >
                                             {processingHoldId === itemId
                                               ? "..."
@@ -1004,7 +1004,7 @@ export default function CustomerManagementPage() {
                                             disabled={
                                               processingHoldId === itemId
                                             }
-                                            className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="px-3 py-1 cursor-pointer bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                           >
                                             {processingHoldId === itemId
                                               ? "..."

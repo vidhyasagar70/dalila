@@ -260,7 +260,7 @@ function CreateAdminPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-3 bg-[#c89e3a] text-white rounded-lg hover:bg-[#b08830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium"
+                className="px-6 py-3 bg-[#c89e3a] cursor-pointer text-white rounded-lg hover:bg-[#b08830] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium"
               >
                 {isLoading ? (
                   <>
@@ -359,7 +359,7 @@ function CreateAdminPage() {
                         <td className="px-6 py-4 text-center">
                           <button
                             onClick={() => handleDelete(admin._id, admin.email)}
-                            className="inline-flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                            className="inline-flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                             title="Delete Admin"
                           >
                             <Trash2 size={16} />

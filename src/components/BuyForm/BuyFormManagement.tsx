@@ -184,7 +184,7 @@ export default function BuyFormManagement() {
           <button
             onClick={() => fetchSubmissions()}
             disabled={loading}
-            className={`${jost.className} flex items-center gap-2 px-4 py-2 bg-[#0b1b35] text-white rounded-md hover:bg-[#08142a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`${jost.className} flex cursor-pointer items-center gap-2 px-4 py-2 bg-[#0b1b35] text-white rounded-md hover:bg-[#08142a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
@@ -239,7 +239,7 @@ export default function BuyFormManagement() {
                 <div className="flex justify-end pr-2">
                   <button
                     onClick={() => toggleExpandEmail(group.email)}
-                    className={`${jost.className} inline-flex items-center gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-md hover:bg-gray-100 transition-colors text-xs`}
+                    className={`${jost.className} inline-flex cursor-pointer items-center gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-md hover:bg-gray-100 transition-colors text-xs`}
                   >
                     View{" "}
                     {expandedEmail === group.email ? (
@@ -304,7 +304,7 @@ export default function BuyFormManagement() {
                             </p>
                             <button
                               onClick={() => handleViewDetails(submission)}
-                              className={`${jost.className} flex items-center gap-2 px-3 py-1 bg-[#0b1b35] text-white rounded-md hover:bg-[#08142a] transition-colors text-xs`}
+                              className={`${jost.className} flex items-center cursor-pointer gap-2 px-3 py-1 bg-[#0b1b35] text-white rounded-md hover:bg-[#08142a] transition-colors text-xs`}
                             >
                               <Eye className="w-3 h-3" />
                               View Details

@@ -299,7 +299,7 @@ export default function BlogsPage() {
                   {isAdmin && (
                     <button
                       onClick={() => setShowAddModal(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#c89e3a] text-white rounded hover:bg-[#9d7400] transition-colors"
+                      className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-[#c89e3a] text-white rounded hover:bg-[#9d7400] transition-colors"
                       title="Add New Blog"
                     >
                       <Plus size={20} />
@@ -354,7 +354,7 @@ export default function BlogsPage() {
                       {isAdmin && (
                         <button
                           onClick={(e) => handleEditClick(blog, e)}
-                          className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-md hover:bg-[#c89e3a] hover:text-white transition-colors group"
+                          className="absolute top-4 cursor-pointer right-4 z-10 p-2 bg-white rounded-full shadow-md hover:bg-[#c89e3a] hover:text-white transition-colors group"
                           title="Edit Blog"
                         >
                           <Edit2
