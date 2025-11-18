@@ -157,9 +157,7 @@ export default function DiamondStockTableWithFilter() {
       if (response && response.success) {
         toast.success("Parameters saved successfully!");
         console.log("Saved filters response:", response);
-        // Refresh Limited Edition diamonds immediately
         fetchLimitedEditionDiamonds();
-        // Notify other components (e.g., Dashboard) to refresh
         window.dispatchEvent(new Event("limited-edition-updated"));
       } else {
         toast.error("Failed to save parameters");
