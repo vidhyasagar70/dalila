@@ -58,10 +58,17 @@ export default function AdminDashboard() {
     const handleCartUpdate = () => {
       fetchCartCount();
     };
-
     window.addEventListener("cart-updated", handleCartUpdate);
+
+    // Listen for limited edition updates
+    const handleLimitedEditionUpdate = () => {
+      fetchLimitedEditionDiamonds();
+    };
+    window.addEventListener("limited-edition-updated", handleLimitedEditionUpdate);
+
     return () => {
       window.removeEventListener("cart-updated", handleCartUpdate);
+      window.removeEventListener("limited-edition-updated", handleLimitedEditionUpdate);
     };
   }, []);
 

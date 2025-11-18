@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 
 import { DiamondData } from "@/types/Diamondtable";
@@ -12,8 +12,33 @@ import ClarityFilter from "./ClarityFilterLimited";
 import FluorFilter from "./FluorescenceFilterLimited";
 import DiamondStockTable from "./DiamondStockTableLimited";
 import SpecialClarityFilter from "./Specialdiamond";
+import LimitedEditionPage from "./limitedEditionproduct";
 
 export default function DiamondStockTableWithFilter() {
+    // Limited Edition Diamonds state and fetch logic lifted here
+    const [limitedEditionDiamonds, setLimitedEditionDiamonds] = useState<any[]>([]);
+    const [limitedEditionLoading, setLimitedEditionLoading] = useState(false);
+    const [limitedEditionError, setLimitedEditionError] = useState("");
+    const [limitedEditionHasLoadedOnce, setLimitedEditionHasLoadedOnce] = useState(false);
+
+    const fetchLimitedEditionDiamonds = useCallback(async () => {
+      try {
+        setLimitedEditionLoading(true);
+        setLimitedEditionError("");
+        const { diamondApi } = await import("@/lib/api");
+        const response = await diamondApi.getLimitedEdition();
+        if (response && response.success && response.data) {
+          setLimitedEditionDiamonds(response.data.diamonds);
+          setLimitedEditionHasLoadedOnce(true);
+        } else {
+          setLimitedEditionError("Failed to fetch limited edition diamonds");
+        }
+      } catch (err) {
+        setLimitedEditionError("Unable to load limited edition diamonds");
+      } finally {
+        setLimitedEditionLoading(false);
+      }
+    }, []);
   const [selectedColor, setSelectedColor] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShape, setSelectedShape] = useState<string[]>([]);
@@ -132,6 +157,10 @@ export default function DiamondStockTableWithFilter() {
       if (response && response.success) {
         toast.success("Parameters saved successfully!");
         console.log("Saved filters response:", response);
+        // Refresh Limited Edition diamonds immediately
+        fetchLimitedEditionDiamonds();
+        // Notify other components (e.g., Dashboard) to refresh
+        window.dispatchEvent(new Event("limited-edition-updated"));
       } else {
         toast.error("Failed to save parameters");
       }
@@ -142,9 +171,9 @@ export default function DiamondStockTableWithFilter() {
   };
 
   return (
-    <div className="w-full px-4 py-4 bg-[#F5F7FA] mt-30">
+    <div className="w-full bg-[#F5F7FA] mt-30">
       {/* TOP ROW: Shapes, Carat, Clarity + Fluor/Color stack */}
-      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0.5">
+      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0.5 px-4 py-4">
         <ShapeFilter
           selectedShape={selectedShape}
           onShapeChange={handleShapeChange}
@@ -183,23 +212,33 @@ export default function DiamondStockTableWithFilter() {
         </div>
       </div>
 
-     
-      {/* Table View */}
-      <DiamondStockTable
-        searchTerm={searchTerm}
-        selectedShape={selectedShape}
-        selectedColor={selectedColor}
-        selectedMinCarat={selectedMinCarat}
-        selectedMaxCarat={selectedMaxCarat}
-        selectedFluor={selectedFluor}
-        selectedClarity={selectedClarity}
-        selectedCut={selectedCut}
-        selectedPolish={selectedPolish}
-        selectedSymmetry={selectedSymmetry}
-        selectedLabs={selectedLabs}
-        onSelectionChange={handleSelectionChange}
-        pageSize={10}
+      
+      <LimitedEditionPage
+        diamonds={limitedEditionDiamonds}
+        loading={limitedEditionLoading}
+        error={limitedEditionError}
+        hasLoadedOnce={limitedEditionHasLoadedOnce}
+        refreshLimitedEditionDiamonds={fetchLimitedEditionDiamonds}
       />
+      
+      {/* Table View - With padding */}
+      <div className="px-4 py-4">
+        <DiamondStockTable
+          searchTerm={searchTerm}
+          selectedShape={selectedShape}
+          selectedColor={selectedColor}
+          selectedMinCarat={selectedMinCarat}
+          selectedMaxCarat={selectedMaxCarat}
+          selectedFluor={selectedFluor}
+          selectedClarity={selectedClarity}
+          selectedCut={selectedCut}
+          selectedPolish={selectedPolish}
+          selectedSymmetry={selectedSymmetry}
+          selectedLabs={selectedLabs}
+          onSelectionChange={handleSelectionChange}
+          pageSize={10}
+        />
+      </div>
 
       {/* Comparison Modal */}
       {showComparison && (
