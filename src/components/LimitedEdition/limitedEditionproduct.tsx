@@ -7,12 +7,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Gem,
-  ChevronDown,
-  ChevronUp,
+
 } from "lucide-react";
 
-// Mock font for demo
-const mavenPro = { className: "" };
+
 
 // Mock types
 interface LimitedEditionDiamond {
