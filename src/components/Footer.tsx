@@ -34,7 +34,7 @@ export default function Footer() {
   const serviceLinks = [
     { name: "S2S - Secure To Source", href: "/secure-to-source" },
     { name: "DS4U - Diamond Source For You", href: "/diamond-source" },
-    { name: "SUD - Sell Your Diamonds", href: "/sud" },
+    { name: "SYD - Sell Your Diamonds", href: "/sud" },
   ];
 
   
@@ -71,7 +71,7 @@ export default function Footer() {
                 <p className="font-medium text-white">Dalila Diamonds</p>
                 <p>Shreyas D. Gandhi</p>
                 <p>Hoveninersstraat 30, Box - 105</p>
-                <p>Office 326, 2018 Antwerpen</p>
+                <p>Office 326, 2018 Antwerp</p>
                 <p className="mt-3">BTW BE: 0736.671.250</p>
               </div>
             </div>

@@ -79,7 +79,7 @@ export default function SecureSourceshowcase() {
                 className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
               >
                 Our experts carry out rigorous quality checks on every stone. 
-                We verify that each diamond matches your chosen specifications and meets our exacting quality standards before it reaches you
+                We verify that each diamond matches your chosen specifications and meets our exacting quality standards before it reaches you.
               </p>
             </div>
           </div>

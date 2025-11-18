@@ -32,7 +32,7 @@ export default function DiamondSourceAdvantages() {
     },
     {
       title: "EU Shipping Available",
-      description: "FedEx fees apply for other EU countries",
+      description: "FedEx rates apply for other EU destinations",
     },
     {
       title: "Euro Payment Accepted",
