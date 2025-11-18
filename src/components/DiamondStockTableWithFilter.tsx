@@ -47,6 +47,7 @@ export default function DiamondStockTableWithFilter() {
   const [selectedMaxCarat, setSelectedMaxCarat] = useState("");
   const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [clearSelectionTrigger, setClearSelectionTrigger] = useState(0);
 
   const [measurements, setMeasurements] = useState({
     length: { from: "", to: "" },
@@ -149,6 +150,9 @@ export default function DiamondStockTableWithFilter() {
   const handleCompare = () => {
     if (selectedDiamonds.length > 0) {
       setShowComparison(true);
+      // Clear selections after opening comparison
+      setSelectedDiamonds([]);
+      setClearSelectionTrigger(prev => prev + 1);
     }
   };
 
@@ -157,15 +161,20 @@ export default function DiamondStockTableWithFilter() {
       "Email sent for diamonds:",
       selectedDiamonds.map((d) => d.STONE_NO),
     );
+    // Clear selections after email
+    setSelectedDiamonds([]);
+    setClearSelectionTrigger(prev => prev + 1);
   };
 
   const handleAddToCart = () => {
     setSelectedDiamonds([]);
+    setClearSelectionTrigger(prev => prev + 1);
     console.log("Diamonds added to cart successfully, selection cleared");
   };
 
   const handleAddToHold = () => {
     setSelectedDiamonds([]);
+    setClearSelectionTrigger(prev => prev + 1);
     console.log("Diamonds added to hold successfully, selection cleared");
   };
 
@@ -398,6 +407,7 @@ export default function DiamondStockTableWithFilter() {
           keySymbolFilters={keySymbolFilters}
           inclusionFilters={inclusions}
           pageSize={10}
+          clearSelectionTrigger={clearSelectionTrigger}
         />
       ) : (
         <DiamondGridView

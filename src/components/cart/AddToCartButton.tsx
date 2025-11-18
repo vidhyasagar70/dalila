@@ -131,11 +131,6 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("cart-updated"));
         }
-
-        // Call the optional callback to clear selection
-        if (onAddToCart) {
-          onAddToCart();
-        }
       } else {
         // Get error message from rejected promises or fulfilled but failed responses
         const errorMessage =
@@ -222,6 +217,11 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       }
     } finally {
       setIsAdding(false);
+      
+      // Always clear selection after attempting to add, regardless of success/failure
+      if (onAddToCart) {
+        onAddToCart();
+      }
     }
   };
 

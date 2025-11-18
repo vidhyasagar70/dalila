@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
-
+import { useRouter } from "next/navigation";
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -10,6 +10,7 @@ const playFair = Playfair_Display({
 
 /** AboutDalila Section **/
 export default function AboutDalila() {
+   const router = useRouter();
   return (
     <div className={`bg-white py-12 md:py-16 lg:py-20 ${playFair.className}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -49,7 +50,7 @@ export default function AboutDalila() {
               <AnimatedContainer direction="scale-out">
                 <button
                   className="px-6 py-3 sm:px-8 sm:py-3.5 md:px-10 md:py-4 text-white font-bold text-xs sm:text-sm uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95 cursor-pointer"
-                  style={{ backgroundColor: "#c89e3a" }}
+                  style={{ backgroundColor: "#c89e3a" }}  onClick={() => router.push('/inventory')}
                 >
                   Explore More
                 </button>

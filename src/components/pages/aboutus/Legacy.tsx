@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Marcellus, Jost } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
@@ -19,7 +19,7 @@ const jost = Jost({
 
 export default function Legacy() {
   const videoRef = useRef<HTMLVideoElement>(null);
-
+   const router = useRouter();
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch((error) => {
@@ -64,6 +64,7 @@ export default function Legacy() {
               </p>
             </AnimatedContainer>
             <button
+             onClick={() => router.push('/contact')}
               className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm cursor-pointer lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors whitespace-nowrap w-fit ${jost.className}`}
             >
               CONTACT

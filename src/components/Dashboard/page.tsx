@@ -288,15 +288,15 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between flex-1">
                 <button
                   onClick={prevSlide}
-                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center z-10"
+                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-all duration-300 flex-shrink-0 self-center z-10 hover:scale-110"
                 >
                   <ChevronLeft className="w-5 h-5 text-white" />
                 </button>
 
-                <div className="flex gap-4 flex-1 justify-center items-center overflow-hidden relative">
+                <div className="flex gap-4 flex-1 justify-center items-center overflow-hidden relative px-4">
                   {limitedEditionDiamonds.length > 0 ? (
                     <div 
-                      className="flex gap-4 transition-transform duration-500 ease-in-out"
+                      className="flex gap-4 transition-all duration-700 ease-out"
                       style={{
                         transform: `translateX(-${currentSlide * (224 + 16)}px)` // 224px card width + 16px gap
                       }}
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
                         <button
                           key={diamond.STONE_NO || index}
                           onClick={() => setSelectedDiamond(diamond)}
-                          className="bg-white p-4 w-56 flex-shrink-0 hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer text-left"
+                          className="bg-white p-4 w-56 flex-shrink-0 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer text-left border border-transparent hover:border-[#FAE9D0]"
                         >
                           <div className="bg-gray-50 p-6 mb-4 flex items-center justify-center">
                             {diamond.MP4 ? (
@@ -358,7 +358,7 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={nextSlide}
-                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-colors flex-shrink-0 self-center z-10"
+                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] transition-all duration-300 flex-shrink-0 self-center z-10 hover:scale-110"
                 >
                   <ChevronRight className="w-5 h-5 text-white" />
                 </button>
@@ -375,10 +375,10 @@ export default function AdminDashboard() {
                         setCurrentSlide(index);
                         setTimeout(() => setIsAutoPlaying(true), 5000);
                       }}
-                      className={`h-2 transition-all duration-300 ${
+                      className={`h-2 transition-all duration-500 ease-out ${
                         currentSlide === index 
                           ? 'w-8 bg-[#FAE9D0]' 
-                          : 'w-2 bg-gray-300 hover:bg-gray-400'
+                          : 'w-2 bg-gray-300 hover:bg-gray-400 hover:w-4'
                       }`}
                     />
                   ))}

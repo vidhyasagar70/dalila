@@ -1,14 +1,18 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Playfair_Display } from "next/font/google";
 import GoldButton from "@/components/ui/button";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
+
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
 export default function HomeContent() {
+  const router = useRouter();
+
   return (
     <div className="bg-white py-12 md:py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 xl:px-12">
@@ -53,7 +57,10 @@ export default function HomeContent() {
                 </p>
               </AnimatedContainer>
               
-              <GoldButton text="Sell Now" />
+              <GoldButton 
+                text="Sell Now" 
+                onClick={() => router.push('/sud')}
+              />
             </div>
           </div>
         </div>
@@ -87,7 +94,10 @@ export default function HomeContent() {
                 </p>
               </AnimatedContainer>
              
-              <GoldButton text="Explore More" />
+              <GoldButton 
+                text="Explore More" 
+                onClick={() => router.push('/inventory')}
+              />
             </div>
           </div>
 

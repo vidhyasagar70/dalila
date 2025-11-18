@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronUp, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { ChevronUp, Facebook, Instagram, Twitter, Youtube, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
+import { useRouter } from "next/navigation";
 
 export default function Footer() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -24,10 +27,14 @@ export default function Footer() {
 
   const quickLinks = [
     { name: "Home", href: "/" },
-    // { name: "About", href: "/about" },
     { name: "Diamond Knowledge", href: "/diamondKnowledge" },
-    { name: "Sell", href: "/sud" },
     { name: "Contact", href: "/contact" },
+  ];
+
+  const serviceLinks = [
+    { name: "S2S - Secure To Source", href: "/secure-to-source" },
+    { name: "DS4U - Diamond Source For You", href: "/diamond-source" },
+    { name: "SUD - Sell Your Diamonds", href: "/sud" },
   ];
 
   const socialLinks = [
@@ -37,29 +44,12 @@ export default function Footer() {
     { icon: Youtube, href: "#", label: "YouTube" },
   ];
 
+  const handleNavigation = (href: string) => {
+    router.push(href);
+  };
+
   return (
     <footer className="bg-[#0a0e27] text-white">
-      {/* Newsletter Section */}
-      {/* <div className="border-b border-white/10">
-                <div className="container mx-auto px-6 py-12">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h3 className="text-2xl font-serif mb-6">
-                            Subscribe to our Newsletter
-                        </h3>
-                        <div className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-                            <input
-                                type="email"
-                                placeholder="Enter your email"
-                                className="flex-1 px-6 py-3 bg-white text-gray-900 rounded placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-600"
-                            />
-                            <button className="px-8 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded transition-colors whitespace-nowrap">
-                                Subscribe
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
-
       {/* Main Footer Content */}
       <div className="border-b border-white/10">
         <div className="container mx-auto px-6 py-12">
@@ -82,7 +72,7 @@ export default function Footer() {
                     key={social.label}
                     href={social.href}
                     aria-label={social.label}
-                    className="w-10 h-10 rounded bg-white/5 hover:bg-yellow-600 flex items-center justify-center transition-colors group"
+                    className="w-10 h-10 rounded bg-white/5 hover:bg-[#c89e3a] flex items-center justify-center transition-colors group"
                   >
                     <social.icon className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
                   </a>
@@ -108,14 +98,43 @@ export default function Footer() {
               <ul className="space-y-3">
                 {quickLinks.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-white/70 hover:text-yellow-600 transition-colors"
+                    <button
+                      onClick={() => handleNavigation(link.href)}
+                      className="text-white/70 hover:text-[#c89e3a] transition-colors text-left cursor-pointer"
                     >
                       {link.name}
-                    </a>
+                    </button>
                   </li>
                 ))}
+                
+                {/* Our Services Dropdown */}
+                <li className="relative">
+                  <button
+                    onClick={() => setIsServicesOpen(!isServicesOpen)}
+                    className="text-white/70 hover:text-[#c89e3a] transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    Our Services
+                    <ChevronDown
+                      size={16}
+                      className={`transition-transform duration-200 ${isServicesOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  
+                  {isServicesOpen && (
+                    <ul className="mt-2 ml-4 space-y-2">
+                      {serviceLinks.map((service) => (
+                        <li key={service.name}>
+                          <button
+                            onClick={() => handleNavigation(service.href)}
+                            className="text-white/60 hover:text-[#c89e3a] transition-colors text-sm text-left cursor-pointer"
+                          >
+                            {service.name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
               </ul>
             </div>
 
@@ -135,7 +154,7 @@ export default function Footer() {
       <div className="py-6">
         <div className="container mx-auto px-6">
           <p className="text-center text-white/60 text-sm">
-            Copyright 2025 - Dalila | All Rights Reserved | Powered by Keval Ai
+            Copyright 2025 - Dalila | All Rights Reserved | Powered by Keval Ai
           </p>
         </div>
       </div>
@@ -145,7 +164,7 @@ export default function Footer() {
         {isVisible && (
           <motion.button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-5 right-5 w-12 h-12 bg-[#c89e3a] hover:bg-yellow-700 rounded flex items-center justify-center shadow-lg transition-colors group"
+            className="fixed bottom-5 right-5 w-12 h-12 bg-[#c89e3a] hover:bg-[#b08d33] rounded flex items-center justify-center shadow-lg transition-colors group"
             aria-label="Scroll to top"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

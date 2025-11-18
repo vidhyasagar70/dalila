@@ -309,7 +309,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
           >
             <ArrowLeft size={20} />
           </button>
-          <h2 className="text-xl font-bold">Diamond Details</h2>
+          <h2 className="text-xl font-bold">Back</h2>
         </div>
 
         <div className="p-6 pb-20">

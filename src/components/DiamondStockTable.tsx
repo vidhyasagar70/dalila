@@ -43,6 +43,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
   inclusionFilters,
   priceFilters, // Add price filters prop
   onSelectionChange,
+  clearSelectionTrigger,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +60,14 @@ const DiamondStockTable: React.FC<TableProps> = ({
 
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
+
+  // Clear selections when trigger changes (from parent component)
+  useEffect(() => {
+    if (clearSelectionTrigger !== undefined && clearSelectionTrigger > 0) {
+      setSelectedRows(new Set());
+      setSelectAll(false);
+    }
+  }, [clearSelectionTrigger]);
 
   // Close modal when navigation occurs
   useEffect(() => {

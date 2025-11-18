@@ -6,6 +6,7 @@ import { FaEuroSign } from "react-icons/fa";
 import { MdLocalShipping } from "react-icons/md";
 import { IoEarth } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+
 const marcellus = Marcellus({
   variable: "--font-marcellus",
   subsets: ["latin"],

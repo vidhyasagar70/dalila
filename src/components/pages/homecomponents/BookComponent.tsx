@@ -2,13 +2,14 @@
 import { useRef, useEffect } from "react";
 import { Playfair_Display } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
-
+import { useRouter } from "next/navigation";
 const playFair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
 export default function BookComponent() {
+   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export default function BookComponent() {
             </AnimatedContainer>
             <AnimatedContainer direction="up">
               <button
-                className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer whitespace-nowrap w-fit ${playFair.className}`}
+                className={`py-2 px-4 md:py-2.5 md:px-5 lg:px-6 text-xs sm:text-sm lg:text-base text-white border border-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors cursor-pointer whitespace-nowrap w-fit ${playFair.className}`}  onClick={() => router.push('/inventory')}
               >
                 BOOK NOW
               </button>

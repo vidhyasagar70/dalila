@@ -1,9 +1,11 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import GoldButton from "@/components/ui/button";
 import { Marcellus, Jost } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
+
 const marcellus = Marcellus({
   variable: "--font-marcellus",
   subsets: ["latin"],
@@ -18,6 +20,16 @@ const jost = Jost({
 });
 
 export default function Aboutshowcase() {
+  const router = useRouter();
+
+  const handleExploreMore = () => {
+    router.push("/inventory");
+  };
+
+  const handleSellNow = () => {
+    router.push("/sud");
+  };
+
   return (
     <div className="bg-white py-24">
       <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
@@ -55,18 +67,13 @@ export default function Aboutshowcase() {
                  hard work and a commitment to ethical practices, 
                  they laid a strong foundation in Surat and Mumbai.
                  As the second generation joined the business,
-                the vision expanded beyond India’s borders,
+                the vision expanded beyond India's borders,
                 forging lasting partnerships and establishing a global presence.Today, this forward-looking spirit grounded in deeply held family values continues to guide us, 
-                earning DALILA its reputation as a trusted name in the international diamond industry.
-
-
+                earning DALILA its reputation as a trusted name in the international diamond industry.
               </p>
-              {/* <button
-                className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
-              >
-                EXPLORE MORE
-              </button> */}
-              <GoldButton text="Explore More" />
+              <div onClick={handleExploreMore}>
+                <GoldButton text="Explore More" />
+              </div>
             </div>
           </div>
         </div>
@@ -95,10 +102,9 @@ export default function Aboutshowcase() {
                 explore every detail — from how diamonds are formed to what
                 makes each one unique.
               </p>
-              {/* <button className="bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 mt-6 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg">
-                Explore More
-              </button> */}
-              <GoldButton text="Explore More" />
+              <div onClick={handleExploreMore}>
+                <GoldButton text="Explore More" />
+              </div>
             </div>
           </div>
 
@@ -159,12 +165,9 @@ export default function Aboutshowcase() {
                 a loose diamond, we value every piece. Here&apos;s how the
                 process works
               </p>
-              {/* <button
-                className={`bg-[#c89e3a] hover:bg-[#b38d2f] text-white font-medium px-9 py-3.5 rounded-sm transition-all duration-300 text-[13px] tracking-[0.08em] uppercase shadow-md hover:shadow-lg ${playFair.className}`}
-              >
-                Sell Now
-              </button> */}
-              <GoldButton text="Sell Now" />
+              <div onClick={handleSellNow}>
+                <GoldButton text="Sell Now" />
+              </div>
             </div>
           </div>
         </div>

@@ -103,6 +103,7 @@ export interface TableProps {
     discount: { from: string; to: string };
     totalPrice: { from: string; to: string };
   };
+  clearSelectionTrigger?: number;
 }
 export interface KeySymbolFilters {
   keyToSymbol: string[];

@@ -125,11 +125,6 @@ const HoldButton: React.FC<HoldButtonProps> = ({
         toast.success(displayMessage, {
           duration: 4000,
         });
-
-        // Call the optional callback to clear selection
-        if (onAddToHold) {
-          onAddToHold();
-        }
       } else {
         // Get error message from rejected promises or fulfilled but failed responses
         const errorMessage =
@@ -214,6 +209,11 @@ const HoldButton: React.FC<HoldButtonProps> = ({
       }
     } finally {
       setIsAdding(false);
+      
+      // Always clear selection after attempting to add, regardless of success/failure
+      if (onAddToHold) {
+        onAddToHold();
+      }
     }
   };
 
