@@ -37,12 +37,7 @@ export default function Footer() {
     { name: "SUD - Sell Your Diamonds", href: "/sud" },
   ];
 
-  const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Youtube, href: "#", label: "YouTube" },
-  ];
+  
 
   const handleNavigation = (href: string) => {
     router.push(href);
@@ -66,18 +61,7 @@ export default function Footer() {
                   priority
                 />
               </div>
-              <div className="flex gap-4 mt-6">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="w-10 h-10 rounded bg-white/5 hover:bg-[#c89e3a] flex items-center justify-center transition-colors group"
-                  >
-                    <social.icon className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
-                  </a>
-                ))}
-              </div>
+              
             </div>
 
             {/* Address Column */}
