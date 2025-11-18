@@ -4,14 +4,13 @@ import React, { useEffect, useState } from "react";
 import { queryApi, Diamond } from "@/lib/api";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
-import { Playfair_Display, Jost } from "next/font/google";
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+import {  Jost,Marcellus, } from "next/font/google";
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  preload: true,
+  weight: "400",
 });
+
 
 const jost = Jost({
   variable: "--font-jost",
@@ -184,8 +183,8 @@ function EnquiryPageContent() {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
-          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+        <div className="bg-white rounded-none shadow-lg p-8 max-w-md w-full text-center">
+          
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Error</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
@@ -204,7 +203,7 @@ function EnquiryPageContent() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Enquiries</h1>
+          <h1 className={`text-2xl font-bold text-gray-900 ${marcellus.className}`}>Enquiries</h1>
           <p className="text-sm text-gray-600 mt-1">
             Manage customer hold requests and diamond enquiries
           </p>
@@ -212,8 +211,8 @@ function EnquiryPageContent() {
 
         {/* Enquiries Table */}
         {queries.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
-            <div className="text-gray-400 text-6xl mb-4">💎</div>
+          <div className="bg-white rounded-none shadow p-12 text-center">
+            
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               No Enquiries Yet
             </h2>
@@ -222,8 +221,8 @@ function EnquiryPageContent() {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div className="bg-white rounded-none shadow overflow-hidden">
+            <table className={`min-w-full divide-y divide-gray-200 ${jost.className}`}>
               <thead className="bg-[#0a1628]">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-medium text-white">
