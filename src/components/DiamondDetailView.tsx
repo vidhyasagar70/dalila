@@ -1,4 +1,6 @@
+"use client";
 import React, { useState, useEffect } from "react";
+import Footer from "./Footer";
 import Image from "next/image";
 import {
   ArrowLeft,
@@ -582,6 +584,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
             />
           </div>
         </div>
+        <Footer/>
       </div>
 
       {/* Enquiry Modal */}

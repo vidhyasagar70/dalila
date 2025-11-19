@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import Footer from "./Footer";
 import Image from "next/image";
 import { X, ArrowLeft } from "lucide-react";
 import { Maven_Pro } from "next/font/google";
@@ -299,6 +302,8 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
             </div>
           </div>
         </div>
+        {/* Footer - moved outside padding/container for full width */}
+        <Footer />
       </div>
     </div>
   );
