@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { formApi } from "@/lib/api";
-import { useRouter } from "next/navigation";
+
 
 const marcellusStyle = {
   fontFamily: "Marcellus, serif",
@@ -48,40 +48,9 @@ export default function SellDiamondsForm() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const router = useRouter();
 
-  // Check authentication status
-  useEffect(() => {
-    const checkAuth = () => {
-      if (typeof window !== "undefined") {
-        const token = localStorage.getItem("authToken");
-        const user = localStorage.getItem("user");
-        setIsLoggedIn(!!(token && user));
-        setIsCheckingAuth(false);
-      }
-    };
 
-    checkAuth();
 
-    // Listen for auth changes
-    const handleAuthChange = () => {
-      checkAuth();
-    };
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("storage", handleAuthChange);
-      window.addEventListener("user-logged-in", handleAuthChange);
-      window.addEventListener("user-logged-out", handleAuthChange);
-
-      return () => {
-        window.removeEventListener("storage", handleAuthChange);
-        window.removeEventListener("user-logged-in", handleAuthChange);
-        window.removeEventListener("user-logged-out", handleAuthChange);
-      };
-    }
-  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -260,43 +229,7 @@ export default function SellDiamondsForm() {
           </p>
         </div>
 
-        {isCheckingAuth ? (
-          <div className="flex justify-center items-center py-12">
-            <Loader2 className="w-8 h-8 text-[#D4A017] animate-spin" />
-            <span className="ml-3 text-gray-600">Loading...</span>
-          </div>
-        ) : !isLoggedIn ? (
-          <div className="text-center py-12">
-            <div className="mb-6">
-              <svg
-                className="mx-auto h-12 w-12 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Login Required
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Please login to submit your diamond selling request.
-            </p>
-            <button
-              onClick={() => router.push("/login")}
-              className="bg-[#D4A017] hover:bg-[#B58900] text-white font-semibold py-3 px-8 rounded-none transition duration-200 cursor-pointer"
-            >
-              Go to Login
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
+        <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
           {/* Full Name */}
           <div>
             <label
@@ -621,7 +554,7 @@ export default function SellDiamondsForm() {
             )}
           </button>
         </form>
-        )}
+        
       </div>
     </div>
   );
