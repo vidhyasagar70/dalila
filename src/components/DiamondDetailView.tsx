@@ -268,9 +268,11 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
   const DetailTable = ({
     title,
     data,
+    certiPdfUrl,
   }: {
     title: string;
     data: [string, string | number][];
+    certiPdfUrl?: string;
   }) => (
     <div className="bg-white overflow-hidden border border-[#e9e2c6]">
       <div className="bg-[#050C3A] text-white px-4 py-3">
@@ -290,7 +292,18 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
               <p className="text-sm font-medium text-gray-700">{key}</p>
             </div>
             <div className="px-4 py-2.5 bg-white">
-              <p className="text-sm text-gray-900">{value}</p>
+              {key === "Report No" && certiPdfUrl && value && value !== "N/A" ? (
+                <a
+                  href={certiPdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline hover:text-blue-800 text-sm"
+                >
+                  {value}
+                </a>
+              ) : (
+                <p className="text-sm text-gray-900">{value}</p>
+              )}
             </div>
           </div>
         ))}
@@ -539,6 +552,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 ["Symmetry", diamond.SYM || "N/A"],
                 ["Fluorescence", diamond.FLOUR || "N/A"],
               ]}
+              certiPdfUrl={diamond.CERTI_PDF}
             />
 
             {/* Measurements */}

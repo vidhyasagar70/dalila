@@ -27,7 +27,8 @@ export interface DiamondData {
   PAVILLION_HEIGHT?: number;
   RAP_PRICE: number;
   DISC_PER: number;
-  NET_RATE: number;
+    // ...existing fields...
+    CERTI_PDF?: string;
   NET_VALUE: number;
   LOCATION: string;
   STAGE: string;
