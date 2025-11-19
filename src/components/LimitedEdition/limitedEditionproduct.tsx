@@ -198,7 +198,7 @@ export default function LimitedEditionPage({
             RAP_PRICE: 0,
             DISC_PER: 0,
             NET_VALUE: 0,
-            NET_RATE: 0,
+            NET_RATE: "0",
             FLOUR: "",
             MEASUREMENTS: "",
             TABLE_PER: 0,
