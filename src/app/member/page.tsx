@@ -319,7 +319,7 @@ export default function MembersManagement() {
         <div className="mb-6 flex gap-4">
           <button
             onClick={() => setActiveTab("authorized")}
-            className={`px-6 py-2.5 rounded-lg font-medium transition ${
+            className={`px-6 py-2.5 rounded-none font-medium transition ${
               activeTab === "authorized"
                 ? "text-white"
                 : "bg-white text-gray-700 hover:bg-gray-50"
@@ -334,7 +334,7 @@ export default function MembersManagement() {
           </button>
           <button
             onClick={() => setActiveTab("waiting")}
-            className={`px-6 py-2.5 rounded-lg font-medium transition ${
+            className={`px-6 py-2.5 rounded-none font-medium transition ${
               activeTab === "waiting"
                 ? "text-white"
                 : "bg-white text-gray-700 hover:bg-gray-50"

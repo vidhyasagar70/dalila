@@ -40,7 +40,7 @@ function EnquiryPageContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3); // Set to 3 for testing, change to 10 for production
+  const [itemsPerPage] = useState(10); 
 
   useEffect(() => {
     fetchQueries();
@@ -80,7 +80,7 @@ function EnquiryPageContent() {
   const renderPaginationButtons = () => {
     const buttons = [];
     
-    // Always show pages 1, 2, ..., 9, 10 pattern from the image
+
     if (totalPages <= 10) {
       // Show all pages if 10 or fewer
       for (let i = 1; i <= totalPages; i++) {
@@ -189,7 +189,7 @@ function EnquiryPageContent() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={fetchQueries}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-none transition-colors"
           >
             Try Again
           </button>

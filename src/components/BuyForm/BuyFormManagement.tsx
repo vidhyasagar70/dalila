@@ -128,7 +128,7 @@ export default function BuyFormManagement() {
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-none mb-4 text-sm">
         {error}
       </div>
     );
@@ -171,7 +171,7 @@ export default function BuyFormManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border border-[#E9E2C6] rounded-md p-6 bg-white">
+      <div className="border border-[#E9E2C6] rounded-none p-6 bg-white">
         <div className="flex justify-between items-center">
           <div>
             <h1 className={`${marcellus.className} text-2xl md:text-3xl text-[#0b1b35] mb-2`}>
@@ -194,8 +194,8 @@ export default function BuyFormManagement() {
 
       {/* No Data Message */}
       {!loading && groupedData.length === 0 && (
-        <div className="border border-[#E9E2C6] rounded-md p-12 text-center bg-white">
-          <div className="text-gray-400 text-5xl mb-4">📋</div>
+        <div className="border border-[#E9E2C6] rounded-none p-12 text-center bg-white">
+          
           <h3 className={`${jost.className} text-lg font-medium text-gray-900 mb-2`}>
             No Submissions Yet
           </h3>
@@ -207,7 +207,7 @@ export default function BuyFormManagement() {
 
       {/* Table */}
       {groupedData.length > 0 && (
-        <div className="border border-[#E9E2C6] rounded-md overflow-hidden">
+        <div className="border border-[#E9E2C6] rounded-none overflow-hidden">
           {/* Desktop Header */}
           <div className="hidden md:grid grid-cols-[60px_2fr_1fr_1.5fr_100px] items-center bg-[#0b1b35] text-white text-sm px-4 py-3">
             <div className={`${jost.className} font-medium`}>Sr</div>
@@ -229,7 +229,7 @@ export default function BuyFormManagement() {
                   {group.email}
                 </div>
                 <div className={`${jost.className} text-gray-700`}>
-                  <span className="inline-block px-2 py-0.5 text-[11px] border rounded bg-blue-100 text-blue-700 border-blue-300">
+                  <span className="inline-block px-2 py-0.5 text-[11px] border rounded-none bg-blue-100 text-blue-700 border-blue-300">
                     {group.totalCount} submission{group.totalCount !== 1 ? "s" : ""}
                   </span>
                 </div>
@@ -239,7 +239,7 @@ export default function BuyFormManagement() {
                 <div className="flex justify-end pr-2">
                   <button
                     onClick={() => toggleExpandEmail(group.email)}
-                    className={`${jost.className} inline-flex cursor-pointer items-center gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-md hover:bg-gray-100 transition-colors text-xs`}
+                    className={`${jost.className} inline-flex cursor-pointer items-center gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-none hover:bg-gray-100 transition-colors text-xs`}
                   >
                     View{" "}
                     {expandedEmail === group.email ? (
@@ -262,7 +262,7 @@ export default function BuyFormManagement() {
                       {group.submissions.map((submission) => (
                         <div
                           key={submission._id}
-                          className="border border-[#E9E2C6] rounded-md p-4 bg-gray-50"
+                          className="border border-[#E9E2C6] rounded-none p-4 bg-gray-50"
                         >
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div>
@@ -286,7 +286,7 @@ export default function BuyFormManagement() {
                             <div>
                               <p className={`${jost.className} text-xs text-gray-500 mb-1`}>Status</p>
                               <span
-                                className={`inline-block px-2 py-0.5 text-[11px] border rounded ${
+                                className={`inline-block px-2 py-0.5 text-[11px] border rounded-none ${
                                   submission.status === "PENDING"
                                     ? "bg-yellow-100 text-yellow-700 border-yellow-300"
                                     : submission.status === "APPROVED"
@@ -304,7 +304,7 @@ export default function BuyFormManagement() {
                             </p>
                             <button
                               onClick={() => handleViewDetails(submission)}
-                              className={`${jost.className} flex items-center cursor-pointer gap-2 px-3 py-1 bg-[#0b1b35] text-white rounded-md hover:bg-[#08142a] transition-colors text-xs`}
+                              className={`${jost.className} flex items-center cursor-pointer gap-2 px-3 py-1 bg-[#0b1b35] text-white rounded-none hover:bg-[#08142a] transition-colors text-xs`}
                             >
                               <Eye className="w-3 h-3" />
                               View Details
@@ -334,7 +334,7 @@ export default function BuyFormManagement() {
           <button
             onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className={`${jost.className} border px-3 py-1 rounded-md border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`${jost.className} border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             ←
           </button>
@@ -347,7 +347,7 @@ export default function BuyFormManagement() {
                 typeof page === "number" && setCurrentPage(page)
               }
               disabled={page === "..."}
-              className={`${jost.className} border px-3 py-1 rounded-md transition-colors ${
+              className={`${jost.className} border px-3 py-1 rounded-none transition-colors ${
                 page === currentPage
                   ? "bg-[#EAD9BE] text-gray-900 border-[#EAD9BE] font-semibold"
                   : page === "..."
@@ -365,7 +365,7 @@ export default function BuyFormManagement() {
               setCurrentPage((prev) => Math.min(calculatedTotalPages, prev + 1))
             }
             disabled={currentPage === calculatedTotalPages}
-            className={`${jost.className} border px-3 py-1 rounded-md border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`${jost.className} border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             →
           </button>
@@ -379,11 +379,11 @@ export default function BuyFormManagement() {
           onClick={handleCloseModal}
         >
           <div 
-            className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto [color-scheme:light]"
+            className="bg-white rounded-none max-w-4xl w-full max-h-[90vh] overflow-y-auto [color-scheme:light]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-[#0b1b35] text-white px-6 py-4 rounded-t-lg flex justify-between items-center z-10">
+            <div className="sticky top-0 bg-[#0b1b35] text-white px-6 py-4 rounded-none flex justify-between items-center z-10">
               <h2 className={`${marcellus.className} text-xl font-bold`}>Submission Details</h2>
               <button
                 onClick={handleCloseModal}
@@ -454,7 +454,7 @@ export default function BuyFormManagement() {
                   {selectedSubmission.images.map((image, index) => (
                     <div
                       key={index}
-                      className="border border-[#E9E2C6] rounded-md overflow-hidden"
+                      className="border border-[#E9E2C6] rounded-none overflow-hidden"
                     >
                       <div className="relative w-full h-48">
                         <Image
@@ -494,7 +494,7 @@ export default function BuyFormManagement() {
                     <label className={`${jost.className} text-sm font-medium text-gray-500`}>Status</label>
                     <p>
                       <span
-                        className={`inline-block px-2 py-0.5 text-[11px] border rounded ${
+                        className={`inline-block px-2 py-0.5 text-[11px] border rounded-none ${
                           selectedSubmission.status === "PENDING"
                             ? "bg-yellow-100 text-yellow-700 border-yellow-300"
                             : selectedSubmission.status === "APPROVED"
@@ -523,10 +523,10 @@ export default function BuyFormManagement() {
             </div>
 
             {/* Modal Footer */}
-            <div className="sticky bottom-0 bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-lg flex justify-end gap-3">
+            <div className="sticky bottom-0 bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-none flex justify-end gap-3">
               <button
                 onClick={handleCloseModal}
-                className={`${jost.className} px-4 py-2 border border-gray-300 rounded-md text-gray-900 hover:bg-gray-100 transition-colors`}
+                className={`${jost.className} px-4 py-2 border border-gray-300 rounded-none text-gray-900 hover:bg-gray-100 transition-colors`}
               >
                 Close
               </button>

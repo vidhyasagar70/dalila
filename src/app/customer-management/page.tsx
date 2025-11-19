@@ -495,7 +495,7 @@ export default function CustomerManagementPage() {
     const label = s ? s.charAt(0).toUpperCase() + s.slice(1) : "Pending";
     return (
       <span
-        className={`inline-block px-2 py-0.5 text-[11px] border rounded ${cls}`}
+        className={`inline-block px-2 py-0.5 text-[11px] border rounded-none ${cls}`}
       >
         {label}
       </span>
@@ -629,12 +629,12 @@ export default function CustomerManagementPage() {
             ].map((c) => (
               <div
                 key={c.label}
-                className="border border-gray-200 rounded-md p-4"
+                className="border border-gray-200 rounded-none p-4"
               >
                 <div className="flex items-start gap-3">
                   {/* Icon */}
                   <div className="flex-shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-none bg-white border border-gray-200 flex items-center justify-center">
                       {c.label === "Total Enquiries" && (
                         <svg
                           width="18"
@@ -719,7 +719,7 @@ export default function CustomerManagementPage() {
           </div>
 
           {/* Table */}
-          <div className="border border-[#E9E2C6] rounded-md overflow-hidden">
+          <div className="border border-[#E9E2C6] rounded-none overflow-hidden">
             <div className="hidden md:grid grid-cols-[60px_1.2fr_1.1fr_1.6fr_1.3fr_1fr_1.2fr_1.1fr_1.2fr_0.8fr_0.8fr_80px] items-center bg-[#0b1b35] text-white text-sm px-4 py-3">
               <div>Sr</div>
               <div>Name</div>
@@ -769,7 +769,7 @@ export default function CustomerManagementPage() {
                   <div className="flex justify-end pr-2">
                     <button
                       onClick={() => toggleRow(row.id)}
-                      className="inline-flex items-center cursor-pointer gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-md"
+                      className="inline-flex items-center cursor-pointer gap-1 text-[#0b1b35] border border-gray-300 px-2 py-1 rounded-none"
                     >
                       View{" "}
                       {expanded[row.id] ? (
@@ -991,7 +991,7 @@ export default function CustomerManagementPage() {
                                             disabled={
                                               processingHoldId === itemId
                                             }
-                                            className="px-3 py-1 bg-green-600  cursor-pointer text-white text-xs rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="px-3 py-1 bg-green-600  cursor-pointer text-white text-xs rounded-none hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                           >
                                             {processingHoldId === itemId
                                               ? "..."
@@ -1004,7 +1004,7 @@ export default function CustomerManagementPage() {
                                             disabled={
                                               processingHoldId === itemId
                                             }
-                                            className="px-3 py-1 cursor-pointer bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="px-3 py-1 cursor-pointer bg-red-600 text-white text-xs rounded-none hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                           >
                                             {processingHoldId === itemId
                                               ? "..."
@@ -1057,7 +1057,7 @@ export default function CustomerManagementPage() {
                             return (
                               <div
                                 key={i}
-                                className="border border-[#E9E2C6] rounded-md p-4 bg-gray-50 [color-scheme:light]"
+                                className="border border-[#E9E2C6] rounded-none p-4 bg-gray-50 [color-scheme:light]"
                               >
                                 {/* Query Header */}
                                 <div className="flex items-start justify-between mb-3">
@@ -1078,7 +1078,7 @@ export default function CustomerManagementPage() {
 
                                 {/* Diamond Details (if available) */}
                                 {diamond && (
-                                  <div className="mb-3 p-3 bg-white rounded border border-[#E9E2C6] [color-scheme:light]">
+                                  <div className="mb-3 p-3 bg-white rounded-none border border-[#E9E2C6] [color-scheme:light]">
                                     <p className="text-xs font-medium text-gray-700 mb-2">
                                       Diamond Details
                                     </p>
@@ -1175,7 +1175,7 @@ export default function CustomerManagementPage() {
                                   <p className="text-xs font-medium text-gray-700 mb-1 bg-white px-1">
                                     Customer Query:
                                   </p>
-                                  <p className="text-sm text-gray-900 bg-white p-2 rounded border border-[#E9E2C6] [color-scheme:light]">
+                                  <p className="text-sm text-gray-900 bg-white p-2 rounded-none border border-[#E9E2C6] [color-scheme:light]">
                                     {query}
                                   </p>
                                 </div>
@@ -1186,7 +1186,7 @@ export default function CustomerManagementPage() {
                                     <p className="text-xs font-medium text-gray-700 mb-1 bg-white px-1">
                                       Dalila Diamond:
                                     </p>
-                                    <p className="text-sm text-gray-900 bg-green-50 p-2 rounded border border-green-200 [color-scheme:light]">
+                                    <p className="text-sm text-gray-900 bg-green-50 p-2 rounded-none border border-green-200 [color-scheme:light]">
                                       {adminReply}
                                     </p>
                                     <p className="text-xs text-gray-600 mt-1 bg-white px-1">
@@ -1232,7 +1232,7 @@ export default function CustomerManagementPage() {
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="border px-3 py-1 rounded-md border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ←
               </button>
@@ -1245,7 +1245,7 @@ export default function CustomerManagementPage() {
                     typeof page === "number" && setCurrentPage(page)
                   }
                   disabled={page === "..."}
-                  className={`border px-3 py-1 rounded-md transition-colors ${
+                  className={`border px-3 py-1 rounded-none transition-colors ${
                     page === currentPage
                       ? "bg-[#EAD9BE] text-gray-900 border-[#EAD9BE] font-semibold"
                       : page === "..."
@@ -1263,7 +1263,7 @@ export default function CustomerManagementPage() {
                   setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="border px-3 py-1 rounded-md border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 →
               </button>
@@ -1281,11 +1281,11 @@ export default function CustomerManagementPage() {
             }}
           >
             <div
-              className="bg-white rounded-lg shadow-xl w-full max-w-md [color-scheme:light]"
+              className="bg-white rounded-none shadow-xl w-full max-w-md [color-scheme:light]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="bg-[#0b1b35] text-white px-6 py-4 rounded-t-lg flex items-center justify-between">
+              <div className="bg-[#0b1b35] text-white px-6 py-4 rounded-none flex items-center justify-between">
                 <h3 className={`${jost.className} text-lg font-semibold`}>
                   Reply to Enquiry
                 </h3>
@@ -1312,7 +1312,7 @@ export default function CustomerManagementPage() {
                     type="text"
                     value={replyModal.stoneNo}
                     disabled
-                    className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-50 text-gray-900 [color-scheme:light]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-none bg-gray-50 text-gray-900 [color-scheme:light]"
                   />
                 </div>
 
@@ -1327,26 +1327,26 @@ export default function CustomerManagementPage() {
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Enter your reply here..."
                     rows={5}
-                    className={`${jost.className} w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0b1b35] resize-none bg-white text-gray-900 placeholder:text-gray-500 [color-scheme:light]`}
+                    className={`${jost.className} w-full px-3 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-[#0b1b35] resize-none bg-white text-gray-900 placeholder:text-gray-500 [color-scheme:light]`}
                   />
                 </div>
               </div>
 
               {/* Modal Footer */}
-              <div className="px-6 py-4 bg-gray-50 rounded-b-lg flex gap-3 justify-end">
+              <div className="px-6 py-4 bg-gray-50 rounded-none flex gap-3 justify-end">
                 <button
                   onClick={() => {
                     setReplyModal(null);
                     setReplyText("");
                   }}
-                  className={`${jost.className} px-4 py-2 border border-gray-300 rounded text-gray-900 hover:bg-gray-100 transition-colors`}
+                  className={`${jost.className} px-4 py-2 border border-gray-300 rounded-none text-gray-900 hover:bg-gray-100 transition-colors`}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleReplySubmit}
                   disabled={isSubmittingReply || !replyText.trim()}
-                  className={`${jost.className} px-4 py-2 bg-[#0b1b35] text-white rounded hover:bg-[#08142a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
+                  className={`${jost.className} px-4 py-2 bg-[#0b1b35] text-white rounded-none hover:bg-[#08142a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
                 >
                   {isSubmittingReply ? (
                     <>
