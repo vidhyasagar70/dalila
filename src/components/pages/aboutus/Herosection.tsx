@@ -26,7 +26,7 @@ export default function AboutHero() {
             <AnimatedContainer direction="scale-out">
               <div className="relative w-full h-96 bg-black rounded-none overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/about_us_1.jpg"
+                  src="/diamondcuts/aboutus.jpg"
                   alt="Diamond shapes collection"
                   fill
                   className="object-cover"

@@ -130,7 +130,7 @@ export default function Aboutshowcase() {
             <AnimatedContainer direction="scale-out" delay={0.5}>
               <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto overflow-hidden">
                 <Image
-                  src="/images/sell_page.jpg"
+                  src="/diamondcuts/sell-diamonds.jpg"
                   alt="Professional diamond dealer"
                   width={480}
                   height={340}
