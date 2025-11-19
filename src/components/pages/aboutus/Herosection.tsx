@@ -34,7 +34,7 @@ export default function AboutHero() {
                 />
               </div>
             </AnimatedContainer>
-            <AnimatedContainer direction="scale-out">
+            
               <div
                 className="absolute bottom-0 -right-2 sm:-right-3 md:-right-4 lg:-right-6 px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 shadow-xl mb-6"
                 style={{ backgroundColor: "#c89e3a" }}
@@ -46,7 +46,7 @@ export default function AboutHero() {
                   ABOUT DALILA
                 </h3>
               </div>
-            </AnimatedContainer>
+        
           </div>
 
           {/* Right Half - Content */}

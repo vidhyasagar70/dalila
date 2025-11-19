@@ -442,7 +442,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     <InfoItem
                       label="Shape"
                       value={diamond.SHAPE}
-                      description="Classic cut known for maximum sparkle."
+                      description=""
                     />
                     <InfoItem
                       label="Carat"
