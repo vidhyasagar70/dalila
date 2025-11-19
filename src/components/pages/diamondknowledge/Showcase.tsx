@@ -57,7 +57,7 @@ export default function Diamondshowcase() {
                     Whether you’re choosing your very first stone or refining a lifelong collection,
                      understanding a diamond’s key characteristics helps you make a truly confident choice.
 
-                     This guide walks you through every facet - from how diamonds are formed to what makes each one unique.
+                     This guide walks you through every facet from how diamonds are formed to what makes each one unique.
 
 
                 </p>
@@ -95,7 +95,7 @@ export default function Diamondshowcase() {
                 <p
                   className={`text-gray-600 leading-relaxed mb-8 text-[15px] md:text-base font-normal ${jost.className}`}
                 >
-                  Each diamond&apos;s journey — from mine to masterpiece —
+                  Each diamond&apos;s journey  from mine to masterpiece 
                   involves ethical sourcing, expert craftsmanship, and precise
                   grading to ensure its authenticity and value.
                 </p>

@@ -189,7 +189,7 @@ export default function ContactUsPage() {
                       <p
                         className={`text-gray-600 text-base ${jost.className}`}
                       >
-                        Office 326, 2018 Antwerp
+                        Suite 326, 2018 Antwerp
                       </p>
                       <p
                         className={`text-gray-600 text-base mt-2 ${jost.className}`}

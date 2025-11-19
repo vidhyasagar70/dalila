@@ -34,7 +34,7 @@ export default function Diamondcuts() {
             className={`text-gray-600 leading-relaxed text-[18px] md:text-base max-w-4xl mx-auto font-light ${jost.className}`}
           >
             When it comes to evaluating a diamond&apos;s quality and beauty,
-            professionals rely on the 4Cs — Cut, Color, Clarity, and Carat
+            professionals rely on the 4Cs Cut, Color, Clarity, and Carat
             Weight. Understanding these characteristics will help you choose a
             diamond that matches your preferences and budget.
           </p>
@@ -79,7 +79,7 @@ export default function Diamondcuts() {
                 <p
                   className={`text-gray-600 text-[13px] md:text-[18px] leading-relaxed font-light ${jost.className}`}
                 >
-                  A diamond&apos;s cut determines how well it reflects light —
+                  A diamond&apos;s cut determines how well it reflects light
                   and that&apos;s what gives it brilliance. Even if a diamond
                   has perfect color or clarity, a poor cut can make it look
                   dull. The ideal cut brings out the stone&apos;s natural fire

@@ -60,14 +60,14 @@ export default function NaturalVsLabDiamonds() {
               <p
                 className={`text-gray-600 leading-relaxed text-base md:text-lg max-w-5xl mx-auto font-light mb-3 ${jost.className}`}
               >
-                Natural diamonds are treasures of the Earth — formed over
+                Natural diamonds are treasures of the Earth formed over
                 billions of years, deep beneath its surface, under immense heat
                 and pressure. Each one is a rare creation of nature, shaped by
                 time and perfected through expert craftsmanship. Their unmatched
                 authenticity, brilliance, and heritage make them the preferred
                 choice for those who value tradition and legacy. Every natural
-                diamond carries a unique story — a journey from Earth&apos;s
-                core to your hands — symbolizing love, strength, and eternity.
+                diamond carries a unique story  a journey from Earth&apos;s
+                core to your hands symbolizing love, strength, and eternity.
                 Ethically sourced and GIA-certified, these diamonds are not just
                 gemstones, but heirlooms that hold emotional and lasting value
                 for generations to come.
@@ -94,7 +94,7 @@ export default function NaturalVsLabDiamonds() {
                 natural diamond-growing process. They share the same physical,
                 chemical, and optical properties as mined diamonds, offering
                 brilliance and beauty at a more accessible price point. What
-                sets them apart is their eco-conscious origin — they&apos;re
+                sets them apart is their eco-conscious origin they&apos;re
                 crafted with minimal environmental impact and are completely
                 conflict-free. Ideal for those who value sustainability and
                 innovation, lab-grown diamonds bring together elegance,

@@ -98,35 +98,17 @@ export default function LimitedEditionPage({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [selectedDiamond, setSelectedDiamond] = useState<LimitedEditionDiamond | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  // Auto-play carousel effect
-  useEffect(() => {
-    if (!isAutoPlaying || diamonds.length <= 3 || !isOpen) return;
-    const interval = setInterval(() => {
-      setCurrentSlide(
-        (prev) => (prev + 1) % Math.max(1, diamonds.length - 2)
-      );
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, diamonds.length, isOpen]);
+  // Pagination logic
+  const totalPages = Math.ceil(diamonds.length / itemsPerPage);
+  const paginatedItems = diamonds.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-  const nextSlide = () => {
-    setIsAutoPlaying(false);
-    setCurrentSlide(
-      (prev) => (prev + 1) % Math.max(1, diamonds.length - 2)
-    );
-    setTimeout(() => setIsAutoPlaying(true), 5000);
-  };
-
-  const prevSlide = () => {
-    setIsAutoPlaying(false);
-    setCurrentSlide(
-      (prev) =>
-        (prev - 1 + Math.max(1, diamonds.length - 2)) %
-        Math.max(1, diamonds.length - 2)
-    );
-    setTimeout(() => setIsAutoPlaying(true), 5000);
-  };
+  // No selection helpers needed (checkboxes removed)
 
   return (
     <div className="bg-gray-50">
@@ -141,9 +123,7 @@ export default function LimitedEditionPage({
             <div className="bg-white p-12 shadow-md border border-[#FAE9D0] rounded-md flex items-center justify-center">
               <div className="text-center">
                 <Loader2 className="w-12 h-12 animate-spin text-[#FAE9D0] mx-auto" />
-                <p className="mt-4 text-gray-600 font-medium">
-                  Loading limited edition diamonds...
-                </p>
+                <p className="mt-4 text-gray-600 font-medium">Loading limited edition diamonds...</p>
               </div>
             </div>
           ) : error ? (
@@ -154,110 +134,96 @@ export default function LimitedEditionPage({
               </div>
             </div>
           ) : (
-            <div
-              style={{ borderColor: "#FAE9D0" }}
-              className="bg-white p-8 shadow-md border rounded-none"
-            >
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={prevSlide}
-                  disabled={diamonds.length <= 3}
-                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] rounded-none transition-all duration-300 flex-shrink-0 self-center z-10 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  <ChevronLeft className="w-5 h-5 text-white" />
-                </button>
-
-                <div className="flex gap-4 flex-1 justify-center items-center overflow-hidden relative px-4">
-                  {diamonds.length > 0 ? (
-                    <div
-                      className="flex gap-4 transition-all duration-700 ease-out"
-                      style={{
-                        transform: `translateX(-${currentSlide * (224 + 16)}px)`,
-                      }}
+            <div style={{ borderColor: "#FAE9D0" }} className="bg-white p-0 shadow-md border rounded-lg">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-[#060c3c] text-white">
+                    <tr>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Image</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-32">Stone No</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Lab</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Shape</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Carat</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Color</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Clarity</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Cut</th>
+                      <th className="px-2 py-2 text-left text-xs font-medium border-b border-[#F9E8CD] w-20">Pol</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedItems.length === 0 ? (
+                      <tr>
+                        <td colSpan={9} className="text-center py-6 text-gray-500 text-sm">
+                          No limited edition diamonds available
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedItems.map((diamond, idx) => (
+                        <tr key={diamond.STONE_NO || idx} className={`${idx % 2 === 0 ? "bg-white" : "bg-[#faf6eb]"} border-b border-[#F9E8CD] text-xs`} style={{height:'36px'}}>
+                          <td className="px-2 py-1">
+                            <div className="w-10 h-10 bg-gray-50 p-0.5 flex items-center justify-center">
+                              {diamond.MP4 ? (
+                                <video className="w-full h-full object-cover" autoPlay loop muted playsInline>
+                                  <source src={diamond.MP4} type="video/mp4" />
+                                </video>
+                              ) : diamond.REAL_IMAGE ? (
+                                <img src={diamond.REAL_IMAGE} alt={diamond.STONE_NO} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                                  <span className="text-gray-400 text-xs">No Image</span>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c] font-medium cursor-pointer hover:text-blue-600 hover:underline" onClick={() => setSelectedDiamond(diamond)}>{diamond.STONE_NO}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.LAB || "-"}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.SHAPE || "-"}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.CARATS || "-"}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.COLOR || "-"}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.CLARITY || "-"}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.CUT || "-"}</td>
+                          <td className="px-2 py-1 text-xs text-[#060c3c]">{diamond.POL || "-"}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination Footer */}
+              {totalPages > 1 && (
+                <div className="bg-white px-4 py-2 flex items-center justify-between border-t border-[#F9E8CD]">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="w-6 h-6 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     >
-                      {diamonds.map((diamond, index) => (
+                      <ChevronLeft className="w-3 h-3" />
+                    </button>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: Math.min(totalPages, 10) }, (_, i) => i + 1).map((page) => (
                         <button
-                          key={diamond.STONE_NO || index}
-                          onClick={() => setSelectedDiamond(diamond)}
-                          className="bg-white p-4 w-56 flex-shrink-0 rounded-none hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer text-left border border-transparent hover:border-[#FAE9D0]"
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`min-w-[22px] h-6 px-1 flex items-center justify-center rounded text-xs font-medium transition-colors ${
+                            currentPage === page
+                              ? "bg-[#060c3c] text-white"
+                              : "text-[#060c3c] hover:bg-[#060c3c]/5"
+                          }`}
                         >
-                          <div className="bg-gray-50 p-6 mb-4 rounded-none flex items-center justify-center">
-                            {diamond.MP4 ? (
-                              <video
-                                className="w-32 h-32 object-cover rounded-none"
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                              >
-                                <source src={diamond.MP4} type="video/mp4" />
-                              </video>
-                            ) : diamond.REAL_IMAGE ? (
-                              <img
-                                src={diamond.REAL_IMAGE}
-                                alt={diamond.STONE_NO}
-                                className="w-32 h-32 object-cover rounded-none"
-                              />
-                            ) : (
-                              <div className="w-32 h-32 bg-gray-200 rounded-none flex items-center justify-center">
-                                <span className="text-gray-400 text-sm">No Image</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-center space-y-2">
-                            <div className="flex justify-center gap-2 text-sm font-medium text-gray-900">
-                              <span>{diamond.SHAPE}</span>
-                              <span>{diamond.CARATS}</span>
-                              <span>{diamond.COLOR}</span>
-                              <span>{diamond.CLARITY}</span>
-                            </div>
-                            <div className="flex justify-center gap-2 text-sm text-gray-600">
-                              <span>{diamond.CUT || "N/A"}</span>
-                              <span>{diamond.POL}</span>
-                              <span>{diamond.SYM}</span>
-                              <span>{diamond.LAB}</span>
-                            </div>
-                          </div>
+                          {page}
                         </button>
                       ))}
                     </div>
-                  ) : (
-                    <div className="text-center text-gray-500 py-20">
-                      <Gem className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p className="text-xl">No limited edition diamonds available</p>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  onClick={nextSlide}
-                  disabled={diamonds.length <= 3}
-                  className="p-2 bg-[#FAE9D0] hover:bg-[#e5d5b5] rounded-none transition-all duration-300 flex-shrink-0 self-center z-10 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  <ChevronRight className="w-5 h-5 text-white" />
-                </button>
-              </div>
-
-              {/* Carousel Indicators */}
-              {diamonds.length > 3 && (
-                <div className="flex justify-center gap-2 mt-6">
-                  {Array.from({
-                    length: Math.ceil(diamonds.length - 2),
-                  }).map((_, index) => (
                     <button
-                      key={index}
-                      onClick={() => {
-                        setIsAutoPlaying(false);
-                        setCurrentSlide(index);
-                        setTimeout(() => setIsAutoPlaying(true), 5000);
-                      }}
-                      className={`h-2 rounded-none transition-all duration-500 ease-out ${
-                        currentSlide === index
-                          ? "w-8 bg-[#FAE9D0]"
-                          : "w-2 bg-gray-300 hover:bg-gray-400 hover:w-4"
-                      }`}
-                    />
-                  ))}
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="w-6 h-6 flex items-center justify-center text-[#060c3c] hover:bg-[#060c3c]/5 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-3"></div>
                 </div>
               )}
             </div>

@@ -54,7 +54,7 @@ export default function DiamondCertification() {
               a recognized authority such as GIA, IGI, or HRD. These
               certificates detail the diamond&apos;s 4Cs and confirm its
               authenticity, ensuring transparency and trust. When purchasing a
-              diamond, always request its certificate — it&apos;s your guarantee
+              diamond, always request its certificate it&apos;s your guarantee
               of quality.
             </p>
           </div>

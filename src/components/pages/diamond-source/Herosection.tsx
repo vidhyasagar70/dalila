@@ -37,8 +37,8 @@ export default function DiamondSourceHero() {
             </AnimatedContainer>
             <AnimatedContainer direction="up" delay={0.5}>
               <p className="text-gray-500 text-sm sm:text-base md:text-lg leading-relaxed pt-2">
-                Personalized diamond sourcing from our exclusive worldwide.
-                network
+                Personalized diamond sourcing from our exclusive worldwide
+                network.
               </p>
             </AnimatedContainer>
           </div>
