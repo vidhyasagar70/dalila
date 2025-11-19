@@ -770,16 +770,16 @@ const DiamondStockTable: React.FC<TableProps> = ({
                       {row.PAVILLION_HEIGHT || "N/A"}
                     </td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {formatCurrency(row.RAP_PRICE)}
+                      {formatCurrency(row.RAP_PRICE ?? 0)}
                     </td>
                     <td className="px-2 py-1 text-[12px] font-semibold text-red-600">
-                      {formatPercentage(row.DISC_PER)}
+                      {formatPercentage(row.DISC_PER ?? 0)}
                     </td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">
-                      {formatCurrency(row.NET_RATE)}
+                      {formatCurrency(row.NET_RATE ?? 0)}
                     </td>
                     <td className="px-2 py-1 text-[12px] text-gray-700 font-medium">
-                      {formatCurrency(row.NET_VALUE)}
+                      {formatCurrency(row.NET_VALUE ?? 0)}
                     </td>
                     <td className="px-2 py-1 text-[12px] text-gray-700">
                       {row.LOCATION}

@@ -29,6 +29,7 @@ export interface DiamondData {
   DISC_PER: number;
     // ...existing fields...
     CERTI_PDF?: string;
+    NET_RATE?: string;
   NET_VALUE: number;
   LOCATION: string;
   STAGE: string;
