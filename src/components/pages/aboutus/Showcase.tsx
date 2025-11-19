@@ -37,9 +37,9 @@ export default function Aboutshowcase() {
         <div className="grid md:grid-cols-2 gap-16 items-center mb-32">
           <AnimatedContainer direction="scale-out">
             <div>
-              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-none overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/Heritage.png"
+                  src="/images/Heritage.jpg"
                   alt="Professional diamond dealer"
                   width={480}
                   height={340}
@@ -110,7 +110,7 @@ export default function Aboutshowcase() {
 
           <div>
             <AnimatedContainer direction="scale-out">
-              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-sm overflow-hidden shadow-2xl">
+              <div className="relative h-[290px] md:h-[340px] w-full max-w-[480px] mx-auto rounded-none overflow-hidden shadow-2xl">
                 <Image
                   src="/images/diamondwork.png"
                   alt="Diamond examination with tweezers"

@@ -107,7 +107,7 @@ export default function BlogDetailPage() {
       {/* Blog Content */}
       <article className="container mx-auto max-w-4xl px-4 py-8">
         <AnimatedContainer direction="up">
-          <div className="bg-white rounded-lg shadow-lg p-8 md:p-12">
+          <div className="bg-white rounded-none shadow-lg p-8 md:p-12">
             {/* Title */}
             <h1
               className={`text-3xl md:text-4xl lg:text-5xl text-[#2d2d2d] font-normal tracking-tight mb-6 ${marcellus.className}`}
@@ -156,7 +156,7 @@ export default function BlogDetailPage() {
         <div className="mt-8 text-center">
           <button
             onClick={() => router.push("/blogs")}
-            className={`inline-flex items-center gap-2 px-6 py-3 bg-[#c89e3a] text-white rounded hover:bg-[#9d7400] transition-colors font-semibold ${jost.className}`}
+            className={`inline-flex items-center gap-2 px-6 py-3 bg-[#c89e3a] text-white rounded-none hover:bg-[#9d7400] transition-colors font-semibold ${jost.className}`}
           >
             View All Blogs
           </button>

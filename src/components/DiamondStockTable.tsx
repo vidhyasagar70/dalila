@@ -493,7 +493,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
       <div
         className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
       >
-        <div className="bg-white shadow-sm flex flex-col rounded-lg">
+        <div className="bg-white shadow-sm flex flex-col rounded-none">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
               <thead
@@ -680,7 +680,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     <td className="px-1 py-0.5">
                       <div className="flex flex-col items-center gap-0.5">
                         <div className="relative w-12 h-12">
-                          <div className="w-full h-full bg-gray-100 rounded overflow-hidden">
+                          <div className="w-full h-full bg-gray-100 rounded-none overflow-hidden">
                             {row.REAL_IMAGE ? (
                               <Image
                                 src={row.REAL_IMAGE}
@@ -701,7 +701,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                           </div>
                           <div className="absolute -bottom-0.5 -left-0.5">
                             <div
-                              className={`w-2.5 h-2.5 rounded-full border border-white ${row.STAGE === "A" ? "bg-green-500" : "bg-red-500"}`}
+                              className={`w-2.5 h-2.5 rounded-none border border-white ${row.STAGE === "A" ? "bg-green-500" : "bg-red-500"}`}
                             ></div>
                           </div>
                         </div>
@@ -843,7 +843,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                   Rows per page
                 </span>
                 <select
-                  className="border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all"
+                  className="border border-gray-300 rounded-none px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all"
                   value={rowsPerPage}
                   onChange={(e) => {
                     setRowsPerPage(Number(e.target.value));
@@ -862,7 +862,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                  className="p-1.5 border border-gray-300 rounded-none hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
                   title="Previous page"
                 >
                   <ChevronLeft size={16} className="text-[#070b3a]" />
@@ -919,7 +919,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                           onClick={() =>
                             setCurrentPage(Math.max(1, currentPage - 5))
                           }
-                          className="w-7 h-7 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                          className="w-7 h-7 rounded-none text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                           title="Jump back 5 pages"
                         >
                           ...
@@ -935,7 +935,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                               Math.min(totalPages, currentPage + 5),
                             )
                           }
-                          className="w-7 h-7 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                          className="w-7 h-7 rounded-none text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
                           title="Jump forward 5 pages"
                         >
                           ...
@@ -946,7 +946,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                       <button
                         key={page}
                         onClick={() => setCurrentPage(page as number)}
-                        className={`w-7 h-7 rounded text-sm font-medium transition-colors ${
+                        className={`w-7 h-7 rounded-none text-sm font-medium transition-colors ${
                           currentPage === page
                             ? "bg-[#070b3a] text-white shadow-sm"
                             : "text-gray-700 hover:bg-gray-100"
@@ -964,7 +964,7 @@ const DiamondStockTable: React.FC<TableProps> = ({
                     setCurrentPage(Math.min(totalPages, currentPage + 1))
                   }
                   disabled={currentPage === totalPages}
-                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                  className="p-1.5 border border-gray-300 rounded-none hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
                   title="Next page"
                 >
                   <ChevronRight size={16} className="text-[#070b3a]" />

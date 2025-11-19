@@ -215,7 +215,7 @@ export default function BlogsPage() {
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`p-2 rounded border transition-colors ${
+          className={`p-2 rounded-none border transition-colors ${
             currentPage === 1
               ? "border-gray-300 text-gray-400 cursor-not-allowed"
               : "border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white"
@@ -228,7 +228,7 @@ export default function BlogsPage() {
           <>
             <button
               onClick={() => handlePageChange(1)}
-              className="px-4 py-2 rounded border border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-none border border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
             >
               1
             </button>
@@ -240,7 +240,7 @@ export default function BlogsPage() {
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`px-4 py-2 rounded border transition-colors ${
+            className={`px-4 py-2 rounded-none border transition-colors ${
               currentPage === page
                 ? "bg-[#c89e3a] text-white border-[#c89e3a]"
                 : "border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white"
@@ -257,7 +257,7 @@ export default function BlogsPage() {
             )}
             <button
               onClick={() => handlePageChange(totalPages)}
-              className="px-4 py-2 rounded border border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
+              className="px-4 py-2 rounded-none border border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white transition-colors"
             >
               {totalPages}
             </button>
@@ -267,7 +267,7 @@ export default function BlogsPage() {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`p-2 rounded border transition-colors ${
+          className={`p-2 rounded-none border transition-colors ${
             currentPage === totalPages
               ? "border-gray-300 text-gray-400 cursor-not-allowed"
               : "border-[#c89e3a] text-[#c89e3a] hover:bg-[#c89e3a] hover:text-white"
@@ -299,7 +299,7 @@ export default function BlogsPage() {
                   {isAdmin && (
                     <button
                       onClick={() => setShowAddModal(true)}
-                      className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-[#c89e3a] text-white rounded hover:bg-[#9d7400] transition-colors"
+                      className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-[#c89e3a] text-white rounded-none hover:bg-[#9d7400] transition-colors"
                       title="Add New Blog"
                     >
                       <Plus size={20} />
@@ -347,14 +347,14 @@ export default function BlogsPage() {
                     delay={index * 0.1}
                   >
                     <div
-                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer h-full flex flex-col relative"
+                      className="bg-white rounded-none shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer h-full flex flex-col relative"
                       onClick={() => router.push(`/blogs/${blog._id}`)}
                     >
                       {/* Edit Button - Only visible for Admin */}
                       {isAdmin && (
                         <button
                           onClick={(e) => handleEditClick(blog, e)}
-                          className="absolute top-4 cursor-pointer right-4 z-10 p-2 bg-white rounded-full shadow-md hover:bg-[#c89e3a] hover:text-white transition-colors group"
+                          className="absolute top-4 cursor-pointer right-4 z-10 p-2 bg-white rounded-none shadow-md hover:bg-[#c89e3a] hover:text-white transition-colors group"
                           title="Edit Blog"
                         >
                           <Edit2
@@ -419,7 +419,7 @@ export default function BlogsPage() {
       {/* Add Blog Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-none max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
               <h2
                 className={`text-2xl font-semibold text-[#2d2d2d] ${marcellus.className}`}
@@ -451,7 +451,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setNewBlog({ ...newBlog, title: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] bg-white text-gray-900 ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-[#c89e3a] bg-white text-gray-900 ${jost.className}`}
                   placeholder="Enter blog title"
                   disabled={isSubmitting}
                 />
@@ -468,7 +468,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setNewBlog({ ...newBlog, description: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] bg-white text-gray-900 ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] bg-white text-gray-900 ${jost.className}`}
                   placeholder="<h1>Welcome!</h1><p>Your blog content here...</p>"
                   disabled={isSubmitting}
                 />
@@ -484,7 +484,7 @@ export default function BlogsPage() {
                     setShowAddModal(false);
                     setNewBlog({ title: "", description: "" });
                   }}
-                  className={`px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors ${jost.className}`}
+                  className={`px-6 py-2 border border-gray-300 text-gray-700 rounded-none hover:bg-gray-50 transition-colors ${jost.className}`}
                   disabled={isSubmitting}
                 >
                   Cancel
@@ -492,7 +492,7 @@ export default function BlogsPage() {
                 <button
                   onClick={handleAddBlog}
                   disabled={isSubmitting}
-                  className={`px-6 py-2 bg-[#c89e3a] text-white rounded hover:bg-[#9d7400] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${jost.className}`}
+                  className={`px-6 py-2 bg-[#c89e3a] text-white rounded-none hover:bg-[#9d7400] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${jost.className}`}
                 >
                   {isSubmitting ? (
                     <>
@@ -512,7 +512,7 @@ export default function BlogsPage() {
       {/* Edit Blog Modal */}
       {showEditModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-none max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
               <h2
                 className={`text-2xl font-semibold text-[#2d2d2d] ${marcellus.className}`}
@@ -544,7 +544,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setEditBlog({ ...editBlog, title: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] bg-white text-gray-900 ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-[#c89e3a] bg-white text-gray-900 ${jost.className}`}
                   placeholder="Enter blog title"
                   disabled={isSubmitting}
                 />
@@ -561,7 +561,7 @@ export default function BlogsPage() {
                   onChange={(e) =>
                     setEditBlog({ ...editBlog, description: e.target.value })
                   }
-                  className={`w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] bg-white text-gray-900 ${jost.className}`}
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-none focus:outline-none focus:ring-2 focus:ring-[#c89e3a] min-h-[200px] bg-white text-gray-900 ${jost.className}`}
                   placeholder="<h1>Welcome!</h1><p>Your blog content here...</p>"
                   disabled={isSubmitting}
                 />
@@ -577,7 +577,7 @@ export default function BlogsPage() {
                     setShowEditModal(false);
                     setEditBlog({ id: "", title: "", description: "" });
                   }}
-                  className={`px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors ${jost.className}`}
+                  className={`px-6 py-2 border border-gray-300 text-gray-700 rounded-none hover:bg-gray-50 transition-colors ${jost.className}`}
                   disabled={isSubmitting}
                 >
                   Cancel
@@ -585,7 +585,7 @@ export default function BlogsPage() {
                 <button
                   onClick={handleUpdateBlog}
                   disabled={isSubmitting}
-                  className={`px-6 py-2 bg-[#c89e3a] text-white rounded hover:bg-[#9d7400] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${jost.className}`}
+                  className={`px-6 py-2 bg-[#c89e3a] text-white rounded-none hover:bg-[#9d7400] transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${jost.className}`}
                 >
                   {isSubmitting ? (
                     <>

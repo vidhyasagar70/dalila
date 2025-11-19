@@ -97,7 +97,7 @@ export default function ContactHeroSection() {
             <div className="grid grid-cols-2 gap-4">
               {/* Customer Service Representative Image */}
               <AnimatedContainer direction="up">
-                <div className="relative bg-gray-100 rounded-lg overflow-hidden h-[500px]">
+                <div className="relative bg-gray-100 rounded-none overflow-hidden h-[500px]">
                   <Image
                     src="/dalila_img/contact-1.webp"
                     alt="Customer service representative"
@@ -110,7 +110,7 @@ export default function ContactHeroSection() {
 
               {/* Diamond Image */}
               <AnimatedContainer direction="up" delay={0.2}>
-                <div className="relative bg-black rounded-lg overflow-hidden h-[500px]">
+                <div className="relative bg-black rounded-none overflow-hidden h-[500px]">
                   <Image
                     src="/dalila_img/contact-3.png"
                     alt="Luxury diamond"

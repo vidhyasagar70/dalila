@@ -24,7 +24,7 @@ export default function AboutHero() {
           {/* Left Half - Image */}
           <div className="relative pb-12">
             <AnimatedContainer direction="scale-out">
-              <div className="relative w-full h-96 bg-black rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative w-full h-96 bg-black rounded-none overflow-hidden shadow-2xl">
                 <Image
                   src="/images/about_us_1.jpg"
                   alt="Diamond shapes collection"

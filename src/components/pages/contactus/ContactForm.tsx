@@ -48,7 +48,7 @@ export default function ContactUsPage() {
         <div className="container mx-auto max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-8 items-start">
             <AnimatedContainer direction="left">
-              <div className="bg-white rounded-lg p-8 lg:p-12">
+              <div className="bg-white rounded-none p-8 lg:p-12">
                 <h2
                   className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-2 ${
                     marcellus.className
@@ -71,7 +71,7 @@ export default function ContactUsPage() {
                         placeholder="Your Name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-none focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
                         onFocus={(e) =>
                           (e.target.style.borderColor = goldColor)
                         }
@@ -86,7 +86,7 @@ export default function ContactUsPage() {
                         placeholder="Your Email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-none focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
                         onFocus={(e) =>
                           (e.target.style.borderColor = goldColor)
                         }
@@ -101,7 +101,7 @@ export default function ContactUsPage() {
                         placeholder="Your Phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-none focus:outline-none transition-colors text-gray-700 placeholder:text-gray-400"
                         onFocus={(e) =>
                           (e.target.style.borderColor = goldColor)
                         }
@@ -113,7 +113,7 @@ export default function ContactUsPage() {
                       <div className="flex justify-center items-center h-full ml-10">
                         <button
                           onClick={handleSubmit}
-                          className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded uppercase cursor-pointer tracking-wide text-sm"
+                          className="px-10 py-3 text-white font-semibold transition-all duration-300 rounded-none uppercase cursor-pointer tracking-wide text-sm"
                           style={{
                             background: goldGradient,
                             boxShadow: "0 2px 4px rgba(181, 137, 0, 0.2)",
@@ -144,7 +144,7 @@ export default function ContactUsPage() {
                       value={formData.message}
                       onChange={handleChange}
                       rows={7}
-                      className="w-full  px-4 py-3 bg-white border border-gray-300 rounded focus:outline-none transition-colors resize-none text-gray-700 placeholder:text-gray-400"
+                      className="w-full  px-4 py-3 bg-white border border-gray-300 rounded-none focus:outline-none transition-colors resize-none text-gray-700 placeholder:text-gray-400"
                       onFocus={(e) => (e.target.style.borderColor = goldColor)}
                       onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                     />
@@ -155,7 +155,7 @@ export default function ContactUsPage() {
 
             {/* Right Column - Contact Information */}
             <AnimatedContainer direction="right">
-              <div className="bg-white rounded-lg p-8 lg:p-12 shadow-sm">
+              <div className="bg-white rounded-none p-8 lg:p-12 shadow-sm">
                 <h2
                   className={`text-3xl lg:text-4xl font-bold text-gray-900 mb-8 ${marcellus.className}`}
                 >
@@ -165,7 +165,7 @@ export default function ContactUsPage() {
                 <div className="space-y-8">
                   <div className="flex items-start gap-4">
                     <div
-                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      className="flex-shrink-0 w-10 h-10 rounded-none flex items-center justify-center"
                       style={{ background: goldGradient }}
                     >
                       <MapPin className="w-5 h-5 text-white" />
@@ -201,7 +201,7 @@ export default function ContactUsPage() {
 
                   <div className="flex items-start gap-4">
                     <div
-                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      className="flex-shrink-0 w-10 h-10 rounded-none flex items-center justify-center"
                       style={{ background: goldGradient }}
                     >
                       <Phone className="w-5 h-5 text-white" />
@@ -217,7 +217,7 @@ export default function ContactUsPage() {
 
                   <div className="flex items-start gap-4">
                     <div
-                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      className="flex-shrink-0 w-10 h-10 rounded-none flex items-center justify-center"
                       style={{ background: goldGradient }}
                     >
                       <Mail className="w-5 h-5 text-white" />
@@ -233,7 +233,7 @@ export default function ContactUsPage() {
 
                   <div className="flex items-start gap-4">
                     <div
-                      className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                      className="flex-shrink-0 w-10 h-10 rounded-none flex items-center justify-center"
                       style={{ background: goldGradient }}
                     >
                       <Clock className="w-5 h-5 text-white" />
@@ -256,7 +256,7 @@ export default function ContactUsPage() {
       {/* Map Section */}
       <section className="px-4 pb-16">
         <div className="container mx-auto max-w-7xl">
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-white rounded-none shadow-sm overflow-hidden">
             <div className="relative h-96 bg-gray-200">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2499.2772864045445!2d4.411851776909697!3d51.21893463306524!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c3f70762e5678b%3A0x5d9b8c8b5e8b8b8b!2sHoveninersstraat%2030%2C%202018%20Antwerpen%2C%20Belgium!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"

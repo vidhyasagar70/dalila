@@ -245,7 +245,7 @@ export default function SellDiamondsForm() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-md p-8">
+      <div className="max-w-5xl mx-auto bg-white rounded-none shadow-md p-8">
         <div className="text-center mb-8">
           <h1
             className="text-3xl font-bold text-gray-900 mb-2"
@@ -482,7 +482,7 @@ export default function SellDiamondsForm() {
                 className="hidden"
               />
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                <div className="w-12 h-12 bg-yellow-100 rounded-none flex items-center justify-center mb-4">
                   <Upload className="w-6 h-6 text-yellow-600" />
                 </div>
                 <label
