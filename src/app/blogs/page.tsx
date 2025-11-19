@@ -329,7 +329,7 @@ export default function BlogsPage() {
         <div className="container mx-auto max-w-7xl">
           {loading ? (
             <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-12 h-12 text-[#c89e3a] animate-spin" />
+              <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
             </div>
           ) : blogs.length === 0 ? (
             <div className="text-center py-20">
@@ -496,7 +496,7 @@ export default function BlogsPage() {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
                       Creating...
                     </>
                   ) : (
@@ -589,7 +589,7 @@ export default function BlogsPage() {
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
                       Updating...
                     </>
                   ) : (
