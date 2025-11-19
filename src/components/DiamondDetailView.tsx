@@ -326,11 +326,11 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
           {/* Top Section: Certificate, Image, and Info */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
             {/* LEFT - Video only (same height as center image) */}
-            <div className="lg:col-span-4">
-              {/* Video Section (450px height) */}
+            <div className="lg:col-span-4 flex items-center justify-center">
+              {/* Video Section (matched height with image) */}
               {videoUrl ? (
-                <div className="bg-white overflow-hidden h-[479px] mt-14">
-                  <div className="relative bg-gray-50 h-full">
+                <div className="bg-white overflow-hidden h-[500px] w-full flex items-center justify-center">
+                  <div className="relative bg-gray-50 h-full w-full">
                     {!isPlayingVideo ? (
                       <div
                         className="relative w-full h-full cursor-pointer group"
@@ -341,7 +341,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                             src={videoThumbnail}
                             alt="Diamond Video"
                             fill
-                            className="object-cover"
+                            className="object-contain"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -349,7 +349,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                           </div>
                         )}
 
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                        <div className="absolute inset-0 flex items-center justify-center">
                           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                             <Play size={20} className="text-[#050C3A] ml-1" fill="currentColor" />
                           </div>
@@ -363,7 +363,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                         >
                           <X size={16} className="text-white" />
                         </button>
-                        <video src={videoUrl} controls autoPlay className="w-full h-full object-cover">
+                        <video src={videoUrl} controls autoPlay className="w-full h-full object-contain">
                           Your browser does not support the video tag.
                         </video>
                       </div>
@@ -371,16 +371,16 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="bg-white border border-[#e9e2c6] overflow-hidden h-[479px] mt-14">
-                  <div className="relative bg-gray-50 h-full flex items-center justify-center">
+                <div className="bg-white border border-[#e9e2c6] overflow-hidden h-[500px] w-full flex items-center justify-center">
+                  <div className="relative bg-gray-50 h-full w-full flex items-center justify-center">
                     <span className="text-sm text-gray-400">No Video Available</span>
                   </div>
                 </div>
               )}
             </div>
             {/* CENTER - Main Image (match video size) */}
-            <div className="lg:col-span-4 space-y-4">
-              <div className="relative overflow-hidden h-[592px] bg-gray-50">
+            <div className="lg:col-span-4 flex items-center justify-center">
+              <div className="relative overflow-hidden h-[500px] w-full bg-gray-50 flex items-center justify-center">
                 {/* Main Display Image */}
                 {selectedImage ? (
                   <div className="relative w-full h-full flex items-center justify-center">
@@ -411,7 +411,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                 {/* Title Section - show Stone Number instead of shape */}
                 <div className="pt-4 mt-11">
                   <div className="flex justify-between items-start mb-1">
-                    <h1 className="text-3xl font-bold text-gray-900 ">
+                    <h1 className={`text-3xl font-bold text-gray-900 ${marcellus.className}`}>
                       {diamond.STONE_NO}
                     </h1>
                   </div>
@@ -419,7 +419,7 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
 
                 {/* Price Section */}
                 <div className="py-2 border-b border-gray-200">
-                  <div className="flex items-baseline gap-2">
+                  <div className={`flex items-baseline gap-2 ${marcellus.className}`}>
                     <span className="text-3xl font-bold text-gray-900">
                       {formatCurrency(diamond.NET_VALUE)}
                     </span>

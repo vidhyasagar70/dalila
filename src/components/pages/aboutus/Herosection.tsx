@@ -36,11 +36,12 @@ export default function AboutHero() {
             </AnimatedContainer>
             <AnimatedContainer direction="scale-out">
               <div
-                className="absolute bottom-0 -right-4 sm:-right-6 md:-right-8 lg:-right-12 px-8 py-4 sm:px-10 sm:py-5 md:px-12 md:py-6 shadow-xl"
+                className="absolute bottom-0 -right-2 sm:-right-3 md:-right-4 lg:-right-6 px-4 py-2 sm:px-5 sm:py-2 md:px-6 md:py-3 shadow-xl"
                 style={{ backgroundColor: "#c89e3a" }}
               >
                 <h3
-                  className={`text-sm sm:text-lg md:text-2xl lg:text-3xl font-normal text-white whitespace-nowrap tracking-wide ${marcellus.className}`}
+                  className={`text-xs sm:text-base md:text-lg lg:text-xl font-normal text-white whitespace-nowrap tracking-wide ${marcellus.className}`}
+                  style={{ minWidth: 'unset', minHeight: 'unset' }}
                 >
                   ABOUT DALILA
                 </h3>
