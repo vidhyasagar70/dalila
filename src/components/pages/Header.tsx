@@ -286,7 +286,10 @@ export default function Header() {
       }`}
     >
       <div>
-        <div className="flex container mx-auto px-4  md:px-6 lg:px-8 items-center justify-between relative h-20">
+        <div
+          className="flex container mx-auto px-4 md:px-6 lg:px-8 items-center justify-between relative h-20"
+          style={{ minWidth: 900, flexWrap: 'nowrap', overflow: 'visible' }}
+        >
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="lg:hidden text-white p-2 hover:text-[#c89e3a] transition-colors"
@@ -359,7 +362,10 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="flex-shrink-0 relative h-24 w-[280px] sm:h-28 sm:w-[320px] md:h-32 md:w-[360px]">
+          <div
+            className="flex-shrink-0 relative h-24 w-[280px] sm:h-28 sm:w-[320px] md:h-32 md:w-[360px]"
+            style={{ minWidth: 180, maxWidth: 400 }}
+          >
             <button
               onClick={() => router.push("/")}
               className="block w-full h-full focus:outline-none"
