@@ -168,7 +168,7 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
         {/* Comparison Table */}
         <div className="p-6">
           <div
-            className="bg-white rounded-lg shadow-sm overflow-hidden"
+            className="bg-white rounded-none shadow-sm overflow-hidden"
             style={{
               border: "1px solid #e7d9b3",
             }}
@@ -221,13 +221,13 @@ const DiamondComparisonPage: React.FC<DiamondComparisonPageProps> = ({
                       >
                         <button
                           onClick={() => removeDiamond(diamond._id)}
-                          className="absolute top-2 right-2 p-1 bg-white rounded-full hover:bg-gray-100 transition-colors shadow-sm border border-gray-300"
+                          className="absolute top-2 right-2 p-1 bg-white rounded-none hover:bg-gray-100 transition-colors shadow-sm border border-gray-300"
                         >
                           <X className="w-4 h-4 text-gray-600" />
                         </button>
                         <div className="flex flex-col items-center gap-3 mt-6">
                           <div
-                            className="relative w-32 h-32 bg-gray-50 rounded-lg overflow-hidden"
+                            className="relative w-32 h-32 bg-gray-50 rounded-none overflow-hidden"
                             style={{
                               border: "1px solid #e7d9b3",
                             }}
