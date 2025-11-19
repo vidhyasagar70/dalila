@@ -460,17 +460,17 @@ const DiamondDetailView: React.FC<DiamondDetailViewProps> = ({
                     <InfoItem
                       label="Carat"
                       value={String(diamond.CARATS || diamond.SIZE)}
-                      description="Measures a diamond's size and weight."
+                      description=""
                     />
                     <InfoItem
                       label="Color"
                       value={diamond.COLOR}
-                      description="Grades a diamond's whiteness and purity."
+                      description=""
                     />
                     <InfoItem
                       label="Clarity"
                       value={diamond.CLARITY}
-                      description="Indicates a diamond's internal and external flaws."
+                      description=""
                     />
                   </div>
                   <div className="border-t border-[#e9e2c6] pt-2 mt-2"></div>
