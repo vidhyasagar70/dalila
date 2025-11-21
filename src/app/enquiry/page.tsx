@@ -88,10 +88,10 @@ function EnquiryPageContent() {
           <button
             key={i}
             onClick={() => handlePageChange(i)}
-            className={`min-w-[36px] h-9 px-3 text-sm ${
+            className={`min-w-[32px] h-8 px-2 text-sm rounded ${
               currentPage === i
-                ? "text-gray-900 font-medium"
-                : "text-gray-600 hover:text-gray-900"
+                ? "bg-[#050C3A] text-white font-medium"
+                : "text-gray-700 hover:bg-gray-200"
             }`}
           >
             {i}
@@ -104,10 +104,10 @@ function EnquiryPageContent() {
         <button
           key={1}
           onClick={() => handlePageChange(1)}
-          className={`min-w-[36px] h-9 px-3 text-sm ${
+          className={`min-w-[32px] h-8 px-2 text-sm rounded ${
             currentPage === 1
-              ? "text-gray-900 font-medium"
-              : "text-gray-600 hover:text-gray-900"
+              ? "bg-[#050C3A] text-white font-medium"
+              : "text-gray-700 hover:bg-gray-200"
           }`}
         >
           1
@@ -118,10 +118,10 @@ function EnquiryPageContent() {
         <button
           key={2}
           onClick={() => handlePageChange(2)}
-          className={`min-w-[36px] h-9 px-3 text-sm ${
+          className={`min-w-[32px] h-8 px-2 text-sm rounded ${
             currentPage === 2
-              ? "text-gray-900 font-medium"
-              : "text-gray-600 hover:text-gray-900"
+              ? "bg-[#050C3A] text-white font-medium"
+              : "text-gray-700 hover:bg-gray-200"
           }`}
         >
           2
@@ -130,7 +130,7 @@ function EnquiryPageContent() {
 
       // Show ellipsis
       buttons.push(
-        <span key="ellipsis" className="min-w-[36px] h-9 px-3 text-sm text-gray-600 flex items-center justify-center">
+        <span key="ellipsis" className="min-w-[32px] h-8 px-2 text-sm text-gray-700 flex items-center justify-center">
           ...
         </span>
       );
@@ -140,10 +140,10 @@ function EnquiryPageContent() {
         <button
           key={totalPages - 1}
           onClick={() => handlePageChange(totalPages - 1)}
-          className={`min-w-[36px] h-9 px-3 text-sm ${
+          className={`min-w-[32px] h-8 px-2 text-sm rounded ${
             currentPage === totalPages - 1
-              ? "text-gray-900 font-medium"
-              : "text-gray-600 hover:text-gray-900"
+              ? "bg-[#050C3A] text-white font-medium"
+              : "text-gray-700 hover:bg-gray-200"
           }`}
         >
           {totalPages - 1}
@@ -155,10 +155,10 @@ function EnquiryPageContent() {
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className={`min-w-[36px] h-9 px-3 text-sm ${
+          className={`min-w-[32px] h-8 px-2 text-sm rounded ${
             currentPage === totalPages
-              ? "text-gray-900 font-medium"
-              : "text-gray-600 hover:text-gray-900"
+              ? "bg-[#050C3A] text-white font-medium"
+              : "text-gray-700 hover:bg-gray-200"
           }`}
         >
           {totalPages}
@@ -202,9 +202,9 @@ function EnquiryPageContent() {
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 mt-25">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className={`text-2xl font-bold text-gray-900 ${marcellus.className}`}>Enquiries</h1>
-          <p className="text-sm text-gray-600 mt-1">
+        <div className="mb-8">
+          <h1 className={`text-3xl font-bold text-gray-900 ${marcellus.className}`}>My Enquiries</h1>
+          <p className="text-sm text-gray-600 mt-2">
             Manage customer hold requests and diamond enquiries
           </p>
         </div>
@@ -223,15 +223,15 @@ function EnquiryPageContent() {
         ) : (
           <div className="bg-white rounded-none shadow overflow-hidden">
             <table className={`min-w-full divide-y divide-gray-200 ${jost.className}`}>
-              <thead className="bg-[#0a1628]">
+              <thead className="bg-[#050C3A]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-white">
-                    Sr
+                  <th className="px-6 py-4 text-left text-base font-medium text-white">
+                    Serial No.
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-white">
+                  <th className="px-6 py-4 text-left text-base font-medium text-white">
                     Diamond ID
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-white">
+                  <th className="px-6 py-4 text-left text-base font-medium text-white">
                     Enquiry
                   </th>
                 </tr>
@@ -240,13 +240,13 @@ function EnquiryPageContent() {
                 {currentQueries.map((query, index) => (
                   <React.Fragment key={query.id}>
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {indexOfFirstItem + index + 1}
+                      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-900">
+                        {String(indexOfFirstItem + index + 1).padStart(2, '0')}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-base text-gray-900">
                         {query.stoneNo}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900">
+                      <td className="px-6 py-4 text-base text-gray-900">
                         <div className="flex items-center justify-between">
                           <span>{query.query}</span>
                           {query.adminReply && (
@@ -262,10 +262,10 @@ function EnquiryPageContent() {
                                       : "none";
                                 }
                               }}
-                              className="ml-4 text-gray-400 hover:text-gray-600"
+                              className="ml-4 text-gray-600 hover:text-gray-900"
                             >
                               <svg
-                                className="w-4 h-4"
+                                className="w-5 h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -290,10 +290,10 @@ function EnquiryPageContent() {
                       >
                         <td colSpan={3} className="px-6 py-4">
                           <div className="ml-8">
-                            <p className="text-sm font-semibold text-gray-700 mb-1">
+                            <p className="text-base font-semibold text-gray-900 mb-2">
                               Reply From Dalila
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-base text-gray-700">
                               {query.adminReply}
                             </p>
                           </div>
@@ -307,16 +307,16 @@ function EnquiryPageContent() {
 
             {/* Pagination - Always show if there are queries */}
             {queries.length > 0 && (
-              <div className="bg-white px-4 py-4 flex items-center justify-center border-t border-gray-200">
-                <div className="flex items-center">
+              <div className="bg-[#FAF6EB] px-4 py-4 flex items-center justify-center border-t border-gray-200">
+                <div className="flex items-center gap-1">
                   {/* Previous Button */}
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`w-9 h-9 flex items-center justify-center ${
+                    className={`w-9 h-9 flex items-center justify-center rounded ${
                       currentPage === 1
                         ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:text-gray-900"
+                        : "text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     <svg
@@ -335,7 +335,7 @@ function EnquiryPageContent() {
                   </button>
 
                   {/* Page Numbers */}
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     {renderPaginationButtons()}
                   </div>
 
@@ -343,10 +343,10 @@ function EnquiryPageContent() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`w-9 h-9 flex items-center justify-center ${
+                    className={`w-9 h-9 flex items-center justify-center rounded ${
                       currentPage === totalPages
                         ? "text-gray-300 cursor-not-allowed"
-                        : "text-gray-600 hover:text-gray-900"
+                        : "text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     <svg
