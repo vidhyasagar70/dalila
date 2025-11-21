@@ -24,7 +24,7 @@ const DiamondComparisonPage = dynamic(
   {
     loading: () => (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-[#D1B350]" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
       </div>
     ),
   }
@@ -35,7 +35,7 @@ const DiamondDetailView = dynamic(
   {
     loading: () => (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-[#D1B350]" />
+        <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
       </div>
     ),
   }
@@ -453,15 +453,8 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#faf6eb] dark:bg-[#faf6eb] pt-32 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-12 h-12 text-[#c89e3a] animate-spin mb-4" />
-            <p className="text-[#060c3c] dark:text-[#060c3c] text-lg">
-              Loading your cart...
-            </p>
-          </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB]" />
       </div>
     );
   }
@@ -545,7 +538,7 @@ export default function CartPage() {
             className="flex items-center gap-2 px-4 py-2.5 text-[#050C3A] dark:text-[#050C3A] hover:bg-gray-50 dark:hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isEmailSending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+               <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
             ) : (
               <Mail className="w-4 h-4" />
             )}

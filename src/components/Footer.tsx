@@ -137,8 +137,8 @@ export default function Footer() {
             <div>
               <h4 className="text-lg font-medium mb-6">Contact Us</h4>
               <div className="space-y-3 text-white/70">
-                <p>+1 234 567 890</p>
-                <p>contact@dalila.com</p>
+                <p>+32 3 231 63 27</p>
+                <p>info@daliladiamonds.com</p>
               </div>
             </div>
           </div>

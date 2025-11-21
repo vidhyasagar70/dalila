@@ -34,6 +34,7 @@ export default function Header() {
    const limitedEditionPage = pathname === "/limitedEdition";
    const createAdminPage = pathname === "/create-admin";
    const buyFormPage = pathname === "/buy-form";
+   const holdstonePage = pathname === "/holdstone";
 
   // Function to check if token has expired
   const isTokenExpired = (): boolean => {
@@ -279,7 +280,7 @@ export default function Header() {
         BlogDetailPage ||
         SecurePage ||
         diamondsourcePage ||
-        customerPage ||enquiryPage||limitedEditionPage ||createAdminPage||buyFormPage||
+        customerPage ||enquiryPage||limitedEditionPage ||createAdminPage||buyFormPage||holdstonePage||
         CartPage
           ? "bg-[#050c3a] shadow-lg "
           : "bg-transparent py-2.5 md:py-3"

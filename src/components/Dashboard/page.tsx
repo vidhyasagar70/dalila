@@ -182,7 +182,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 mt-30">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full px-8">
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-red-600" />
@@ -397,9 +397,10 @@ export default function AdminDashboard() {
           {/* Right Section - Hold Stone & Upcoming List */}
           <div className="col-span-3 flex flex-col gap-6">
             {/* Hold Stone Card */}
-            <div
+            <button
+              onClick={() => handleNavigate("/holdstone")}
               style={{ borderColor: "#FAE9D0" }}
-              className="bg-white rounded-none p-6 shadow-md border flex-1 flex flex-col justify-between"
+              className="bg-white rounded-none p-6 shadow-md border flex-1 flex flex-col justify-between cursor-pointer hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="bg-gray-100 p-2  rounded-none">
@@ -416,7 +417,7 @@ export default function AdminDashboard() {
               >
                 {holdCount}
               </div>
-            </div>
+            </button>
 
             {/* Upcoming List Card */}
             <div
