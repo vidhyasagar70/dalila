@@ -315,7 +315,24 @@ const DiamondGridView: React.FC<GridViewProps> = ({
     };
 
     fetchDiamonds();
-  }, [filterKey]); // Use memoized filter key instead of individual dependencies
+  }, [
+    filterKey,
+    searchTerm,
+    selectedShape,
+    selectedColor,
+    selectedMinCarat,
+    selectedMaxCarat,
+    selectedFluor,
+    selectedClarity,
+    selectedCut,
+    selectedPolish,
+    selectedSymmetry,
+    selectedLocations,
+    selectedLabs,
+    keySymbolFilters,
+    inclusionFilters,
+    priceFilters,
+  ]); // Include all dependencies to satisfy react-hooks/exhaustive-deps
 
   // Calculate pagination with rowsPerPage
   const totalPages = Math.ceil(data.length / rowsPerPage);

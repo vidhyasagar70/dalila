@@ -57,7 +57,13 @@ function HoldStonePage() {
       const response = await holdApi.get();
       if (response?.success && response.data?.hold?.items) {
         setHoldItems(
-          response.data.hold.items.map((item: any) => ({
+          response.data.hold.items.map((item: {
+            stoneNo: string;
+            addedAt: string;
+            _id: string;
+            diamond: any; // Use 'any' here only for the diamond property, cast to DiamondData below
+            status: string;
+          }) => ({
             stoneNo: item.stoneNo,
             addedAt: item.addedAt,
             _id: item._id,

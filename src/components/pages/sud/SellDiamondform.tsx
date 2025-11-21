@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { formApi } from "@/lib/api";
 
