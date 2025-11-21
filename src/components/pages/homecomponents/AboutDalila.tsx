@@ -1,18 +1,21 @@
 "use client";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
+import { Marcellus} from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
 import { useRouter } from "next/navigation";
-const playFair = Playfair_Display({
+
+
+const marcellus = Marcellus({
+  variable: "--font-marcellus",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400",
 });
 
 /** AboutDalila Section **/
 export default function AboutDalila() {
    const router = useRouter();
   return (
-    <div className={`bg-white py-12 md:py-16 lg:py-20 ${playFair.className}`}>
+    <div className={`bg-white py-12 md:py-16 lg:py-20 ${marcellus.className}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           <div className="pb-8 md:pb-10 lg:pb-12 flex flex-col items-end justify-end">
