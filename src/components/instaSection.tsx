@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
-import { Marcellus, Jost } from "next/font/google";
+import { Marcellus} from "next/font/google";
 
 const marcellus = Marcellus({
   variable: "--font-marcellus",

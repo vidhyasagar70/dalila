@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { holdApi } from "@/lib/api";
 import { Loader2, AlertCircle } from "lucide-react";
-import type { Diamond } from "@/lib/api";
+import type { DiamondData } from "@/types/Diamondtable";
 import DiamondDetailView from "@/components/DiamondDetailView";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import {  Jost,Marcellus, } from "next/font/google";
@@ -26,7 +26,7 @@ interface HoldItem {
   stoneNo: string;
   addedAt: string;
   _id: string;
-  diamond: Diamond;
+  diamond: DiamondData;
   status: string;
 }
 
@@ -42,7 +42,7 @@ function HoldStonePage() {
   const [holdItems, setHoldItems] = useState<HoldItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDiamond, setSelectedDiamond] = useState<Diamond | null>(null);
+  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Same as Enquiry page
 
@@ -61,14 +61,14 @@ function HoldStonePage() {
             stoneNo: item.stoneNo,
             addedAt: item.addedAt,
             _id: item._id,
-            diamond: item.diamond,
+            diamond: item.diamond as DiamondData,
             status: item.status,
           }))
         );
       } else {
         setHoldItems([]);
       }
-    } catch (err) {
+    } catch {
       setError("Failed to load hold stones. Please try again.");
       setHoldItems([]);
     } finally {
@@ -292,7 +292,7 @@ function HoldStonePage() {
       </div>
       {selectedDiamond && (
         <DiamondDetailView
-          diamond={selectedDiamond as any}
+          diamond={selectedDiamond}
           onClose={() => setSelectedDiamond(null)}
         />
       )}
