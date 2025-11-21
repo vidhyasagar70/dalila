@@ -149,10 +149,9 @@ export default function Aboutshowcase() {
                   className={`text-[2.75rem] md:text-5xl lg:text-[3.25rem] font-light mb-7 text-gray-900 leading-[1.15] tracking-tight ${marcellus.className} `}
                 >
                   Sell Your Diamonds
+                  Safely and Seamlessly 
                   <br />
-                  Safely and
-                  <br />
-                  Seamlessly at Dalila
+                   at Dalila Diamonds
                 </h2>
               </AnimatedContainer>
               <p

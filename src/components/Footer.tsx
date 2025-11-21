@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronUp,  ChevronDown } from "lucide-react";
+import { FaInstagram } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { useRouter } from "next/navigation";
@@ -61,7 +62,17 @@ export default function Footer() {
                   priority
                 />
               </div>
-              
+              <div>
+                <a
+                  href="https://www.instagram.com/p/DO56RDlDKde/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white/70 hover:text-[#c89e3a] transition-colors"
+                >
+                  <FaInstagram className="w-5 h-5" />
+                  
+                </a>
+              </div>
             </div>
 
             {/* Address Column */}
