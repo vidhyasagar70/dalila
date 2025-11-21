@@ -61,13 +61,13 @@ function HoldStonePage() {
             stoneNo: string;
             addedAt: string;
             _id: string;
-            diamond: any; // Use 'any' here only for the diamond property, cast to DiamondData below
+            diamond: import("@/lib/api").Diamond;
             status: string;
           }) => ({
             stoneNo: item.stoneNo,
             addedAt: item.addedAt,
             _id: item._id,
-            diamond: item.diamond as DiamondData,
+            diamond: item.diamond as unknown as DiamondData,
             status: item.status,
           }))
         );
