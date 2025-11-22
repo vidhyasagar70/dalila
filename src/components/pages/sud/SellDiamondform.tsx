@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Upload, Loader2 } from "lucide-react";
 import { formApi } from "@/lib/api";
-
 
 const marcellusStyle = {
   fontFamily: "Marcellus, serif",
@@ -48,9 +47,6 @@ export default function SellDiamondsForm() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
-
-
-
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -102,6 +98,13 @@ export default function SellDiamondsForm() {
     }));
   };
 
+  const removeImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -135,14 +138,14 @@ export default function SellDiamondsForm() {
         return;
       }
 
-      // Create FormData object for multipart/form-data
+      // Create FormData object for multipart/form-data - NO AUTH REQUIRED
       const submitData = new FormData();
       
       // Append required fields
       submitData.append("name", formData.fullName.trim());
       submitData.append("email", formData.email.trim());
       submitData.append("phoneNumber", formData.phone.trim());
-      submitData.append("countryCode", "+1"); // You can make this dynamic if needed
+      submitData.append("countryCode", "+1");
       submitData.append("address", formData.fullAddress.trim());
       submitData.append("material", formData.material.trim() || "Not specified");
       submitData.append("description", formData.description.trim());
@@ -166,7 +169,7 @@ export default function SellDiamondsForm() {
         submitData.append("images", image);
       });
 
-      // Submit to API
+      // Submit to PUBLIC API (no authentication needed)
       const response = await formApi.submitSellDiamond(submitData);
 
       if (response.success) {
@@ -227,6 +230,9 @@ export default function SellDiamondsForm() {
             Our process is secure, confidential, and designed to get you the
             best possible price.
           </p>
+          <p className="text-sm text-gray-600 mt-2 font-medium" style={jostStyle}>
+             No account required - Anyone can submit
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6" style={jostStyle}>
@@ -236,7 +242,7 @@ export default function SellDiamondsForm() {
               htmlFor="fullName"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Full Name
+              Full Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -257,7 +263,7 @@ export default function SellDiamondsForm() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Email Address
+              Email Address <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -278,7 +284,7 @@ export default function SellDiamondsForm() {
               htmlFor="phone"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Phone Number
+              Phone Number <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
@@ -307,7 +313,7 @@ export default function SellDiamondsForm() {
               name="carat"
               value={formData.carat}
               onChange={handleInputChange}
-              placeholder="Carat (optional)"
+              placeholder="e.g., 1.5"
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
               style={{ colorScheme: "light" }}
             />
@@ -326,7 +332,6 @@ export default function SellDiamondsForm() {
               name="condition"
               value={formData.condition}
               onChange={handleInputChange}
-              required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition text-gray-900"
               style={{
                 colorScheme: "light",
@@ -362,7 +367,7 @@ export default function SellDiamondsForm() {
               name="material"
               value={formData.material}
               onChange={handleInputChange}
-              placeholder="Material (e.g., Gold, Silver, Platinum)"
+              placeholder="e.g., Gold, Silver, Platinum"
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
               style={{ colorScheme: "light" }}
@@ -375,14 +380,14 @@ export default function SellDiamondsForm() {
               htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Description
+              Description <span className="text-red-500">*</span>
             </label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              placeholder="Enter Description"
+              placeholder="Describe your diamond(s) in detail..."
               rows={4}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
@@ -422,22 +427,42 @@ export default function SellDiamondsForm() {
                   htmlFor="fileInput"
                   className="cursor-pointer text-gray-700 hover:text-yellow-600 transition"
                 >
-                  <span className="font-medium border border-gray-300 px-4 py-2 inline-block">
-                    Choose File
+                  <span className="font-medium border border-gray-300 px-4 py-2 inline-block hover:bg-yellow-50">
+                    Choose Files
                   </span>
-                  <span className="text-gray-500 ml-2">No file chosen</span>
                 </label>
                 <p className="text-sm text-gray-500 mt-2">
-                  Upload file or drag and drop
+                  Upload files or drag and drop
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  PNG, JPG, GIF up to 10MB
+                  PNG, JPG, GIF up to 10MB each
                 </p>
               </div>
             </div>
             {formData.images.length > 0 && (
-              <div className="mt-2 text-sm text-gray-600">
-                {formData.images.length} file(s) selected
+              <div className="mt-4 space-y-2">
+                <p className="text-sm font-medium text-gray-700">
+                  {formData.images.length} file(s) selected:
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {formData.images.map((file, index) => (
+                    <div
+                      key={index}
+                      className="relative border border-gray-300 p-2 flex items-center justify-between"
+                    >
+                      <span className="text-xs text-gray-600 truncate flex-1">
+                        {file.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="ml-2 text-red-500 hover:text-red-700"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -448,14 +473,14 @@ export default function SellDiamondsForm() {
               htmlFor="fullAddress"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Full Address
+              Full Address <span className="text-red-500">*</span>
             </label>
             <textarea
               id="fullAddress"
               name="fullAddress"
               value={formData.fullAddress}
               onChange={handleInputChange}
-              placeholder="Full Address"
+              placeholder="Street address, City, State, ZIP Code"
               rows={3}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-none focus:ring-2 focus:ring-[#E6C878] focus:border-transparent outline-none transition placeholder:text-gray-500"
@@ -470,7 +495,7 @@ export default function SellDiamondsForm() {
                 htmlFor="pickupDate"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Preferred Pickup Date
+                Preferred Pickup Date <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <input
@@ -553,8 +578,9 @@ export default function SellDiamondsForm() {
               "Submit"
             )}
           </button>
-        </form>
+
         
+        </form>
       </div>
     </div>
   );

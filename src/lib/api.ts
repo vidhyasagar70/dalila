@@ -1908,21 +1908,15 @@ export const queryApi = {
 
 // Form API endpoints
 export const formApi = {
-  // Submit sell diamond form
+  // Submit sell diamond form (public, no auth required)
   submitSellDiamond: async (formData: FormData) => {
     try {
-      const token = getAuthToken();
-      if (!token || token.trim() === "") {
-        throw new Error("Please login to submit the form. Authentication required.");
-      }
-
       const response = await apiClient.post<ApiResponse<{ message: string }>>(
         "/api/forms/submit",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${token}`,
           },
         }
       );
@@ -1931,17 +1925,8 @@ export const formApi = {
       console.error("Form submission error:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
-          response?: { 
-            data?: { error?: string; message?: string };
-            status?: number;
-          };
+          response?: { data?: { error?: string; message?: string } };
         };
-        
-        // Handle 401 Unauthorized
-        if (axiosError.response?.status === 401) {
-          throw new Error("Please login to submit the form. Your session may have expired.");
-        }
-        
         if (axiosError.response?.data) {
           throw new Error(
             axiosError.response.data.error ||
