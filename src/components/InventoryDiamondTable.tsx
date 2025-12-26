@@ -131,8 +131,12 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
   noPagination = false,
   filterProps,
 }) => {
+  // Track if component is being used with external data (from props)
+  const isExternalData = propData !== undefined;
+  
   const [data, setData] = useState<InventoryDiamond[]>(propData || []);
-  const [loading, setLoading] = useState(propLoading ?? false);
+  // Initialize loading as true if no external data is provided (component will fetch data)
+  const [loading, setLoading] = useState(propLoading ?? !isExternalData);
   const [error, setError] = useState<string | null>(propError || null);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
@@ -143,9 +147,6 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
     direction: "asc" | "desc";
   } | null>(null);
   const [selectedDiamond, setSelectedDiamond] = useState<InventoryDiamond | null>(null);
-  
-  // Track if component is being used with external data (from props)
-  const isExternalData = propData !== undefined;
 
   // Update local state when props change (for external data usage)
   useEffect(() => {
@@ -499,11 +500,12 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
     );
   }
 
-  if (data.length === 0) {
+  if (!loading && data.length === 0) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <p className="text-gray-600 text-lg mb-3">No inventory data found</p>
+          <p className="text-gray-500 text-sm">Try adjusting your filters or check back later</p>
         </div>
       </div>
     );

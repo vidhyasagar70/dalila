@@ -26,7 +26,7 @@ interface HoldItem {
   stoneNo: string;
   addedAt: string;
   _id: string;
-  diamond: DiamondData;
+  diamond: DiamondData | unknown;
   status: string;
 }
 
@@ -57,19 +57,22 @@ function HoldStonePage() {
       const response = await holdApi.get();
       if (response?.success && response.data?.hold?.items) {
         setHoldItems(
-          response.data.hold.items.map((item: {
-            stoneNo: string;
-            addedAt: string;
-            _id: string;
-            diamond: import("@/lib/api").Diamond;
-            status: string;
-          }) => ({
-            stoneNo: item.stoneNo,
-            addedAt: item.addedAt,
-            _id: item._id,
-            diamond: item.diamond as unknown as DiamondData,
-            status: item.status,
-          }))
+          response.data.hold.items.map((item: unknown) => {
+            const holdItem = item as {
+              stoneNo: string;
+              addedAt: string;
+              _id: string;
+              diamond: unknown;
+              status: string;
+            };
+            return {
+              stoneNo: holdItem.stoneNo,
+              addedAt: holdItem.addedAt,
+              _id: holdItem._id,
+              diamond: holdItem.diamond as DiamondData,
+              status: holdItem.status,
+            };
+          })
         );
       } else {
         setHoldItems([]);
@@ -209,26 +212,29 @@ function HoldStonePage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentHoldItems.map((item, idx) => (
-                    <tr
-                      key={item._id}
-                      className={`transition-colors font-[Marcellus,_Jost,_serif] ${idx % 2 === 0 ? 'bg-white dark:bg-white' : 'bg-[#FAF6EB] dark:bg-[#FAF6EB]'}`}
-                    >
-                      <td
-                        className="px-4 py-3 font-medium text-[#060c3c] dark:text-[#060c3c] cursor-pointer  hover:text-blue-600 font-[Jost,_Marcellus,_serif]"
-                        onClick={() => setSelectedDiamond(item.diamond)}
+                  {currentHoldItems.map((item, idx) => {
+                    const diamond = item.diamond as DiamondData;
+                    return (
+                      <tr
+                        key={item._id}
+                        className={`transition-colors font-[Marcellus,_Jost,_serif] ${idx % 2 === 0 ? 'bg-white dark:bg-white' : 'bg-[#FAF6EB] dark:bg-[#FAF6EB]'}`}
                       >
-                        {item.stoneNo}
-                      </td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof item.diamond.SHAPE === "string" ? item.diamond.SHAPE : (item.diamond.SHAPE ? String(item.diamond.SHAPE) : "-")}</td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof item.diamond.CARATS === "string" ? item.diamond.CARATS : (item.diamond.CARATS ? String(item.diamond.CARATS) : "-")}</td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof item.diamond.COLOR === "string" ? item.diamond.COLOR : (item.diamond.COLOR ? String(item.diamond.COLOR) : "-")}</td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof item.diamond.CLARITY === "string" ? item.diamond.CLARITY : (item.diamond.CLARITY ? String(item.diamond.CLARITY) : "-")}</td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof item.diamond.CUT === "string" ? item.diamond.CUT : (item.diamond.CUT ? String(item.diamond.CUT) : "-")}</td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof item.diamond.LAB === "string" ? item.diamond.LAB : (item.diamond.LAB ? String(item.diamond.LAB) : "-")}</td>
-                      <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{item.status || "-"}</td>
-                    </tr>
-                  ))}
+                        <td
+                          className="px-4 py-3 font-medium text-[#060c3c] dark:text-[#060c3c] cursor-pointer  hover:text-blue-600 font-[Jost,_Marcellus,_serif]"
+                          onClick={() => setSelectedDiamond(diamond)}
+                        >
+                          {item.stoneNo}
+                        </td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof diamond.SHAPE === "string" ? diamond.SHAPE : (diamond.SHAPE ? String(diamond.SHAPE) : "-")}</td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof diamond.CARATS === "string" ? diamond.CARATS : (diamond.CARATS ? String(diamond.CARATS) : "-")}</td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof diamond.COLOR === "string" ? diamond.COLOR : (diamond.COLOR ? String(diamond.COLOR) : "-")}</td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof diamond.CLARITY === "string" ? diamond.CLARITY : (diamond.CLARITY ? String(diamond.CLARITY) : "-")}</td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof diamond.CUT === "string" ? diamond.CUT : (diamond.CUT ? String(diamond.CUT) : "-")}</td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{typeof diamond.LAB === "string" ? diamond.LAB : (diamond.LAB ? String(diamond.LAB) : "-")}</td>
+                        <td className="px-4 py-3 text-[#060c3c] dark:text-[#060c3c] font-[Jost,_Marcellus,_serif]">{item.status || "-"}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

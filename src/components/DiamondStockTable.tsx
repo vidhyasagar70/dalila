@@ -1,745 +1,903 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
+    ChevronLeft,
+    ChevronRight,
+    ChevronDown,
+    ChevronUp,
+    Loader2,
 } from "lucide-react";
 import { diamondApi } from "@/lib/api";
 import type {
-  DiamondData,
-  TableProps,
-  FilterParams,
+    DiamondData,
+    TableProps,
+    FilterParams,
 } from "@/types/Diamondtable";
 import DiamondDetailView from "./DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
 import { getLocationApiValues, getLabApiValues } from "./Priceandloction";
 
 const mavenPro = Maven_Pro({
-  variable: "--font-maven-pro",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
+    variable: "--font-maven-pro",
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700", "800"],
+    display: "swap",
 });
 
 const DiamondStockTable: React.FC<TableProps> = ({
-  pageSize = 20,
-  onRowClick,
-  searchTerm = "",
-  selectedShape = [],
-  selectedColor = [],
-  selectedMinCarat = "",
-  selectedMaxCarat = "",
-  selectedFluor = [],
-  selectedClarity = [],
-  selectedCut = "",
-  selectedPolish = "",
-  selectedSymmetry = "",
-  selectedLocations = [],
-  selectedLabs = [],
-  keySymbolFilters,
-  inclusionFilters,
-  priceFilters, // Add price filters prop
-  measurementFilters, // Add measurement filters prop
-  onSelectionChange,
-  clearSelectionTrigger,
+    pageSize = 20,
+    onRowClick,
+    searchTerm = "",
+    selectedShape = [],
+    selectedColor = [],
+    selectedMinCarat = "",
+    selectedMaxCarat = "",
+    selectedFluor = [],
+    selectedClarity = [],
+    selectedCut = "",
+    selectedPolish = "",
+    selectedSymmetry = "",
+    selectedLocations = [],
+    selectedLabs = [],
+    keySymbolFilters,
+    inclusionFilters,
+    priceFilters, // Add price filters prop
+    measurementFilters, // Add measurement filters prop
+    onSelectionChange,
+    clearSelectionTrigger,
 }) => {
-  const [data, setData] = useState<DiamondData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(pageSize);
-  const [sortConfig, setSortConfig] = useState<{
-    key: string;
-    direction: "asc" | "desc";
-  } | null>(null);
-  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
-    null,
-  );
-  
-  // Server-side pagination state
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+    const [data, setData] = useState<DiamondData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(pageSize);
+    const [sortConfig, setSortConfig] = useState<{
+        key: string;
+        direction: "asc" | "desc";
+    } | null>(null);
+    const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
+        null
+    );
 
-  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [selectAll, setSelectAll] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // Server-side pagination state
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
-  // Track previous fetch parameters to prevent duplicate fetches
-  const prevFetchParamsRef = useRef<string>("");
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+    const [selectAll, setSelectAll] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check if user is logged in
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("authToken");
-      const user = localStorage.getItem("user");
-      setIsLoggedIn(!!(token && user));
-    }
-  }, []);
+    // Track previous fetch parameters to prevent duplicate fetches
+    const prevFetchParamsRef = useRef<string>("");
+    const hasLoadedOnce = useRef(false);
 
-  // Clear selections when trigger changes (from parent component)
-  useEffect(() => {
-    if (clearSelectionTrigger !== undefined && clearSelectionTrigger > 0) {
-      setSelectedRows(new Set());
-      setSelectAll(false);
-    }
-  }, [clearSelectionTrigger]);
+    // Calculate sticky column offsets
+    const stickyOffsets = useMemo(() => {
+        let currentOffset = 0;
+        const offsets = {
+            checkbox: 0,
+            stockId: 0,
+            loc: 0,
+            status: 0,
+            shape: 0,
+            carat: 0,
+            color: 0,
+            clarity: 0,
+        };
 
-  // Close modal when navigation occurs
-  useEffect(() => {
-    const handleCloseModal = () => {
-      setSelectedDiamond(null);
+        // Checkbox: w-12 = 48px
+        offsets.checkbox = currentOffset;
+        currentOffset += 48;
+
+        // Stock ID: w-24 = 96px (conditional)
+        if (isLoggedIn) {
+            offsets.stockId = currentOffset;
+            currentOffset += 96;
+        }
+
+        // Loc: w-10 = 40px
+        offsets.loc = currentOffset;
+        currentOffset += 40;
+
+        // Status: w-15 = 60px
+        offsets.status = currentOffset;
+        currentOffset += 60;
+
+        // Shape: w-20 = 80px
+        offsets.shape = currentOffset;
+        currentOffset += 80;
+
+        // Carat: w-16 = 64px
+        offsets.carat = currentOffset;
+        currentOffset += 64;
+
+        // Color: w-16 = 64px
+        offsets.color = currentOffset;
+        currentOffset += 64;
+
+        // Clarity: w-20 = 80px
+        offsets.clarity = currentOffset;
+
+        return offsets;
+    }, [isLoggedIn]);
+
+    // Check if user is logged in
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem("authToken");
+            const user = localStorage.getItem("user");
+            setIsLoggedIn(!!(token && user));
+        }
+    }, []);
+
+    // Clear selections when trigger changes (from parent component)
+    useEffect(() => {
+        if (clearSelectionTrigger !== undefined && clearSelectionTrigger > 0) {
+            setSelectedRows(new Set());
+            setSelectAll(false);
+        }
+    }, [clearSelectionTrigger]);
+
+    // Close modal when navigation occurs
+    useEffect(() => {
+        const handleCloseModal = () => {
+            setSelectedDiamond(null);
+        };
+
+        if (typeof window !== "undefined") {
+            window.addEventListener("close-diamond-modal", handleCloseModal);
+        }
+
+        return () => {
+            if (typeof window !== "undefined") {
+                window.removeEventListener(
+                    "close-diamond-modal",
+                    handleCloseModal
+                );
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        const fetchDiamonds = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                // Create a unique key for current fetch parameters
+                const fetchParamsKey = JSON.stringify({
+                    searchTerm,
+                    selectedShape,
+                    selectedColor,
+                    selectedMinCarat,
+                    selectedMaxCarat,
+                    selectedFluor,
+                    selectedClarity,
+                    selectedCut,
+                    selectedPolish,
+                    selectedSymmetry,
+                    selectedLocations,
+                    selectedLabs,
+                    inclusionFilters,
+                    keySymbolFilters,
+                    priceFilters,
+                    measurementFilters,
+                    currentPage,
+                    rowsPerPage,
+                });
+
+                // Prevent duplicate fetches with same parameters
+                if (prevFetchParamsRef.current === fetchParamsKey) {
+                    setLoading(false);
+                    return;
+                }
+
+                prevFetchParamsRef.current = fetchParamsKey;
+
+                const hasSearchTerm = searchTerm && searchTerm.trim();
+                const hasShapeFilter =
+                    Array.isArray(selectedShape) && selectedShape.length > 0;
+                const hasColorFilter =
+                    Array.isArray(selectedColor) && selectedColor.length > 0;
+                const hasCaratFilter =
+                    (selectedMinCarat && selectedMinCarat.trim()) ||
+                    (selectedMaxCarat && selectedMaxCarat.trim());
+                const hasFluorFilter =
+                    Array.isArray(selectedFluor) && selectedFluor.length > 0;
+                const hasClarityFilter =
+                    selectedClarity && selectedClarity.length > 0;
+                const hasCutFilter = selectedCut && selectedCut.trim();
+                const hasPolishFilter = selectedPolish && selectedPolish.trim();
+                const hasSymmetryFilter =
+                    selectedSymmetry && selectedSymmetry.trim();
+                const hasLocationFilter =
+                    Array.isArray(selectedLocations) &&
+                    selectedLocations.length > 0;
+                const hasLabFilter =
+                    Array.isArray(selectedLabs) && selectedLabs.length > 0;
+
+                // Check for price filters
+                const hasPriceFilter =
+                    priceFilters &&
+                    ((priceFilters.pricePerCarat?.from &&
+                        priceFilters.pricePerCarat.from.trim()) ||
+                        (priceFilters.pricePerCarat?.to &&
+                            priceFilters.pricePerCarat.to.trim()) ||
+                        (priceFilters.discount?.from &&
+                            priceFilters.discount.from.trim()) ||
+                        (priceFilters.discount?.to &&
+                            priceFilters.discount.to.trim()) ||
+                        (priceFilters.totalPrice?.from &&
+                            priceFilters.totalPrice.from.trim()) ||
+                        (priceFilters.totalPrice?.to &&
+                            priceFilters.totalPrice.to.trim()));
+
+                const hasInclusionFilter =
+                    inclusionFilters &&
+                    (inclusionFilters.centerBlack.length > 0 ||
+                        inclusionFilters.centerWhite.length > 0 ||
+                        inclusionFilters.sideBlack.length > 0 ||
+                        inclusionFilters.sideWhite.length > 0);
+
+                // Check for Key Symbol filters
+                const hasKeySymbolFilter =
+                    keySymbolFilters && keySymbolFilters.keyToSymbol.length > 0;
+
+                // Check for Measurement filters
+                const hasMeasurementFilter =
+                    measurementFilters &&
+                    ((measurementFilters.length?.from &&
+                        measurementFilters.length.from.trim()) ||
+                        (measurementFilters.length?.to &&
+                            measurementFilters.length.to.trim()) ||
+                        (measurementFilters.width?.from &&
+                            measurementFilters.width.from.trim()) ||
+                        (measurementFilters.width?.to &&
+                            measurementFilters.width.to.trim()) ||
+                        (measurementFilters.depth?.from &&
+                            measurementFilters.depth.from.trim()) ||
+                        (measurementFilters.depth?.to &&
+                            measurementFilters.depth.to.trim()) ||
+                        (measurementFilters.table?.from &&
+                            measurementFilters.table.from.trim()) ||
+                        (measurementFilters.table?.to &&
+                            measurementFilters.table.to.trim()) ||
+                        (measurementFilters.depthPercent?.from &&
+                            measurementFilters.depthPercent.from.trim()) ||
+                        (measurementFilters.depthPercent?.to &&
+                            measurementFilters.depthPercent.to.trim()) ||
+                        (measurementFilters.pavAngle?.from &&
+                            measurementFilters.pavAngle.from.trim()) ||
+                        (measurementFilters.pavAngle?.to &&
+                            measurementFilters.pavAngle.to.trim()) ||
+                        (measurementFilters.pavHeight?.from &&
+                            measurementFilters.pavHeight.from.trim()) ||
+                        (measurementFilters.pavHeight?.to &&
+                            measurementFilters.pavHeight.to.trim()) ||
+                        (measurementFilters.crAngle?.from &&
+                            measurementFilters.crAngle.from.trim()) ||
+                        (measurementFilters.crAngle?.to &&
+                            measurementFilters.crAngle.to.trim()) ||
+                        (measurementFilters.crHeight?.from &&
+                            measurementFilters.crHeight.from.trim()) ||
+                        (measurementFilters.crHeight?.to &&
+                            measurementFilters.crHeight.to.trim()));
+
+                const hasAnyFilter =
+                    hasShapeFilter ||
+                    hasColorFilter ||
+                    hasSearchTerm ||
+                    hasCaratFilter ||
+                    hasFluorFilter ||
+                    hasClarityFilter ||
+                    hasCutFilter ||
+                    hasPolishFilter ||
+                    hasSymmetryFilter ||
+                    hasLocationFilter ||
+                    hasLabFilter ||
+                    hasInclusionFilter ||
+                    hasKeySymbolFilter ||
+                    hasPriceFilter ||
+                    hasMeasurementFilter;
+
+                let response;
+                if (hasAnyFilter) {
+                    const filters: FilterParams = {
+                        page: currentPage,
+                        limit: rowsPerPage,
+                    };
+
+                    if (hasShapeFilter) {
+                        filters.shape = selectedShape.join(",");
+                    }
+                    if (hasColorFilter) {
+                        filters.color = selectedColor.join(",");
+                    }
+                    if (hasCaratFilter) {
+                        if (selectedMinCarat && selectedMinCarat.trim()) {
+                            filters.minCarats = parseFloat(selectedMinCarat);
+                        }
+                        if (selectedMaxCarat && selectedMaxCarat.trim()) {
+                            filters.maxCarats = parseFloat(selectedMaxCarat);
+                        }
+                    }
+                    if (hasFluorFilter) {
+                        filters.fluorescence = selectedFluor.join(",");
+                    }
+                    if (hasClarityFilter) {
+                        filters.clarity = selectedClarity.join(",");
+                    }
+                    if (hasCutFilter) {
+                        filters.cut = selectedCut.trim();
+                    }
+                    if (hasPolishFilter) {
+                        filters.polish = selectedPolish.trim();
+                    }
+                    if (hasSymmetryFilter) {
+                        filters.symmetry = selectedSymmetry.trim();
+                    }
+                    if (hasSearchTerm) {
+                        filters.searchTerm = searchTerm.trim();
+                    }
+                    if (hasLocationFilter) {
+                        const apiLocationValues =
+                            getLocationApiValues(selectedLocations);
+                        filters.location = apiLocationValues.join(",");
+                    }
+                    if (hasLabFilter) {
+                        const apiLabValues = getLabApiValues(selectedLabs);
+                        filters.lab = apiLabValues.join(",");
+                    }
+                    if (hasInclusionFilter && inclusionFilters) {
+                        if (inclusionFilters.centerBlack.length > 0) {
+                            filters.CN = inclusionFilters.centerBlack.join(",");
+                        }
+                        if (inclusionFilters.centerWhite.length > 0) {
+                            filters.CW = inclusionFilters.centerWhite.join(",");
+                        }
+                        if (inclusionFilters.sideBlack.length > 0) {
+                            filters.SN = inclusionFilters.sideBlack.join(",");
+                        }
+                        if (inclusionFilters.sideWhite.length > 0) {
+                            filters.SW = inclusionFilters.sideWhite.join(",");
+                        }
+                    }
+
+                    // Add Key Symbol filters to API call
+                    if (hasKeySymbolFilter && keySymbolFilters) {
+                        if (keySymbolFilters.keyToSymbol.length > 0) {
+                            filters.keyToSymbols =
+                                keySymbolFilters.keyToSymbol.join(",");
+                        }
+                    }
+
+                    // Add Price filters to API call
+                    if (hasPriceFilter && priceFilters) {
+                        // $/ct (NET_RATE)
+                        if (
+                            priceFilters.pricePerCarat.from &&
+                            priceFilters.pricePerCarat.from.trim()
+                        ) {
+                            filters.netRateMin = parseFloat(
+                                priceFilters.pricePerCarat.from
+                            );
+                        }
+                        if (
+                            priceFilters.pricePerCarat.to &&
+                            priceFilters.pricePerCarat.to.trim()
+                        ) {
+                            filters.netRateMax = parseFloat(
+                                priceFilters.pricePerCarat.to
+                            );
+                        }
+
+                        // Disc% (DISC_PER)
+                        if (
+                            priceFilters.discount.from &&
+                            priceFilters.discount.from.trim()
+                        ) {
+                            filters.discPerMin = parseFloat(
+                                priceFilters.discount.from
+                            );
+                        }
+                        if (
+                            priceFilters.discount.to &&
+                            priceFilters.discount.to.trim()
+                        ) {
+                            filters.discPerMax = parseFloat(
+                                priceFilters.discount.to
+                            );
+                        }
+
+                        // Total $ (NET_VALUE)
+                        if (
+                            priceFilters.totalPrice.from &&
+                            priceFilters.totalPrice.from.trim()
+                        ) {
+                            filters.netValueMin = parseFloat(
+                                priceFilters.totalPrice.from
+                            );
+                        }
+                        if (
+                            priceFilters.totalPrice.to &&
+                            priceFilters.totalPrice.to.trim()
+                        ) {
+                            filters.netValueMax = parseFloat(
+                                priceFilters.totalPrice.to
+                            );
+                        }
+                    }
+
+                    // Add Measurement filters to API call
+                    if (hasMeasurementFilter && measurementFilters) {
+                        // Length
+                        if (
+                            measurementFilters.length?.from &&
+                            measurementFilters.length.from.trim()
+                        ) {
+                            filters.lengthMin = parseFloat(
+                                measurementFilters.length.from
+                            );
+                        }
+                        if (
+                            measurementFilters.length?.to &&
+                            measurementFilters.length.to.trim()
+                        ) {
+                            filters.lengthMax = parseFloat(
+                                measurementFilters.length.to
+                            );
+                        }
+
+                        // Width
+                        if (
+                            measurementFilters.width?.from &&
+                            measurementFilters.width.from.trim()
+                        ) {
+                            filters.widthMin = parseFloat(
+                                measurementFilters.width.from
+                            );
+                        }
+                        if (
+                            measurementFilters.width?.to &&
+                            measurementFilters.width.to.trim()
+                        ) {
+                            filters.widthMax = parseFloat(
+                                measurementFilters.width.to
+                            );
+                        }
+
+                        // Depth
+                        if (
+                            measurementFilters.depth?.from &&
+                            measurementFilters.depth.from.trim()
+                        ) {
+                            filters.depthMin = parseFloat(
+                                measurementFilters.depth.from
+                            );
+                        }
+                        if (
+                            measurementFilters.depth?.to &&
+                            measurementFilters.depth.to.trim()
+                        ) {
+                            filters.depthMax = parseFloat(
+                                measurementFilters.depth.to
+                            );
+                        }
+
+                        // Table %
+                        if (
+                            measurementFilters.table?.from &&
+                            measurementFilters.table.from.trim()
+                        ) {
+                            filters.tablePerMin = parseFloat(
+                                measurementFilters.table.from
+                            );
+                        }
+                        if (
+                            measurementFilters.table?.to &&
+                            measurementFilters.table.to.trim()
+                        ) {
+                            filters.tablePerMax = parseFloat(
+                                measurementFilters.table.to
+                            );
+                        }
+
+                        // Depth %
+                        if (
+                            measurementFilters.depthPercent?.from &&
+                            measurementFilters.depthPercent.from.trim()
+                        ) {
+                            filters.depthPerMin = parseFloat(
+                                measurementFilters.depthPercent.from
+                            );
+                        }
+                        if (
+                            measurementFilters.depthPercent?.to &&
+                            measurementFilters.depthPercent.to.trim()
+                        ) {
+                            filters.depthPerMax = parseFloat(
+                                measurementFilters.depthPercent.to
+                            );
+                        }
+
+                        // Pavilion Angle
+                        if (
+                            measurementFilters.pavAngle?.from &&
+                            measurementFilters.pavAngle.from.trim()
+                        ) {
+                            filters.pavillionAngleMin = parseFloat(
+                                measurementFilters.pavAngle.from
+                            );
+                        }
+                        if (
+                            measurementFilters.pavAngle?.to &&
+                            measurementFilters.pavAngle.to.trim()
+                        ) {
+                            filters.pavillionAngleMax = parseFloat(
+                                measurementFilters.pavAngle.to
+                            );
+                        }
+
+                        // Pavilion Height
+                        if (
+                            measurementFilters.pavHeight?.from &&
+                            measurementFilters.pavHeight.from.trim()
+                        ) {
+                            filters.pavillionHeightMin = parseFloat(
+                                measurementFilters.pavHeight.from
+                            );
+                        }
+                        if (
+                            measurementFilters.pavHeight?.to &&
+                            measurementFilters.pavHeight.to.trim()
+                        ) {
+                            filters.pavillionHeightMax = parseFloat(
+                                measurementFilters.pavHeight.to
+                            );
+                        }
+
+                        // Crown Angle
+                        if (
+                            measurementFilters.crAngle?.from &&
+                            measurementFilters.crAngle.from.trim()
+                        ) {
+                            filters.crownAngleMin = parseFloat(
+                                measurementFilters.crAngle.from
+                            );
+                        }
+                        if (
+                            measurementFilters.crAngle?.to &&
+                            measurementFilters.crAngle.to.trim()
+                        ) {
+                            filters.crownAngleMax = parseFloat(
+                                measurementFilters.crAngle.to
+                            );
+                        }
+
+                        // Crown Height
+                        if (
+                            measurementFilters.crHeight?.from &&
+                            measurementFilters.crHeight.from.trim()
+                        ) {
+                            filters.crownHeightMin = parseFloat(
+                                measurementFilters.crHeight.from
+                            );
+                        }
+                        if (
+                            measurementFilters.crHeight?.to &&
+                            measurementFilters.crHeight.to.trim()
+                        ) {
+                            filters.crownHeightMax = parseFloat(
+                                measurementFilters.crHeight.to
+                            );
+                        }
+                    }
+
+                    response = await diamondApi.search(filters);
+                } else {
+                    // For no filters, use pagination parameters
+                    const filters: FilterParams = {
+                        page: currentPage,
+                        limit: rowsPerPage,
+                    };
+                    response = await diamondApi.search(filters);
+                }
+
+                if (response?.success && response.data) {
+                    let diamonds: DiamondData[];
+                    if (Array.isArray(response.data)) {
+                        diamonds = response.data as unknown as DiamondData[];
+                    } else if (
+                        response.data.diamonds &&
+                        Array.isArray(response.data.diamonds)
+                    ) {
+                        diamonds = response.data
+                            .diamonds as unknown as DiamondData[];
+                    } else {
+                        diamonds = [];
+                    }
+                    setData(diamonds);
+                     hasLoadedOnce.current = true;
+
+                    // Extract pagination data from response (using type assertion for extended response)
+                    const extendedResponse = response as typeof response & {
+                        pagination?: {
+                            totalRecords?: number;
+                            totalPages?: number;
+                        };
+                        totalFilteredRecords?: number;
+                    };
+                    if (extendedResponse.pagination) {
+                        setTotalRecords(
+                            extendedResponse.pagination.totalRecords ||
+                                extendedResponse.totalFilteredRecords ||
+                                0
+                        );
+                        setTotalPages(
+                            extendedResponse.pagination.totalPages || 0
+                        );
+                    } else if (
+                        extendedResponse.totalFilteredRecords !== undefined
+                    ) {
+                        setTotalRecords(extendedResponse.totalFilteredRecords);
+                        setTotalPages(
+                            Math.ceil(
+                                extendedResponse.totalFilteredRecords /
+                                    rowsPerPage
+                            )
+                        );
+                    } else if (response.data.pagination) {
+                        setTotalRecords(
+                            response.data.pagination.totalItems || 0
+                        );
+                        setTotalPages(response.data.pagination.totalPages || 0);
+                    } else {
+                        setTotalRecords(diamonds.length);
+                        setTotalPages(1);
+                    }
+                } else {
+                    setData([]);
+                    setTotalRecords(0);
+                    setTotalPages(0);
+                    hasLoadedOnce.current = true;
+                }
+            } catch (err) {
+                console.error("Error fetching diamonds:", err);
+                setError(
+                    err instanceof Error
+                        ? err.message
+                        : "Failed to fetch diamonds"
+                );
+                setData([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDiamonds();
+    }, [
+        searchTerm,
+        selectedShape,
+        selectedColor,
+        selectedMinCarat,
+        selectedMaxCarat,
+        selectedFluor,
+        selectedClarity,
+        selectedCut,
+        selectedPolish,
+        selectedSymmetry,
+        selectedLocations,
+        selectedLabs,
+        inclusionFilters,
+        keySymbolFilters,
+        priceFilters,
+        measurementFilters,
+        currentPage,
+        rowsPerPage,
+    ]);
+
+    const handleSort = (key: string) => {
+        let direction: "asc" | "desc" = "asc";
+        if (
+            sortConfig &&
+            sortConfig.key === key &&
+            sortConfig.direction === "asc"
+        ) {
+            direction = "desc";
+        }
+        setSortConfig({ key, direction });
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("close-diamond-modal", handleCloseModal);
-    }
+    const sortedData = useMemo(() => {
+        if (data.length === 0) return data;
 
-    return () => {
-      if (typeof window !== "undefined") {
-        window.removeEventListener("close-diamond-modal", handleCloseModal);
-      }
-    };
-  }, []);
+        // Server-side pagination means we only have current page data
+        // Apply client-side sorting only
+        if (!sortConfig) return data;
 
-  useEffect(() => {
-    const fetchDiamonds = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+        const sorted = [...data].sort((a, b) => {
+            const aValue = a[sortConfig.key as keyof DiamondData];
+            const bValue = b[sortConfig.key as keyof DiamondData];
 
-        // Create a unique key for current fetch parameters
-        const fetchParamsKey = JSON.stringify({
-          searchTerm,
-          selectedShape,
-          selectedColor,
-          selectedMinCarat,
-          selectedMaxCarat,
-          selectedFluor,
-          selectedClarity,
-          selectedCut,
-          selectedPolish,
-          selectedSymmetry,
-          selectedLocations,
-          selectedLabs,
-          inclusionFilters,
-          keySymbolFilters,
-          priceFilters,
-          measurementFilters,
-          currentPage,
-          rowsPerPage,
+            const aNum = parseFloat(String(aValue));
+            const bNum = parseFloat(String(bValue));
+            if (!isNaN(aNum) && !isNaN(bNum)) {
+                return sortConfig.direction === "asc"
+                    ? aNum - bNum
+                    : bNum - aNum;
+            }
+
+            const aStr = String(aValue).toLowerCase();
+            const bStr = String(bValue).toLowerCase();
+            if (aStr < bStr) return sortConfig.direction === "asc" ? -1 : 1;
+            if (aStr > bStr) return sortConfig.direction === "asc" ? 1 : -1;
+            return 0;
         });
 
-        // Prevent duplicate fetches with same parameters
-        if (prevFetchParamsRef.current === fetchParamsKey) {
-          setLoading(false);
-          return;
-        }
+        return sorted;
+    }, [data, sortConfig]);
 
-        prevFetchParamsRef.current = fetchParamsKey;
+    // No client-side pagination needed - data is already paginated from server
+    const paginatedData = sortedData;
 
-        const hasSearchTerm = searchTerm && searchTerm.trim();
-        const hasShapeFilter =
-          Array.isArray(selectedShape) && selectedShape.length > 0;
-        const hasColorFilter =
-          Array.isArray(selectedColor) && selectedColor.length > 0;
-        const hasCaratFilter =
-          (selectedMinCarat && selectedMinCarat.trim()) ||
-          (selectedMaxCarat && selectedMaxCarat.trim());
-        const hasFluorFilter =
-          Array.isArray(selectedFluor) && selectedFluor.length > 0;
-        const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-        const hasCutFilter = selectedCut && selectedCut.trim();
-        const hasPolishFilter = selectedPolish && selectedPolish.trim();
-        const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
-        const hasLocationFilter =
-          Array.isArray(selectedLocations) && selectedLocations.length > 0;
-        const hasLabFilter =
-          Array.isArray(selectedLabs) && selectedLabs.length > 0;
-
-        // Check for price filters
-        const hasPriceFilter =
-          priceFilters &&
-          ((priceFilters.pricePerCarat?.from &&
-            priceFilters.pricePerCarat.from.trim()) ||
-            (priceFilters.pricePerCarat?.to &&
-              priceFilters.pricePerCarat.to.trim()) ||
-            (priceFilters.discount?.from &&
-              priceFilters.discount.from.trim()) ||
-            (priceFilters.discount?.to && priceFilters.discount.to.trim()) ||
-            (priceFilters.totalPrice?.from &&
-              priceFilters.totalPrice.from.trim()) ||
-            (priceFilters.totalPrice?.to && priceFilters.totalPrice.to.trim()));
-
-        const hasInclusionFilter =
-          inclusionFilters &&
-          (inclusionFilters.centerBlack.length > 0 ||
-            inclusionFilters.centerWhite.length > 0 ||
-            inclusionFilters.sideBlack.length > 0 ||
-            inclusionFilters.sideWhite.length > 0);
-
-        // Check for Key Symbol filters
-        const hasKeySymbolFilter =
-          keySymbolFilters &&
-          keySymbolFilters.keyToSymbol.length > 0;
-
-        // Check for Measurement filters
-        const hasMeasurementFilter =
-          measurementFilters &&
-          ((measurementFilters.length?.from &&
-            measurementFilters.length.from.trim()) ||
-            (measurementFilters.length?.to &&
-              measurementFilters.length.to.trim()) ||
-            (measurementFilters.width?.from &&
-              measurementFilters.width.from.trim()) ||
-            (measurementFilters.width?.to &&
-              measurementFilters.width.to.trim()) ||
-            (measurementFilters.depth?.from &&
-              measurementFilters.depth.from.trim()) ||
-            (measurementFilters.depth?.to &&
-              measurementFilters.depth.to.trim()) ||
-            (measurementFilters.table?.from &&
-              measurementFilters.table.from.trim()) ||
-            (measurementFilters.table?.to &&
-              measurementFilters.table.to.trim()) ||
-            (measurementFilters.depthPercent?.from &&
-              measurementFilters.depthPercent.from.trim()) ||
-            (measurementFilters.depthPercent?.to &&
-              measurementFilters.depthPercent.to.trim()) ||
-            (measurementFilters.pavAngle?.from &&
-              measurementFilters.pavAngle.from.trim()) ||
-            (measurementFilters.pavAngle?.to &&
-              measurementFilters.pavAngle.to.trim()) ||
-            (measurementFilters.pavHeight?.from &&
-              measurementFilters.pavHeight.from.trim()) ||
-            (measurementFilters.pavHeight?.to &&
-              measurementFilters.pavHeight.to.trim()) ||
-            (measurementFilters.crAngle?.from &&
-              measurementFilters.crAngle.from.trim()) ||
-            (measurementFilters.crAngle?.to &&
-              measurementFilters.crAngle.to.trim()) ||
-            (measurementFilters.crHeight?.from &&
-              measurementFilters.crHeight.from.trim()) ||
-            (measurementFilters.crHeight?.to &&
-              measurementFilters.crHeight.to.trim()));
-
-        const hasAnyFilter =
-          hasShapeFilter ||
-          hasColorFilter ||
-          hasSearchTerm ||
-          hasCaratFilter ||
-          hasFluorFilter ||
-          hasClarityFilter ||
-          hasCutFilter ||
-          hasPolishFilter ||
-          hasSymmetryFilter ||
-          hasLocationFilter ||
-          hasLabFilter ||
-          hasInclusionFilter ||
-          hasKeySymbolFilter ||
-          hasPriceFilter ||
-          hasMeasurementFilter; 
-
-        let response;
-        if (hasAnyFilter) {
-          const filters: FilterParams = {
-            page: currentPage,
-            limit: rowsPerPage,
-          };
-
-          if (hasShapeFilter) {
-            filters.shape = selectedShape.join(",");
-          }
-          if (hasColorFilter) {
-            filters.color = selectedColor.join(",");
-          }
-          if (hasCaratFilter) {
-            if (selectedMinCarat && selectedMinCarat.trim()) {
-              filters.minCarats = parseFloat(selectedMinCarat);
-            }
-            if (selectedMaxCarat && selectedMaxCarat.trim()) {
-              filters.maxCarats = parseFloat(selectedMaxCarat);
-            }
-          }
-          if (hasFluorFilter) {
-            filters.fluorescence = selectedFluor.join(",");
-          }
-          if (hasClarityFilter) {
-            filters.clarity = selectedClarity.join(",");
-          }
-          if (hasCutFilter) {
-            filters.cut = selectedCut.trim();
-          }
-          if (hasPolishFilter) {
-            filters.polish = selectedPolish.trim();
-          }
-          if (hasSymmetryFilter) {
-            filters.symmetry = selectedSymmetry.trim();
-          }
-          if (hasSearchTerm) {
-            filters.searchTerm = searchTerm.trim();
-          }
-          if (hasLocationFilter) {
-            const apiLocationValues = getLocationApiValues(selectedLocations);
-            filters.location = apiLocationValues.join(",");
-          }
-          if (hasLabFilter) {
-            const apiLabValues = getLabApiValues(selectedLabs);
-            filters.lab = apiLabValues.join(",");
-          }
-          if (hasInclusionFilter && inclusionFilters) {
-            if (inclusionFilters.centerBlack.length > 0) {
-              filters.CN = inclusionFilters.centerBlack.join(",");
-            }
-            if (inclusionFilters.centerWhite.length > 0) {
-              filters.CW = inclusionFilters.centerWhite.join(",");
-            }
-            if (inclusionFilters.sideBlack.length > 0) {
-              filters.SN = inclusionFilters.sideBlack.join(",");
-            }
-            if (inclusionFilters.sideWhite.length > 0) {
-              filters.SW = inclusionFilters.sideWhite.join(",");
-            }
-          }
-
-          // Add Key Symbol filters to API call
-          if (hasKeySymbolFilter && keySymbolFilters) {
-            if (keySymbolFilters.keyToSymbol.length > 0) {
-              filters.keyToSymbols = keySymbolFilters.keyToSymbol.join(",");
-            }
-          }
-
-          // Add Price filters to API call
-          if (hasPriceFilter && priceFilters) {
-            // $/ct (NET_RATE)
-            if (
-              priceFilters.pricePerCarat.from &&
-              priceFilters.pricePerCarat.from.trim()
-            ) {
-              filters.netRateMin = parseFloat(priceFilters.pricePerCarat.from);
-            }
-            if (
-              priceFilters.pricePerCarat.to &&
-              priceFilters.pricePerCarat.to.trim()
-            ) {
-              filters.netRateMax = parseFloat(priceFilters.pricePerCarat.to);
-            }
-
-            // Disc% (DISC_PER)
-            if (
-              priceFilters.discount.from &&
-              priceFilters.discount.from.trim()
-            ) {
-              filters.discPerMin = parseFloat(priceFilters.discount.from);
-            }
-            if (priceFilters.discount.to && priceFilters.discount.to.trim()) {
-              filters.discPerMax = parseFloat(priceFilters.discount.to);
-            }
-
-            // Total $ (NET_VALUE)
-            if (
-              priceFilters.totalPrice.from &&
-              priceFilters.totalPrice.from.trim()
-            ) {
-              filters.netValueMin = parseFloat(priceFilters.totalPrice.from);
-            }
-            if (
-              priceFilters.totalPrice.to &&
-              priceFilters.totalPrice.to.trim()
-            ) {
-              filters.netValueMax = parseFloat(priceFilters.totalPrice.to);
-            }
-          }
-
-          // Add Measurement filters to API call
-          if (hasMeasurementFilter && measurementFilters) {
-            // Length
-            if (
-              measurementFilters.length?.from &&
-              measurementFilters.length.from.trim()
-            ) {
-              filters.lengthMin = parseFloat(measurementFilters.length.from);
-            }
-            if (
-              measurementFilters.length?.to &&
-              measurementFilters.length.to.trim()
-            ) {
-              filters.lengthMax = parseFloat(measurementFilters.length.to);
-            }
-
-            // Width
-            if (
-              measurementFilters.width?.from &&
-              measurementFilters.width.from.trim()
-            ) {
-              filters.widthMin = parseFloat(measurementFilters.width.from);
-            }
-            if (
-              measurementFilters.width?.to &&
-              measurementFilters.width.to.trim()
-            ) {
-              filters.widthMax = parseFloat(measurementFilters.width.to);
-            }
-
-            // Depth
-            if (
-              measurementFilters.depth?.from &&
-              measurementFilters.depth.from.trim()
-            ) {
-              filters.depthMin = parseFloat(measurementFilters.depth.from);
-            }
-            if (
-              measurementFilters.depth?.to &&
-              measurementFilters.depth.to.trim()
-            ) {
-              filters.depthMax = parseFloat(measurementFilters.depth.to);
-            }
-
-            // Table %
-            if (
-              measurementFilters.table?.from &&
-              measurementFilters.table.from.trim()
-            ) {
-              filters.tablePerMin = parseFloat(measurementFilters.table.from);
-            }
-            if (
-              measurementFilters.table?.to &&
-              measurementFilters.table.to.trim()
-            ) {
-              filters.tablePerMax = parseFloat(measurementFilters.table.to);
-            }
-
-            // Depth %
-            if (
-              measurementFilters.depthPercent?.from &&
-              measurementFilters.depthPercent.from.trim()
-            ) {
-              filters.depthPerMin = parseFloat(measurementFilters.depthPercent.from);
-            }
-            if (
-              measurementFilters.depthPercent?.to &&
-              measurementFilters.depthPercent.to.trim()
-            ) {
-              filters.depthPerMax = parseFloat(measurementFilters.depthPercent.to);
-            }
-
-            // Pavilion Angle
-            if (
-              measurementFilters.pavAngle?.from &&
-              measurementFilters.pavAngle.from.trim()
-            ) {
-              filters.pavillionAngleMin = parseFloat(measurementFilters.pavAngle.from);
-            }
-            if (
-              measurementFilters.pavAngle?.to &&
-              measurementFilters.pavAngle.to.trim()
-            ) {
-              filters.pavillionAngleMax = parseFloat(measurementFilters.pavAngle.to);
-            }
-
-            // Pavilion Height
-            if (
-              measurementFilters.pavHeight?.from &&
-              measurementFilters.pavHeight.from.trim()
-            ) {
-              filters.pavillionHeightMin = parseFloat(measurementFilters.pavHeight.from);
-            }
-            if (
-              measurementFilters.pavHeight?.to &&
-              measurementFilters.pavHeight.to.trim()
-            ) {
-              filters.pavillionHeightMax = parseFloat(measurementFilters.pavHeight.to);
-            }
-
-            // Crown Angle
-            if (
-              measurementFilters.crAngle?.from &&
-              measurementFilters.crAngle.from.trim()
-            ) {
-              filters.crownAngleMin = parseFloat(measurementFilters.crAngle.from);
-            }
-            if (
-              measurementFilters.crAngle?.to &&
-              measurementFilters.crAngle.to.trim()
-            ) {
-              filters.crownAngleMax = parseFloat(measurementFilters.crAngle.to);
-            }
-
-            // Crown Height
-            if (
-              measurementFilters.crHeight?.from &&
-              measurementFilters.crHeight.from.trim()
-            ) {
-              filters.crownHeightMin = parseFloat(measurementFilters.crHeight.from);
-            }
-            if (
-              measurementFilters.crHeight?.to &&
-              measurementFilters.crHeight.to.trim()
-            ) {
-              filters.crownHeightMax = parseFloat(measurementFilters.crHeight.to);
-            }
-          }
-
-          response = await diamondApi.search(filters);
-        } else {
-          // For no filters, use pagination parameters
-          const filters: FilterParams = {
-            page: currentPage,
-            limit: rowsPerPage,
-          };
-          response = await diamondApi.search(filters);
-        }
-
-        if (response?.success && response.data) {
-          let diamonds: DiamondData[];
-          if (Array.isArray(response.data)) {
-            diamonds = response.data as unknown as DiamondData[];
-          } else if (
-            response.data.diamonds &&
-            Array.isArray(response.data.diamonds)
-          ) {
-            diamonds = response.data.diamonds as unknown as DiamondData[];
-          } else {
-            diamonds = [];
-          }
-          setData(diamonds);
-          
-          // Extract pagination data from response (using type assertion for extended response)
-          const extendedResponse = response as typeof response & {
-            pagination?: { totalRecords?: number; totalPages?: number };
-            totalFilteredRecords?: number;
-          };
-          if (extendedResponse.pagination) {
-            setTotalRecords(extendedResponse.pagination.totalRecords || extendedResponse.totalFilteredRecords || 0);
-            setTotalPages(extendedResponse.pagination.totalPages || 0);
-          } else if (extendedResponse.totalFilteredRecords !== undefined) {
-            setTotalRecords(extendedResponse.totalFilteredRecords);
-            setTotalPages(Math.ceil(extendedResponse.totalFilteredRecords / rowsPerPage));
-          } else if (response.data.pagination) {
-            setTotalRecords(response.data.pagination.totalItems || 0);
-            setTotalPages(response.data.pagination.totalPages || 0);
-          } else {
-            setTotalRecords(diamonds.length);
-            setTotalPages(1);
-          }
-        } else {
-          setData([]);
-          setTotalRecords(0);
-          setTotalPages(0);
-        }
-      } catch (err) {
-        console.error("Error fetching diamonds:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch diamonds",
-        );
-        setData([]);
-      } finally {
-        setLoading(false);
-      }
+    const formatCurrency = (value: string | number) => {
+        const num = parseFloat(String(value));
+        return isNaN(num)
+            ? "N/A"
+            : `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
-    fetchDiamonds();
-  }, [
-    searchTerm,
-    selectedShape,
-    selectedColor,
-    selectedMinCarat,
-    selectedMaxCarat,
-    selectedFluor,
-    selectedClarity,
-    selectedCut,
-    selectedPolish,
-    selectedSymmetry,
-    selectedLocations,
-    selectedLabs,
-    inclusionFilters,
-    keySymbolFilters,
-    priceFilters,
-    measurementFilters,
-    currentPage,
-    rowsPerPage,
-  ]);
+    const formatPercentage = (value: string | number) => {
+        const num = parseFloat(String(value));
+        return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
+    };
 
-  const handleSort = (key: string) => {
-    let direction: "asc" | "desc" = "asc";
-    if (
-      sortConfig &&
-      sortConfig.key === key &&
-      sortConfig.direction === "asc"
-    ) {
-      direction = "desc";
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            const allIds = new Set(paginatedData.map((row) => row._id));
+            setSelectedRows(allIds);
+            setSelectAll(true);
+            if (onSelectionChange) {
+                onSelectionChange(Array.from(allIds), paginatedData);
+            }
+        } else {
+            setSelectedRows(new Set());
+            setSelectAll(false);
+            if (onSelectionChange) {
+                onSelectionChange([], []);
+            }
+        }
+    };
+
+    const handleRowSelect = (id: string, checked: boolean) => {
+        const newSelected = new Set(selectedRows);
+        if (checked) {
+            newSelected.add(id);
+        } else {
+            newSelected.delete(id);
+            setSelectAll(false);
+        }
+        setSelectedRows(newSelected);
+
+        const selected = data.filter((d) => newSelected.has(d._id));
+        if (onSelectionChange) {
+            onSelectionChange(Array.from(newSelected), selected);
+        }
+    };
+
+    const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
+        e.stopPropagation();
+        if (onRowClick) {
+            onRowClick(row);
+        } else {
+            setSelectedDiamond(row);
+        }
+    };
+
+    // Show loader only while loading and hasn't loaded data yet
+    if (loading && !hasLoadedOnce.current) {
+        return (
+            <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
+                    <p className="text-gray-600">Loading diamonds...</p>
+                </div>
+            </div>
+        );
     }
-    setSortConfig({ key, direction });
-  };
 
-  const sortedData = useMemo(() => {
-    if (data.length === 0) return data;
-
-    // Server-side pagination means we only have current page data
-    // Apply client-side sorting only
-    if (!sortConfig) return data;
-
-    const sorted = [...data].sort((a, b) => {
-      const aValue = a[sortConfig.key as keyof DiamondData];
-      const bValue = b[sortConfig.key as keyof DiamondData];
-
-      const aNum = parseFloat(String(aValue));
-      const bNum = parseFloat(String(bValue));
-      if (!isNaN(aNum) && !isNaN(bNum)) {
-        return sortConfig.direction === "asc" ? aNum - bNum : bNum - aNum;
-      }
-
-      const aStr = String(aValue).toLowerCase();
-      const bStr = String(bValue).toLowerCase();
-      if (aStr < bStr) return sortConfig.direction === "asc" ? -1 : 1;
-      if (aStr > bStr) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    return sorted;
-  }, [data, sortConfig]);
-
-  // No client-side pagination needed - data is already paginated from server
-  const paginatedData = sortedData;
-
-  const formatCurrency = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num)
-      ? "N/A"
-      : `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  };
-
-  const formatPercentage = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allIds = new Set(paginatedData.map((row) => row._id));
-      setSelectedRows(allIds);
-      setSelectAll(true);
-      if (onSelectionChange) {
-        onSelectionChange(Array.from(allIds), paginatedData);
-      }
-    } else {
-      setSelectedRows(new Set());
-      setSelectAll(false);
-      if (onSelectionChange) {
-        onSelectionChange([], []);
-      }
+    if (error) {
+        return (
+            <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <div className="text-red-600 mb-2 text-4xl">⚠️</div>
+                    <p className="text-red-600 font-medium">
+                        Error loading diamonds
+                    </p>
+                    <p className="text-gray-600 text-sm mt-2">{error}</p>
+                </div>
+            </div>
+        );
     }
-  };
 
-  const handleRowSelect = (id: string, checked: boolean) => {
-    const newSelected = new Set(selectedRows);
-    if (checked) {
-      newSelected.add(id);
-    } else {
-      newSelected.delete(id);
-      setSelectAll(false);
+    // Show "no diamonds found" only after initial load is complete
+    if (!loading && data.length === 0 && hasLoadedOnce.current) {
+        return (
+            <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <p className="text-gray-600 text-lg mb-3">
+                        {searchTerm ||
+                        (Array.isArray(selectedShape) &&
+                            selectedShape.length > 0) ||
+                        selectedColor ||
+                        selectedClarity.length > 0 ||
+                        selectedCut ||
+                        selectedPolish ||
+                        selectedSymmetry ||
+                        selectedFluor ||
+                        selectedMinCarat ||
+                        selectedMaxCarat ||
+                        (Array.isArray(selectedLocations) &&
+                            selectedLocations.length > 0) ||
+                        (Array.isArray(selectedLabs) &&
+                            selectedLabs.length > 0) ||
+                        (keySymbolFilters?.keyToSymbol &&
+                            keySymbolFilters.keyToSymbol.length > 0) ||
+                        priceFilters?.pricePerCarat?.from ||
+                        priceFilters?.pricePerCarat?.to ||
+                        priceFilters?.discount?.from ||
+                        priceFilters?.discount?.to ||
+                        priceFilters?.totalPrice?.from ||
+                        priceFilters?.totalPrice?.to
+                            ? `No diamonds found matching your filters`
+                            : "No diamonds found"}
+                    </p>
+                </div>
+            </div>
+        );
     }
-    setSelectedRows(newSelected);
 
-    const selected = data.filter((d) => newSelected.has(d._id));
-    if (onSelectionChange) {
-      onSelectionChange(Array.from(newSelected), selected);
-    }
-  };
-
-  const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
-    e.stopPropagation();
-    if (onRowClick) {
-      onRowClick(row);
-    } else {
-      setSelectedDiamond(row);
-    }
-  };
-
-  if (loading) {
     return (
-      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
-          <p className="text-gray-600">
-            {searchTerm ||
-            (Array.isArray(selectedShape) && selectedShape.length > 0)
-              ? `Searching diamonds...`
-              : "Loading diamonds..."}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="text-red-600 mb-2 text-4xl">⚠️</div>
-          <p className="text-red-600 font-medium">Error loading diamonds</p>
-          <p className="text-gray-600 text-sm mt-2">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!loading && data.length === 0) {
-    return (
-      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="text-gray-600 text-lg mb-3">
-            {searchTerm ||
-            (Array.isArray(selectedShape) && selectedShape.length > 0) ||
-            selectedColor ||
-            selectedClarity.length > 0 ||
-            selectedCut ||
-            selectedPolish ||
-            selectedSymmetry ||
-            selectedFluor ||
-            selectedMinCarat ||
-            selectedMaxCarat ||
-            (Array.isArray(selectedLocations) &&
-              selectedLocations.length > 0) ||
-            (Array.isArray(selectedLabs) && selectedLabs.length > 0) ||
-            (keySymbolFilters?.keyToSymbol &&
-              keySymbolFilters.keyToSymbol.length > 0) ||
-            priceFilters?.pricePerCarat?.from ||
-            priceFilters?.pricePerCarat?.to ||
-            priceFilters?.discount?.from ||
-            priceFilters?.discount?.to ||
-            priceFilters?.totalPrice?.from ||
-            priceFilters?.totalPrice?.to
-              ? `No diamonds found matching your filters`
-              : "No diamonds found"}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div
-        className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}
-      >
-        <div className="bg-white shadow-sm flex flex-col rounded-none">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse table-fixed">
-              <thead
-                className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}
-              >
-                <tr>
-                  <th className="w-12 px-2 py-3 text-center">
-                    <input
-                      type="checkbox"
-                      checked={selectAll}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="w-4 h-4 cursor-pointer [accent-color:#050C3A]"
-                    />
-                  </th>
-                  {/* <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+        <>
+            <div
+                className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className} relative`}
+            >
+                {/* Loading overlay for subsequent data fetches */}
+                {loading && hasLoadedOnce.current && (
+                    <div className="absolute inset-0 bg-white z-50 flex items-center justify-center rounded-none">
+                        <div className="text-center">
+                            <Loader2 className="w-12 h-12 animate-spin text-[#050c3a] mx-auto mb-4" />
+                            <p className="text-gray-700 font-medium">Loading diamonds...</p>
+                        </div>
+                    </div>
+                )}
+                <div className={`bg-white shadow-sm flex flex-col rounded-none ${loading && hasLoadedOnce.current ? 'opacity-0' : 'opacity-100'}`}>
+                    <div className="overflow-x-auto">
+                        <table className="w-full border-collapse table-fixed">
+                            <thead
+                                className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}
+                            >
+                                <tr>
+                                    <th
+                                        className="w-12 px-2 py-3 text-center"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.checkbox,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={selectAll}
+                                            onChange={(e) =>
+                                                handleSelectAll(
+                                                    e.target.checked
+                                                )
+                                            }
+                                            className="w-4 h-4 cursor-pointer [accent-color:#050C3A]"
+                                        />
+                                    </th>
+                                    {/* <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
                     <button
                       onClick={() => handleSort("REAL_IMAGE")}
                       className="flex items-center gap-1 hover:text-gray-300 transition-colors"
@@ -757,103 +915,251 @@ const DiamondStockTable: React.FC<TableProps> = ({
                       </div>
                     </button>
                   </th> */}
-                  {isLoggedIn && (
-                    <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">
-                      <button
-                        onClick={() => handleSort("STONE_NO")}
-                        className="flex items-center gap-1 hover:text-gray-300 transition-colors"
-                      >
-                        Stock ID
-                        <div className="flex flex-col -space-y-1">
-                          <ChevronUp
-                            size={12}
-                            className={
-                              sortConfig?.key === "STONE_NO" &&
-                              sortConfig.direction === "asc"
-                                ? "opacity-100"
-                                : "opacity-30"
-                            }
-                          />
-                          <ChevronDown
-                            size={12}
-                            className={
-                              sortConfig?.key === "STONE_NO" &&
-                              sortConfig.direction === "desc"
-                                ? "opacity-100"
-                                : "opacity-30"
-                            }
-                          />
-                        </div>
-                      </button>
-                    </th>
-                  )}
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Location</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Stage</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Shape</th>
-                  <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Carat</th>
-                  <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Color</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Clarity</th>
-                  <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Cut</th>
-                  <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Polish</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Symmetry</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Fluor</th>
-                  <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Lab</th>
-                  {isLoggedIn && (
-                    <>
-                      <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">Rap Price</th>
-                      <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Disc%</th>
-                      <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">Net Rate</th>
-                      <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">Net Value</th>
-                    </>
-                  )}
-                  <th className="w-60 px-2 py-3 text-left text-[14px] font-medium">Comments</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Depth%</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Table%</th>
-                 
-                   <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Length</th>
-                <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Width</th>
-                <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">Depth</th>
-                  <th className="w-35 px-2 py-3 text-left text-[14px] font-medium">Key Symbols</th>
-                  <th className="w-60 px-2 py-3 text-left text-[14px] font-medium">Report Comments</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Crn Angle</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Crn Height</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Pav Angle</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Pav Height</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">CN</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">CW</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">SN</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">SW</th>
-                  <th className="w-30 px-2 py-3 text-left text-[14px] font-medium">Report No</th>
-                  <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">Report Date</th>
-                  <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">Tinge</th>
-                </tr>
-              </thead>
+                                    {isLoggedIn && (
+                                        <th
+                                            className="w-24 px-2 py-3 text-left text-[14px] font-medium"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.stockId,
+                                                zIndex: 30,
+                                                backgroundColor: "#050c3a",
+                                            }}
+                                        >
+                                            <button
+                                                onClick={() =>
+                                                    handleSort("STONE_NO")
+                                                }
+                                                className="flex items-center gap-1 hover:text-gray-300 transition-colors"
+                                            >
+                                                S. ID
+                                                <div className="flex flex-col -space-y-1">
+                                                    <ChevronUp
+                                                        size={12}
+                                                        className={
+                                                            sortConfig?.key ===
+                                                                "STONE_NO" &&
+                                                            sortConfig.direction ===
+                                                                "asc"
+                                                                ? "opacity-100"
+                                                                : "opacity-30"
+                                                        }
+                                                    />
+                                                    <ChevronDown
+                                                        size={12}
+                                                        className={
+                                                            sortConfig?.key ===
+                                                                "STONE_NO" &&
+                                                            sortConfig.direction ===
+                                                                "desc"
+                                                                ? "opacity-100"
+                                                                : "opacity-30"
+                                                        }
+                                                    />
+                                                </div>
+                                            </button>
+                                        </th>
+                                    )}
+                                    <th
+                                        className="w-10  py-3 text-left text-[14px] font-medium"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.loc,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        Loc.
+                                    </th>
+                                    <th
+                                        className="w-15 px-2 py-3 text-left text-[14px] font-medium"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.status,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        Status
+                                    </th>
+                                    <th
+                                        className="w-20 px-2 py-3 text-left text-[14px] font-medium"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.shape,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        Shape
+                                    </th>
+                                    <th
+                                        className="w-16 px-2 py-3 text-left text-[14px] font-medium"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.carat,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        Carat
+                                    </th>
+                                    <th
+                                        className="w-16 px-2 py-3 text-left text-[14px] font-medium"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.color,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        Color
+                                    </th>
+                                    <th
+                                        className="w-20 px-2 py-3 text-left text-[14px] font-medium"
+                                        style={{
+                                            position: "sticky",
+                                            left: stickyOffsets.clarity,
+                                            zIndex: 30,
+                                            backgroundColor: "#050c3a",
+                                        }}
+                                    >
+                                        Clarity
+                                    </th>
+                                    <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">
+                                        Cut
+                                    </th>
+                                    <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">
+                                        Polish
+                                    </th>
+                                    <th className="w-10 px-2 py-3 text-left text-[14px] font-medium">
+                                        Sym.
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Fluor
+                                    </th>
+                                    <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">
+                                        Lab
+                                    </th>
+                                    {isLoggedIn && (
+                                        <>
+                                            <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">
+                                                Rap
+                                            </th>
+                                            <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                                Disc%
+                                            </th>
+                                            <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">
+                                                Net Rate
+                                            </th>
+                                            <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">
+                                                Net Value
+                                            </th>
+                                        </>
+                                    )}
+                                    <th className="w-60 px-2 py-3 text-left text-[14px] font-medium">
+                                        Comments
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Depth%
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Table%
+                                    </th>
 
-              <tbody>
-                {paginatedData.map((row, idx) => (
-                  <tr
-                    key={row._id}
-                    style={{
-                      background:
-                        idx % 2 === 1
-                          ? "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)"
-                          : "white",
-                    }}
-                    className="transition-opacity"
-                  >
-                    <td className="px-2 py-1 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.has(row._id)}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          handleRowSelect(row._id, e.target.checked);
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-4 h-4 cursor-pointer [accent-color:#050C3A]"
-                      />
-                    </td>
-                    {/* <td className="px-1 py-0.5">
+                                    <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">
+                                        Length
+                                    </th>
+                                    <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">
+                                        Width
+                                    </th>
+                                    <th className="w-16 px-2 py-3 text-left text-[14px] font-medium">
+                                        Depth
+                                    </th>
+                                    <th className="w-35 px-2 py-3 text-left text-[14px] font-medium">
+                                        Key Symbols
+                                    </th>
+                                    <th className="w-60 px-2 py-3 text-left text-[14px] font-medium">
+                                        Report Comments
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Crn Angle
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Crn Height
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Pav Angle
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Pav Height
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        CN
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        CW
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        SN
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        SW
+                                    </th>
+                                    <th className="w-30 px-2 py-3 text-left text-[14px] font-medium">
+                                        Report No
+                                    </th>
+                                    <th className="w-24 px-2 py-3 text-left text-[14px] font-medium">
+                                        Report Date
+                                    </th>
+                                    <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
+                                        Tinge
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {paginatedData.map((row, idx) => (
+                                    <tr
+                                        key={row._id}
+                                        style={{
+                                            background:
+                                                idx % 2 === 1
+                                                    ? "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)"
+                                                    : "white",
+                                        }}
+                                        className="transition-opacity"
+                                    >
+                                        <td
+                                            className="px-2 py-1 text-center"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.checkbox,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRows.has(
+                                                    row._id
+                                                )}
+                                                onChange={(e) => {
+                                                    e.stopPropagation();
+                                                    handleRowSelect(
+                                                        row._id,
+                                                        e.target.checked
+                                                    );
+                                                }}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className="w-4 h-4 cursor-pointer [accent-color:#050C3A]"
+                                            />
+                                        </td>
+                                        {/* <td className="px-1 py-0.5">
                       <div className="flex flex-col items-center gap-0.5">
                         <div className="relative w-12 h-12">
                           <div className="w-full h-full bg-gray-100 rounded-none overflow-hidden">
@@ -883,217 +1189,438 @@ const DiamondStockTable: React.FC<TableProps> = ({
                         </div>
                       </div>
                     </td> */}
-                    {isLoggedIn && (
-                      <td
-                        className="px-2 py-1 text-[14px] text-gray-700 font-medium truncate cursor-pointer hover:text-blue-600 hover:underline"
-                        onClick={(e) => handleStockIdClick(e, row)}
-                      >
-                        {row.STONE_NO}
-                      </td>
-                    )}
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.LOCATION}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.STAGE}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700 truncate">{row.SHAPE}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CARATS}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.COLOR}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CLARITY}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CUT || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.POL || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.SYM || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.FLOUR || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.LAB}</td>
-                    {isLoggedIn && (
-                      <>
-                        <td className="px-2 py-1 text-[14px] text-gray-700">{formatCurrency(row.RAP_PRICE ?? 0)}</td>
-                        <td className="px-2 py-1 text-[14px] font-semibold text-red-600">{formatPercentage(row.DISC_PER ?? 0)}</td>
-                        <td className="px-2 py-1 text-[14px] text-gray-700">{formatCurrency(row.NET_RATE ?? 0)}</td>
-                        <td className="px-2 py-1 text-[14px] text-gray-700 font-medium">{formatCurrency(row.NET_VALUE ?? 0)}</td>
-                      </>
-                    )}
-                    <td className="px-2 py-1 text-[14px] text-gray-700 max-w-[240px]" title={row.COMMENTS_1}><div className="truncate">{row.COMMENTS_1 || "N/A"}</div></td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.DEPTH_PER || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.TABLE_PER || "N/A"}</td>
-                    
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.LENGTH || "N/A"}</td>
-                  <td className="px-2 py-1 text-[14px] text-gray-700">{row.WIDTH || "N/A"}</td>
-                  <td className="px-2 py-1 text-[14px] text-gray-700">{row.DEPTH || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700 truncate">{row.KEY_TO_SYMBOLS || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700 max-w-[240px]" title={row.REPORT_COMMENTS}><div className="truncate">{row.REPORT_COMMENTS || "N/A"}</div></td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CROWN_ANGLE || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CROWN_HEIGHT || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.PAVILLION_ANGLE || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.PAVILLION_HEIGHT || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CN || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.CW || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.SN || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.SW || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700" style={{maxWidth: '220px', whiteSpace: 'normal', wordBreak: 'break-all'}}>{row.REPORT_NO}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700 truncate">{row.REPORT_DATE ? new Date(row.REPORT_DATE).toLocaleDateString() : "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700 truncate">{row.TINGE || "N/A"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                                        {isLoggedIn && (
+                                            <td
+                                                className="px-2 py-1 text-[14px] text-gray-700 font-medium truncate cursor-pointer hover:text-blue-600 hover:underline"
+                                                onClick={(e) =>
+                                                    handleStockIdClick(e, row)
+                                                }
+                                                style={{
+                                                    position: "sticky",
+                                                    left: stickyOffsets.stockId,
+                                                    zIndex: 20,
+                                                    backgroundColor:
+                                                        idx % 2 === 1
+                                                            ? "#faf6eb"
+                                                            : "white",
+                                                }}
+                                            >
+                                                {row.STONE_NO}
+                                            </td>
+                                        )}
+                                        <td
+                                            className=" py-1 text-[14px] text-gray-700"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.loc,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            {row.LOCATION}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.status,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            {row.STAGE}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700 truncate"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.shape,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            {row.SHAPE}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.carat,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            {row.CARATS}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.color,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            {row.COLOR}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700"
+                                            style={{
+                                                position: "sticky",
+                                                left: stickyOffsets.clarity,
+                                                zIndex: 20,
+                                                backgroundColor:
+                                                    idx % 2 === 1
+                                                        ? "#faf6eb"
+                                                        : "white",
+                                            }}
+                                        >
+                                            {row.CLARITY}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.CUT || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.POL || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.SYM || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.FLOUR || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.LAB}
+                                        </td>
+                                        {isLoggedIn && (
+                                            <>
+                                                <td className="px-2 py-1 text-[14px] text-gray-700">
+                                                    {formatCurrency(
+                                                        row.RAP_PRICE ?? 0
+                                                    )}
+                                                </td>
+                                                <td className="px-2 py-1 text-[14px] font-semibold text-red-600">
+                                                    {formatPercentage(
+                                                        row.DISC_PER ?? 0
+                                                    )}
+                                                </td>
+                                                <td className="px-2 py-1 text-[14px] text-gray-700">
+                                                    {formatCurrency(
+                                                        row.NET_RATE ?? 0
+                                                    )}
+                                                </td>
+                                                <td className="px-2 py-1 text-[14px] text-gray-700 font-medium">
+                                                    {formatCurrency(
+                                                        row.NET_VALUE ?? 0
+                                                    )}
+                                                </td>
+                                            </>
+                                        )}
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700 max-w-[240px]"
+                                            title={row.COMMENTS_1}
+                                        >
+                                            <div className="truncate">
+                                                {row.COMMENTS_1 || "N/A"}
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.DEPTH_PER || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.TABLE_PER || "N/A"}
+                                        </td>
 
-          <div
-            className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
-            style={{
-              background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
-            }}
-          >
-            <div className="text-sm text-gray-700 font-medium">
-              Showing {totalRecords > 0 ? (currentPage - 1) * rowsPerPage + 1 : 0} to{" "}
-              {Math.min(currentPage * rowsPerPage, totalRecords)} of{" "}
-              {totalRecords} diamonds
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.LENGTH || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.WIDTH || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.DEPTH || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700 truncate">
+                                            {row.KEY_TO_SYMBOLS || "N/A"}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700 max-w-[240px]"
+                                            title={row.REPORT_COMMENTS}
+                                        >
+                                            <div className="truncate">
+                                                {row.REPORT_COMMENTS || "N/A"}
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.CROWN_ANGLE || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.CROWN_HEIGHT || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.PAVILLION_ANGLE || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.PAVILLION_HEIGHT || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.CN || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.CW || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.SN || "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700">
+                                            {row.SW || "N/A"}
+                                        </td>
+                                        <td
+                                            className="px-2 py-1 text-[14px] text-gray-700"
+                                            style={{
+                                                maxWidth: "220px",
+                                                whiteSpace: "normal",
+                                                wordBreak: "break-all",
+                                            }}
+                                        >
+                                            {row.REPORT_NO}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700 truncate">
+                                            {row.REPORT_DATE
+                                                ? new Date(
+                                                      row.REPORT_DATE
+                                                  ).toLocaleDateString()
+                                                : "N/A"}
+                                        </td>
+                                        <td className="px-2 py-1 text-[14px] text-gray-700 truncate">
+                                            {row.TINGE || "N/A"}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div
+                        className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
+                        style={{
+                            background:
+                                "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
+                        }}
+                    >
+                        <div className="text-sm text-gray-700 font-medium">
+                            Showing{" "}
+                            {totalRecords > 0
+                                ? (currentPage - 1) * rowsPerPage + 1
+                                : 0}{" "}
+                            to{" "}
+                            {Math.min(currentPage * rowsPerPage, totalRecords)}{" "}
+                            of {totalRecords} diamonds
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-gray-700 font-medium">
+                                    Rows per page
+                                </span>
+                                <select
+                                    className="border border-gray-300 rounded-none px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all"
+                                    value={rowsPerPage}
+                                    onChange={(e) => {
+                                        const newRowsPerPage = Number(
+                                            e.target.value
+                                        );
+                                        setRowsPerPage(newRowsPerPage);
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() =>
+                                        setCurrentPage(
+                                            Math.max(1, currentPage - 1)
+                                        )
+                                    }
+                                    disabled={currentPage === 1}
+                                    className="p-1.5 border border-gray-300 rounded-none hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                                    title="Previous page"
+                                >
+                                    <ChevronLeft
+                                        size={16}
+                                        className="text-[#070b3a]"
+                                    />
+                                </button>
+
+                                <span className="text-sm text-gray-700 font-medium px-2">
+                                    Page {currentPage} of {totalPages}
+                                </span>
+
+                                {(() => {
+                                    const pageNumbers = [];
+                                    const maxVisiblePages = 5;
+
+                                    if (totalPages <= maxVisiblePages + 2) {
+                                        for (let i = 1; i <= totalPages; i++) {
+                                            pageNumbers.push(i);
+                                        }
+                                    } else {
+                                        pageNumbers.push(1);
+
+                                        let startPage = Math.max(
+                                            2,
+                                            currentPage - 1
+                                        );
+                                        let endPage = Math.min(
+                                            totalPages - 1,
+                                            currentPage + 1
+                                        );
+
+                                        if (currentPage <= 3) {
+                                            startPage = 2;
+                                            endPage = maxVisiblePages;
+                                        }
+
+                                        if (currentPage >= totalPages - 2) {
+                                            startPage =
+                                                totalPages -
+                                                maxVisiblePages +
+                                                1;
+                                            endPage = totalPages - 1;
+                                        }
+
+                                        if (startPage > 2) {
+                                            pageNumbers.push("start-ellipsis");
+                                        }
+
+                                        for (
+                                            let i = startPage;
+                                            i <= endPage;
+                                            i++
+                                        ) {
+                                            pageNumbers.push(i);
+                                        }
+
+                                        if (endPage < totalPages - 1) {
+                                            pageNumbers.push("end-ellipsis");
+                                        }
+
+                                        pageNumbers.push(totalPages);
+                                    }
+
+                                    return pageNumbers.map((page) => {
+                                        if (page === "start-ellipsis") {
+                                            return (
+                                                <button
+                                                    key="start-ellipsis"
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            Math.max(
+                                                                1,
+                                                                currentPage - 5
+                                                            )
+                                                        )
+                                                    }
+                                                    className="w-7 h-7 rounded-none text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                                                    title="Jump back 5 pages"
+                                                >
+                                                    ...
+                                                </button>
+                                            );
+                                        }
+                                        if (page === "end-ellipsis") {
+                                            return (
+                                                <button
+                                                    key="end-ellipsis"
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            Math.min(
+                                                                totalPages,
+                                                                currentPage + 5
+                                                            )
+                                                        )
+                                                    }
+                                                    className="w-7 h-7 rounded-none text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                                                    title="Jump forward 5 pages"
+                                                >
+                                                    ...
+                                                </button>
+                                            );
+                                        }
+                                        return (
+                                            <button
+                                                key={page}
+                                                onClick={() =>
+                                                    setCurrentPage(
+                                                        page as number
+                                                    )
+                                                }
+                                                className={`w-7 h-7 rounded-none text-sm font-medium transition-colors ${
+                                                    currentPage === page
+                                                        ? "bg-[#070b3a] text-white shadow-sm"
+                                                        : "text-gray-700 hover:bg-gray-100"
+                                                }`}
+                                                title={`Go to page ${page}`}
+                                            >
+                                                {page}
+                                            </button>
+                                        );
+                                    });
+                                })()}
+
+                                <button
+                                    onClick={() =>
+                                        setCurrentPage(
+                                            Math.min(
+                                                totalPages,
+                                                currentPage + 1
+                                            )
+                                        )
+                                    }
+                                    disabled={currentPage === totalPages}
+                                    className="p-1.5 border border-gray-300 rounded-none hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
+                                    title="Next page"
+                                >
+                                    <ChevronRight
+                                        size={16}
+                                        className="text-[#070b3a]"
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700 font-medium">
-                  Rows per page
-                </span>
-                <select
-                  className="border border-gray-300 rounded-none px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all"
-                  value={rowsPerPage}
-                  onChange={(e) => {
-                    const newRowsPerPage = Number(e.target.value);
-                    setRowsPerPage(newRowsPerPage);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-               
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="p-1.5 border border-gray-300 rounded-none hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                  title="Previous page"
-                >
-                  <ChevronLeft size={16} className="text-[#070b3a]" />
-                </button>
-
-                <span className="text-sm text-gray-700 font-medium px-2">
-                  Page {currentPage} of {totalPages}
-                </span>
-
-                {(() => {
-                  const pageNumbers = [];
-                  const maxVisiblePages = 5;
-
-                  if (totalPages <= maxVisiblePages + 2) {
-                    for (let i = 1; i <= totalPages; i++) {
-                      pageNumbers.push(i);
-                    }
-                  } else {
-                    pageNumbers.push(1);
-
-                    let startPage = Math.max(2, currentPage - 1);
-                    let endPage = Math.min(totalPages - 1, currentPage + 1);
-
-                    if (currentPage <= 3) {
-                      startPage = 2;
-                      endPage = maxVisiblePages;
-                    }
-
-                    if (currentPage >= totalPages - 2) {
-                      startPage = totalPages - maxVisiblePages + 1;
-                      endPage = totalPages - 1;
-                    }
-
-                    if (startPage > 2) {
-                      pageNumbers.push("start-ellipsis");
-                    }
-
-                    for (let i = startPage; i <= endPage; i++) {
-                      pageNumbers.push(i);
-                    }
-
-                    if (endPage < totalPages - 1) {
-                      pageNumbers.push("end-ellipsis");
-                    }
-
-                    pageNumbers.push(totalPages);
-                  }
-
-                  return pageNumbers.map((page) => {
-                    if (page === "start-ellipsis") {
-                      return (
-                        <button
-                          key="start-ellipsis"
-                          onClick={() =>
-                            setCurrentPage(Math.max(1, currentPage - 5))
-                          }
-                          className="w-7 h-7 rounded-none text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-                          title="Jump back 5 pages"
-                        >
-                          ...
-                        </button>
-                      );
-                    }
-                    if (page === "end-ellipsis") {
-                      return (
-                        <button
-                          key="end-ellipsis"
-                          onClick={() =>
-                            setCurrentPage(
-                              Math.min(totalPages, currentPage + 5),
-                            )
-                          }
-                          className="w-7 h-7 rounded-none text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-                          title="Jump forward 5 pages"
-                        >
-                          ...
-                        </button>
-                      );
-                    }
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page as number)}
-                        className={`w-7 h-7 rounded-none text-sm font-medium transition-colors ${
-                          currentPage === page
-                            ? "bg-[#070b3a] text-white shadow-sm"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                        title={`Go to page ${page}`}
-                      >
-                        {page}
-                      </button>
-                    );
-                  });
-                })()}
-
-                <button
-                  onClick={() =>
-                    setCurrentPage(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="p-1.5 border border-gray-300 rounded-none hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                  title="Next page"
-                >
-                  <ChevronRight size={16} className="text-[#070b3a]" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {selectedDiamond && (
-        <DiamondDetailView
-          diamond={selectedDiamond}
-          onClose={() => setSelectedDiamond(null)}
-        />
-      )}
-    </>
-  );
+            {selectedDiamond && (
+                <DiamondDetailView
+                    diamond={selectedDiamond}
+                    onClose={() => setSelectedDiamond(null)}
+                />
+            )}
+        </>
+    );
 };
 
 export default DiamondStockTable;
