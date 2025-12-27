@@ -3,6 +3,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from "axios";
+import { getAuthToken, handleUnauthorized } from "./authHandler";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -31,14 +32,10 @@ interface AuthAxiosRequestConfig extends InternalAxiosRequestConfig {
  */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Import getAuthToken dynamically to avoid circular dependency
-    const { getAuthToken } = require("./authHandler");
     const token = getAuthToken();
-    
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
     return config;
   },
   (error: AxiosError) => {
@@ -54,16 +51,11 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     const config = error.config as AuthAxiosRequestConfig;
-    
     // Handle 401 Unauthorized errors
     if (error.response?.status === 401 && !config?._retry) {
       console.error("Unauthorized access detected");
-      
-      // Import auth handler dynamically
-      const { handleUnauthorized } = require("./authHandler");
       handleUnauthorized();
     }
-    
     return Promise.reject(error);
   }
 );

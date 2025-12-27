@@ -3,7 +3,7 @@
  */
 
 import apiClient from "../base/apiClient";
-import { handleApiError } from "../base/errorHandler";
+
 
 // Get all diamonds for admin/superadmin
 export const getAllInventoryDiamonds = async (params?: {
