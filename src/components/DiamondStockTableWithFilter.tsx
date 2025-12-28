@@ -4,18 +4,18 @@ import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { DiamondData } from "@/types/Diamondtable";
 import DiamondComparisonPage from "./DiamondComparisonPage";
-import ColorFilter from "./ColorFilter";
 import SearchBar from "./SearchBar";
-import ShapeFilter from "./ShapeFilter";
-import CaratFilter from "./CaratFilter";
-import ClarityFilter from "./ClarityFilter";
-import FluorFilter from "./FluorescenceFilter";
-import InclusionFilter, { type InclusionFilters } from "./InclusionFilter";
-import MeasurementFilter from "./MeasurementFilter";
-import KeySymbolFilter, { type KeySymbolFilters } from "./KeyToSymbolFilter";
+import ColorFilter from "./Filters/ColorFilter";
+import ShapeFilter from "./Filters/ShapeFilter";
+import CaratFilter from "./Filters/CaratFilter";
+import ClarityFilter from "./Filters/ClarityFilter";
+import FluorFilter from "./Filters/FluorescenceFilter";
+import InclusionFilter, { type InclusionFilters } from "./Filters/InclusionFilter";
+import MeasurementFilter from "./Filters/MeasurementFilter";
+import KeySymbolFilter, { type KeySymbolFilters } from "./Filters/KeyToSymbolFilter";
 import PriceLocationFilter, {
   type PriceLocationFilters,
-} from "./Priceandloction";
+} from "./Filters/PriceAndLocationFilter";
 import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
 import CompareButton from "./CompareButton";

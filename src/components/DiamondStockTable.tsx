@@ -44,13 +44,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
 }) => {
   // UI State
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // Check if user is logged in
-    useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
-    setIsLoggedIn(!!authToken);
-    }, []);
 
   // Build API filters from UI inputs
   // Pass props directly - useDiamondFilters handles memoization
@@ -186,7 +179,6 @@ const DiamondStockTable: React.FC<TableProps> = ({
       <div className={`flex-1 overflow-hidden border border-gray-300 ${loading && hasLoadedOnce ? 'opacity-50 pointer-events-none' : ''}`}>
         <DiamondTable
           diamonds={data}
-          isLoggedIn={isLoggedIn}
           selectedRows={selectedRows}
           selectAll={selectAll}
           onSelectAll={(checked) => handleSelectAll(checked, data)}

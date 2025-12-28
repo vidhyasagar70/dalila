@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { X, ArrowLeft, Package, Globe, Check } from "lucide-react";
-import ShapeFilter from "./ShapeFilter";
-import CaratFilter from "./CaratFilter";
-import ClarityFilter from "./ClarityFilter";
-import ColorFilter from "./ColorFilter";
+import ShapeFilter from "./Filters/ShapeFilter";
+import CaratFilter from "./Filters/CaratFilter";
+import ClarityFilter from "./Filters/ClarityFilter";
+import ColorFilter from "./Filters/ColorFilter";
 import InventoryDiamondTable from "./InventoryDiamondTable";
 import { inventoryApi } from "@/lib/api";
 import toast from "react-hot-toast";

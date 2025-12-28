@@ -45,32 +45,6 @@ const DiamondGridView: React.FC<GridViewProps> = ({
     const [rowsPerPage, setRowsPerPage] = useState(pageSize);
     const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
 
-    // Track login status
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            let userStr = localStorage.getItem("user");
-            const token = localStorage.getItem("authToken");
-            if (!userStr) {
-                const cookies = document.cookie.split(";");
-                const userCookie = cookies.find((c) =>
-                    c.trim().startsWith("user=")
-                );
-                if (userCookie) {
-                    try {
-                        userStr = decodeURIComponent(
-                            userCookie.split("=")[1].trim()
-                        );
-                    } catch {
-                        // ignore
-                    }
-                }
-            }
-            setIsLoggedIn(!!userStr || !!token);
-        }
-    }, []);
-
     // Build API filters using custom hook
     const { filters } = useDiamondFilters({
                     searchTerm,
@@ -330,23 +304,21 @@ const DiamondGridView: React.FC<GridViewProps> = ({
                                             </div>
 
                                             {/* View Button */}
-                                            {isLoggedIn && (
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (onRowClick) {
-                                                            onRowClick(diamond);
-                                                        } else {
-                                                            setSelectedDiamond(
-                                                                diamond
-                                                            );
-                                                        }
-                                                    }}
-                                                    className="w-full mt-2 px-4 py-1.5 text-xs font-medium text-white bg-[#050C3A] hover:bg-[#030822] transition-colors duration-200 rounded"
-                                                >
-                                                    View Details
-                                                </button>
-                                            )}
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (onRowClick) {
+                                                        onRowClick(diamond);
+                                                    } else {
+                                                        setSelectedDiamond(
+                                                            diamond
+                                                        );
+                                                    }
+                                                }}
+                                                className="w-full mt-2 px-4 py-1.5 text-xs font-medium text-white bg-[#050C3A] hover:bg-[#030822] transition-colors duration-200 rounded"
+                                            >
+                                                View Details
+                                            </button>
                                         </div>
                                     </div>
                                 );

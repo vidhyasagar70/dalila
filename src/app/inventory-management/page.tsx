@@ -6,17 +6,17 @@ import { Maven_Pro,Marcellus } from "next/font/google";
 import { Package, Users, ChevronUp, ChevronDown } from "lucide-react";
 import InventoryDiamondTable from "@/components/InventoryDiamondTable";
 import DiamondStockTable from "@/components/DiamondStockTable";
-import ShapeFilter from "@/components/ShapeFilter";
-import CaratFilter from "@/components/CaratFilter";
-import ColorFilter from "@/components/ColorFilter";
-import ClarityFilter from "@/components/ClarityFilter";
-import FluorFilter from "@/components/FluorescenceFilter";
+import ShapeFilter from "@/components/Filters/ShapeFilter";
+import CaratFilter from "@/components/Filters/CaratFilter";
+import ColorFilter from "@/components/Filters/ColorFilter";
+import ClarityFilter from "@/components/Filters/ClarityFilter";
+import FluorFilter from "@/components/Filters/FluorescenceFilter";
 import SupplierManagementModal from "@/components/SupplierManagementModal";
 import SearchBar from "@/components/SearchBar";
-import InclusionFilter, { type InclusionFilters } from "@/components/InclusionFilter";
-import KeySymbolFilter, { type KeySymbolFilters } from "@/components/KeyToSymbolFilter";
-import PriceLocationFilter, { type PriceLocationFilters } from "@/components/Priceandloction";
-import MeasurementFilter from "@/components/MeasurementFilter";
+import InclusionFilter, { type InclusionFilters } from "@/components/Filters/InclusionFilter";
+import KeySymbolFilter, { type KeySymbolFilters } from "@/components/Filters/KeyToSymbolFilter";
+import PriceLocationFilter, { type PriceLocationFilters } from "@/components/Filters/PriceAndLocationFilter";
+import MeasurementFilter from "@/components/Filters/MeasurementFilter";
 import { inventoryApi } from "@/lib/api";
 
 const marcellus = Marcellus({

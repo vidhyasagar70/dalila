@@ -1,6 +1,6 @@
 // @/types/Diamondtable.ts
-import { type InclusionFilters } from "../components/InclusionFilter";
-import { type PriceLocationFilters } from "../components/Priceandloction";
+import { type InclusionFilters } from "../components/Filters/InclusionFilter";
+import { type PriceLocationFilters } from "../components/Filters/PriceAndLocationFilter";
 
 export interface DiamondData {
   _id: string;

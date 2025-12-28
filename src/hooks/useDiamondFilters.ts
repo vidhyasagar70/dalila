@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getLocationApiValues, getLabApiValues } from '@/components/Priceandloction';
+import { getLocationApiValues, getLabApiValues } from '@/components/Filters/PriceAndLocationFilter';
 
 interface FilterParams {
   [key: string]: string | number | boolean | string[] | number[] | undefined;

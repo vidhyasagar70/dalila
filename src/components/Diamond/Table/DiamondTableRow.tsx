@@ -5,7 +5,6 @@ import type { DiamondData } from '@/types/Diamondtable';
 interface DiamondTableRowProps {
   diamond: DiamondData;
   index: number;
-  isLoggedIn: boolean;
   isSelected: boolean;
   stickyOffsets: {
     checkbox: number;
@@ -29,7 +28,6 @@ interface DiamondTableRowProps {
 export const DiamondTableRow: React.FC<DiamondTableRowProps> = ({
   diamond,
   index,
-  isLoggedIn,
   isSelected,
   stickyOffsets,
   onCheckboxChange,
@@ -75,30 +73,28 @@ export const DiamondTableRow: React.FC<DiamondTableRowProps> = ({
         />
       </td>
 
-      {/* Stock ID Column - Sticky (only if logged in) */}
-      {isLoggedIn && (
-        <td
-          className="text-[14px] text-gray-700 font-medium cursor-pointer hover:text-blue-600 hover:underline"
-          onClick={(e) => onStockIdClick(e, diamond)}
-          style={{
-            position: 'sticky',
-            left: stickyOffsets.stockId,
-            zIndex: 20,
-            backgroundColor,
-            minWidth: '85px',
-            width: '85px',
-            maxWidth: '85px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            border: 'none',
-            margin: 0,
-            padding: '4px 8px',
-          }}
-        >
-          {diamond.STONE_NO}
-        </td>
-      )}
+      {/* Stock ID Column - Sticky */}
+      <td
+        className="text-[14px] text-gray-700 font-medium cursor-pointer hover:text-blue-600 hover:underline"
+        onClick={(e) => onStockIdClick(e, diamond)}
+        style={{
+          position: 'sticky',
+          left: stickyOffsets.stockId,
+          zIndex: 20,
+          backgroundColor,
+          minWidth: '100px',
+          width: '100px',
+          maxWidth: '100px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          border: 'none',
+          margin: 0,
+          padding: '4px 8px',
+        }}
+      >
+        {diamond.STONE_NO}
+      </td>
 
       {/* Location Column - Sticky */}
       <td
@@ -229,23 +225,19 @@ export const DiamondTableRow: React.FC<DiamondTableRowProps> = ({
       <td className="text-[14px] text-gray-700" style={{ width: '60px', minWidth: '60px', maxWidth: '60px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.FLOUR || 'N/A'}</td>
       <td className="text-[14px] text-gray-700" style={{ width: '60px', minWidth: '60px', maxWidth: '60px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.LAB}</td>
 
-      {/* Price Columns (only if logged in) */}
-      {isLoggedIn && (
-        <>
-          <td className="text-[14px] text-gray-700" style={{ width: '90px', minWidth: '90px', maxWidth: '90px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
-            {formatPrice(diamond.RAP_PRICE ?? 0)}
-          </td>
-          <td className="text-[14px] font-semibold text-red-600" style={{ width: '75px', minWidth: '75px', maxWidth: '75px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
-            {formatPercentage(diamond.DISC_PER ?? 0)}
-          </td>
-          <td className="text-[14px] text-gray-700" style={{ width: '90px', minWidth: '90px', maxWidth: '90px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
-            {formatPrice(diamond.NET_RATE ?? 0)}
-          </td>
-          <td className="text-[14px] text-gray-700 font-medium" style={{ width: '100px', minWidth: '100px', maxWidth: '100px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
-            {formatPrice(diamond.NET_VALUE ?? 0)}
-          </td>
-        </>
-      )}
+      {/* Price Columns */}
+      <td className="text-[14px] text-gray-700" style={{ width: '90px', minWidth: '90px', maxWidth: '90px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
+        {formatPrice(diamond.RAP_PRICE ?? 0)}
+      </td>
+      <td className="text-[14px] font-semibold text-red-600" style={{ width: '75px', minWidth: '75px', maxWidth: '75px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
+        {formatPercentage(diamond.DISC_PER ?? 0)}
+      </td>
+      <td className="text-[14px] text-gray-700" style={{ width: '90px', minWidth: '90px', maxWidth: '90px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
+        {formatPrice(diamond.NET_RATE ?? 0)}
+      </td>
+      <td className="text-[14px] text-gray-700 font-medium" style={{ width: '100px', minWidth: '100px', maxWidth: '100px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>
+        {formatPrice(diamond.NET_VALUE ?? 0)}
+      </td>
 
       {/* Additional Details Columns */}
       <td className="text-[14px] text-gray-700" style={{ width: '200px', minWidth: '200px', maxWidth: '200px', border: 'none', margin: 0, padding: '4px 8px' }} title={diamond.COMMENTS_1}>
@@ -264,10 +256,10 @@ export const DiamondTableRow: React.FC<DiamondTableRowProps> = ({
       <td className="text-[14px] text-gray-700" style={{ width: '120px', minWidth: '120px', maxWidth: '120px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.CROWN_HEIGHT || 'N/A'}</td>
       <td className="text-[14px] text-gray-700" style={{ width: '130px', minWidth: '130px', maxWidth: '130px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.PAVILLION_ANGLE || 'N/A'}</td>
       <td className="text-[14px] text-gray-700" style={{ width: '140px', minWidth: '140px', maxWidth: '140px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.PAVILLION_HEIGHT || 'N/A'}</td>
-      <td className="text-[14px] text-gray-700" style={{ width: '60px', minWidth: '60px', maxWidth: '60px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.CN || 'N/A'}</td>
-      <td className="text-[14px] text-gray-700" style={{ width: '60px', minWidth: '60px', maxWidth: '60px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.CW || 'N/A'}</td>
-      <td className="text-[14px] text-gray-700" style={{ width: '60px', minWidth: '60px', maxWidth: '60px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.SN || 'N/A'}</td>
-      <td className="text-[14px] text-gray-700" style={{ width: '60px', minWidth: '60px', maxWidth: '60px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.SW || 'N/A'}</td>
+      <td className="text-[14px] text-gray-700" style={{ width: '70px', minWidth: '70px', maxWidth: '70px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.CN || 'N/A'}</td>
+      <td className="text-[14px] text-gray-700" style={{ width: '70px', minWidth: '70px', maxWidth: '70px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.CW || 'N/A'}</td>
+      <td className="text-[14px] text-gray-700" style={{ width: '70px', minWidth: '70px', maxWidth: '70px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.SN || 'N/A'}</td>
+      <td className="text-[14px] text-gray-700" style={{ width: '70px', minWidth: '70px', maxWidth: '70px', whiteSpace: 'nowrap', border: 'none', margin: 0, padding: '4px 8px' }}>{diamond.SW || 'N/A'}</td>
       <td className="text-[14px] text-gray-700" style={{ width: '160px', minWidth: '160px', maxWidth: '160px', whiteSpace: 'normal', wordBreak: 'break-all', border: 'none', margin: 0, padding: '4px 8px' }}>
         {diamond.REPORT_NO}
       </td>

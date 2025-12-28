@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface DiamondTableHeaderProps {
-  isLoggedIn: boolean;
   selectAll: boolean;
   onSelectAll: (checked: boolean) => void;
   stickyOffsets: {
@@ -22,7 +21,6 @@ interface DiamondTableHeaderProps {
  * Includes select-all checkbox
  */
 export const DiamondTableHeader: React.FC<DiamondTableHeaderProps> = ({
-  isLoggedIn,
   selectAll,
   onSelectAll,
   stickyOffsets
@@ -84,21 +82,19 @@ export const DiamondTableHeader: React.FC<DiamondTableHeaderProps> = ({
           />
         </th>
 
-        {/* Stock ID Column - Sticky (only if logged in) */}
-        {isLoggedIn && (
-          <th
-            className="text-white text-[14px] font-semibold text-left"
-            style={{
-              ...horizontalStickyHeaderStyle,
-              left: stickyOffsets.stockId,
-              width: '85px',
-              minWidth: '85px',
-              maxWidth: '85px',
-            }}
-          >
-            S. ID
-          </th>
-        )}
+        {/* Stock ID Column - Sticky */}
+        <th
+          className="text-white text-[14px] font-semibold text-left"
+          style={{
+            ...horizontalStickyHeaderStyle,
+            left: stickyOffsets.stockId,
+            width: '100px',
+            minWidth: '100px',
+            maxWidth: '100px',
+          }}
+        >
+          S. ID
+        </th>
 
         {/* Location Column - Sticky */}
         <th
@@ -176,9 +172,9 @@ export const DiamondTableHeader: React.FC<DiamondTableHeaderProps> = ({
           style={{
             ...horizontalStickyHeaderStyle,
             left: stickyOffsets.clarity,
-            width: '80px',
-            minWidth: '80px',
-            maxWidth: '80px',
+            width: '100px',
+            minWidth: '100px',
+            maxWidth: '100px',
           }}
         >
           Clarity
@@ -188,7 +184,7 @@ export const DiamondTableHeader: React.FC<DiamondTableHeaderProps> = ({
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '60px', minWidth: '60px', maxWidth: '60px' }}>
           Cut
         </th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '70px', minWidth: '70px', maxWidth: '70px' }}>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
           Polish
         </th>
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '60px', minWidth: '60px', maxWidth: '60px' }}>
@@ -201,39 +197,35 @@ export const DiamondTableHeader: React.FC<DiamondTableHeaderProps> = ({
           Lab
         </th>
 
-        {/* Price Columns (only if logged in) */}
-        {isLoggedIn && (
-          <>
-            <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '90px', minWidth: '90px', maxWidth: '90px' }}>
-              Rap
-            </th>
-            <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '75px', minWidth: '75px', maxWidth: '75px' }}>
-              Disc%
-            </th>
-            <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '90px', minWidth: '90px', maxWidth: '90px' }}>
-              Net Rate
-            </th>
-            <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
-              Net Value
-            </th>
-          </>
-        )}
+        {/* Price Columns */}
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '90px', minWidth: '90px', maxWidth: '90px' }}>
+          Rap
+        </th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '75px', minWidth: '75px', maxWidth: '75px' }}>
+          Disc%
+        </th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '90px', minWidth: '90px', maxWidth: '90px' }}>
+          Net Rate
+        </th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
+          Net Value
+        </th>
 
         {/* Additional Details Columns */}
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '200px', minWidth: '200px', maxWidth: '200px' }}>Comments</th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '70px', minWidth: '70px', maxWidth: '70px' }}>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
           Depth%
         </th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '70px', minWidth: '70px', maxWidth: '70px' }}>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
           Table%
         </th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '70px', minWidth: '70px', maxWidth: '70px' }}>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
           Length
         </th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '70px', minWidth: '70px', maxWidth: '70px' }}>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
           Width
         </th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '70px', minWidth: '70px', maxWidth: '70px' }}>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>
           Depth
         </th>
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '140px', minWidth: '140px', maxWidth: '140px' }}>Key to Symbols</th>
@@ -250,13 +242,16 @@ export const DiamondTableHeader: React.FC<DiamondTableHeaderProps> = ({
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '140px', minWidth: '140px', maxWidth: '140px' }}>
           Pavillion Height
         </th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '60px', minWidth: '60px', maxWidth: '60px' }}>CN</th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '60px', minWidth: '60px', maxWidth: '60px' }}>CW</th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '60px', minWidth: '60px', maxWidth: '60px' }}>SN</th>
-        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '60px', minWidth: '60px', maxWidth: '60px' }}>SW</th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>CN</th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>CW</th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>SN</th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '100px', minWidth: '100px', maxWidth: '100px' }}>SW</th>
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '160px', minWidth: '160px', maxWidth: '160px' }}>Report No</th>
         <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '110px', minWidth: '110px', maxWidth: '110px' }}>
           Report Date
+        </th>
+        <th className="text-white text-[14px] font-semibold text-left" style={{ ...regularHeaderStyle, width: '110px', minWidth: '110px', maxWidth: '110px' }}>
+          Tinge
         </th>
       </tr>
     </thead>

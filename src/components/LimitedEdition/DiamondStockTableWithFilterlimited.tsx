@@ -5,14 +5,13 @@ import toast from "react-hot-toast";
 import { DiamondData } from "@/types/Diamondtable";
 import type { LimitedEditionDiamond } from "@/lib/api";
 import DiamondComparisonPage from "../DiamondComparisonPage";
-import ColorFilterLimited from "./colorfilterLimited";
-
-import ShapeFilter from "./shapefilteLimited";
-import { CaratFilterLimited } from "./CaratFilterLimited";
-import ClarityFilter from "./ClarityFilterLimited";
-import FluorFilter from "./FluorescenceFilterLimited";
+import ColorFilterLimited from "./Filters/ColorFilterLimited";
+import ShapeFilter from "./Filters/ShapeFilterLimited";
+import { CaratFilterLimited } from "./Filters/CaratFilterLimited";
+import ClarityFilter from "./Filters/ClarityFilterLimited";
+import FluorFilter from "./Filters/FluorescenceFilterLimited";
 import DiamondStockTable from "./DiamondStockTableLimited";
-import SpecialClarityFilter from "./Specialdiamond";
+import SpecialClarityFilter from "./Filters/SpecialClarityFilter";
 import LimitedEditionPage from "./limitedEditionproduct";
 
 export default function DiamondStockTableWithFilter() {
