@@ -1,7 +1,7 @@
 // app/limitedEdition/page.tsx
 "use client";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import DiamondStockTableWithFilter from "@/components/LimitedEdition/DiamondStockTableWithFilterlimited";
+import DiamondStockTableWithFilter from "@/components/LimitedEdition/DiamondStockTableWithFilterLimited";
 
 export default function LimitedEditionPage() {
   return (

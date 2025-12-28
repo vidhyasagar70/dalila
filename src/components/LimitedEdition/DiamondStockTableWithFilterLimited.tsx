@@ -12,7 +12,7 @@ import ClarityFilter from "./Filters/ClarityFilterLimited";
 import FluorFilter from "./Filters/FluorescenceFilterLimited";
 import DiamondStockTable from "./DiamondStockTableLimited";
 import SpecialClarityFilter from "./Filters/SpecialClarityFilter";
-import LimitedEditionPage from "./limitedEditionproduct";
+import LimitedEditionPage from "./LimitedEditionProduct";
 
 export default function DiamondStockTableWithFilter() {
   const [isLimitedOpen, setIsLimitedOpen] = useState(false);
