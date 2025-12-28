@@ -11,7 +11,7 @@ import CaratFilter from "@/components/Filters/CaratFilter";
 import ColorFilter from "@/components/Filters/ColorFilter";
 import ClarityFilter from "@/components/Filters/ClarityFilter";
 import FluorFilter from "@/components/Filters/FluorescenceFilter";
-import SupplierManagementModal from "@/components/SupplierManagementModal";
+import SupplierManagementModal from "@/components/Models/SupplierManagementModal";
 import SearchBar from "@/components/SearchBar";
 import InclusionFilter, { type InclusionFilters } from "@/components/Filters/InclusionFilter";
 import KeySymbolFilter, { type KeySymbolFilters } from "@/components/Filters/KeyToSymbolFilter";

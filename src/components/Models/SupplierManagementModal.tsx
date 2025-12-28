@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { X, Settings } from "lucide-react";
-import Toggle from "./ui/Toggle";
+import Toggle from "../ui/Toggle";
 import ConfigureAPIModal from "./ConfigureAPIModal";
 import toast from "react-hot-toast";
 import { Marcellus, Jost, Maven_Pro } from "next/font/google";
