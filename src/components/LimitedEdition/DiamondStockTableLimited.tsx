@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Image from "next/image";
 import {
-  ChevronLeft,
-  ChevronRight,
   ChevronDown,
   ChevronUp,
   Loader2,
@@ -15,6 +13,8 @@ import type {
 } from "@/types/Diamondtable";
 import DiamondDetailView from "../DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
+import { formatPrice, formatPercentage } from "@/utils/formatting";
+import { DiamondTablePagination } from "../Diamond/shared/DiamondTablePagination";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -25,7 +25,7 @@ const mavenPro = Maven_Pro({
 
 interface CaratRangeValue { min: string; max: string; }
 
-interface LimitedTableProps extends Omit<TableProps, 'selectedMinCarat' | 'selectedMaxCarat'> {
+interface LimitedTableProps extends Omit<TableProps, 'selectedMinCarat' | 'selectedMaxCarat' | 'onSelectionChange'> {
   selectedCaratRanges?: CaratRangeValue[];
 }
 
@@ -42,7 +42,6 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
   selectedPolish = "",
   selectedSymmetry = "",
   selectedLabs = [],
-  onSelectionChange,
 }) => {
   const [data, setData] = useState<DiamondData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,9 +55,6 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
   const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
     null,
   );
-
-  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [selectAll, setSelectAll] = useState(false);
 
   const fetchDiamonds = useCallback(async () => {
     try {
@@ -79,80 +75,75 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
       const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
       const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
 
-      const hasAnyFilter =
-        hasShapeFilter ||
-        hasColorFilter ||
-        hasSearchTerm ||
-        hasCaratFilter ||
-        hasFluorFilter ||
-        hasClarityFilter ||
-        hasCutFilter ||
-        hasPolishFilter ||
-        hasSymmetryFilter ||
-        hasLabFilter;
+      // Always use search API - same as DiamondStockTable
+      const filters: FilterParams = {
+        page: 1,
+        limit: 10000, // Get all results for client-side pagination
+      };
 
-        let response;
-        if (hasAnyFilter) {
-          const filters: FilterParams = {
-            page: 1,
-            limit: 10000,
-          };
-
-          if (hasShapeFilter) {
-            filters.shape = selectedShape.join(",");
-          }
-          if (hasColorFilter) {
-            filters.color = selectedColor.join(",");
-          }
-          if (hasCaratFilter) {
-            // Use min of all mins and max of all maxes for API filter
-            const minVals = selectedCaratRanges.map(r => parseFloat(r.min)).filter(v => !isNaN(v));
-            const maxVals = selectedCaratRanges.map(r => parseFloat(r.max)).filter(v => !isNaN(v));
-            if (minVals.length > 0) filters.minCarats = Math.min(...minVals);
-            if (maxVals.length > 0) filters.maxCarats = Math.max(...maxVals);
-          }
-          if (hasFluorFilter) {
-            filters.fluorescence = selectedFluor.join(",");
-          }
-          if (hasClarityFilter) {
-            filters.clarity = selectedClarity.join(",");
-          }
-          if (hasCutFilter) {
-            filters.cut = selectedCut.trim();
-          }
-          if (hasPolishFilter) {
-            filters.polish = selectedPolish.trim();
-          }
-          if (hasSymmetryFilter) {
-            filters.symmetry = selectedSymmetry.trim();
-          }
-          if (hasLabFilter) {
-            filters.lab = selectedLabs.join(",");
-          }
-          if (hasSearchTerm) {
-          filters.searchTerm = searchTerm.trim();
-        }
-
-        response = await diamondApi.search(filters);
-      } else {
-        response = await diamondApi.getAllNoPagination();
+      if (hasShapeFilter) {
+        filters.shape = selectedShape.join(",");
       }
+      if (hasColorFilter) {
+        filters.color = selectedColor.join(",");
+      }
+      if (hasCaratFilter) {
+        // Use min of all mins and max of all maxes for API filter
+        const minVals = selectedCaratRanges.map(r => parseFloat(r.min)).filter(v => !isNaN(v));
+        const maxVals = selectedCaratRanges.map(r => parseFloat(r.max)).filter(v => !isNaN(v));
+        if (minVals.length > 0) filters.minCarats = Math.min(...minVals);
+        if (maxVals.length > 0) filters.maxCarats = Math.max(...maxVals);
+      }
+      if (hasFluorFilter) {
+        filters.fluorescence = selectedFluor.join(",");
+      }
+      if (hasClarityFilter) {
+        filters.clarity = selectedClarity.join(",");
+      }
+      if (hasCutFilter) {
+        filters.cut = selectedCut.trim();
+      }
+      if (hasPolishFilter) {
+        filters.polish = selectedPolish.trim();
+      }
+      if (hasSymmetryFilter) {
+        filters.symmetry = selectedSymmetry.trim();
+      }
+      if (hasLabFilter) {
+        filters.lab = selectedLabs.join(",");
+      }
+      if (hasSearchTerm) {
+        filters.searchTerm = searchTerm.trim();
+      }
+
+      // Always use search API (same endpoint as DiamondStockTable)
+      const response = await diamondApi.search(filters);
+
+      console.log("Limited Edition API Response:", response);
+      console.log("Response success:", response?.success);
+      console.log("Response data:", response?.data);
+      console.log("Is response.data an array?", Array.isArray(response?.data));
 
       if (response?.success && response.data) {
         let diamonds: DiamondData[];
         if (Array.isArray(response.data)) {
           diamonds = response.data as unknown as DiamondData[];
+          console.log("✅ Diamonds from array:", diamonds.length, "items");
         } else if (
           response.data.diamonds &&
           Array.isArray(response.data.diamonds)
         ) {
           diamonds = response.data.diamonds as unknown as DiamondData[];
+          console.log("✅ Diamonds from diamonds property:", diamonds.length, "items");
         } else {
           diamonds = [];
+          console.log("❌ No diamonds found in response");
         }
+        console.log("Setting data:", diamonds);
         setData(diamonds);
         setCurrentPage(1);
       } else {
+        console.log("❌ Response failed or no data");
         setData([]);
       }
     } catch (err) {
@@ -194,12 +185,22 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
   };
 
   const sortedData = useMemo(() => {
-    if (data.length === 0) return data;
+    console.log("📊 SortedData - Input data length:", data.length);
+    console.log("📊 SortedData - Data sample:", data.slice(0, 2));
+    
+    if (data.length === 0) {
+      console.log("⚠️ No data to sort");
+      return data;
+    }
 
     // No client-side filtering needed anymore - all filtering is done server-side
     const filtered = data;
+    console.log("📊 Filtered data length:", filtered.length);
 
-    if (!sortConfig) return filtered;
+    if (!sortConfig) {
+      console.log("📊 No sort config, returning filtered data");
+      return filtered;
+    }
 
     const sorted = [...filtered].sort((a, b) => {
       const aValue = a[sortConfig.key as keyof DiamondData];
@@ -218,59 +219,22 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
       return 0;
     });
 
+    console.log("📊 Sorted data length:", sorted.length);
     return sorted;
   }, [data, sortConfig]);
 
+  console.log("📄 Pagination - Total Pages:", Math.ceil(sortedData.length / rowsPerPage));
+  console.log("📄 Pagination - Current Page:", currentPage);
+  console.log("📄 Pagination - Rows Per Page:", rowsPerPage);
+  
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
   const paginatedData = sortedData.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
-
-  const formatCurrency = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num)
-      ? "N/A"
-      : `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  };
-
-  const formatPercentage = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allIds = new Set(paginatedData.map((row) => row._id));
-      setSelectedRows(allIds);
-      setSelectAll(true);
-      if (onSelectionChange) {
-        onSelectionChange(Array.from(allIds), paginatedData);
-      }
-    } else {
-      setSelectedRows(new Set());
-      setSelectAll(false);
-      if (onSelectionChange) {
-        onSelectionChange([], []);
-      }
-    }
-  };
-
-  const handleRowSelect = (id: string, checked: boolean) => {
-    const newSelected = new Set(selectedRows);
-    if (checked) {
-      newSelected.add(id);
-    } else {
-      newSelected.delete(id);
-      setSelectAll(false);
-    }
-    setSelectedRows(newSelected);
-
-    const selected = data.filter((d) => newSelected.has(d._id));
-    if (onSelectionChange) {
-      onSelectionChange(Array.from(newSelected), selected);
-    }
-  };
+  
+  console.log("📄 Paginated data length:", paginatedData.length);
+  console.log("📄 Paginated data sample:", paginatedData.slice(0, 2));
 
   const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
     e.stopPropagation();
@@ -281,7 +245,10 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
     }
   };
 
+  console.log("🔍 Component State - Loading:", loading, "Error:", error, "Data Length:", data.length);
+
   if (loading) {
+    console.log("⏳ Showing loading state");
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -298,6 +265,7 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
   }
 
   if (error) {
+    console.log("❌ Showing error state:", error);
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -310,6 +278,7 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
   }
 
   if (data.length === 0) {
+    console.log("⚠️ Showing empty state");
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -328,6 +297,9 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
     );
   }
 
+  console.log("✅ Rendering table with data");
+  console.log("🎨 Rendering table body with", paginatedData.length, "rows");
+
   return (
     <>
       <div className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}>
@@ -336,14 +308,6 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
             <table className="w-full border-collapse table-fixed">
               <thead className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}>
                 <tr>
-                  <th className="w-12 px-2 py-3 text-center">
-                    <input
-                      type="checkbox"
-                      checked={selectAll}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="w-4 h-4 cursor-pointer [accent-color:#050C3A]"
-                    />
-                  </th>
                   {/* <th className="w-20 px-2 py-3 text-left text-[14px] font-medium">
                     <button
                       onClick={() => handleSort("REAL_IMAGE")}
@@ -437,18 +401,6 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
                     }}
                     className="transition-opacity"
                   >
-                    <td className="px-2 py-1 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.has(row._id)}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          handleRowSelect(row._id, e.target.checked);
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-4 h-4 cursor-pointer [accent-color:#050C3A]"
-                      />
-                    </td>
                     {/* <td className="px-1 py-0.5">
                       <div className="flex flex-col items-center gap-0.5">
                         <div className="relative w-12 h-12">
@@ -495,11 +447,11 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
                     <td className="px-2 py-1 text-[14px] text-gray-700">{row.POL || "N/A"}</td>
                     <td className="px-2 py-1 text-[14px] text-gray-700">{row.SYM || "N/A"}</td>
                     <td className="px-2 py-1 text-[14px] text-gray-700">{row.FLOUR || "N/A"}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{row.LAB}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{formatCurrency(row.RAP_PRICE)}</td>
-                    <td className="px-2 py-1 text-[14px] font-semibold text-red-600">{formatPercentage(row.DISC_PER)}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700">{formatCurrency(row.NET_RATE ?? 0)}</td>
-                    <td className="px-2 py-1 text-[14px] text-gray-700 font-medium">{formatCurrency(row.NET_VALUE ?? 0)}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700">{row.LAB}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700">{formatPrice(row.RAP_PRICE)}</td>
+                  <td className="px-2 py-1 text-[14px] font-semibold text-red-600">{formatPercentage(row.DISC_PER)}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700">{formatPrice(row.NET_RATE ?? 0)}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700 font-medium">{formatPrice(row.NET_VALUE ?? 0)}</td>
                     <td className="px-2 py-1 text-[14px] text-gray-700 max-w-[240px]" title={row.COMMENTS_1}><div className="truncate">{row.COMMENTS_1 || "N/A"}</div></td>
                     <td className="px-2 py-1 text-[14px] text-gray-700">{row.DEPTH_PER || "N/A"}</td>
                     <td className="px-2 py-1 text-[14px] text-gray-700">{row.TABLE_PER || "N/A"}</td>
@@ -523,153 +475,22 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
             </table>
           </div>
 
-          <div
-            className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
-            style={{
-              background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
+          <DiamondTablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            rowsPerPage={rowsPerPage}
+            paginationInfo={{
+              start: (currentPage - 1) * rowsPerPage + 1,
+              end: Math.min(currentPage * rowsPerPage, sortedData.length),
+              total: sortedData.length
             }}
-          >
-            <div className="text-sm text-gray-700 font-medium">
-              Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
-              {Math.min(currentPage * rowsPerPage, sortedData.length)} of{" "}
-              {sortedData.length} diamonds
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700 font-medium">
-                  Rows per page
-                </span>
-                <select
-                  className="border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all"
-                  value={rowsPerPage}
-                  onChange={(e) => {
-                    setRowsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                >
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                  title="Previous page"
-                >
-                  <ChevronLeft size={16} className="text-[#070b3a]" />
-                </button>
-
-                <span className="text-sm text-gray-700 font-medium px-2">
-                  Page {currentPage} of {totalPages}
-                </span>
-
-                {(() => {
-                  const pageNumbers = [];
-                  const maxVisiblePages = 5;
-
-                  if (totalPages <= maxVisiblePages + 2) {
-                    for (let i = 1; i <= totalPages; i++) {
-                      pageNumbers.push(i);
-                    }
-                  } else {
-                    pageNumbers.push(1);
-
-                    let startPage = Math.max(2, currentPage - 1);
-                    let endPage = Math.min(totalPages - 1, currentPage + 1);
-
-                    if (currentPage <= 3) {
-                      startPage = 2;
-                      endPage = maxVisiblePages;
-                    }
-
-                    if (currentPage >= totalPages - 2) {
-                      startPage = totalPages - maxVisiblePages + 1;
-                      endPage = totalPages - 1;
-                    }
-
-                    if (startPage > 2) {
-                      pageNumbers.push("start-ellipsis");
-                    }
-
-                    for (let i = startPage; i <= endPage; i++) {
-                      pageNumbers.push(i);
-                    }
-
-                    if (endPage < totalPages - 1) {
-                      pageNumbers.push("end-ellipsis");
-                    }
-
-                    pageNumbers.push(totalPages);
-                  }
-
-                  return pageNumbers.map((page) => {
-                    if (page === "start-ellipsis") {
-                      return (
-                        <button
-                          key="start-ellipsis"
-                          onClick={() =>
-                            setCurrentPage(Math.max(1, currentPage - 5))
-                          }
-                          className="w-7 h-7 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-                          title="Jump back 5 pages"
-                        >
-                          ...
-                        </button>
-                      );
-                    }
-                    if (page === "end-ellipsis") {
-                      return (
-                        <button
-                          key="end-ellipsis"
-                          onClick={() =>
-                            setCurrentPage(
-                              Math.min(totalPages, currentPage + 5),
-                            )
-                          }
-                          className="w-7 h-7 rounded text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-                          title="Jump forward 5 pages"
-                        >
-                          ...
-                        </button>
-                      );
-                    }
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page as number)}
-                        className={`w-7 h-7 rounded text-sm font-medium transition-colors ${
-                          currentPage === page
-                            ? "bg-[#070b3a] text-white shadow-sm"
-                            : "text-gray-700 hover:bg-gray-100"
-                        }`}
-                        title={`Go to page ${page}`}
-                      >
-                        {page}
-                      </button>
-                    );
-                  });
-                })()}
-
-                <button
-                  onClick={() =>
-                    setCurrentPage(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="p-1.5 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-[#070b3a] transition-colors"
-                  title="Next page"
-                >
-                  <ChevronRight size={16} className="text-[#070b3a]" />
-                </button>
-              </div>
-            </div>
-          </div>
+            onPageChange={setCurrentPage}
+            onRowsPerPageChange={(newRows) => {
+              setRowsPerPage(newRows);
+              setCurrentPage(1);
+            }}
+            disabled={loading}
+          />
         </div>
       </div>
       {selectedDiamond && (

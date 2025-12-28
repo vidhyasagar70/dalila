@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Maven_Pro } from "next/font/google";
-import { Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import type { InclusionFilters } from "./InclusionFilter";
 import type { KeySymbolFilters } from "./KeyToSymbolFilter";
 import type { PriceLocationFilters } from "./Priceandloction";
 import DiamondDetailView from "./DiamondDetailView";
+import { formatPrice, formatPercentage } from "@/utils/formatting";
+import { DiamondTablePagination } from "./Diamond/shared/DiamondTablePagination";
+import { useInventoryData } from "@/hooks/useInventoryData";
+import { useInventoryFilters } from "@/hooks/useInventoryFilters";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -134,305 +138,112 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
   // Track if component is being used with external data (from props)
   const isExternalData = propData !== undefined;
   
-  const [data, setData] = useState<InventoryDiamond[]>(propData || []);
-  // Initialize loading as true if no external data is provided (component will fetch data)
-  const [loading, setLoading] = useState(propLoading ?? !isExternalData);
-  const [error, setError] = useState<string | null>(propError || null);
+  // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
-  const [pagination, setPagination] = useState<PaginationData | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [sortConfig] = useState<{
-    key: string;
-    direction: "asc" | "desc";
-  } | null>(null);
+  const [sortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
   const [selectedDiamond, setSelectedDiamond] = useState<InventoryDiamond | null>(null);
-
-  // Update local state when props change (for external data usage)
-  useEffect(() => {
-    if (isExternalData) {
-      console.log('InventoryTable - External data update:', {
-        dataLength: propData?.length,
-        loading: propLoading,
-        error: propError,
-        externalPagination
-      });
-      
-      setData(propData || []);
-      setLoading(propLoading ?? false);
-      setError(propError || null);
-      setIsTransitioning(false); // Clear transition state
-      
-      // Use external pagination if provided
-      if (externalPagination) {
-        // Keep the original total records from backend
-        const adjustedPagination = {
-          ...externalPagination,
-          totalPages: Math.ceil(externalPagination.totalRecords / rowsPerPage),
-          recordsPerPage: rowsPerPage,
-          hasNextPage: Math.ceil(externalPagination.totalRecords / rowsPerPage) > externalPagination.currentPage,
-          hasPrevPage: externalPagination.currentPage > 1,
-        };
-        setPagination(adjustedPagination);
-        setCurrentPage(externalPagination.currentPage); // Sync with external pagination's current page
-        console.log('Using external pagination:', adjustedPagination);
-      } else {
-        // Create mock pagination for external data
-        const totalRecords = propData?.length || 0;
-        const totalPages = Math.ceil(totalRecords / rowsPerPage);
-        setPagination({
-          currentPage: 1,
-          totalPages,
-          totalRecords,
-          recordsPerPage: rowsPerPage,
-          hasNextPage: totalPages > 1,
-          hasPrevPage: false,
-        });
-        setCurrentPage(1); // Reset to first page when new data comes in
-      }
-    }
-  }, [propData, propLoading, propError, isExternalData, rowsPerPage, externalPagination]);
-
-  // Reset to page 1 when rowsPerPage changes to prevent out-of-bounds errors
-  useEffect(() => {
-    if (pagination && currentPage > pagination.totalPages) {
-      console.warn(`Current page ${currentPage} exceeds total pages ${pagination.totalPages}, resetting to page 1`);
-      setCurrentPage(1);
-    }
-  }, [pagination, currentPage]);
   
-  // Clear pagination when rowsPerPage changes to prevent stale data
-  useEffect(() => {
-    // Don't reset pagination for external data - it's managed by the parent
-    if (!isExternalData) {
-      setIsTransitioning(true);
-      setPagination(null);
-      setCurrentPage(1);
-    }
-  }, [rowsPerPage, isExternalData]);
-
+  // Build API filters from filter props
+  const { filters } = useInventoryFilters(filterProps || {});
+  
+  // Create stable filter key for detecting real filter changes
+  const filterKey = useMemo(() => JSON.stringify(filters), [filters]);
+  
   // Fetch data from API (only when not using external data)
-  useEffect(() => {
-    // Skip fetch if using external data (props)
-    if (isExternalData) {
-      return;
-    }
-
-    const fetchInventoryData = async () => {
-      setLoading(true);
-      setError(null);
-      
-      // Validate page number before making request
-      if (currentPage < 1) {
-        setCurrentPage(1);
-        setLoading(false);
-        return;
-      }
-      
-      // If we have pagination info and page exceeds it, don't fetch
-      if (pagination && currentPage > pagination.totalPages) {
-        console.warn(`Page ${currentPage} exceeds totalPages ${pagination.totalPages}, resetting`);
-        setCurrentPage(pagination.totalPages);
-        setLoading(false);
-        return;
-      }
-      
-      try {
-        const url = new URL('https://dalila-inventory-service-dev.caratlogic.com/api/diamonds/admin/search');
-        url.searchParams.append('page', currentPage.toString());
-        url.searchParams.append('limit', rowsPerPage.toString());
-        
-        if (sortConfig) {
-          url.searchParams.append('sortBy', sortConfig.key);
-          url.searchParams.append('sortOrder', sortConfig.direction);
-        }
-        
-        // Add filter parameters if provided - using correct query param names for admin/search endpoint
-        if (filterProps) {
-          if (filterProps.shapes && filterProps.shapes.length > 0) {
-            filterProps.shapes.forEach(shape => url.searchParams.append('SHAPE', shape));
-          }
-          if (filterProps.colors && filterProps.colors.length > 0) {
-            filterProps.colors.forEach(color => url.searchParams.append('COLOR', color));
-          }
-          if (filterProps.clarities && filterProps.clarities.length > 0) {
-            filterProps.clarities.forEach(clarity => url.searchParams.append('CLARITY', clarity));
-          }
-          if (filterProps.fluors && filterProps.fluors.length > 0) {
-            filterProps.fluors.forEach(fluor => url.searchParams.append('FLOUR', fluor));
-          }
-          if (filterProps.minCarats !== undefined) {
-            url.searchParams.append('CARATS_MIN', filterProps.minCarats.toString());
-          }
-          if (filterProps.maxCarats !== undefined) {
-            url.searchParams.append('CARATS_MAX', filterProps.maxCarats.toString());
-          }
-          if (filterProps.cut) {
-            url.searchParams.append('CUT', filterProps.cut);
-          }
-          if (filterProps.polish) {
-            url.searchParams.append('POL', filterProps.polish);
-          }
-          if (filterProps.symmetry) {
-            url.searchParams.append('SYM', filterProps.symmetry);
-          }
-          if (filterProps.locations && filterProps.locations.length > 0) {
-            filterProps.locations.forEach(loc => url.searchParams.append('LOCATION', loc));
-          }
-          if (filterProps.labs && filterProps.labs.length > 0) {
-            filterProps.labs.forEach(lab => url.searchParams.append('LAB', lab));
-          }
-          if (filterProps.inclusions) {
-            const { centerBlack, centerWhite, sideBlack, sideWhite } = filterProps.inclusions;
-            if (centerBlack && centerBlack.length > 0) centerBlack.forEach(val => url.searchParams.append('CN', val));
-            if (centerWhite && centerWhite.length > 0) centerWhite.forEach(val => url.searchParams.append('CW', val));
-            if (sideBlack && sideBlack.length > 0) sideBlack.forEach(val => url.searchParams.append('SN', val));
-            if (sideWhite && sideWhite.length > 0) sideWhite.forEach(val => url.searchParams.append('SW', val));
-          }
-          if (filterProps.keySymbols) {
-            const { keyToSymbol } = filterProps.keySymbols;
-            if (keyToSymbol && keyToSymbol.length > 0) keyToSymbol.forEach(val => url.searchParams.append('KEY_TO_SYMBOLS', val));
-          }
-          if (filterProps.priceFilters) {
-            const { pricePerCarat, discount, totalPrice } = filterProps.priceFilters;
-            if (pricePerCarat?.from) url.searchParams.append('NET_RATE_MIN', pricePerCarat.from);
-            if (pricePerCarat?.to) url.searchParams.append('NET_RATE_MAX', pricePerCarat.to);
-            if (discount?.from) url.searchParams.append('DISC_PER_MIN', discount.from);
-            if (discount?.to) url.searchParams.append('DISC_PER_MAX', discount.to);
-            if (totalPrice?.from) url.searchParams.append('NET_VALUE_MIN', totalPrice.from);
-            if (totalPrice?.to) url.searchParams.append('NET_VALUE_MAX', totalPrice.to);
-          }
-          if (filterProps.measurements) {
-            const { length, width, depth, table, depthPercent, pavAngle, pavHeight, crAngle, crHeight } = filterProps.measurements;
-            if (length?.from) url.searchParams.append('LENGTH_MIN', length.from);
-            if (length?.to) url.searchParams.append('LENGTH_MAX', length.to);
-            if (width?.from) url.searchParams.append('WIDTH_MIN', width.from);
-            if (width?.to) url.searchParams.append('WIDTH_MAX', width.to);
-            if (depth?.from) url.searchParams.append('DEPTH_MIN', depth.from);
-            if (depth?.to) url.searchParams.append('DEPTH_MAX', depth.to);
-            if (table?.from) url.searchParams.append('TABLE_PER_MIN', table.from);
-            if (table?.to) url.searchParams.append('TABLE_PER_MAX', table.to);
-            if (depthPercent?.from) url.searchParams.append('DEPTH_PER_MIN', depthPercent.from);
-            if (depthPercent?.to) url.searchParams.append('DEPTH_PER_MAX', depthPercent.to);
-            if (pavAngle?.from) url.searchParams.append('PAVILLION_ANGLE_MIN', pavAngle.from);
-            if (pavAngle?.to) url.searchParams.append('PAVILLION_ANGLE_MAX', pavAngle.to);
-            if (pavHeight?.from) url.searchParams.append('PAVILLION_HEIGHT_MIN', pavHeight.from);
-            if (pavHeight?.to) url.searchParams.append('PAVILLION_HEIGHT_MAX', pavHeight.to);
-            if (crAngle?.from) url.searchParams.append('CROWN_ANGLE_MIN', crAngle.from);
-            if (crAngle?.to) url.searchParams.append('CROWN_ANGLE_MAX', crAngle.to);
-            if (crHeight?.from) url.searchParams.append('CROWN_HEIGHT_MIN', crHeight.from);
-            if (crHeight?.to) url.searchParams.append('CROWN_HEIGHT_MAX', crHeight.to);
-          }
-        }
-
-        const response = await fetch(url.toString(), {
-          method: 'GET',
-          credentials: 'include', // Include cookies for admin authentication
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          if (response.status === 500 && currentPage > 1) {
-            // If page is out of bounds, reset to page 1
-            console.warn(`Page ${currentPage} out of bounds, resetting to page 1`);
-            setCurrentPage(1);
-            setLoading(false);
-            return;
-          }
-          throw new Error(`Failed to fetch inventory data: ${response.status}`);
-        }
-
-        const result = await response.json();
-        
-        if (result.success && result.data) {
-          setData(result.data);
-          setPagination(result.pagination);
-          setIsTransitioning(false);
-          
-          // If current page exceeds total pages, go to last page
-          if (result.pagination && currentPage > result.pagination.totalPages) {
-            setCurrentPage(result.pagination.totalPages);
-          }
-        } else {
-          throw new Error('Invalid response format from API');
-        }
-      } catch (err) {
-        console.error('Error fetching inventory:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load inventory data');
-        setData([]);
-        setIsTransitioning(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInventoryData();
-  }, [currentPage, rowsPerPage, sortConfig, isExternalData, filterProps]);
-
-  // Optionally filter by source if filterSource is provided
-  let paginatedData: InventoryDiamond[];
-  let totalRecords: number;
-
-  if (noPagination) {
-    // Show all data without pagination
-    paginatedData = filterSource ? data.filter((d) => d.source === filterSource) : data;
-    totalRecords = paginatedData.length;
-  } else {
-    // Internal pagination for local data (when externalPagination is not provided)
-    const isInternalPagination = isExternalData && !externalPagination;
-    if (isInternalPagination) {
-      const filtered = filterSource ? data.filter((d) => d.source === filterSource) : data;
-      const startIdx = (currentPage - 1) * rowsPerPage;
-      const endIdx = startIdx + rowsPerPage;
-      paginatedData = filtered.slice(startIdx, endIdx);
-      totalRecords = filtered.length;
-    } else if (isExternalData) {
-      paginatedData = filterSource ? data.filter((d) => d.source === filterSource) : data;
-      totalRecords = paginatedData.length;
-    } else {
-      paginatedData = data;
-      totalRecords = pagination?.totalRecords || 0;
-    }
-  }
+  const {
+    data: fetchedData,
+    loading: fetchLoading,
+    error: fetchError,
+    pagination: fetchPagination,
+    hasLoadedOnce
+  } = useInventoryData({
+    filters,
+    currentPage: isExternalData ? 1 : currentPage,
+    rowsPerPage: isExternalData ? 10 : rowsPerPage,
+    sortConfig,
+  });
   
-  const totalPages = pagination?.totalPages || 1;
+  // Determine which data/loading/error to use
+  const data = isExternalData ? (propData || []) : fetchedData;
+  const loading = isExternalData ? (propLoading ?? false) : fetchLoading;
+  const error = isExternalData ? propError : fetchError;
+  const pagination = isExternalData ? externalPagination : fetchPagination;
 
-  const formatCurrency = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num)
-      ? "N/A"
-      : `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  };
-
-  const formatPercentage = (value: string | number) => {
-    const num = parseFloat(String(value));
-    return isNaN(num) ? "N/A" : `${num.toFixed(2)}%`;
-  };
-
-  const goToPage = (page: number) => {
-    // Block navigation during loading or transitions
-    if (loading || isTransitioning) {
-      console.warn('Navigation blocked during loading/transition');
-      return;
+  // Sync external pagination current page if provided
+  useEffect(() => {
+    if (isExternalData && externalPagination) {
+      setCurrentPage(externalPagination.currentPage);
     }
-    
-    // Ensure page is within valid bounds and not already on that page
-    if (page < 1 || page === currentPage || !totalPages || !pagination) {
-      return;
+  }, [isExternalData, externalPagination]);
+  
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    if (!isExternalData) {
+      setCurrentPage(1);
     }
-    
-    // Only navigate if page is within bounds of current pagination
-    if (page <= totalPages && page <= pagination.totalPages) {
+  }, [filterKey, isExternalData]);
+
+  // Calculate paginated data and totals
+  const { paginatedData, totalRecords, totalPages } = useMemo(() => {
+    let paginated: InventoryDiamond[];
+    let total: number;
+    let pages: number;
+
+    if (noPagination) {
+      // Show all data without pagination
+      paginated = filterSource ? data.filter((d) => d.source === filterSource) : data;
+      total = paginated.length;
+      pages = 1;
+    } else {
+      // Internal pagination for external data without external pagination
+      const isInternalPagination = isExternalData && !externalPagination;
+      if (isInternalPagination) {
+        const filtered = filterSource ? data.filter((d) => d.source === filterSource) : data;
+        const startIdx = (currentPage - 1) * rowsPerPage;
+        const endIdx = startIdx + rowsPerPage;
+        paginated = filtered.slice(startIdx, endIdx);
+        total = filtered.length;
+        pages = Math.ceil(total / rowsPerPage);
+      } else if (isExternalData) {
+        paginated = filterSource ? data.filter((d) => d.source === filterSource) : data;
+        total = paginated.length;
+        pages = pagination?.totalPages || 1;
+      } else {
+        paginated = data;
+        total = pagination?.totalRecords || 0;
+        pages = pagination?.totalPages || 1;
+      }
+    }
+
+    return { paginatedData: paginated, totalRecords: total, totalPages: pages };
+  }, [data, filterSource, noPagination, isExternalData, externalPagination, currentPage, rowsPerPage, pagination]);
+  
+  // Calculate pagination info
+  const paginationInfo = useMemo(() => {
+    const start = totalRecords === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(currentPage * rowsPerPage, totalRecords);
+    return { start, end, total: totalRecords };
+  }, [currentPage, rowsPerPage, totalRecords]);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages && page !== currentPage) {
       setCurrentPage(page);
       
-      // If using external data with page change callback, notify parent to fetch new data
+      // If using external data with page change callback, notify parent
       if (isExternalData && onPageChange) {
         onPageChange(page, rowsPerPage);
       }
-    } else {
-      console.warn(`Cannot navigate to page ${page}. Max is ${totalPages}`);
+    }
+  };
+  
+  const handleRowsPerPageChange = (newRows: number) => {
+    setRowsPerPage(newRows);
+    setCurrentPage(1);
+    
+    // Notify parent if using external data
+    if (isExternalData && onPageChange) {
+      onPageChange(1, newRows);
     }
   };
 
@@ -441,43 +252,7 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
     setSelectedDiamond(diamond);
   };
 
-  const renderPaginationButtons = () => {
-    const buttons: React.ReactElement[] = [];
-    const maxButtons = 5;
-    
-    // Safety check to prevent rendering invalid page numbers
-    if (!totalPages || totalPages < 1 || isTransitioning || !pagination) {
-      return buttons;
-    }
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
-    const endPage = Math.min(totalPages, startPage + maxButtons - 1);
-
-    if (endPage - startPage < maxButtons - 1) {
-      startPage = Math.max(1, endPage - maxButtons + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      buttons.push(
-        <button
-          key={i}
-          onClick={() => goToPage(i)}
-          disabled={i === currentPage}
-          className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            currentPage === i
-              ? "bg-[#050c3a] text-white"
-              : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
-          }`}
-        >
-          {i}
-        </button>,
-      );
-    }
-
-    return buttons;
-  };
-
-  if (loading && data.length === 0 && !isExternalData) {
+  if (loading && data.length === 0 && !hasLoadedOnce) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -488,11 +263,10 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
     );
   }
 
-  if (error) {
+  if (error && !hasLoadedOnce) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          
           <p className="text-red-600 font-medium">Error loading inventory</p>
           <p className="text-gray-600 text-sm mt-2">{error}</p>
         </div>
@@ -518,13 +292,13 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
       <div className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}>
         <div className="bg-white shadow-sm rounded-lg p-6 relative">
           {/* Loading Overlay */}
-          {(loading || isTransitioning) && (
+          {loading && (
             <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20 rounded-lg">
               <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
             </div>
           )}
           
-          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${(loading || isTransitioning) ? 'opacity-50 pointer-events-none' : ''}`}>
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
             {paginatedData.map((diamond) => (
               <div
                 key={diamond._id}
@@ -589,7 +363,7 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
                     <div className="border-t border-gray-200 pt-2 mt-2">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Rap Price:</span>
-                        <span className="font-semibold text-gray-900">{formatCurrency(diamond.RAP_PRICE || "0")}</span>
+                        <span className="font-semibold text-gray-900">{formatPrice(diamond.RAP_PRICE || "0")}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Disc%:</span>
@@ -597,11 +371,11 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Net Rate:</span>
-                        <span className="font-semibold text-gray-900">{formatCurrency(diamond.NET_RATE || "0")}</span>
+                        <span className="font-semibold text-gray-900">{formatPrice(diamond.NET_RATE || "0")}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Net Value:</span>
-                        <span className="font-semibold text-gray-900">{formatCurrency(diamond.NET_VALUE || "0")}</span>
+                        <span className="font-semibold text-gray-900">{formatPrice(diamond.NET_VALUE || "0")}</span>
                       </div>
                     </div>
                   </div>
@@ -612,74 +386,15 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
 
           {/* Pagination for Grid View */}
           {!noPagination && (
-            <div
-              className="px-4 py-3 mt-6 border-t border-gray-200 flex items-center justify-between"
-              style={{
-                background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
-              }}
-            >
-              <div className="text-sm text-gray-700 font-medium">
-                Showing {(currentPage - 1) * rowsPerPage + 1} to{" "}
-                {Math.min(currentPage * rowsPerPage, totalRecords)} of{" "}
-                {totalRecords.toLocaleString()} diamonds
-              </div>
-
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700 font-medium">
-                  Items per page
-                </span>
-                <select
-                  className="border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  value={rowsPerPage}
-                  disabled={loading || isTransitioning}
-                  onChange={(e) => {
-                    setRowsPerPage(Number(e.target.value));
-                    // currentPage will be reset by the useEffect
-                  }}
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                  <option value={100}>100</option>
-                 
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage === 1 || loading}
-                  className="p-2 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-
-                {!loading && renderPaginationButtons()}
-
-                {!loading && totalPages > 10 && currentPage < totalPages - 4 && (
-                  <>
-                    <span className="px-2 text-gray-500">...</span>
-                    <button
-                      onClick={() => goToPage(totalPages)}
-                      disabled={currentPage === totalPages || loading}
-                      className="px-3 py-1 rounded text-sm font-medium bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {totalPages}
-                    </button>
-                  </>
-                )}
-
-                <button
-                  onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage >= totalPages || !pagination?.hasNextPage || loading}
-                  className="p-2 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
+            <DiamondTablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              rowsPerPage={rowsPerPage}
+              paginationInfo={paginationInfo}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              disabled={loading}
+            />
           )}
         </div>
       </div>
@@ -718,13 +433,13 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
     >
       <div className="bg-white shadow-sm flex flex-col rounded-none relative">
         {/* Loading Overlay */}
-        {(loading || isTransitioning) && (
+        {loading && (
           <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-20">
             <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
           </div>
         )}
         
-        <div className={`overflow-x-auto ${(loading || isTransitioning) ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div className={`overflow-x-auto ${loading ? 'opacity-50 pointer-events-none' : ''}`}>
           <table className="w-full border-collapse table-fixed">
             <thead
               className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}
@@ -806,10 +521,10 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
                   <td className="px-2 py-1 text-[14px] text-gray-700">{row.SYM || "N/A"}</td>
                   <td className="px-2 py-1 text-[14px] text-gray-700">{row.FLOUR || "N/A"}</td>
                   <td className="px-2 py-1 text-[14px] text-gray-700">{row.LAB || "N/A"}</td>
-                  <td className="px-2 py-1 text-[14px] text-gray-700">{formatCurrency(row.RAP_PRICE || 0)}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700">{formatPrice(row.RAP_PRICE || 0)}</td>
                   <td className="px-2 py-1 text-[14px] font-semibold text-red-600">{formatPercentage(row.DISC_PER || 0)}</td>
-                  <td className="px-2 py-1 text-[14px] text-gray-700">{formatCurrency(row.NET_RATE || 0)}</td>
-                  <td className="px-2 py-1 text-[14px] text-gray-700 font-medium">{formatCurrency(row.NET_VALUE || 0)}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700">{formatPrice(row.NET_RATE || 0)}</td>
+                  <td className="px-2 py-1 text-[14px] text-gray-700 font-medium">{formatPrice(row.NET_VALUE || 0)}</td>
                   <td className="px-2 py-1 text-[14px] text-gray-700">{row.DEPTH_PER || "N/A"}</td>
                   <td className="px-2 py-1 text-[14px] text-gray-700">{row.TABLE_PER || "N/A"}</td>
                   <td className="px-2 py-1 text-[14px] text-gray-700 truncate">{row.MEASUREMENTS || "N/A"}</td>
@@ -864,85 +579,15 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
         </div>
 
         {!noPagination && (
-          <div
-            className="px-4 py-3 border-t border-gray-200 flex items-center justify-between flex-shrink-0"
-            style={{
-              background: "linear-gradient(to right, #faf6eb 0%, #faf6eb 100%)",
-            }}
-          >
-            <div className="text-sm text-gray-700 font-medium">
-              {(() => {
-                let start, end, total;
-                if (externalPagination) {
-                  const { currentPage, recordsPerPage, totalRecords } = externalPagination;
-                  start = totalRecords === 0 ? 0 : (currentPage - 1) * recordsPerPage + 1;
-                  end = Math.min(currentPage * recordsPerPage, totalRecords);
-                  total = totalRecords;
-                } else {
-                  start = (currentPage - 1) * rowsPerPage + 1;
-                  end = Math.min(currentPage * rowsPerPage, totalRecords);
-                  total = totalRecords;
-                }
-                return `Showing ${start} to ${end} of ${total.toLocaleString()} diamonds`;
-              })()}
-            </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700 font-medium">
-                Rows per page
-              </span>
-              <select
-                className="border border-gray-300 rounded-none px-3 py-1.5 text-sm text-gray-800 bg-white cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#070b3a] focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                value={rowsPerPage}
-                disabled={loading || isTransitioning}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  // currentPage will be reset by the useEffect
-                }}
-              >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-                
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1 || loading}
-                className="p-2 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-
-              {!loading && renderPaginationButtons()}
-
-              {!loading && totalPages > 10 && currentPage < totalPages - 4 && (
-                <>
-                  <span className="px-2 text-gray-500">...</span>
-                  <button
-                    onClick={() => goToPage(totalPages)}
-                    disabled={currentPage === totalPages || loading}
-                    className="px-3 py-1 rounded text-sm font-medium bg-white text-gray-700 hover:bg-gray-100 border border-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {totalPages}
-                  </button>
-                </>
-              )}
-
-              <button
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage >= totalPages || !pagination?.hasNextPage || loading}
-                className="p-2 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
+          <DiamondTablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            rowsPerPage={rowsPerPage}
+            paginationInfo={paginationInfo}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            disabled={loading}
+          />
         )}
       </div>
     </div>

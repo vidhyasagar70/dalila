@@ -95,13 +95,6 @@ export default function DiamondStockTableWithFilter() {
     setSelectedCaratRanges(ranges);
   };
 
-  const handleSelectionChange = (
-    selectedIds: string[],
-    diamonds: DiamondData[],
-  ) => {
-    setSelectedDiamonds(diamonds);
-  };
-
   const handleSaveParameters = async () => {
     try {
       const filters: {
@@ -243,7 +236,6 @@ export default function DiamondStockTableWithFilter() {
           selectedPolish={selectedPolish}
           selectedSymmetry={selectedSymmetry}
           selectedLabs={selectedLabs}
-          onSelectionChange={handleSelectionChange}
           pageSize={10}
         />
       </div>
