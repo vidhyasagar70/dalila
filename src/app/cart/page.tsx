@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { cartApi, diamondApi } from "@/lib/api";
 import Image from "next/image";
-import type { DiamondData } from "@/types/Diamondtable";
+import type { DiamondData } from "@/types/diamond.types";
 
 // Dynamic imports for modal components
 const DiamondComparisonPage = dynamic(

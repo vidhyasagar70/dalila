@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { DiamondTableHeader } from './DiamondTableHeader';
 import { DiamondTableRow } from './DiamondTableRow';
-import type { DiamondData } from '@/types/Diamondtable';
+import type { DiamondData } from '@/types/diamond.types';
 
 interface DiamondTableProps {
   diamonds: DiamondData[];

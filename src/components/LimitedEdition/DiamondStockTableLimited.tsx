@@ -10,7 +10,7 @@ import type {
   DiamondData,
   TableProps,
   FilterParams,
-} from "@/types/Diamondtable";
+} from "@/types/diamond.types";
 import DiamondDetailView from "../DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
 import { formatPrice, formatPercentage } from "@/utils/formatting";

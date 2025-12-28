@@ -18,7 +18,7 @@ import Image from "next/image";
 import { diamondApi, cartApi, holdApi } from "@/lib/api";
 import { Maven_Pro } from "next/font/google";
 import type { LimitedEditionDiamond } from "@/lib/api";
-import type { DiamondData } from "@/types/Diamondtable";
+import type { DiamondData } from "@/types/diamond.types";
 import DiamondDetailView from "@/components/DiamondDetailView";
 
 const mavenPro = Maven_Pro({

@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import type {
     DiamondData,
     GridViewProps,
-} from "@/types/Diamondtable";
+} from "@/types/diamond.types";
 import DiamondDetailView from "./DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
 import { useDiamondData } from "@/hooks/useDiamondData";

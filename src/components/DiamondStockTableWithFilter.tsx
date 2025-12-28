@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
-import { DiamondData } from "@/types/Diamondtable";
+import { DiamondData } from "@/types/diamond.types";
 import DiamondComparisonPage from "./DiamondComparisonPage";
 import SearchBar from "./SearchBar";
 import ColorFilter from "./Filters/ColorFilter";

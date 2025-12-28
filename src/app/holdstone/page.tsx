@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { holdApi } from "@/lib/api";
 import { Loader2, AlertCircle } from "lucide-react";
-import type { DiamondData } from "@/types/Diamondtable";
+import type { DiamondData } from "@/types/diamond.types";
 import DiamondDetailView from "@/components/DiamondDetailView";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import {  Jost,Marcellus, } from "next/font/google";

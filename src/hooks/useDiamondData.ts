@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { diamondApi } from '@/lib/api';
-import type { DiamondData } from '@/types/Diamondtable';
+import type { DiamondData } from '@/types/diamond.types';
 
 interface FilterParams {
   [key: string]: string | number | boolean | string[] | number[] | undefined;

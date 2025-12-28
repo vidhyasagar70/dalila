@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatPrice, formatPercentage } from '@/utils/formatting';
-import type { DiamondData } from '@/types/Diamondtable';
+import type { DiamondData } from '@/types/diamond.types';
 
 interface DiamondTableRowProps {
   diamond: DiamondData;

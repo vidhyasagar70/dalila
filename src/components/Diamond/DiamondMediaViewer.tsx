@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Download } from 'lucide-react';
-import type { DiamondData } from '@/types/Diamondtable';
+import type { DiamondData } from '@/types/diamond.types';
 
 interface DiamondMediaViewerProps {
   selectedMediaTab: 'image' | 'video' | 'hand' | 'tweezer' | 'certificate';

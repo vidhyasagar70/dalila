@@ -14,7 +14,7 @@ import {
   Grip,
   ShoppingCart,
 } from "lucide-react";
-import type { DiamondData } from "@/types/Diamondtable";
+import type { DiamondData } from "@/types/diamond.types";
 import { cartApi, holdApi, queryApi } from "@/lib/api";
 import { Maven_Pro, Marcellus } from "next/font/google";
 import toast from "react-hot-toast";
