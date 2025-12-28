@@ -1,7 +1,7 @@
 "use client";
 import { Marcellus, Jost } from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
-import GoldButton from "@/components/ui/button";
+import GoldButton from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 const marcellus = Marcellus({
   variable: "--font-marcellus",

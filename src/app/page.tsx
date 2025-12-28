@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import HeroSection from "@/components/pages/HeroSection";
 import AboutDalila from "@/components/pages/homecomponents/AboutDalila";
-import InstaSection from "@/components/instaSection";
+import InstaSection from "@/components/InstagramSection";
 // Lazy load below-the-fold components
 const DiamondShapes = dynamic(() => import("@/components/pages/homecomponents/DiamondShapes"), {
   loading: () => <div className="h-screen bg-gradient-to-b from-white to-gray-50" />,

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Marcellus,Jost} from "next/font/google";
-import GoldButton from "@/components/ui/button";
+import GoldButton from "@/components/ui/Button";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
 
 
