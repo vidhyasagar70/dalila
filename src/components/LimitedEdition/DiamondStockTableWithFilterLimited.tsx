@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 
 import { DiamondData } from "@/types/diamond.types";
 import type { LimitedEditionDiamond } from "@/lib/api";
-import DiamondComparisonPage from "../DiamondComparisonPage";
 import ColorFilterLimited from "./Filters/ColorFilterLimited";
 import ShapeFilter from "./Filters/ShapeFilterLimited";
 import { CaratFilterLimited } from "./Filters/CaratFilterLimited";
@@ -50,8 +49,6 @@ export default function DiamondStockTableWithFilter() {
   const [selectedLabs, setSelectedLabs] = useState<string[]>([]);
   const [selectedFluor, setSelectedFluor] = useState<string[]>([]);
   const [selectedCaratRanges, setSelectedCaratRanges] = useState<{ min: string; max: string }[]>([]);
-  const [selectedDiamonds, setSelectedDiamonds] = useState<DiamondData[]>([]);
-  const [showComparison, setShowComparison] = useState(false);
 
   const handleColorChange = (colors: string[]) => {
     setSelectedColor(colors);
@@ -238,14 +235,6 @@ export default function DiamondStockTableWithFilter() {
           pageSize={10}
         />
       </div>
-
-      {/* Comparison Modal */}
-      {showComparison && (
-        <DiamondComparisonPage
-          diamonds={selectedDiamonds}
-          onClose={() => setShowComparison(false)}
-        />
-      )}
     </div>
   );
 }

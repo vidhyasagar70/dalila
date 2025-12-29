@@ -121,9 +121,10 @@ export const useLimitedEditionData = ({
             setTotalPages(Math.ceil(extendedResponse.totalFilteredRecords / rowsPerPage));
           } else if (response.data.pagination) {
             // Structure 3: response.data.pagination object
-            const paginationTotal = response.data.pagination.totalItems || response.data.pagination.totalRecords || 0;
+            const dataPagination = response.data.pagination as { totalItems?: number; totalRecords?: number; totalPages?: number };
+            const paginationTotal = dataPagination.totalItems || dataPagination.totalRecords || 0;
             setTotalRecords(paginationTotal);
-            setTotalPages(response.data.pagination.totalPages || Math.ceil(paginationTotal / rowsPerPage));
+            setTotalPages(dataPagination.totalPages || Math.ceil(paginationTotal / rowsPerPage));
           } else if (extendedResponse.total !== undefined) {
             // Structure 4: response.total and response.totalPages
             setTotalRecords(extendedResponse.total);

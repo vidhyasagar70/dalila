@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { Loader2, AlertCircle, ChevronLeft, ChevronRight, Gem } from "lucide-react";
 
 import DiamondDetailView from "@/components/DiamondDetailView";
@@ -33,10 +34,10 @@ export default function LimitedEditionPage({
   diamonds = [],
   loading = false,
   error = "",
-  hasLoadedOnce = true,
-  refreshLimitedEditionDiamonds = () => {},
+  hasLoadedOnce: _hasLoadedOnce = true,
+  refreshLimitedEditionDiamonds: _refreshLimitedEditionDiamonds = () => {},
   isOpen = true,
-  onToggle = () => {},
+  onToggle: _onToggle = () => {},
 }: LimitedEditionPageProps) {
   const [selectedDiamond, setSelectedDiamond] = useState<LimitedEditionDiamond | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -106,9 +107,11 @@ export default function LimitedEditionPage({
                                 playsInline
                               />
                             ) : diamond.REAL_IMAGE ? (
-                              <img
+                              <Image
                                 src={diamond.REAL_IMAGE}
                                 alt={diamond.STONE_NO}
+                                width={48}
+                                height={48}
                                 className="w-full h-full object-cover"
                               />
                             ) : (

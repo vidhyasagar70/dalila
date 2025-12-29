@@ -78,6 +78,8 @@ export interface FilterParams {
   SN?: string;
   SW?: string;
   keyToSymbols?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 
   netRateMin?: number;
   netRateMax?: number;
