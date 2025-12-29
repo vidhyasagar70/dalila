@@ -27,17 +27,6 @@ export const getAllDiamonds = async (params?: {
   }
 };
 
-// Get all diamonds without pagination
-export const getAllDiamondsNoPagination = async (): Promise<ApiResponse<{ diamonds: Diamond[] }> | null> => {
-  try {
-    const response = await apiClient.get<ApiResponse<{ diamonds: Diamond[] }>>("/api/diamonds/all");
-    return response.data;
-  } catch (error) {
-    console.error("Get all diamonds (no pagination) error:", error);
-    return null;
-  }
-};
-
 // Get diamond by ID
 export const getDiamondById = async (id: string): Promise<ApiResponse<Diamond> | null> => {
   try {

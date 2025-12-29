@@ -60,7 +60,6 @@ export type {
 
 export {
   getAllDiamonds,
-  getAllDiamondsNoPagination,
   getDiamondById,
   getDashboardStats,
   syncDiamonds,

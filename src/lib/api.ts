@@ -31,7 +31,6 @@ export * from "../services/api/types/user.types";
 export const diamondApi = {
   // From diamondService
   getAll: diamondService.getAllDiamonds,
-  getAllNoPagination: diamondService.getAllDiamondsNoPagination,
   getById: diamondService.getDiamondById,
   getDashboardStats: diamondService.getDashboardStats,
   sync: diamondService.syncDiamonds,
