@@ -12,7 +12,7 @@ import ColorFilter from "@/components/Filters/ColorFilter";
 import ClarityFilter from "@/components/Filters/ClarityFilter";
 import FluorFilter from "@/components/Filters/FluorescenceFilter";
 import SupplierManagementModal from "@/components/Models/SupplierManagementModal";
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/components/shared/SearchBar";
 import InclusionFilter, { type InclusionFilters } from "@/components/Filters/InclusionFilter";
 import KeySymbolFilter, { type KeySymbolFilters } from "@/components/Filters/KeyToSymbolFilter";
 import PriceLocationFilter, { type PriceLocationFilters } from "@/components/Filters/PriceAndLocationFilter";
@@ -517,9 +517,9 @@ export default function InventoryManagement() {
 
         {/* Filters Row - Only show when toggled */}
         {showFilters && !isLoadingStats && (
-          <div className="w-full flex flex-col gap-2 bg-white rounded-lg shadow-sm p-3 border border-gray-200 mt-2 mb-2">
+          <div className="w-full flex flex-col gap-3 bg-white rounded-lg shadow-sm p-4 border border-gray-200 mt-2 mb-2">
             {/* Main filter row */}
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {viewMode === 'inventory' ? (
                 <>
                   <ShapeFilter selectedShape={inventorySelectedShape} onShapeChange={setInventorySelectedShape} />
@@ -569,23 +569,19 @@ export default function InventoryManagement() {
               )}
             </div>
             {/* Advanced filter row */}
-            <div className="grid grid-cols-4 gap-0.5 mt-1">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1.5fr_0.8fr_0.8fr] gap-3">
               {viewMode === 'inventory' ? (
                 <>
                   <InclusionFilter inclusions={inventoryInclusions} onInclusionChange={setInventoryInclusions} />
                   <KeySymbolFilter filters={inventoryKeySymbols} onFiltersChange={setInventoryKeySymbols} />
-                  <div>
-                    <PriceLocationFilter filters={inventoryPriceLocation} onFiltersChange={setInventoryPriceLocation} />
-                  </div>
+                  <PriceLocationFilter filters={inventoryPriceLocation} onFiltersChange={setInventoryPriceLocation} />
                   <MeasurementFilter measurements={inventoryMeasurements} onMeasurementChange={setInventoryMeasurements} />
                 </>
               ) : (
                 <>
                   <InclusionFilter inclusions={activeInclusions} onInclusionChange={setActiveInclusions} />
                   <KeySymbolFilter filters={activeKeySymbols} onFiltersChange={setActiveKeySymbols} />
-                  <div>
-                    <PriceLocationFilter filters={activePriceLocation} onFiltersChange={setActivePriceLocation} />
-                  </div>
+                  <PriceLocationFilter filters={activePriceLocation} onFiltersChange={setActivePriceLocation} />
                   <MeasurementFilter measurements={activeMeasurements} onMeasurementChange={setActiveMeasurements} />
                 </>
               )}

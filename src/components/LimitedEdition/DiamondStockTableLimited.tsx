@@ -1,20 +1,19 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
-import Image from "next/image";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ChevronDown,
   ChevronUp,
   Loader2,
 } from "lucide-react";
-import { diamondApi } from "@/lib/api";
 import type {
   DiamondData,
   TableProps,
-  FilterParams,
 } from "@/types/diamond.types";
 import DiamondDetailView from "../DiamondDetailView";
 import { Maven_Pro } from "next/font/google";
 import { formatPrice, formatPercentage } from "@/utils/formatting";
 import { DiamondTablePagination } from "../Diamond/shared/DiamondTablePagination";
+import { useLimitedEditionData } from "@/hooks/useLimitedEditionData";
+import { useLimitedEditionFilters } from "@/hooks/useLimitedEditionFilters";
 
 const mavenPro = Maven_Pro({
   variable: "--font-maven-pro",
@@ -30,7 +29,7 @@ interface LimitedTableProps extends Omit<TableProps, 'selectedMinCarat' | 'selec
 }
 
 const DiamondStockTable: React.FC<LimitedTableProps> = ({
-  pageSize = 20,
+  pageSize = 10,
   onRowClick,
   searchTerm = "",
   selectedShape = [],
@@ -43,119 +42,17 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
   selectedSymmetry = "",
   selectedLabs = [],
 }) => {
-  const [data, setData] = useState<DiamondData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // State for pagination and sorting
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(
-    null,
-  );
+  const [selectedDiamond, setSelectedDiamond] = useState<DiamondData | null>(null);
 
-  const fetchDiamonds = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const hasSearchTerm = searchTerm && searchTerm.trim();
-      const hasShapeFilter =
-        Array.isArray(selectedShape) && selectedShape.length > 0;
-      const hasColorFilter =
-        Array.isArray(selectedColor) && selectedColor.length > 0;
-      const hasCaratFilter = Array.isArray(selectedCaratRanges) && selectedCaratRanges.length > 0;
-      const hasFluorFilter =
-        Array.isArray(selectedFluor) && selectedFluor.length > 0;
-      const hasClarityFilter = selectedClarity && selectedClarity.length > 0;
-      const hasCutFilter = selectedCut && selectedCut.trim();
-      const hasPolishFilter = selectedPolish && selectedPolish.trim();
-      const hasSymmetryFilter = selectedSymmetry && selectedSymmetry.trim();
-      const hasLabFilter = Array.isArray(selectedLabs) && selectedLabs.length > 0;
-
-      // Always use search API - same as DiamondStockTable
-      const filters: FilterParams = {
-        page: 1,
-        limit: 10000, // Get all results for client-side pagination
-      };
-
-      if (hasShapeFilter) {
-        filters.shape = selectedShape.join(",");
-      }
-      if (hasColorFilter) {
-        filters.color = selectedColor.join(",");
-      }
-      if (hasCaratFilter) {
-        // Use min of all mins and max of all maxes for API filter
-        const minVals = selectedCaratRanges.map(r => parseFloat(r.min)).filter(v => !isNaN(v));
-        const maxVals = selectedCaratRanges.map(r => parseFloat(r.max)).filter(v => !isNaN(v));
-        if (minVals.length > 0) filters.minCarats = Math.min(...minVals);
-        if (maxVals.length > 0) filters.maxCarats = Math.max(...maxVals);
-      }
-      if (hasFluorFilter) {
-        filters.fluorescence = selectedFluor.join(",");
-      }
-      if (hasClarityFilter) {
-        filters.clarity = selectedClarity.join(",");
-      }
-      if (hasCutFilter) {
-        filters.cut = selectedCut.trim();
-      }
-      if (hasPolishFilter) {
-        filters.polish = selectedPolish.trim();
-      }
-      if (hasSymmetryFilter) {
-        filters.symmetry = selectedSymmetry.trim();
-      }
-      if (hasLabFilter) {
-        filters.lab = selectedLabs.join(",");
-      }
-      if (hasSearchTerm) {
-        filters.searchTerm = searchTerm.trim();
-      }
-
-      // Always use search API (same endpoint as DiamondStockTable)
-      const response = await diamondApi.search(filters);
-
-      console.log("Limited Edition API Response:", response);
-      console.log("Response success:", response?.success);
-      console.log("Response data:", response?.data);
-      console.log("Is response.data an array?", Array.isArray(response?.data));
-
-      if (response?.success && response.data) {
-        let diamonds: DiamondData[];
-        if (Array.isArray(response.data)) {
-          diamonds = response.data as unknown as DiamondData[];
-          console.log("✅ Diamonds from array:", diamonds.length, "items");
-        } else if (
-          response.data.diamonds &&
-          Array.isArray(response.data.diamonds)
-        ) {
-          diamonds = response.data.diamonds as unknown as DiamondData[];
-          console.log("✅ Diamonds from diamonds property:", diamonds.length, "items");
-        } else {
-          diamonds = [];
-          console.log("❌ No diamonds found in response");
-        }
-        console.log("Setting data:", diamonds);
-        setData(diamonds);
-        setCurrentPage(1);
-      } else {
-        console.log("❌ Response failed or no data");
-        setData([]);
-      }
-    } catch (err) {
-      console.error("Error fetching diamonds:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch diamonds",
-      );
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [
+  // Build API filters from UI inputs using custom hook
+  const { filters } = useLimitedEditionFilters({
     searchTerm,
     selectedShape,
     selectedColor,
@@ -166,11 +63,48 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
     selectedPolish,
     selectedSymmetry,
     selectedLabs,
-  ]);
+  });
 
+  // Fetch diamond data from API with server-side pagination
+  const {
+    data,
+    loading,
+    error,
+    totalRecords,
+    totalPages,
+    hasLoadedOnce,
+  } = useLimitedEditionData({
+    filters,
+    currentPage,
+    rowsPerPage,
+    sortConfig,
+  });
+
+  // Debug logging
+  console.log("🔍 Limited Edition Table State:", {
+    currentPage,
+    rowsPerPage,
+    dataLength: data.length,
+    totalRecords,
+    totalPages,
+    loading,
+    hasLoadedOnce,
+  });
+
+  // Calculate pagination info
+  const paginationInfo = useMemo(() => {
+    const start = totalRecords === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(currentPage * rowsPerPage, totalRecords);
+    return { start, end, total: totalRecords };
+  }, [currentPage, rowsPerPage, totalRecords]);
+
+  // Create stable filter key for detecting real filter changes
+  const filterKey = useMemo(() => JSON.stringify(filters), [filters]);
+  
+  // Reset to page 1 when filters actually change
   useEffect(() => {
-    fetchDiamonds();
-  }, [fetchDiamonds]);
+    setCurrentPage(1);
+  }, [filterKey]);
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
@@ -184,58 +118,6 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
     setSortConfig({ key, direction });
   };
 
-  const sortedData = useMemo(() => {
-    console.log("📊 SortedData - Input data length:", data.length);
-    console.log("📊 SortedData - Data sample:", data.slice(0, 2));
-    
-    if (data.length === 0) {
-      console.log("⚠️ No data to sort");
-      return data;
-    }
-
-    // No client-side filtering needed anymore - all filtering is done server-side
-    const filtered = data;
-    console.log("📊 Filtered data length:", filtered.length);
-
-    if (!sortConfig) {
-      console.log("📊 No sort config, returning filtered data");
-      return filtered;
-    }
-
-    const sorted = [...filtered].sort((a, b) => {
-      const aValue = a[sortConfig.key as keyof DiamondData];
-      const bValue = b[sortConfig.key as keyof DiamondData];
-
-      const aNum = parseFloat(String(aValue));
-      const bNum = parseFloat(String(bValue));
-      if (!isNaN(aNum) && !isNaN(bNum)) {
-        return sortConfig.direction === "asc" ? aNum - bNum : bNum - aNum;
-      }
-
-      const aStr = String(aValue).toLowerCase();
-      const bStr = String(bValue).toLowerCase();
-      if (aStr < bStr) return sortConfig.direction === "asc" ? -1 : 1;
-      if (aStr > bStr) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    });
-
-    console.log("📊 Sorted data length:", sorted.length);
-    return sorted;
-  }, [data, sortConfig]);
-
-  console.log("📄 Pagination - Total Pages:", Math.ceil(sortedData.length / rowsPerPage));
-  console.log("📄 Pagination - Current Page:", currentPage);
-  console.log("📄 Pagination - Rows Per Page:", rowsPerPage);
-  
-  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
-  const paginatedData = sortedData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage,
-  );
-  
-  console.log("📄 Paginated data length:", paginatedData.length);
-  console.log("📄 Paginated data sample:", paginatedData.slice(0, 2));
-
   const handleStockIdClick = (e: React.MouseEvent, row: DiamondData) => {
     e.stopPropagation();
     if (onRowClick) {
@@ -245,27 +127,29 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
     }
   };
 
-  console.log("🔍 Component State - Loading:", loading, "Error:", error, "Data Length:", data.length);
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
-  if (loading) {
-    console.log("⏳ Showing loading state");
+  const handleRowsPerPageChange = (newSize: number) => {
+    setRowsPerPage(newSize);
+    setCurrentPage(1);
+  };
+
+  if (loading && !hasLoadedOnce) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-[#FAF6EB] mx-auto mb-4" />
-          <p className="text-gray-600">
-            {searchTerm ||
-            (Array.isArray(selectedShape) && selectedShape.length > 0)
-              ? `Searching diamonds...`
-              : "Loading diamonds..."}
-          </p>
+          <p className="text-gray-600">Loading diamonds...</p>
         </div>
       </div>
     );
   }
 
   if (error) {
-    console.log("❌ Showing error state:", error);
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -277,33 +161,39 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
     );
   }
 
-  if (data.length === 0) {
-    console.log("⚠️ Showing empty state");
+  if (!hasLoadedOnce && data.length === 0) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <p className="text-gray-600 text-lg mb-3">No diamonds found</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasLoadedOnce && data.length === 0) {
     return (
       <div className="w-full h-96 flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <p className="text-gray-600 text-lg mb-3">
-            {searchTerm ||
-            (Array.isArray(selectedShape) && selectedShape.length > 0) ||
-            (Array.isArray(selectedColor) && selectedColor.length > 0) ||
-            (Array.isArray(selectedClarity) && selectedClarity.length > 0) ||
-            (Array.isArray(selectedFluor) && selectedFluor.length > 0) ||
-            (Array.isArray(selectedCaratRanges) && selectedCaratRanges.length > 0)
-              ? `No diamonds found matching your filters`
-              : "No diamonds found"}
+            No diamonds found matching your filters
           </p>
         </div>
       </div>
     );
   }
 
-  console.log("✅ Rendering table with data");
-  console.log("🎨 Rendering table body with", paginatedData.length, "rows");
-
   return (
     <>
       <div className={`w-full flex flex-col bg-gray-50 p-4 ${mavenPro.className}`}>
-        <div className="bg-white shadow-sm flex flex-col rounded-lg">
+        <div className="bg-white shadow-sm flex flex-col rounded-lg relative">
+          {/* Loading overlay for pagination */}
+          {loading && hasLoadedOnce && (
+            <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-20 rounded-lg">
+              <Loader2 className="w-8 h-8 animate-spin text-[#050c3a]" />
+            </div>
+          )}
+          
           <div className="overflow-x-auto">
             <table className="w-full border-collapse table-fixed">
               <thead className={`bg-[#050c3a] text-white sticky top-0 z-10 ${mavenPro.className}`}>
@@ -390,7 +280,7 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
               </thead>
 
               <tbody>
-                {paginatedData.map((row, idx) => (
+                {data.map((row, idx) => (
                   <tr
                     key={row._id}
                     style={{
@@ -479,16 +369,9 @@ const DiamondStockTable: React.FC<LimitedTableProps> = ({
             currentPage={currentPage}
             totalPages={totalPages}
             rowsPerPage={rowsPerPage}
-            paginationInfo={{
-              start: (currentPage - 1) * rowsPerPage + 1,
-              end: Math.min(currentPage * rowsPerPage, sortedData.length),
-              total: sortedData.length
-            }}
-            onPageChange={setCurrentPage}
-            onRowsPerPageChange={(newRows) => {
-              setRowsPerPage(newRows);
-              setCurrentPage(1);
-            }}
+            paginationInfo={paginationInfo}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
             disabled={loading}
           />
         </div>

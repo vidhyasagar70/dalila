@@ -4,7 +4,7 @@ import { Grid3x3, List, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { DiamondData } from "@/types/diamond.types";
 import DiamondComparisonPage from "./DiamondComparisonPage";
-import SearchBar from "./SearchBar";
+import SearchBar from "./shared/SearchBar";
 import ColorFilter from "./Filters/ColorFilter";
 import ShapeFilter from "./Filters/ShapeFilter";
 import CaratFilter from "./Filters/CaratFilter";
@@ -19,7 +19,7 @@ import PriceLocationFilter, {
 import DiamondStockTable from "./DiamondStockTable";
 import DiamondGridView from "./DiamondGridView";
 import CompareButton from "./CompareButton";
-import EmailButton from "./EmailButton";
+import EmailButton from "./shared/EmailButton";
 import AddToCartButton from "../components/cart/AddToCartButton";
 import HoldButton from "../components/cart/HoldButton";
 import { Maven_Pro } from "next/font/google";
