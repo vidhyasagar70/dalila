@@ -30,7 +30,6 @@ export default function LoginPage() {
     // Listen for unauthorized events
     useEffect(() => {
         const handleUnauthorized = () => {
-            console.log("Unauthorized event detected, redirecting to login...");
             router.push("/login");
         };
 
@@ -71,8 +70,6 @@ export default function LoginPage() {
         }
 
         try {
-            console.log(" Attempting login...");
-
             // Call the login API
             const response = await userApi.login({
                 email: email.trim(),
@@ -81,9 +78,6 @@ export default function LoginPage() {
 
             if (response && response.success && response.data) {
                 const { token, user } = response.data;
-
-                console.log(" Login successful!");
-                console.log("User data:", user);
 
                 if (typeof window !== "undefined") {
                     // Handle remember me
@@ -131,16 +125,8 @@ export default function LoginPage() {
                 if (user) {
                     let redirectUrl = "/";
 
-                    console.log(" User role:", user.role);
-                    console.log(" Customer data exists:", !!user.customerData);
-                    console.log(" Customer data:", user.customerData);
-                    console.log(" KYC Status:", user.kycStatus);
-
                     // Check if user is admin or super admin
                     if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
-                        console.log(
-                            ` ${user.role} user - redirecting to dashboard`
-                        );
                         redirectUrl = searchParams.get("redirect") || "/";
                         setError("");
                     }
@@ -151,37 +137,28 @@ export default function LoginPage() {
                         !user.customerData.firstName ||
                         !user.customerData.businessInfo
                     ) {
-                        console.log(
-                            " Customer data missing or incomplete - redirecting to form"
-                        );
                         redirectUrl = "/customer-details";
                         setError("");
                     }
                     // Check KYC status if customer data exists
                     else if (user.kycStatus === "pending") {
-                        console.log(" KYC pending approval");
                         setError(
                             "Your account is pending approval. Please wait for admin verification."
                         );
                         setIsLoading(false);
                         return;
                     } else if (user.kycStatus === "rejected") {
-                        console.log(" KYC rejected");
                         setError(
                             "Your account application was rejected. Please contact support."
                         );
                         setIsLoading(false);
                         return;
                     } else if (user.kycStatus === "approved") {
-                        console.log(" KYC approved - redirecting to app");
                         redirectUrl = searchParams.get("redirect") || "/";
                         setError("");
                     }
                     // If no KYC status but has customer data, redirect to customer details
                     else {
-                        console.log(
-                            " No KYC status - checking customer data completeness"
-                        );
                         // Double check if customer data is actually complete
                         const hasCompleteData =
                             user.customerData.firstName &&
@@ -191,21 +168,13 @@ export default function LoginPage() {
                             user.customerData.businessInfo;
 
                         if (hasCompleteData) {
-                            console.log(
-                                " Customer data complete - setting pending status"
-                            );
                             redirectUrl = searchParams.get("redirect") || "/";
                             setError("");
                         } else {
-                            console.log(
-                                " Customer data incomplete - redirecting to form"
-                            );
                             redirectUrl = "/customer-details";
                             setError("");
                         }
                     }
-
-                    console.log("🔀 Redirecting to:", redirectUrl);
 
                     setTimeout(() => {
                         window.location.href = redirectUrl;
@@ -223,8 +192,6 @@ export default function LoginPage() {
                 setIsLoading(false);
             }
         } catch (err: unknown) {
-            console.error(" Login error:", err);
-
             if (err instanceof Error) {
                 const errorMessage = err.message;
 

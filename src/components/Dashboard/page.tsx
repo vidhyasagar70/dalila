@@ -42,9 +42,7 @@ export default function AdminDashboard() {
 
   // Mock data
   const mockStats = {
-    newArrival: 25,
-    priceRevised: 1234,
-    holdStone: 0,
+   
     upcomingList: 0,
   };
 

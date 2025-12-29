@@ -19,10 +19,8 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
   const handleAddToCart = async () => {
     // Check authentication first - now with better error handling
     const token = getAuthToken();
-    console.log("Token check:", token ? "EXISTS" : "MISSING");
 
     if (!token || token.trim() === "") {
-      console.error(" No authentication token found");
       toast.error(
         "Please login to add items to cart. Your session may have expired.",
         {
@@ -48,18 +46,12 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
     try {
       setIsAdding(true);
 
-      console.log("🛒 Adding stones to cart:", selectedStoneNumbers);
-      console.log("🔑 Using token:", token.substring(0, 20) + "...");
-
       // Add all selected diamonds to cart with better error handling
       const results = await Promise.allSettled(
         selectedStoneNumbers.map((stoneNo) => {
-          console.log(`  Attempting to add: ${stoneNo}`);
           return cartApi.add(stoneNo);
         }),
       );
-
-      console.log("Cart API results:", results);
 
       // Analyze results with detailed logging
       const successful = results.filter((r) => {
@@ -69,10 +61,8 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
             error?: string;
             message?: string;
           };
-          console.log(" Fulfilled:", value);
           return value?.success === true;
         }
-        console.log(" Rejected:", r.reason);
         return false;
       });
 
@@ -101,7 +91,6 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
       });
 
       if (authErrors.length > 0) {
-        console.error(" Authentication errors detected");
         toast.error("Session expired. Please login again.", {
           duration: 4000,
         });
@@ -162,8 +151,6 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
         });
       }
     } catch (error) {
-      console.error(" Error adding to cart:", error);
-
       // Enhanced error handling
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
@@ -172,9 +159,6 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({
             data?: { error?: string; message?: string };
           };
         };
-
-        console.error(" Response status:", axiosError.response?.status);
-        console.error(" Response data:", axiosError.response?.data);
 
         if (axiosError.response?.status === 401) {
           toast.error("Session expired. Please login again.", {
