@@ -207,7 +207,8 @@ const InventoryDiamondTable: React.FC<InventoryTableProps> = ({
         pages = Math.ceil(total / rowsPerPage);
       } else if (isExternalData) {
         paginated = filterSource ? data.filter((d) => d.source === filterSource) : data;
-        total = paginated.length;
+        // Use totalRecords from pagination if available, otherwise fall back to paginated.length
+        total = pagination?.totalRecords || paginated.length;
         pages = pagination?.totalPages || 1;
       } else {
         paginated = data;
