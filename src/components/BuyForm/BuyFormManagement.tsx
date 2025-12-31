@@ -50,6 +50,15 @@ interface GroupedSubmission {
   lastSubmittedAt: string;
 }
 
+interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  totalRecords: number;
+  recordsPerPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
 export default function BuyFormManagement() {
   const [groupedData, setGroupedData] = useState<GroupedSubmission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +66,14 @@ export default function BuyFormManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [expandedEmail, setExpandedEmail] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<PaginationInfo>({
+    currentPage: 1,
+    totalPages: 0,
+    totalRecords: 0,
+    recordsPerPage: 10,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
   const itemsPerPage = 10;
 
   const fetchSubmissions = useCallback(async () => {
@@ -77,6 +94,18 @@ export default function BuyFormManagement() {
         console.log("Submissions data:", response.data);
         console.log("Number of submissions:", response.data.length);
         setGroupedData(response.data);
+        
+        // Extract pagination info from response
+        if (response.pagination) {
+          setPagination({
+            currentPage: response.pagination.currentPage || currentPage,
+            totalPages: response.pagination.totalPages || 0,
+            totalRecords: response.pagination.totalRecords || 0,
+            recordsPerPage: response.pagination.recordsPerPage || 10,
+            hasNextPage: response.pagination.hasNextPage || false,
+            hasPrevPage: response.pagination.hasPrevPage || false,
+          });
+        }
       } else {
         console.error("Response not successful:", response);
         setError("No data available or request failed.");
@@ -134,20 +163,18 @@ export default function BuyFormManagement() {
     );
   }
 
-  // Pagination calculations
-  const totalRecords = groupedData.length;
-  const calculatedTotalPages = Math.ceil(totalRecords / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentData = groupedData.slice(startIndex, endIndex);
+  // Server-side pagination - data is already paginated by API
+  const currentData = groupedData; // No slicing needed!
+  const totalPages = pagination.totalPages;
+  const startIndex = (pagination.currentPage - 1) * pagination.recordsPerPage;
 
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
     const maxVisible = 5;
 
-    if (calculatedTotalPages <= maxVisible) {
-      for (let i = 1; i <= calculatedTotalPages; i++) {
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
@@ -156,14 +183,14 @@ export default function BuyFormManagement() {
         pages.push("...");
       }
       const start = Math.max(2, currentPage - 1);
-      const end = Math.min(calculatedTotalPages - 1, currentPage + 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
-      if (currentPage < calculatedTotalPages - 2) {
+      if (currentPage < totalPages - 2) {
         pages.push("...");
       }
-      pages.push(calculatedTotalPages);
+      pages.push(totalPages);
     }
     return pages;
   };
@@ -328,12 +355,12 @@ export default function BuyFormManagement() {
       )}
 
       {/* Pagination */}
-      {calculatedTotalPages > 1 && (
+      {totalPages > 1 && (
         <div className="flex items-center gap-2 justify-center mt-6 text-sm">
           {/* Previous Button */}
           <button
             onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-            disabled={currentPage === 1}
+            disabled={!pagination.hasPrevPage || loading}
             className={`${jost.className} border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             ←
@@ -346,7 +373,7 @@ export default function BuyFormManagement() {
               onClick={() =>
                 typeof page === "number" && setCurrentPage(page)
               }
-              disabled={page === "..."}
+              disabled={page === "..." || loading}
               className={`${jost.className} border px-3 py-1 rounded-none transition-colors ${
                 page === currentPage
                   ? "bg-[#EAD9BE] text-gray-900 border-[#EAD9BE] font-semibold"
@@ -362,9 +389,9 @@ export default function BuyFormManagement() {
           {/* Next Button */}
           <button
             onClick={() =>
-              setCurrentPage((prev) => Math.min(calculatedTotalPages, prev + 1))
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
             }
-            disabled={currentPage === calculatedTotalPages}
+            disabled={!pagination.hasNextPage || loading}
             className={`${jost.className} border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             →

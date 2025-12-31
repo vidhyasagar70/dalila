@@ -68,6 +68,16 @@ export default function MembersManagement() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  
+  // Server-side pagination for authorized users
+  const [authorizedPagination, setAuthorizedPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalRecords: 0,
+    recordsPerPage: 10,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
 
   // Fetch pending customer data
   const fetchPendingUsers = useCallback(async () => {
@@ -118,13 +128,13 @@ export default function MembersManagement() {
     }
   }, []);
 
-  // Fetch authorized users
-  const fetchAuthorizedUsers = useCallback(async () => {
+  // Fetch authorized users with server-side pagination
+  const fetchAuthorizedUsers = useCallback(async (page: number = 1) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await userApi.getAllUsers();
+      const response = await userApi.getAllUsers({ page, limit: 10 });
 
       if (!response) {
         setError("Failed to fetch authorized users");
@@ -160,6 +170,27 @@ export default function MembersManagement() {
         console.log("Filtered authorized users:", authorizedUsers);
         setUsers(authorizedUsers);
         setFilteredUsers(authorizedUsers);
+
+        // Store pagination metadata from API
+        const paginationData = (response as { pagination?: {
+          currentPage: number;
+          totalPages: number;
+          totalRecords: number;
+          recordsPerPage: number;
+          hasNextPage: boolean;
+          hasPrevPage: boolean;
+        }}).pagination;
+        
+        if (paginationData) {
+          setAuthorizedPagination({
+            currentPage: paginationData.currentPage || page,
+            totalPages: paginationData.totalPages || 1,
+            totalRecords: paginationData.totalRecords || 0,
+            recordsPerPage: paginationData.recordsPerPage || 10,
+            hasNextPage: paginationData.hasNextPage || false,
+            hasPrevPage: paginationData.hasPrevPage || false,
+          });
+        }
       } else {
         setUsers([]);
         setFilteredUsers([]);
@@ -182,9 +213,9 @@ export default function MembersManagement() {
     if (activeTab === "waiting") {
       fetchPendingUsers();
     } else {
-      fetchAuthorizedUsers();
+      fetchAuthorizedUsers(currentPage);
     }
-  }, [activeTab, fetchPendingUsers, fetchAuthorizedUsers]);
+  }, [activeTab, currentPage, fetchPendingUsers, fetchAuthorizedUsers]);
 
   // Handle search
   useEffect(() => {
@@ -277,11 +308,21 @@ export default function MembersManagement() {
     [fetchPendingUsers],
   );
 
-  // Pagination
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
+  // Pagination - Different logic for authorized (server-side) vs waiting (client-side)
+  const totalPages = activeTab === "authorized" 
+    ? authorizedPagination.totalPages 
+    : Math.ceil(filteredUsers.length / itemsPerPage);
+  
+  const startIndex = activeTab === "authorized"
+    ? (authorizedPagination.currentPage - 1) * authorizedPagination.recordsPerPage
+    : (currentPage - 1) * itemsPerPage;
+  
   const endIndex = startIndex + itemsPerPage;
-  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+  
+  // For authorized: data is already paginated by server, for waiting: slice locally
+  const currentUsers = activeTab === "authorized" 
+    ? filteredUsers 
+    : filteredUsers.slice(startIndex, endIndex);
 
   const getPageNumbers = () => {
     const pages = [];
@@ -326,7 +367,10 @@ export default function MembersManagement() {
         {/* Header Tabs */}
         <div className="mb-6 flex gap-4">
           <button
-            onClick={() => setActiveTab("authorized")}
+            onClick={() => {
+              setActiveTab("authorized");
+              setCurrentPage(1); // Reset to page 1 when switching tabs
+            }}
             className={`px-6 py-2.5 rounded-none font-medium transition ${
               activeTab === "authorized"
                 ? "text-white"
@@ -341,7 +385,10 @@ export default function MembersManagement() {
             Authorized Members
           </button>
           <button
-            onClick={() => setActiveTab("waiting")}
+            onClick={() => {
+              setActiveTab("waiting");
+              setCurrentPage(1); // Reset to page 1 when switching tabs
+            }}
             className={`px-6 py-2.5 rounded-none font-medium transition ${
               activeTab === "waiting"
                 ? "text-white"
@@ -640,7 +687,7 @@ export default function MembersManagement() {
             >
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
+                disabled={activeTab === "authorized" ? !authorizedPagination.hasPrevPage : currentPage === 1}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
@@ -678,7 +725,7 @@ export default function MembersManagement() {
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                 }
-                disabled={currentPage === totalPages}
+                disabled={activeTab === "authorized" ? !authorizedPagination.hasNextPage : currentPage === totalPages}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 <ChevronRight className="w-3.5 h-3.5" />

@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Marcellus, Jost } from "next/font/google";
 import { ChevronDown, ChevronUp, Send, MessageSquare, X, HelpCircle, Clock, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { adminApi, Diamond, User } from "@/lib/api";
-import toast from "react-hot-toast";
+import { Diamond } from "@/lib/api";
+import {
+  useCustomerManagementData,
+  useReplyManagement,
+  useHoldManagement,
+} from "@/hooks/customer-management";
 
 const marcellus = Marcellus({
   variable: "--font-marcellus",
@@ -18,6 +22,7 @@ const jost = Jost({
   subsets: ["latin"],
 });
 
+// Types are now exported from hooks
 interface CartItem {
   stoneNo: string;
   diamond: Diamond;
@@ -47,269 +52,76 @@ interface Query {
   diamond?: Diamond;
 }
 
-interface ApiResponseData {
-  data?: Record<string, unknown>;
-  [key: string]: unknown;
-}
-
-type Row = {
-  id: string;
-  name?: string;
-  username?: string;
-  email?: string;
-  phone?: string;
-  company?: string;
-  businessType?: string;
-  vatNumber?: string;
-  address?: string;
-  itemsInCart?: CartItem[];
-  holdedItems?: HoldItem[];
-  enquiries?: Query[];
-};
-
 export default function CustomerManagementPage() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [rows, setRows] = useState<Row[]>([]);
-  const [stats, setStats] = useState({
-    totalEnquiries: 0,
-    pending: 0,
-    approved: 0,
-    rejected: 0,
-  });
-  const [replyModal, setReplyModal] = useState<{
-    open: boolean;
-    queryId: string;
-    stoneNo: string;
-  } | null>(null);
-  const [replyText, setReplyText] = useState("");
-  const [isSubmittingReply, setIsSubmittingReply] = useState(false);
-  const [processingHoldId, setProcessingHoldId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    let mounted = true;
-    const fetchAll = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  // Custom hooks for data management with server-side pagination
+  const { rows, setRows, loading, error, stats, setStats, pagination, refetch } = 
+    useCustomerManagementData(currentPage, itemsPerPage);
+  
+  const {
+    replyModal,
+    setReplyModal,
+    replyText,
+    setReplyText,
+    isSubmittingReply,
+    handleReplySubmit,
+  } = useReplyManagement(setRows);
 
-        const [
-          usersRes,
-          cartsRes,
-          holdsAllRes,
-          holdsPendingRes,
-          holdsApprovedRes,
-          holdsRejectedRes,
-          queriesRes,
-        ] = await Promise.all([
-          adminApi.getAllUsers({ page: 1, limit: 100 }),
-          adminApi.getAllCarts(),
-          adminApi.getAllHolds(),
-          adminApi.getAllHolds("pending"),
-          adminApi.getAllHolds("approved"),
-          adminApi.getAllHolds("rejected"),
-          adminApi.getAllQueries(),
-        ]);
+  const { processingHoldId, handleApproveHold, handleDeclineHold } =
+    useHoldManagement(setRows, setStats);
 
-        // Robust unwrapping of API responses
-        const unwrap = <T,>(res: T): Record<string, unknown> | null => {
-          if (res && typeof res === "object") {
-            const resObj = res as ApiResponseData;
-            const dataData = resObj?.data as ApiResponseData | undefined;
-            if (
-              dataData &&
-              typeof dataData === "object" &&
-              "data" in dataData
-            ) {
-              return dataData.data as Record<string, unknown>;
-            }
-            if (dataData) return dataData as Record<string, unknown>;
-            return resObj as Record<string, unknown>;
-          }
-          return null;
-        };
+  // Server-side pagination values
+  const totalPages = pagination.totalPages;
+  const currentRows = rows; // All rows are already paginated by server
+  const startIndex = (pagination.currentPage - 1) * pagination.recordsPerPage;
 
-        const usersData = unwrap(usersRes);
-        const cartsData = unwrap(cartsRes);
-        const holdsAllData = unwrap(holdsAllRes);
-        const holdsPendingData = unwrap(holdsPendingRes);
-        const holdsApprovedData = unwrap(holdsApprovedRes);
-        const holdsRejectedData = unwrap(holdsRejectedRes);
-        const queriesData = unwrap(queriesRes);
+  // Generate page numbers for pagination UI
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
 
-        // Users
-        const users = (usersData?.users ??
-          usersData?.data ??
-          (Array.isArray(usersData) ? usersData : []) ??
-          []) as User[];
-
-        // Carts: admin/all returns array with shape { cart: {..., userId}, user: { userId, ... }, totalItems }
-        const cartsArr = (cartsData?.carts ??
-          cartsData?.data ??
-          (Array.isArray(cartsData) ? cartsData : []) ??
-          []) as Array<{
-          cart: { userId: string; items: CartItem[] };
-          user: User;
-          totalItems: number;
-        }>;
-
-        // Holds: admin/all returns array with shape { hold: {..., userId, items: [...]}, user: {...} }
-        const holdsAll = (holdsAllData?.holds ??
-          holdsAllData?.data ??
-          (Array.isArray(holdsAllData) ? holdsAllData : []) ??
-          []) as Array<{
-          hold: { userId: string; items: HoldItem[] };
-          user: User;
-        }>;
-
-        // Queries: admin/all returns data.groupedQueries -> [ { email, queries: [...] } ]
-        let queries: Query[] = [];
-        if (
-          queriesData?.groupedQueries &&
-          Array.isArray(queriesData.groupedQueries)
-        ) {
-          queries = (
-            queriesData.groupedQueries as Array<{ queries: Query[] }>
-          ).flatMap((g) => (Array.isArray(g.queries) ? g.queries : []));
-        } else if (queriesData?.queries && Array.isArray(queriesData.queries)) {
-          queries = queriesData.queries as Query[];
-        } else if (Array.isArray(queriesData)) {
-          queries = queriesData as Query[];
-        }
-
-        // Build lookup maps by userId
-        const cartByUser: Record<string, CartItem[]> = {};
-        cartsArr.forEach((c) => {
-          const uid: string = (c.cart?.userId ||
-            c.user?.userId ||
-            c.user?._id ||
-            (c.user as Record<string, unknown>).id ||
-            "") as string;
-          if (!uid) return;
-          const items = c.cart?.items || [];
-          items.forEach((it) => {
-            if (!cartByUser[uid]) cartByUser[uid] = [];
-            cartByUser[uid].push(it);
-          });
-        });
-
-        const holdsByUser: Record<string, HoldItem[]> = {};
-        holdsAll.forEach((h) => {
-          const uid: string = (h.hold?.userId ||
-            h.user?.userId ||
-            h.user?._id ||
-            (h.user as Record<string, unknown>).id ||
-            "") as string;
-          if (!uid) return;
-          const items = h.hold?.items || [];
-          items.forEach((it) => {
-            if (!holdsByUser[uid]) holdsByUser[uid] = [];
-            holdsByUser[uid].push(it);
-          });
-        });
-
-        const queriesByUser: Record<string, Query[]> = {};
-        queries.forEach((q) => {
-          const uid: string = q.userId || "";
-          if (!uid || typeof uid !== "string") return;
-          queriesByUser[uid] = queriesByUser[uid] || [];
-          queriesByUser[uid].push(q);
-        });
-
-        // Compose table rows from users
-        const composed: Row[] = (users || []).map((u: User) => {
-          const userId =
-            u.id ||
-            u._id ||
-            ((u as Record<string, unknown>).userId as string) ||
-            "";
-          return {
-            id: userId,
-            name:
-              `${u.firstName || ""} ${u.lastName || ""}`.trim() ||
-              u.username ||
-              u.email,
-            username: u.username,
-            email: u.email,
-            phone: u.customerData?.phoneNumber,
-            company: u.customerData?.businessInfo?.companyName,
-            businessType: u.customerData?.businessInfo?.businessType,
-            vatNumber: u.customerData?.businessInfo?.vatNumber,
-            address: [
-              u.customerData?.address?.street,
-              u.customerData?.address?.city,
-              u.customerData?.address?.country,
-            ]
-              .filter(Boolean)
-              .join(", "),
-            itemsInCart: cartByUser[userId] || [],
-            holdedItems: holdsByUser[userId] || [],
-            enquiries: queriesByUser[userId] || [],
-          };
-        });
-
-        if (!mounted) return;
-        setRows(composed);
-
-        interface HoldData {
-          holds?: Array<{
-            hold?: { items?: Array<{ status?: string }> };
-            items?: Array<{ status?: string }>;
-            filteredItems?: Array<{ status?: string }>;
-          }>;
-          data?: Array<{
-            hold?: { items?: Array<{ status?: string }> };
-            items?: Array<{ status?: string }>;
-            filteredItems?: Array<{ status?: string }>;
-          }>;
-        }
-
-        // Count holds by status robustly, supporting either filteredItems or full items list
-        const countStatus = (
-          dataset: Record<string, unknown> | null,
-          status: string,
-        ) => {
-          if (!dataset) return 0;
-          const holdData = dataset as HoldData;
-          const arr =
-            holdData?.holds ??
-            holdData?.data ??
-            (Array.isArray(dataset) ? dataset : []);
-          if (!Array.isArray(arr)) return 0;
-          return arr.reduce((sum, h) => {
-            if (Array.isArray(h.filteredItems))
-              return sum + h.filteredItems.length;
-            const items = h.hold?.items || h.items || [];
-            return (
-              sum +
-              items.filter((it: { status?: string }) => it?.status === status)
-                .length
-            );
-          }, 0);
-        };
-
-        setStats({
-          totalEnquiries: queries.length,
-          pending: countStatus(holdsPendingData, "pending"),
-          approved: countStatus(holdsApprovedData, "approved"),
-          rejected: countStatus(holdsRejectedData, "rejected"),
-        });
-      } catch (e: unknown) {
-        const error = e as { message?: string };
-        console.error("Failed to load admin data", e);
-        if (mounted) setError(error?.message || "Failed to load data");
-      } finally {
-        if (mounted) setLoading(false);
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
       }
-    };
-    fetchAll();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) {
+        pages.push("...");
+      }
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      if (currentPage < totalPages - 2) {
+        pages.push("...");
+      }
+      pages.push(totalPages);
+    }
+    return pages;
+  };
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const goToNextPage = () => {
+    if (pagination.hasNextPage) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (pagination.hasPrevPage) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const pageNumbers = getPageNumbers();
 
   // Helper function to safely access Diamond properties
   const getDiamondProp = (
@@ -329,159 +141,6 @@ export default function CustomerManagementPage() {
 
   const toggleRow = (id: string) => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const handleReplySubmit = async () => {
-    if (!replyModal || !replyText.trim()) {
-      toast.error("Please enter a reply");
-      return;
-    }
-
-    try {
-      setIsSubmittingReply(true);
-      const response = await adminApi.replyToQuery(
-        replyModal.queryId,
-        replyText.trim(),
-      );
-
-      if (response?.success) {
-        toast.success("Reply sent successfully!");
-        
-        // Update the state directly instead of reloading
-        setRows((prevRows) =>
-          prevRows.map((row) => ({
-            ...row,
-            enquiries: row.enquiries?.map((query) =>
-              query.id === replyModal.queryId || query._id === replyModal.queryId
-                ? {
-                    ...query,
-                    status: "replied",
-                    adminReply: replyText.trim(),
-                    repliedAt: new Date().toISOString(),
-                  }
-                : query
-            ),
-          }))
-        );
-
-        setReplyModal(null);
-        setReplyText("");
-      } else {
-        toast.error(response?.message || "Failed to send reply");
-      }
-    } catch (error: unknown) {
-      console.error("Error sending reply:", error);
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        toast.error(
-          axiosError?.response?.data?.message || "Failed to send reply",
-        );
-      } else {
-        toast.error("Failed to send reply");
-      }
-    } finally {
-      setIsSubmittingReply(false);
-    }
-  };
-
-  const handleApproveHold = async (holdId: string) => {
-    if (!holdId) {
-      toast.error("Invalid hold item");
-      return;
-    }
-
-    try {
-      setProcessingHoldId(holdId);
-      const response = await adminApi.approveHold(holdId);
-
-      if (response?.success) {
-        toast.success("Hold item approved successfully!");
-        
-        // Update the state directly instead of reloading
-        setRows((prevRows) =>
-          prevRows.map((row) => ({
-            ...row,
-            holdedItems: row.holdedItems?.map((item) =>
-              item._id === holdId ? { ...item, status: "approved" } : item
-            ),
-          }))
-        );
-
-        // Update stats
-        setStats((prev) => ({
-          ...prev,
-          pending: Math.max(0, prev.pending - 1),
-          approved: prev.approved + 1,
-        }));
-      } else {
-        toast.error(response?.message || "Failed to approve hold item");
-      }
-    } catch (error: unknown) {
-      console.error("Error approving hold:", error);
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        toast.error(
-          axiosError?.response?.data?.message || "Failed to approve hold item",
-        );
-      } else {
-        toast.error("Failed to approve hold item");
-      }
-    } finally {
-      setProcessingHoldId(null);
-    }
-  };
-
-  const handleDeclineHold = async (holdId: string) => {
-    if (!holdId) {
-      toast.error("Invalid hold item");
-      return;
-    }
-
-    try {
-      setProcessingHoldId(holdId);
-      const response = await adminApi.rejectHold(holdId);
-
-      if (response?.success) {
-        toast.success("Hold item declined successfully!");
-        
-        // Update the state directly instead of reloading
-        setRows((prevRows) =>
-          prevRows.map((row) => ({
-            ...row,
-            holdedItems: row.holdedItems?.map((item) =>
-              item._id === holdId ? { ...item, status: "rejected" } : item
-            ),
-          }))
-        );
-
-        // Update stats
-        setStats((prev) => ({
-          ...prev,
-          pending: Math.max(0, prev.pending - 1),
-          rejected: prev.rejected + 1,
-        }));
-      } else {
-        toast.error(response?.message || "Failed to decline hold item");
-      }
-    } catch (error: unknown) {
-      console.error("Error declining hold:", error);
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        toast.error(
-          axiosError?.response?.data?.message || "Failed to decline hold item",
-        );
-      } else {
-        toast.error("Failed to decline hold item");
-      }
-    } finally {
-      setProcessingHoldId(null);
-    }
   };
 
   const StatusBadge = ({ status }: { status?: string }) => {
@@ -546,48 +205,7 @@ export default function CustomerManagementPage() {
     );
   };
 
-  // Pagination calculations
-  const totalPages = Math.ceil(rows.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentRows = rows.slice(startIndex, endIndex);
-
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const maxVisible = 5;
-
-    if (totalPages <= maxVisible) {
-      // Show all pages if total is less than max visible
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Always show first page
-      pages.push(1);
-
-      if (currentPage > 3) {
-        pages.push("...");
-      }
-
-      // Show pages around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - 2) {
-        pages.push("...");
-      }
-
-      // Always show last page
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
+  // Pagination is now handled by usePagination hook
 
   return (
     <ProtectedRoute requireAuth={true} allowedRoles={["ADMIN", "SUPER_ADMIN"]} redirectTo="/">
@@ -745,7 +363,7 @@ export default function CustomerManagementPage() {
                           <table className="w-full text-left border-collapse">
                             <thead>
                               <tr>
-                                <th colSpan={14}>
+                                <th colSpan={15}>
                                   <span className="bg-[#0b1b35] text-white font-medium px-4 py-3 text-sm inline-block mb-1">
                                     Items in cart
                                   </span>
@@ -798,9 +416,65 @@ export default function CustomerManagementPage() {
                               </tr>
                             </thead>
                             <tbody>
-                              {row.itemsInCart.map((it) => {
+                              {row.itemsInCart.map((it, idx) => {
                                 const d = it?.diamond || it;
-                                return <>{renderDiamondRow(d)}</>;
+                                return (
+                                  <tr
+                                    key={idx}
+                                    className="border-t border-[#E9E2C6]"
+                                  >
+                                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">
+                                      {idx + 1}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(
+                                        d,
+                                        "STONE_NO",
+                                        "stoneNo",
+                                        "STONE",
+                                      )}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "LOCATION", "LOC")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "LAB")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "SHAPE")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "CARATS", "carats")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "COLOR")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "CLARITY")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "CUT")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "POL", "POLISH")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "SYM", "SYMMETRY")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "FLOUR", "FLUOR")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "NET_RATE")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "RAP_PRICE")}
+                                    </td>
+                                    <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
+                                      {getDiamondProp(d, "NET_VALUE")}
+                                    </td>
+                                  </tr>
+                                );
                               })}
                             </tbody>
                           </table>
@@ -885,6 +559,9 @@ export default function CustomerManagementPage() {
                                     key={idx}
                                     className="border-t border-[#E9E2C6]"
                                   >
+                                    <td className="py-2 px-4 whitespace-nowrap text-gray-700">
+                                      {idx + 1}
+                                    </td>
                                     <td className="py-2 pr-6 whitespace-nowrap text-gray-700">
                                       {getDiamondProp(
                                         d,
@@ -1184,21 +861,21 @@ export default function CustomerManagementPage() {
             <div className="flex items-center gap-2 justify-center mt-6 text-sm">
               {/* Previous Button */}
               <button
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
+                onClick={goToPreviousPage}
+                disabled={!pagination.hasPrevPage || loading}
                 className="border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ←
               </button>
 
               {/* Page Numbers */}
-              {getPageNumbers().map((page, index) => (
+              {pageNumbers.map((page, index) => (
                 <button
                   key={index}
                   onClick={() =>
-                    typeof page === "number" && setCurrentPage(page)
+                    typeof page === "number" && goToPage(page)
                   }
-                  disabled={page === "..."}
+                  disabled={page === "..." || loading}
                   className={`border px-3 py-1 rounded-none transition-colors ${
                     page === currentPage
                       ? "bg-[#EAD9BE] text-gray-900 border-[#EAD9BE] font-semibold"
@@ -1213,10 +890,8 @@ export default function CustomerManagementPage() {
 
               {/* Next Button */}
               <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
+                onClick={goToNextPage}
+                disabled={!pagination.hasNextPage || loading}
                 className="border px-3 py-1 rounded-none border-gray-300 text-gray-700 hover:bg-[#EAD9BE] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 →
