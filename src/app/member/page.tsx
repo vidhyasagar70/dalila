@@ -134,7 +134,7 @@ export default function MembersManagement() {
       setLoading(true);
       setError(null);
 
-      const response = await userApi.getAllUsers({ page, limit: 10 });
+      const response = await userApi.getAllUsers({ page, limit: 10, status: 'APPROVED' });
 
       if (!response) {
         setError("Failed to fetch authorized users");
@@ -148,26 +148,24 @@ export default function MembersManagement() {
         // Access the users array from response.data
         const usersArray = Array.isArray(response.data) ? response.data : [];
 
-        // Filter only users with status "APPROVED" and transform to ExtendedUser type
-        const authorizedUsers: ExtendedUser[] = usersArray
-          .filter((user) => user.status === "APPROVED")
-          .map((user) => {
-            const custData = user.customerData as CustomerData | undefined;
-            return {
-              _id: user._id || user.id || "",
-              id: user.id || user._id,
-              email: user.email,
-              username: user.username,
-              firstName: user.firstName || custData?.firstName,
-              lastName: user.lastName || custData?.lastName,
-              kycStatus: user.kycStatus,
-              status: user.status,
-              role: user.role,
-              customerData: custData,
-            };
-          });
+        // Transform to ExtendedUser type (no filtering - API returns paginated data)
+        const authorizedUsers: ExtendedUser[] = usersArray.map((user) => {
+          const custData = user.customerData as CustomerData | undefined;
+          return {
+            _id: user._id || user.id || "",
+            id: user.id || user._id,
+            email: user.email,
+            username: user.username,
+            firstName: user.firstName || custData?.firstName,
+            lastName: user.lastName || custData?.lastName,
+            kycStatus: user.kycStatus,
+            status: user.status,
+            role: user.role,
+            customerData: custData,
+          };
+        });
 
-        console.log("Filtered authorized users:", authorizedUsers);
+        console.log("Authorized users:", authorizedUsers);
         setUsers(authorizedUsers);
         setFilteredUsers(authorizedUsers);
 
@@ -213,9 +211,9 @@ export default function MembersManagement() {
     if (activeTab === "waiting") {
       fetchPendingUsers();
     } else {
-      fetchAuthorizedUsers(currentPage);
+      fetchAuthorizedUsers(authorizedPagination.currentPage);
     }
-  }, [activeTab, currentPage, fetchPendingUsers, fetchAuthorizedUsers]);
+  }, [activeTab, authorizedPagination.currentPage, fetchPendingUsers, fetchAuthorizedUsers]);
 
   // Handle search
   useEffect(() => {
@@ -308,32 +306,34 @@ export default function MembersManagement() {
     [fetchPendingUsers],
   );
 
+
   // Pagination - Different logic for authorized (server-side) vs waiting (client-side)
-  const totalPages = activeTab === "authorized" 
-    ? authorizedPagination.totalPages 
+  const totalPages = activeTab === "authorized"
+    ? authorizedPagination.totalPages
     : Math.ceil(filteredUsers.length / itemsPerPage);
-  
+
   const startIndex = activeTab === "authorized"
     ? (authorizedPagination.currentPage - 1) * authorizedPagination.recordsPerPage
     : (currentPage - 1) * itemsPerPage;
-  
+
   const endIndex = startIndex + itemsPerPage;
-  
+
   // For authorized: data is already paginated by server, for waiting: slice locally
-  const currentUsers = activeTab === "authorized" 
-    ? filteredUsers 
+  const currentUsers = activeTab === "authorized"
+    ? filteredUsers
     : filteredUsers.slice(startIndex, endIndex);
 
   const getPageNumbers = () => {
+    const page = activeTab === "authorized" ? authorizedPagination.currentPage : currentPage;
     const pages = [];
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      if (currentPage <= 3) {
+      if (page <= 3) {
         pages.push(1, 2, 3, 4, "...", totalPages);
-      } else if (currentPage >= totalPages - 2) {
+      } else if (page >= totalPages - 2) {
         pages.push(
           1,
           "...",
@@ -346,9 +346,9 @@ export default function MembersManagement() {
         pages.push(
           1,
           "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
+          page - 1,
+          page,
+          page + 1,
           "...",
           totalPages,
         );
@@ -686,7 +686,16 @@ export default function MembersManagement() {
               }}
             >
               <button
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                onClick={() => {
+                  if (activeTab === "authorized") {
+                    setAuthorizedPagination((prev) => ({
+                      ...prev,
+                      currentPage: Math.max(1, prev.currentPage - 1),
+                    }));
+                  } else {
+                    setCurrentPage((prev) => Math.max(1, prev - 1));
+                  }
+                }}
                 disabled={activeTab === "authorized" ? !authorizedPagination.hasPrevPage : currentPage === 1}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
@@ -694,37 +703,58 @@ export default function MembersManagement() {
               </button>
 
               <div className="flex items-center gap-1.5">
-                {getPageNumbers().map((page, index) => (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      typeof page === "number" && setCurrentPage(page)
-                    }
-                    disabled={page === "..."}
-                    className={`min-w-[32px] h-8 px-2.5 rounded text-xs font-medium transition ${
-                      page === currentPage
-                        ? "bg-slate-900 text-white"
-                        : page === "..."
-                          ? "text-gray-400 cursor-default bg-transparent"
-                          : "text-gray-700 bg-white hover:bg-gray-50"
-                    }`}
-                    style={
-                      page !== "..." && page !== currentPage
-                        ? {
-                            border: "1px solid #f9ead4",
+                {getPageNumbers().map((page, index) => {
+                  const isCurrent = activeTab === "authorized"
+                    ? page === authorizedPagination.currentPage
+                    : page === currentPage;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        if (typeof page === "number") {
+                          if (activeTab === "authorized") {
+                            setAuthorizedPagination((prev) => ({
+                              ...prev,
+                              currentPage: page,
+                            }));
+                          } else {
+                            setCurrentPage(page);
                           }
-                        : {}
-                    }
-                  >
-                    {page}
-                  </button>
-                ))}
+                        }
+                      }}
+                      disabled={page === "..."}
+                      className={`min-w-[32px] h-8 px-2.5 rounded text-xs font-medium transition ${
+                        isCurrent
+                          ? "bg-slate-900 text-white"
+                          : page === "..."
+                            ? "text-gray-400 cursor-default bg-transparent"
+                            : "text-gray-700 bg-white hover:bg-gray-50"
+                      }`}
+                      style={
+                        page !== "..." && !isCurrent
+                          ? {
+                              border: "1px solid #f9ead4",
+                            }
+                          : {}
+                      }
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
               </div>
 
               <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
+                onClick={() => {
+                  if (activeTab === "authorized") {
+                    setAuthorizedPagination((prev) => ({
+                      ...prev,
+                      currentPage: Math.min(totalPages, prev.currentPage + 1),
+                    }));
+                  } else {
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+                  }
+                }}
                 disabled={activeTab === "authorized" ? !authorizedPagination.hasNextPage : currentPage === totalPages}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white disabled:opacity-50 disabled:cursor-not-allowed transition"
               >

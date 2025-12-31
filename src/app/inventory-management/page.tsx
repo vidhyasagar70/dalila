@@ -282,34 +282,16 @@ export default function InventoryManagement() {
         const isVisible = storedStatus === 'true';
         setActiveSuppliers(isVisible ? 1 : 0);
       } else {
-        // Fetch from API if not in localStorage
-        const response = await fetch(
-          `https://dalila-inventory-service-dev.caratlogic.com/api/users/admin/supplier-settings/${encodeURIComponent(supplierName)}`,
-          {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const isVisible = data.isVisible || false;
-          setActiveSuppliers(isVisible ? 1 : 0);
-          // Store in localStorage for future use
-          localStorage.setItem(`supplier_${supplierName}_visible`, String(isVisible));
-        } else {
-          // Default to 0 active suppliers if API call fails
-          setActiveSuppliers(0);
-        }
+        // Default to 1 active supplier if not in localStorage
+        // API endpoint for supplier settings is not available, so we default to active
+        setActiveSuppliers(1);
+        localStorage.setItem(`supplier_${supplierName}_visible`, 'true');
       }
     } catch (err) {
       console.error('Error fetching supplier counts:', err);
       // Default values on error
       setTotalSuppliers(1);
-      setActiveSuppliers(0);
+      setActiveSuppliers(1);
     }
   };
 
