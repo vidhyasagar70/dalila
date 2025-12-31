@@ -221,8 +221,8 @@ export default function InventoryManagement() {
     try {
       let response;
       if (viewMode === "active") {
-        // Active Diamonds: hit /api/diamonds/search
-        const apiUrl = `https://dalila-inventory-service-dev.caratlogic.com/api/diamonds/search?searchTerm=${encodeURIComponent(term)}&page=1&limit=100`;
+        // Active Diamonds: hit /api/diamonds/search (no limit to show all results)
+        const apiUrl = `https://dalila-inventory-service-dev.caratlogic.com/api/diamonds/search?searchTerm=${encodeURIComponent(term)}`;
         const res = await fetch(apiUrl);
         response = await res.json();
         // Normalize response for compatibility
@@ -234,11 +234,9 @@ export default function InventoryManagement() {
           setSearchPagination(undefined);
         }
       } else {
-        // Inventory: use existing logic
+        // Inventory: use existing logic (no limit to show all results)
         response = await inventoryApi.searchDiamonds({
           searchTerm: term,
-          page: 1,
-          limit: 100,
         });
         if (response.success && response.data) {
           setSearchResults(response.data);
