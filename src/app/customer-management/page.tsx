@@ -161,49 +161,6 @@ export default function CustomerManagementPage() {
     );
   };
 
-  const renderDiamondRow = (
-    d: Diamond | HoldItem | CartItem | Record<string, unknown>,
-    extraRight?: React.ReactNode,
-  ) => {
-    const obj = d as Record<string, unknown>;
-    const stone = String(obj?.STONE_NO || obj?.stoneNo || obj?.STONE || "-");
-    const loc = String(obj?.LOCATION || obj?.LOC || "-");
-    const lab = String(obj?.LAB || "-");
-    const shape = String(obj?.SHAPE || "-");
-    const carats = String(obj?.CARATS || obj?.carats || "-");
-    const color = String(obj?.COLOR || "-");
-    const clarity = String(obj?.CLARITY || "-");
-    const cut = String(obj?.CUT || "-");
-    const pol = String(obj?.POL || obj?.POLISH || "-");
-    const sym = String(obj?.SYM || obj?.SYMMETRY || "-");
-    const fluor = String(obj?.FLOUR || obj?.FLUOR || "-");
-    const netRate = String(obj?.NET_RATE || "-");
-    const rap = String(obj?.RAP_PRICE || "-");
-    const netVal = String(obj?.NET_VALUE || "-");
-    return (
-      <tr className="border-t border-[#E9E2C6]">
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{stone}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{loc}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{lab}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{shape}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{carats}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{color}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{clarity}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{cut}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{pol}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{sym}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{fluor}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{netRate}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{rap}</td>
-        <td className="py-2 pr-6 whitespace-nowrap text-gray-700">{netVal}</td>
-        {extraRight && (
-          <td className="py-2 pr-6 whitespace-nowrap text-right">
-            {extraRight}
-          </td>
-        )}
-      </tr>
-    );
-  };
 
   // Pagination is now handled by usePagination hook
 
