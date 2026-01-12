@@ -25,7 +25,7 @@ interface Query {
   userId: string;
   userEmail: string;
   stoneNo: string;
-  diamond: Diamond;
+  diamond: Diamond | unknown;
   query: string;
   status: string;
   createdAt: string;

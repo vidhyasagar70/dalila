@@ -4,7 +4,7 @@ import Image from "next/image";
 import { X } from "lucide-react";
 import {  Marcellus} from "next/font/google";
 import AnimatedContainer from "@/components/shared/AnimatedContainer";
-import { p } from "framer-motion/client";
+
 
 
 const marcellus = Marcellus({

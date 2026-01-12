@@ -89,12 +89,16 @@ export default function MembersManagement() {
         // The response.data is directly an array of users
         const pendingUsers = Array.isArray(response.data) ? response.data : [];
 
-        const transformedUsers: ExtendedUser[] = pendingUsers.map((user) => ({
-          ...user,
-          id: user._id || user.id,
-          firstName: user.customerData?.firstName || user.firstName,
-          lastName: user.customerData?.lastName || user.lastName,
-        }));
+        const transformedUsers: ExtendedUser[] = pendingUsers.map((user) => {
+          const custData = user.customerData as CustomerData | undefined;
+          return {
+            ...user,
+            id: user._id || user.id,
+            firstName: custData?.firstName || user.firstName,
+            lastName: custData?.lastName || user.lastName,
+            customerData: custData,
+          };
+        });
 
         console.log("Transformed users:", transformedUsers);
         setUsers(transformedUsers);
@@ -137,18 +141,21 @@ export default function MembersManagement() {
         // Filter only users with status "APPROVED" and transform to ExtendedUser type
         const authorizedUsers: ExtendedUser[] = usersArray
           .filter((user) => user.status === "APPROVED")
-          .map((user) => ({
-            _id: user._id || user.id || "",
-            id: user.id || user._id,
-            email: user.email,
-            username: user.username,
-            firstName: user.firstName || user.customerData?.firstName,
-            lastName: user.lastName || user.customerData?.lastName,
-            kycStatus: user.kycStatus,
-            status: user.status,
-            role: user.role,
-            customerData: user.customerData,
-          }));
+          .map((user) => {
+            const custData = user.customerData as CustomerData | undefined;
+            return {
+              _id: user._id || user.id || "",
+              id: user.id || user._id,
+              email: user.email,
+              username: user.username,
+              firstName: user.firstName || custData?.firstName,
+              lastName: user.lastName || custData?.lastName,
+              kycStatus: user.kycStatus,
+              status: user.status,
+              role: user.role,
+              customerData: custData,
+            };
+          });
 
         console.log("Filtered authorized users:", authorizedUsers);
         setUsers(authorizedUsers);

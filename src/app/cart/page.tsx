@@ -397,7 +397,7 @@ export default function CartPage() {
         emails: [userEmail],
       });
 
-      if (response.success) {
+      if (response.success && response.data) {
         addToast(
           "success",
           `Successfully emailed ${response.data.totalEmailed} diamond(s) to ${userEmail}`,
